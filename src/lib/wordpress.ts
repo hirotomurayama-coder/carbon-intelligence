@@ -1,11 +1,5 @@
-import type {
-  Methodology,
-  MethodologyType,
-  Company,
-  CompanyCategory,
-  Insight,
-  InsightCategory,
-} from "@/types";
+import type { Article, GlossaryTerm } from "@/types";
+import { CATEGORY_MAP } from "@/types";
 
 // ============================================================
 // WordPress REST API のレスポンス型
@@ -14,11 +8,19 @@ import type {
 type WPPost = {
   id: number;
   slug: string;
+  date: string;
   title: { rendered: string };
   content: { rendered: string };
   excerpt?: { rendered: string };
-  meta?: Record<string, unknown>;
-  acf?: Record<string, unknown> | unknown[];
+  categories?: number[];
+  link?: string;
+};
+
+type WPGlossary = {
+  id: number;
+  slug: string;
+  title: { rendered: string };
+  content: { rendered: string };
 };
 
 // ============================================================
@@ -32,18 +34,13 @@ function isApiConfigured(): boolean {
   return API_BASE !== "" && !API_BASE.includes("example.com");
 }
 
-/** acf フィールドをオブジェクトとして安全に取得 */
-function getAcf(post: WPPost): Record<string, unknown> {
-  if (post.acf && !Array.isArray(post.acf)) return post.acf;
-  return {};
-}
-
 // ============================================================
 // 汎用 fetch ヘルパー（常にダイナミック — キャッシュ無効）
 // ============================================================
 
-async function wpFetch<T>(endpoint: string): Promise<T[]> {
-  const url = `${API_BASE}/${endpoint}?per_page=100`;
+async function wpFetch<T>(endpoint: string, params = ""): Promise<T[]> {
+  const sep = params ? "&" : "";
+  const url = `${API_BASE}/${endpoint}?per_page=100${sep}${params}`;
 
   console.log(`[WP] Fetching: ${url}`);
 
@@ -66,7 +63,7 @@ async function wpFetch<T>(endpoint: string): Promise<T[]> {
 
   const json = await res.json();
   const count = Array.isArray(json) ? json.length : "not-array";
-  console.log(`[WP] ${endpoint}: ${count} posts returned`);
+  console.log(`[WP] ${endpoint}: ${count} items returned`);
 
   return json;
 }
@@ -83,127 +80,62 @@ function stripHtml(html: string): string {
 // マッピング (WordPress → アプリ型)
 // ============================================================
 
-function mapMethodology(wp: WPPost): Methodology {
-  const acf = getAcf(wp);
-  const meta = wp.meta ?? {};
+function mapArticle(wp: WPPost): Article {
+  const firstCatId = wp.categories?.[0] ?? 0;
+  const category = CATEGORY_MAP[firstCatId] ?? "国内ニュース";
+  const dateStr = wp.date ? wp.date.slice(0, 10) : "";
 
   return {
-    id: `m-${wp.id}`,
+    id: `a-${wp.id}`,
     title: stripHtml(wp.title.rendered),
-    type:
-      (acf.methodology_type as MethodologyType) ??
-      (meta.methodology_type as MethodologyType) ??
-      "ARR",
-    region:
-      (acf.region as string) ??
-      (meta.region as string) ??
-      "",
-    validUntil:
-      (acf.valid_until as string) ??
-      (meta.valid_until as string) ??
-      "",
-    summary:
-      (acf.summary as string) ??
-      (stripHtml(wp.content.rendered) || ""),
-    reliabilityScore:
-      Number(acf.reliability_score ?? meta.reliability_score) || 0,
+    date: dateStr,
+    category,
+    excerpt: stripHtml(wp.excerpt?.rendered ?? wp.content.rendered).slice(0, 200),
+    link: wp.link ?? "",
   };
 }
 
-function mapCompany(wp: WPPost): Company {
-  const acf = getAcf(wp);
-  const meta = wp.meta ?? {};
-
-  const rawProjects =
-    (acf.main_projects as string) ??
-    (meta.main_projects as string) ??
-    "";
-  const projects = rawProjects
-    ? rawProjects.split(",").map((s: string) => s.trim()).filter(Boolean)
-    : [];
-
+function mapGlossaryTerm(wp: WPGlossary): GlossaryTerm {
   return {
-    id: `c-${wp.id}`,
-    name: stripHtml(wp.title.rendered),
-    category:
-      (acf.category as CompanyCategory) ??
-      (meta.category as CompanyCategory) ??
-      "創出事業者",
-    headquarters:
-      (acf.headquarters as string) ??
-      (meta.headquarters as string) ??
-      "",
-    mainProjects: projects,
-  };
-}
-
-function mapInsight(wp: WPPost): Insight {
-  const acf = getAcf(wp);
-  const meta = wp.meta ?? {};
-
-  return {
-    id: `i-${wp.id}`,
-    title: stripHtml(wp.title.rendered),
-    date:
-      (acf.insight_date as string) ??
-      (meta.insight_date as string) ??
-      wp.slug.slice(0, 10),
-    category:
-      (acf.insight_category as InsightCategory) ??
-      (meta.insight_category as InsightCategory) ??
-      "市場",
-    summary:
-      (acf.summary as string) ??
-      (stripHtml(wp.content.rendered) || ""),
+    id: `g-${wp.id}`,
+    term: stripHtml(wp.title.rendered),
+    slug: wp.slug,
+    description: stripHtml(wp.content.rendered).slice(0, 300),
   };
 }
 
 // ============================================================
 // 公開 API 関数
-// データ取得失敗時は空配列を返す（ダミーデータには一切戻さない）
+// データ取得失敗時は空配列を返す
 // ============================================================
 
-export async function getMethodologies(): Promise<Methodology[]> {
+/** 記事一覧を取得（カテゴリーIDで絞り込み可） */
+export async function getArticles(categoryId?: number): Promise<Article[]> {
   if (!isApiConfigured()) {
-    console.warn("[WP] methodologies — API not configured, returning []");
+    console.warn("[WP] articles — API not configured, returning []");
     return [];
   }
   try {
-    const posts = await wpFetch<WPPost>("methodologies");
-    const mapped = posts.map(mapMethodology);
-    return mapped;
+    const params = categoryId ? `categories=${categoryId}` : "";
+    const posts = await wpFetch<WPPost>("posts", params);
+    return posts.map(mapArticle);
   } catch (e) {
-    console.error("[WP FAIL] methodologies:", e);
+    console.error("[WP FAIL] articles:", e);
     return [];
   }
 }
 
-export async function getCompanies(): Promise<Company[]> {
+/** 用語集を取得 */
+export async function getGlossaryTerms(): Promise<GlossaryTerm[]> {
   if (!isApiConfigured()) {
-    console.warn("[WP] companies — API not configured, returning []");
+    console.warn("[WP] glossary — API not configured, returning []");
     return [];
   }
   try {
-    const posts = await wpFetch<WPPost>("companies");
-    const mapped = posts.map(mapCompany);
-    return mapped;
+    const posts = await wpFetch<WPGlossary>("glossary", "_fields=id,slug,title,content");
+    return posts.map(mapGlossaryTerm);
   } catch (e) {
-    console.error("[WP FAIL] companies:", e);
-    return [];
-  }
-}
-
-export async function getInsights(): Promise<Insight[]> {
-  if (!isApiConfigured()) {
-    console.warn("[WP] insights — API not configured, returning []");
-    return [];
-  }
-  try {
-    const posts = await wpFetch<WPPost>("insights");
-    const mapped = posts.map(mapInsight);
-    return mapped;
-  } catch (e) {
-    console.error("[WP FAIL] insights:", e);
+    console.error("[WP FAIL] glossary:", e);
     return [];
   }
 }
