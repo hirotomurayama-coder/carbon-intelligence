@@ -6,21 +6,11 @@ import type {
   Insight,
   InsightCategory,
 } from "@/types";
-import {
-  methodologies as dummyMethodologies,
-  companies as dummyCompanies,
-  insights as dummyInsights,
-} from "./dummyData";
 
 // ============================================================
 // WordPress REST API のレスポンス型
 // ============================================================
 
-/**
- * WordPress.com のレスポンス共通フィールド。
- * - acf は ACF プラグイン有効時はオブジェクト、無効時は空配列 [] になる。
- * - meta にカスタムフィールドが格納されるケースもある。
- */
 type WPPost = {
   id: number;
   slug: string;
@@ -28,7 +18,6 @@ type WPPost = {
   content: { rendered: string };
   excerpt?: { rendered: string };
   meta?: Record<string, unknown>;
-  // ACF REST API 有効時はオブジェクト、未設定時は [] (空配列)
   acf?: Record<string, unknown> | unknown[];
 };
 
@@ -45,60 +34,39 @@ function isApiConfigured(): boolean {
 
 /** acf フィールドをオブジェクトとして安全に取得 */
 function getAcf(post: WPPost): Record<string, unknown> {
-  // ACF 未設定時は [] (配列) が返るのでオブジェクトかどうかチェック
   if (post.acf && !Array.isArray(post.acf)) return post.acf;
   return {};
 }
 
 // ============================================================
-// デバッグログ
-// ============================================================
-
-const DEBUG = process.env.NODE_ENV === "development";
-
-function debugLog(label: string, data: unknown) {
-  if (!DEBUG) return;
-  console.log(`[WP DEBUG] ${label}:`, JSON.stringify(data, null, 2));
-}
-
-// ============================================================
-// 汎用 fetch ヘルパー
+// 汎用 fetch ヘルパー（常にダイナミック — キャッシュ無効）
 // ============================================================
 
 async function wpFetch<T>(endpoint: string): Promise<T[]> {
   const url = `${API_BASE}/${endpoint}?per_page=100`;
 
-  debugLog("Fetching", url);
+  console.log(`[WP] Fetching: ${url}`);
 
-  // dev ではキャッシュ無効化、本番では 60 秒 ISR
-  const fetchOptions: RequestInit = {
+  const res = await fetch(url, {
     redirect: "follow",
-    ...(DEBUG ? { cache: "no-store" as const } : { next: { revalidate: 1 } }),
-  };
-
-  const res = await fetch(url, fetchOptions);
-
-  debugLog("Response status", {
-    endpoint,
-    status: res.status,
-    redirected: res.redirected,
-    finalUrl: res.url,
+    cache: "no-store",
   });
+
+  console.log(
+    `[WP] ${endpoint}: ${res.status} ${res.statusText}` +
+      (res.redirected ? ` (redirected → ${res.url})` : "")
+  );
 
   if (!res.ok) {
     const body = await res.text().catch(() => "(読み取り不可)");
-    const msg = `WordPress API error [${endpoint}]: ${res.status} ${res.statusText} - ${body.slice(0, 300)}`;
-    debugLog("Error", msg);
+    const msg = `[WP ERROR] ${endpoint}: ${res.status} ${res.statusText} — ${body.slice(0, 300)}`;
+    console.error(msg);
     throw new Error(msg);
   }
 
   const json = await res.json();
   const count = Array.isArray(json) ? json.length : "not-array";
-
-  debugLog(`${endpoint} result`, {
-    count,
-    ids: Array.isArray(json) ? json.map((p: { id: number }) => p.id) : [],
-  });
+  console.log(`[WP] ${endpoint}: ${count} posts returned`);
 
   return json;
 }
@@ -192,68 +160,50 @@ function mapInsight(wp: WPPost): Insight {
 
 // ============================================================
 // 公開 API 関数
-// WordPress 未接続 or データ0件 のときはダミーデータにフォールバック
+// データ取得失敗時は空配列を返す（ダミーデータには一切戻さない）
 // ============================================================
 
 export async function getMethodologies(): Promise<Methodology[]> {
   if (!isApiConfigured()) {
-    debugLog("Skip", "methodologies — API not configured, using dummy");
-    return dummyMethodologies;
+    console.warn("[WP] methodologies — API not configured, returning []");
+    return [];
   }
   try {
     const posts = await wpFetch<WPPost>("methodologies");
-    if (posts.length === 0) {
-      debugLog("Empty", "methodologies: 0 posts from WP, using dummy");
-      return dummyMethodologies;
-    }
     const mapped = posts.map(mapMethodology);
-    debugLog("OK", `methodologies: ${mapped.length} items mapped from WP`);
     return mapped;
   } catch (e) {
-    debugLog("Error", `methodologies fetch failed: ${e}`);
-    console.error("Failed to fetch methodologies:", e);
-    return dummyMethodologies;
+    console.error("[WP FAIL] methodologies:", e);
+    return [];
   }
 }
 
 export async function getCompanies(): Promise<Company[]> {
   if (!isApiConfigured()) {
-    debugLog("Skip", "companies — API not configured, using dummy");
-    return dummyCompanies;
+    console.warn("[WP] companies — API not configured, returning []");
+    return [];
   }
   try {
     const posts = await wpFetch<WPPost>("companies");
-    if (posts.length === 0) {
-      debugLog("Empty", "companies: 0 posts from WP, using dummy");
-      return dummyCompanies;
-    }
     const mapped = posts.map(mapCompany);
-    debugLog("OK", `companies: ${mapped.length} items mapped from WP`);
     return mapped;
   } catch (e) {
-    debugLog("Error", `companies fetch failed: ${e}`);
-    console.error("Failed to fetch companies:", e);
-    return dummyCompanies;
+    console.error("[WP FAIL] companies:", e);
+    return [];
   }
 }
 
 export async function getInsights(): Promise<Insight[]> {
   if (!isApiConfigured()) {
-    debugLog("Skip", "insights — API not configured, using dummy");
-    return dummyInsights;
+    console.warn("[WP] insights — API not configured, returning []");
+    return [];
   }
   try {
     const posts = await wpFetch<WPPost>("insights");
-    if (posts.length === 0) {
-      debugLog("Empty", "insights: 0 posts from WP, using dummy");
-      return dummyInsights;
-    }
     const mapped = posts.map(mapInsight);
-    debugLog("OK", `insights: ${mapped.length} items mapped from WP`);
     return mapped;
   } catch (e) {
-    debugLog("Error", `insights fetch failed: ${e}`);
-    console.error("Failed to fetch insights:", e);
-    return dummyInsights;
+    console.error("[WP FAIL] insights:", e);
+    return [];
   }
 }
