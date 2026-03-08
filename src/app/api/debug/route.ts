@@ -1,39 +1,32 @@
 import { NextResponse } from "next/server";
 
 export async function GET() {
-  const apiBase = process.env.NEXT_PUBLIC_WORDPRESS_API_URL ?? "(not set)";
+  const publicApi = "https://public-api.wordpress.com/wp/v2/sites/carboncreditsjp.wordpress.com";
   const results: Record<string, unknown> = {
-    API_BASE: apiBase,
-    isConfigured: apiBase !== "" && !apiBase.includes("example.com"),
+    API: publicApi,
   };
 
   // Test posts fetch
   try {
-    const url = `${apiBase}/posts?per_page=1&_fields=id,title`;
-    const res = await fetch(url, { redirect: "follow", cache: "no-store" });
+    const url = `${publicApi}/posts?per_page=1&_fields=id,title,categories`;
+    const res = await fetch(url, { cache: "no-store" });
     const body = await res.text();
     results.posts = {
       status: res.status,
-      statusText: res.statusText,
-      redirected: res.redirected,
-      finalUrl: res.url,
-      bodyPreview: body.slice(0, 500),
+      bodyPreview: body.slice(0, 300),
     };
   } catch (e) {
     results.postsError = String(e);
   }
 
-  // Test glossary fetch
+  // Test glossary (category 15) fetch
   try {
-    const url = `${apiBase}/glossary?per_page=1&_fields=id,title`;
-    const res = await fetch(url, { redirect: "follow", cache: "no-store" });
+    const url = `${publicApi}/posts?per_page=1&categories=15&_fields=id,title`;
+    const res = await fetch(url, { cache: "no-store" });
     const body = await res.text();
     results.glossary = {
       status: res.status,
-      statusText: res.statusText,
-      redirected: res.redirected,
-      finalUrl: res.url,
-      bodyPreview: body.slice(0, 500),
+      bodyPreview: body.slice(0, 300),
     };
   } catch (e) {
     results.glossaryError = String(e);

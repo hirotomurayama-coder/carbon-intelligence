@@ -16,54 +16,43 @@ type WPPost = {
   link?: string;
 };
 
-type WPGlossary = {
-  id: number;
-  slug: string;
-  title: { rendered: string };
-  content: { rendered: string };
-};
-
 // ============================================================
 // 設定
+// Cloudflare が Vercel IP をブロックするため、
+// WordPress.com Public API を直接使用する
 // ============================================================
 
-const API_BASE = process.env.NEXT_PUBLIC_WORDPRESS_API_URL ?? "";
+const WP_SITE = "carboncreditsjp.wordpress.com";
+const PUBLIC_API = `https://public-api.wordpress.com/wp/v2/sites/${WP_SITE}`;
 
-/** API が有効か（URL が設定されている、かつ example.com でない） */
-function isApiConfigured(): boolean {
-  return API_BASE !== "" && !API_BASE.includes("example.com");
-}
+/** 用語解説カテゴリーID */
+const GLOSSARY_CATEGORY_ID = 15;
 
 // ============================================================
 // 汎用 fetch ヘルパー（常にダイナミック — キャッシュ無効）
 // ============================================================
 
-async function wpFetch<T>(endpoint: string, params = ""): Promise<T[]> {
-  const sep = params ? "&" : "";
-  const url = `${API_BASE}/${endpoint}?per_page=100${sep}${params}`;
+async function wpFetch<T>(path: string): Promise<T[]> {
+  const url = `${PUBLIC_API}/${path}`;
 
   console.log(`[WP] Fetching: ${url}`);
 
   const res = await fetch(url, {
-    redirect: "follow",
     cache: "no-store",
   });
 
-  console.log(
-    `[WP] ${endpoint}: ${res.status} ${res.statusText}` +
-      (res.redirected ? ` (redirected → ${res.url})` : "")
-  );
+  console.log(`[WP] ${path}: ${res.status} ${res.statusText}`);
 
   if (!res.ok) {
     const body = await res.text().catch(() => "(読み取り不可)");
-    const msg = `[WP ERROR] ${endpoint}: ${res.status} ${res.statusText} — ${body.slice(0, 300)}`;
+    const msg = `[WP ERROR] ${path}: ${res.status} ${res.statusText} — ${body.slice(0, 300)}`;
     console.error(msg);
     throw new Error(msg);
   }
 
   const json = await res.json();
   const count = Array.isArray(json) ? json.length : "not-array";
-  console.log(`[WP] ${endpoint}: ${count} items returned`);
+  console.log(`[WP] ${path}: ${count} items returned`);
 
   return json;
 }
@@ -95,7 +84,7 @@ function mapArticle(wp: WPPost): Article {
   };
 }
 
-function mapGlossaryTerm(wp: WPGlossary): GlossaryTerm {
+function mapGlossaryTerm(wp: WPPost): GlossaryTerm {
   return {
     id: `g-${wp.id}`,
     term: stripHtml(wp.title.rendered),
@@ -109,15 +98,15 @@ function mapGlossaryTerm(wp: WPGlossary): GlossaryTerm {
 // データ取得失敗時は空配列を返す
 // ============================================================
 
-/** 記事一覧を取得（カテゴリーIDで絞り込み可） */
+/** 記事一覧を取得（用語解説カテゴリーを除外、カテゴリーIDで絞り込み可） */
 export async function getArticles(categoryId?: number): Promise<Article[]> {
-  if (!isApiConfigured()) {
-    console.warn("[WP] articles — API not configured, returning []");
-    return [];
-  }
   try {
-    const params = categoryId ? `categories=${categoryId}` : "";
-    const posts = await wpFetch<WPPost>("posts", params);
+    const catParam = categoryId
+      ? `categories=${categoryId}`
+      : `categories_exclude=${GLOSSARY_CATEGORY_ID}`;
+    const posts = await wpFetch<WPPost>(
+      `posts?per_page=100&${catParam}`
+    );
     return posts.map(mapArticle);
   } catch (e) {
     console.error("[WP FAIL] articles:", e);
@@ -125,14 +114,12 @@ export async function getArticles(categoryId?: number): Promise<Article[]> {
   }
 }
 
-/** 用語集を取得 */
+/** 用語集を取得（用語解説カテゴリーの投稿を使用） */
 export async function getGlossaryTerms(): Promise<GlossaryTerm[]> {
-  if (!isApiConfigured()) {
-    console.warn("[WP] glossary — API not configured, returning []");
-    return [];
-  }
   try {
-    const posts = await wpFetch<WPGlossary>("glossary", "_fields=id,slug,title,content");
+    const posts = await wpFetch<WPPost>(
+      `posts?per_page=100&categories=${GLOSSARY_CATEGORY_ID}`
+    );
     return posts.map(mapGlossaryTerm);
   } catch (e) {
     console.error("[WP FAIL] glossary:", e);
