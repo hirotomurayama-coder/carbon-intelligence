@@ -73,7 +73,7 @@ async function wpFetch<T>(endpoint: string): Promise<T[]> {
   // dev ではキャッシュ無効化、本番では 60 秒 ISR
   const fetchOptions: RequestInit = {
     redirect: "follow",
-    ...(DEBUG ? { cache: "no-store" as const } : { next: { revalidate: 60 } }),
+    ...(DEBUG ? { cache: "no-store" as const } : { next: { revalidate: 1 } }),
   };
 
   const res = await fetch(url, fetchOptions);
