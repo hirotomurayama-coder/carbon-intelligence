@@ -9,7 +9,8 @@ import type { Company, CompanyCategory } from "@/types";
 const ALL_TAB = "すべて";
 const TABS: string[] = [ALL_TAB, "創出事業者", "仲介", "コンサル", "検証機関"];
 
-function categoryVariant(cat: CompanyCategory) {
+function categoryVariant(cat: CompanyCategory | null) {
+  if (cat === null) return "gray" as const;
   switch (cat) {
     case "創出事業者":
       return "emerald" as const;
@@ -68,19 +69,21 @@ export function CompanyList({ data }: Props) {
           >
             <div className="flex items-start gap-3">
               <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-emerald-50 text-sm font-bold text-emerald-700">
-                {c.name[0]}
+                {c.name?.[0] ?? "?"}
               </div>
               <div className="min-w-0">
                 <p className="truncate text-sm font-semibold text-gray-900">
                   {c.name}
                 </p>
                 <p className="mt-0.5 text-xs text-gray-400">
-                  {c.headquarters}
+                  {c.headquarters ?? "\u2014"}
                 </p>
               </div>
             </div>
             <div className="mt-3">
-              <Badge variant={categoryVariant(c.category)}>{c.category}</Badge>
+              <Badge variant={categoryVariant(c.category)}>
+                {c.category ?? "\u672A\u5206\u985E"}
+              </Badge>
             </div>
             {c.mainProjects.length > 0 && (
               <div className="mt-4 border-t border-gray-100 pt-3">

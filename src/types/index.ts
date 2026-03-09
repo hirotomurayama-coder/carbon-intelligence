@@ -15,11 +15,11 @@ export type MethodologyType =
 export type Methodology = {
   id: string;
   title: string;
-  type: MethodologyType;
-  region: string;
-  validUntil: string;       // ISO 日付文字列 "YYYY-MM-DD"
+  type: MethodologyType | null;         // ACF 未設定時は null
+  region: string | null;                // ACF 未設定時は null
+  validUntil: string | null;            // ISO 日付文字列 "YYYY-MM-DD"、ACF 未設定時は null
   summary: string;
-  reliabilityScore: number; // 0–100
+  reliabilityScore: number | null;      // 0–100、ACF 未設定時は null
 };
 
 // ============================================================
@@ -37,8 +37,8 @@ export type CompanyCategory =
 export type Company = {
   id: string;
   name: string;
-  category: CompanyCategory;
-  headquarters: string;
+  category: CompanyCategory | null;     // ACF 未設定時は null
+  headquarters: string | null;          // ACF 未設定時は null
   mainProjects: string[];
 };
 
@@ -54,6 +54,6 @@ export type Insight = {
   id: string;
   title: string;
   date: string;             // ISO 日付文字列 "YYYY-MM-DD"
-  category: InsightCategory;
+  category: InsightCategory | null;     // ACF 未設定時は null
   summary: string;
 };

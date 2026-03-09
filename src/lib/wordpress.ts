@@ -38,10 +38,17 @@ function isApiConfigured(): boolean {
 // ACF カスタムフィールド読み取りヘルパー
 // ============================================================
 
-/** acf フィールドを安全に取り出す（配列の場合は空オブジェクトを返す） */
-function getAcf(post: WPPost): Record<string, unknown> {
-  if (post.acf && !Array.isArray(post.acf)) return post.acf;
-  return {};
+/** acf フィールドを安全に取り出す（データ有無フラグ付き） */
+function getAcf(post: WPPost): { data: Record<string, unknown>; hasData: boolean } {
+  if (
+    post.acf &&
+    !Array.isArray(post.acf) &&
+    typeof post.acf === "object" &&
+    Object.keys(post.acf).length > 0
+  ) {
+    return { data: post.acf, hasData: true };
+  }
+  return { data: {}, hasData: false };
 }
 
 /** acf → 文字列 */
@@ -94,10 +101,19 @@ function decodeHtmlEntities(text: string): string {
   return decoded;
 }
 
-/** HTML タグを除去し、エンティティをデコードする */
+/** URL エンコードされた文字列をデコードする（不正な文字列でもクラッシュしない） */
+function decodeUrlEncoded(text: string): string {
+  try {
+    return decodeURIComponent(text);
+  } catch {
+    return text;
+  }
+}
+
+/** HTML タグを除去し、エンティティ + URL エンコードをデコードする */
 function stripHtml(html: string): string {
   const text = html.replace(/<[^>]*>/g, "");
-  return decodeHtmlEntities(text).trim();
+  return decodeUrlEncoded(decodeHtmlEntities(text)).trim();
 }
 
 // ============================================================
@@ -142,21 +158,32 @@ const VALID_METHODOLOGY_TYPES: MethodologyType[] = [
 ];
 
 function mapMethodology(wp: WPPost): Methodology {
-  const acf = getAcf(wp);
+  const { data: acf, hasData } = getAcf(wp);
 
-  const rawType = acfString(acf, "methodology_type", "ARR");
-  const type: MethodologyType = VALID_METHODOLOGY_TYPES.includes(rawType as MethodologyType)
-    ? (rawType as MethodologyType)
-    : "ARR";
+  let type: MethodologyType | null = null;
+  let region: string | null = null;
+  let validUntil: string | null = null;
+  let reliabilityScore: number | null = null;
+
+  if (hasData) {
+    const rawType = acfString(acf, "methodology_type", "");
+    type = VALID_METHODOLOGY_TYPES.includes(rawType as MethodologyType)
+      ? (rawType as MethodologyType)
+      : null;
+    region = acfString(acf, "region", "") || null;
+    validUntil = acfString(acf, "valid_until", "") || null;
+    const score = acfNumber(acf, "reliability_score", -1);
+    reliabilityScore = score >= 0 ? score : null;
+  }
 
   return {
     id: String(wp.id),
     title: stripHtml(wp.title.rendered),
     type,
-    region: acfString(acf, "region", "—"),
-    validUntil: acfString(acf, "valid_until", "—"),
+    region,
+    validUntil,
     summary: stripHtml(wp.excerpt?.rendered ?? wp.content.rendered).slice(0, 200),
-    reliabilityScore: acfNumber(acf, "reliability_score"),
+    reliabilityScore,
   };
 }
 
@@ -165,31 +192,41 @@ const VALID_COMPANY_CATEGORIES: CompanyCategory[] = [
 ];
 
 function mapCompany(wp: WPPost): Company {
-  const acf = getAcf(wp);
+  const { data: acf, hasData } = getAcf(wp);
 
-  const rawCat = acfString(acf, "company_category", "創出事業者");
-  const category: CompanyCategory = VALID_COMPANY_CATEGORIES.includes(rawCat as CompanyCategory)
-    ? (rawCat as CompanyCategory)
-    : "創出事業者";
+  let category: CompanyCategory | null = null;
+  let headquarters: string | null = null;
+
+  if (hasData) {
+    const rawCat = acfString(acf, "company_category", "");
+    category = VALID_COMPANY_CATEGORIES.includes(rawCat as CompanyCategory)
+      ? (rawCat as CompanyCategory)
+      : null;
+    headquarters = acfString(acf, "headquarters", "") || null;
+  }
 
   return {
     id: String(wp.id),
     name: stripHtml(wp.title.rendered),
     category,
-    headquarters: acfString(acf, "headquarters", "—"),
-    mainProjects: acfStringArray(acf, "main_projects"),
+    headquarters,
+    mainProjects: hasData ? acfStringArray(acf, "main_projects") : [],
   };
 }
 
 const VALID_INSIGHT_CATEGORIES: InsightCategory[] = ["政策", "市場", "技術"];
 
 function mapInsight(wp: WPPost): Insight {
-  const acf = getAcf(wp);
+  const { data: acf, hasData } = getAcf(wp);
 
-  const rawCat = acfString(acf, "insight_category", "市場");
-  const category: InsightCategory = VALID_INSIGHT_CATEGORIES.includes(rawCat as InsightCategory)
-    ? (rawCat as InsightCategory)
-    : "市場";
+  let category: InsightCategory | null = null;
+
+  if (hasData) {
+    const rawCat = acfString(acf, "insight_category", "");
+    category = VALID_INSIGHT_CATEGORIES.includes(rawCat as InsightCategory)
+      ? (rawCat as InsightCategory)
+      : null;
+  }
 
   return {
     id: String(wp.id),

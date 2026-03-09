@@ -32,7 +32,7 @@ export function MethodologyList({ data }: Props) {
 
   const regionOptions = useMemo(
     () =>
-      [...new Set(data.map((m) => m.region))].map((r) => ({
+      [...new Set(data.map((m) => m.region).filter((r): r is string => r !== null))].map((r) => ({
         label: r,
         value: r,
       })),
@@ -105,18 +105,24 @@ export function MethodologyList({ data }: Props) {
                   </p>
                 </td>
                 <td className="px-5 py-4">
-                  <Badge variant="slate">{m.type}</Badge>
+                  <Badge variant={m.type !== null ? "slate" : "gray"}>
+                    {m.type ?? "\u672A\u5206\u985E"}
+                  </Badge>
                 </td>
                 <td className="whitespace-nowrap px-5 py-4 text-gray-600">
-                  {m.region}
+                  {m.region ?? "\u2014"}
                 </td>
                 <td className="whitespace-nowrap px-5 py-4 text-gray-600">
-                  {m.validUntil}
+                  {m.validUntil ?? "\u2014"}
                 </td>
                 <td className="px-5 py-4 text-right">
-                  <Badge variant={scoreBadgeVariant(m.reliabilityScore)}>
-                    {m.reliabilityScore}点
-                  </Badge>
+                  {m.reliabilityScore !== null ? (
+                    <Badge variant={scoreBadgeVariant(m.reliabilityScore)}>
+                      {m.reliabilityScore}点
+                    </Badge>
+                  ) : (
+                    <span className="text-xs text-gray-300">{"\u2014"}</span>
+                  )}
                 </td>
               </tr>
             ))}
