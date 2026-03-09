@@ -47,14 +47,28 @@ export class VerraAdapter implements RegistryAdapter {
 
         items.each((_, el) => {
           const $el = $(el);
-          const title = $el.text().trim();
+          const rawText = $el.text();
           const href = $el.attr("href") ?? "";
 
-          if (!title || !href) return;
+          if (!rawText || !href) return;
+
+          // テキストをクリーンアップ（余分な空白、改行、タブを除去）
+          const cleanedText = this.cleanText(rawText);
+          if (!cleanedText) return;
 
           // VM番号を抽出（例: VM0001）
           const vmMatch = href.match(/vm(\d+)/i);
           const vmId = vmMatch ? `VM${vmMatch[1].padStart(4, "0")}` : "";
+
+          // "Active Date: ..." や "VM0001" プレフィックスを除去してタイトル抽出
+          // 実際のテキスト例: "VM0001 Active Date: November 5, 2024 VM0001 Refrigerant Leak Detection, v1.2"
+          const titleCleaned = cleanedText
+            .replace(/active\s*date[:\s]*\w+\s+\d{1,2},?\s*\d{4}/gi, "")
+            .replace(/VM[R]?\d{4}\s*/g, "")
+            .replace(/,\s*v[\d.]+\s*$/i, "")
+            .replace(/\s{2,}/g, " ")
+            .trim();
+          const title = titleCleaned || cleanedText;
 
           // 完全 URL を組み立て
           const sourceUrl = href.startsWith("http")
@@ -65,15 +79,19 @@ export class VerraAdapter implements RegistryAdapter {
           const parentText = $el.closest("div").text();
           const category = this.extractCategory(parentText);
 
+          const displayName = vmId
+            ? `${vmId} ${title}`
+            : title;
+
           const methodology: ScrapedMethodology = {
-            name: vmId ? `${vmId} — ${title}` : title,
-            description: title,
+            name: displayName.slice(0, 200),
+            description: cleanedText.slice(0, 300),
             registry: "Verra",
             category,
             status: "Active",
             sourceUrl,
             lastUpdated: this.extractDate(parentText),
-            version: this.extractVersion(title),
+            version: this.extractVersion(cleanedText),
             dataHash: "", // 後で計算
           };
 
@@ -102,6 +120,14 @@ export class VerraAdapter implements RegistryAdapter {
       console.error(`[Verra] Scrape failed:`, e);
       return [];
     }
+  }
+
+  /** 空白・改行・タブを正規化し、余分なテキストを除去 */
+  private cleanText(raw: string): string {
+    return raw
+      .replace(/[\r\n\t]+/g, " ")
+      .replace(/\s{2,}/g, " ")
+      .trim();
   }
 
   private extractCategory(text: string): string {
