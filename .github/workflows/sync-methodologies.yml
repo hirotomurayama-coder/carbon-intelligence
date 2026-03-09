@@ -1,0 +1,55 @@
+name: Sync Methodologies
+
+on:
+  schedule:
+    # 毎週月曜 09:00 JST（UTC 00:00）に実行
+    - cron: "0 0 * * 1"
+  workflow_dispatch:
+    inputs:
+      registry:
+        description: "同期するレジストリ（空欄で全レジストリ）"
+        required: false
+        type: choice
+        options:
+          - ""
+          - "Verra"
+          - "Gold Standard"
+          - "Puro.earth"
+      dry_run:
+        description: "Dry Run（書き込みなしテスト）"
+        required: false
+        type: boolean
+        default: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run sync
+        env:
+          NEXT_PUBLIC_WORDPRESS_API_URL: ${{ secrets.NEXT_PUBLIC_WORDPRESS_API_URL }}
+          WP_APP_USER: ${{ secrets.WP_APP_USER }}
+          WP_APP_PASSWORD: ${{ secrets.WP_APP_PASSWORD }}
+        run: |
+          ARGS=""
+          if [ -n "${{ inputs.registry }}" ]; then
+            ARGS="$ARGS --registry=${{ inputs.registry }}"
+          fi
+          if [ "${{ inputs.dry_run }}" = "true" ]; then
+            ARGS="$ARGS --dry-run"
+          fi
+          npx tsx scripts/sync-methodologies.ts $ARGS

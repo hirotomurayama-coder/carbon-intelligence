@@ -2,6 +2,7 @@
 
 import { usePathname } from "next/navigation";
 import { NAV_ITEMS } from "@/lib/constants";
+import { NotificationBell } from "@/components/NotificationBell";
 
 /** パスからページタイトルを取得（子メニュー対応） */
 function getPageTitle(pathname: string): string {
@@ -53,19 +54,8 @@ export function TopBar() {
           />
         </div>
 
-        {/* 通知ベル */}
-        <button
-          type="button"
-          className="relative rounded-lg p-2 text-gray-400 hover:bg-gray-50 hover:text-gray-600"
-        >
-          <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6 9v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0"
-            />
-          </svg>
-        </button>
+        {/* 通知ベル（同期更新通知） */}
+        <NotificationBell />
 
         {/* ユーザーアバター */}
         <div className="flex h-8 w-8 items-center justify-center rounded-full bg-emerald-100 text-sm font-medium text-emerald-700">

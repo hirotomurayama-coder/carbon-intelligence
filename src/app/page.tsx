@@ -1,5 +1,6 @@
 import { getMethodologies, getCompanies, getInsights } from "@/lib/wordpress";
 import { Badge } from "@/components/ui/Badge";
+import { UpdateTimeline } from "@/components/UpdateTimeline";
 import type { InsightCategory, MethodologyType } from "@/types";
 
 /** メソドロジー種別のバッジ色（null 対応） */
@@ -156,8 +157,8 @@ export default async function Home() {
         )}
       </section>
 
-      {/* ── 企業 / インサイト 2カラム ── */}
-      <div className="grid grid-cols-1 gap-6 xl:grid-cols-2">
+      {/* ── 企業 / インサイト / 更新 3カラム ── */}
+      <div className="grid grid-cols-1 gap-6 xl:grid-cols-3">
         {/* 企業カード */}
         <section>
           <h2 className="mb-4 text-lg font-semibold text-gray-900">
@@ -241,6 +242,14 @@ export default async function Home() {
               インサイトが登録されていません
             </p>
           )}
+        </section>
+
+        {/* 最近の更新タイムライン */}
+        <section>
+          <h2 className="mb-4 text-lg font-semibold text-gray-900">
+            レジストリ更新
+          </h2>
+          <UpdateTimeline />
         </section>
       </div>
     </div>

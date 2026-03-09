@@ -5,6 +5,7 @@ import type {
   CompanyCategory,
   Insight,
   InsightCategory,
+  RegistryName,
 } from "@/types";
 
 // ============================================================
@@ -157,6 +158,10 @@ const VALID_METHODOLOGY_TYPES: MethodologyType[] = [
   "ARR", "ALM", "マングローブ", "REDD+", "再生可能エネルギー", "省エネルギー",
 ];
 
+const VALID_REGISTRY_NAMES: RegistryName[] = [
+  "Verra", "Gold Standard", "Puro.earth", "Isometric", "J-Credit",
+];
+
 function mapMethodology(wp: WPPost): Methodology {
   const { data: acf, hasData } = getAcf(wp);
 
@@ -176,6 +181,24 @@ function mapMethodology(wp: WPPost): Methodology {
     reliabilityScore = score >= 0 ? score : null;
   }
 
+  // 同期メタデータ（ACF: registry, source_url, data_hash, external_last_updated, synced_at）
+  let registry: RegistryName | null = null;
+  let sourceUrl: string | null = null;
+  let dataHash: string | null = null;
+  let externalLastUpdated: string | null = null;
+  let syncedAt: string | null = null;
+
+  if (hasData) {
+    const rawRegistry = acfString(acf, "registry", "");
+    registry = VALID_REGISTRY_NAMES.includes(rawRegistry as RegistryName)
+      ? (rawRegistry as RegistryName)
+      : null;
+    sourceUrl = acfString(acf, "source_url", "") || null;
+    dataHash = acfString(acf, "data_hash", "") || null;
+    externalLastUpdated = acfString(acf, "external_last_updated", "") || null;
+    syncedAt = acfString(acf, "synced_at", "") || null;
+  }
+
   return {
     id: String(wp.id),
     title: stripHtml(wp.title.rendered),
@@ -184,6 +207,11 @@ function mapMethodology(wp: WPPost): Methodology {
     validUntil,
     summary: stripHtml(wp.excerpt?.rendered ?? wp.content.rendered).slice(0, 200),
     reliabilityScore,
+    registry,
+    sourceUrl,
+    dataHash,
+    externalLastUpdated,
+    syncedAt,
   };
 }
 

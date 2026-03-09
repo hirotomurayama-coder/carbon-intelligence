@@ -20,6 +20,12 @@ export type Methodology = {
   validUntil: string | null;            // ISO 日付文字列 "YYYY-MM-DD"、ACF 未設定時は null
   summary: string;
   reliabilityScore: number | null;      // 0–100、ACF 未設定時は null
+  // --- 同期メタデータ（ACF 未設定時は null） ---
+  registry: RegistryName | null;        // ACF: registry
+  sourceUrl: string | null;             // ACF: source_url
+  dataHash: string | null;              // ACF: data_hash
+  externalLastUpdated: string | null;   // ACF: external_last_updated
+  syncedAt: string | null;              // ACF: synced_at
 };
 
 // ============================================================
@@ -56,4 +62,56 @@ export type Insight = {
   date: string;             // ISO 日付文字列 "YYYY-MM-DD"
   category: InsightCategory | null;     // ACF 未設定時は null
   summary: string;
+};
+
+// ============================================================
+// レジストリ同期 — メソドロジー自動収集システム
+// ============================================================
+
+/** 外部レジストリ名 */
+export type RegistryName =
+  | "Verra"
+  | "Gold Standard"
+  | "Puro.earth"
+  | "Isometric"
+  | "J-Credit";
+
+/** スクレイピングで取得した生データ（WordPress 書き込み前） */
+export type ScrapedMethodology = {
+  name: string;
+  description: string;
+  registry: RegistryName;
+  category: string;
+  status: string;           // "Active", "Draft" 等
+  sourceUrl: string;
+  lastUpdated: string | null;
+  version: string | null;
+  dataHash: string;         // SHA-256（コンテンツ変更検知用）
+};
+
+/** 同期結果のアクション種別 */
+export type SyncAction = "created" | "updated" | "unchanged" | "error";
+
+/** 1 件の同期結果 */
+export type SyncResult = {
+  methodologyName: string;
+  registry: RegistryName;
+  action: SyncAction;
+  timestamp: string;
+  diff?: string[];
+  error?: string;
+};
+
+/** 同期実行の全体結果 */
+export type SyncRunResult = {
+  runId: string;
+  startedAt: string;
+  completedAt: string;
+  results: SyncResult[];
+  summary: {
+    created: number;
+    updated: number;
+    unchanged: number;
+    errors: number;
+  };
 };
