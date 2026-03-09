@@ -7,16 +7,15 @@ export const APP_NAME = "Carbon Intelligence";
 export const NAV_ITEMS: NavItem[] = [
   { label: "ダッシュボード", href: "/", icon: "dashboard" },
   {
-    label: "ニュース",
-    href: "/news",
+    label: "市場データ",
+    href: "/market",
     icon: "market",
     children: [
-      { label: "国内ニュース", href: "/news?cat=1" },
-      { label: "海外ニュース", href: "/news?cat=29" },
-      { label: "コラム", href: "/news?cat=2" },
-      { label: "オフセット事例", href: "/news?cat=51" },
+      { label: "メソドロジー", href: "/methodologies" },
+      { label: "企業データベース", href: "/companies" },
     ],
   },
-  { label: "用語集", href: "/glossary", icon: "analytics" },
+  { label: "分析", href: "/analytics", icon: "analytics" },
+  { label: "ポートフォリオ", href: "/portfolio", icon: "portfolio" },
   { label: "設定", href: "/settings", icon: "settings" },
 ];

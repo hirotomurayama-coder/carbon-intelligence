@@ -1,43 +1,69 @@
-import { getArticles, getGlossaryTerms } from "@/lib/wordpress";
-import type { ArticleCategory } from "@/types";
+import { getMethodologies, getCompanies, getInsights } from "@/lib/wordpress";
+import { Badge } from "@/components/ui/Badge";
+import type { InsightCategory, MethodologyType } from "@/types";
 
-/** カテゴリーに応じたバッジ色を返す */
-function categoryColor(category: ArticleCategory): string {
-  switch (category) {
-    case "国内ニュース":
-      return "bg-blue-100 text-blue-800";
-    case "海外ニュース":
-      return "bg-emerald-100 text-emerald-800";
-    case "コラム":
-      return "bg-indigo-100 text-indigo-800";
-    case "オフセット事例":
-      return "bg-amber-100 text-amber-800";
-    case "用語解説":
-      return "bg-cyan-100 text-cyan-800";
-    default:
-      return "bg-gray-100 text-gray-800";
+/** メソドロジー種別のバッジ色 */
+function methodTypeBadge(type: MethodologyType) {
+  switch (type) {
+    case "ARR":
+      return "emerald" as const;
+    case "ALM":
+      return "blue" as const;
+    case "REDD+":
+      return "amber" as const;
+    case "マングローブ":
+      return "cyan" as const;
+    case "再生可能エネルギー":
+      return "indigo" as const;
+    case "省エネルギー":
+      return "slate" as const;
+  }
+}
+
+/** 信頼性スコアのバッジ色 */
+function scoreBadge(score: number) {
+  if (score >= 90) return "emerald" as const;
+  if (score >= 80) return "blue" as const;
+  return "amber" as const;
+}
+
+/** インサイトカテゴリーのバッジ色 */
+function insightBadge(cat: InsightCategory) {
+  switch (cat) {
+    case "政策":
+      return "indigo" as const;
+    case "市場":
+      return "emerald" as const;
+    case "技術":
+      return "blue" as const;
   }
 }
 
 export default async function Home() {
-  const [articles, glossaryTerms] = await Promise.all([
-    getArticles(),
-    getGlossaryTerms(),
+  const [methodologies, companies, insights] = await Promise.all([
+    getMethodologies(),
+    getCompanies(),
+    getInsights(),
   ]);
 
-  // カテゴリー別の記事数を集計
-  const domesticCount = articles.filter((a) => a.category === "国内ニュース").length;
-  const globalCount = articles.filter((a) => a.category === "海外ニュース").length;
+  // KPI 計算
+  const avgScore =
+    methodologies.length > 0
+      ? Math.round(
+          methodologies.reduce((sum, m) => sum + m.reliabilityScore, 0) /
+            methodologies.length
+        )
+      : 0;
 
   return (
     <div className="space-y-8">
       {/* ── KPI サマリーカード ── */}
       <section className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {[
-          { label: "総記事数", value: articles.length, unit: "件" },
-          { label: "国内ニュース", value: domesticCount, unit: "件" },
-          { label: "海外ニュース", value: globalCount, unit: "件" },
-          { label: "用語集", value: glossaryTerms.length, unit: "語" },
+          { label: "登録メソドロジー", value: methodologies.length, unit: "件" },
+          { label: "登録企業数", value: companies.length, unit: "社" },
+          { label: "最新インサイト", value: insights.length, unit: "件" },
+          { label: "平均信頼性スコア", value: avgScore, unit: "点" },
         ].map((kpi) => (
           <div
             key={kpi.label}
@@ -54,76 +80,143 @@ export default async function Home() {
         ))}
       </section>
 
-      {/* ── 最新ニュース ── */}
+      {/* ── メソドロジーテーブル ── */}
       <section>
         <h2 className="mb-4 text-lg font-semibold text-gray-900">
-          最新ニュース
+          メソドロジー
         </h2>
-        <div className="grid grid-cols-1 gap-4 lg:grid-cols-2 xl:grid-cols-3">
-          {articles.slice(0, 6).map((article) => (
-            <div
-              key={article.id}
-              className="flex flex-col justify-between rounded-xl border border-gray-200 bg-white p-5 shadow-sm"
-            >
-              <div>
-                <div className="mb-2 flex items-center gap-2">
-                  <span
-                    className={`rounded-full px-2.5 py-0.5 text-xs font-medium ${categoryColor(article.category)}`}
-                  >
-                    {article.category}
-                  </span>
-                  <span className="text-xs text-gray-400">
-                    {article.date}
-                  </span>
-                </div>
-                <h3 className="text-sm font-semibold text-gray-900">
-                  {article.title}
-                </h3>
-                <p className="mt-2 text-xs leading-relaxed text-gray-500">
-                  {article.excerpt.length > 120
-                    ? article.excerpt.slice(0, 120) + "..."
-                    : article.excerpt}
-                </p>
-              </div>
-              {article.link && (
-                <div className="mt-4 border-t border-gray-100 pt-3">
-                  <a
-                    href={article.link}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-xs font-medium text-emerald-600 hover:text-emerald-700"
-                  >
-                    記事を読む &rarr;
-                  </a>
-                </div>
-              )}
-            </div>
-          ))}
-        </div>
+        {methodologies.length > 0 ? (
+          <div className="overflow-x-auto rounded-xl border border-gray-200 bg-white shadow-sm">
+            <table className="w-full text-left text-sm">
+              <thead>
+                <tr className="border-b border-gray-100 bg-gray-50/60">
+                  <th className="px-5 py-3 font-medium text-gray-500">タイトル</th>
+                  <th className="px-5 py-3 font-medium text-gray-500">算定手法</th>
+                  <th className="px-5 py-3 font-medium text-gray-500">地域</th>
+                  <th className="px-5 py-3 font-medium text-gray-500">有効期限</th>
+                  <th className="px-5 py-3 text-right font-medium text-gray-500">
+                    信頼性
+                  </th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-100">
+                {methodologies.slice(0, 5).map((m) => (
+                  <tr key={m.id} className="hover:bg-gray-50/50">
+                    <td className="px-5 py-4">
+                      <p className="font-medium text-gray-900">{m.title}</p>
+                      <p className="mt-0.5 text-xs leading-relaxed text-gray-400">
+                        {m.summary.length > 60
+                          ? m.summary.slice(0, 60) + "..."
+                          : m.summary}
+                      </p>
+                    </td>
+                    <td className="px-5 py-4">
+                      <Badge variant={methodTypeBadge(m.type)}>{m.type}</Badge>
+                    </td>
+                    <td className="whitespace-nowrap px-5 py-4 text-gray-600">
+                      {m.region}
+                    </td>
+                    <td className="whitespace-nowrap px-5 py-4 text-gray-600">
+                      {m.validUntil}
+                    </td>
+                    <td className="px-5 py-4 text-right">
+                      <Badge variant={scoreBadge(m.reliabilityScore)}>
+                        {m.reliabilityScore}点
+                      </Badge>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        ) : (
+          <p className="rounded-xl border border-gray-200 bg-white py-12 text-center text-sm text-gray-400 shadow-sm">
+            メソドロジーが登録されていません
+          </p>
+        )}
       </section>
 
-      {/* ── 用語集（最新） ── */}
-      {glossaryTerms.length > 0 && (
+      {/* ── 企業 / インサイト 2カラム ── */}
+      <div className="grid grid-cols-1 gap-6 xl:grid-cols-2">
+        {/* 企業カード */}
         <section>
           <h2 className="mb-4 text-lg font-semibold text-gray-900">
-            用語集
+            企業情報
           </h2>
-          <div className="divide-y divide-gray-100 rounded-xl border border-gray-200 bg-white shadow-sm">
-            {glossaryTerms.slice(0, 8).map((term) => (
-              <div key={term.id} className="p-4">
-                <h3 className="text-sm font-semibold text-gray-900">
-                  {term.term}
-                </h3>
-                <p className="mt-1 text-xs leading-relaxed text-gray-500">
-                  {term.description.length > 150
-                    ? term.description.slice(0, 150) + "..."
-                    : term.description}
-                </p>
-              </div>
-            ))}
-          </div>
+          {companies.length > 0 ? (
+            <div className="space-y-3">
+              {companies.slice(0, 4).map((c) => (
+                <div
+                  key={c.id}
+                  className="flex items-start gap-3 rounded-xl border border-gray-200 bg-white p-4 shadow-sm"
+                >
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-emerald-50 text-sm font-bold text-emerald-700">
+                    {c.name[0]}
+                  </div>
+                  <div className="min-w-0">
+                    <p className="truncate text-sm font-semibold text-gray-900">
+                      {c.name}
+                    </p>
+                    <p className="text-xs text-gray-400">{c.headquarters}</p>
+                    <div className="mt-1.5">
+                      <Badge
+                        variant={
+                          c.category === "創出事業者"
+                            ? "emerald"
+                            : c.category === "仲介"
+                              ? "blue"
+                              : c.category === "コンサル"
+                                ? "indigo"
+                                : "amber"
+                        }
+                      >
+                        {c.category}
+                      </Badge>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p className="rounded-xl border border-gray-200 bg-white py-12 text-center text-sm text-gray-400 shadow-sm">
+              企業が登録されていません
+            </p>
+          )}
         </section>
-      )}
+
+        {/* インサイトリスト */}
+        <section>
+          <h2 className="mb-4 text-lg font-semibold text-gray-900">
+            インサイト
+          </h2>
+          {insights.length > 0 ? (
+            <div className="divide-y divide-gray-100 rounded-xl border border-gray-200 bg-white shadow-sm">
+              {insights.slice(0, 5).map((ins) => (
+                <div key={ins.id} className="p-4">
+                  <div className="mb-1 flex items-center gap-2">
+                    <Badge variant={insightBadge(ins.category)}>
+                      {ins.category}
+                    </Badge>
+                    <span className="text-xs text-gray-400">{ins.date}</span>
+                  </div>
+                  <h3 className="text-sm font-semibold text-gray-900">
+                    {ins.title}
+                  </h3>
+                  <p className="mt-1 text-xs leading-relaxed text-gray-500">
+                    {ins.summary.length > 100
+                      ? ins.summary.slice(0, 100) + "..."
+                      : ins.summary}
+                  </p>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p className="rounded-xl border border-gray-200 bg-white py-12 text-center text-sm text-gray-400 shadow-sm">
+              インサイトが登録されていません
+            </p>
+          )}
+        </section>
+      </div>
     </div>
   );
 }

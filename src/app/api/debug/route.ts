@@ -1,35 +1,44 @@
 import { NextResponse } from "next/server";
 
 export async function GET() {
-  const publicApi = "https://public-api.wordpress.com/wp/v2/sites/carboncreditsjp.wordpress.com";
+  const apiBase =
+    process.env.NEXT_PUBLIC_WORDPRESS_API_URL ?? "(未設定)";
+
   const results: Record<string, unknown> = {
-    API: publicApi,
+    apiBase,
+    timestamp: new Date().toISOString(),
   };
 
-  // Test posts fetch
-  try {
-    const url = `${publicApi}/posts?per_page=1&_fields=id,title,categories`;
-    const res = await fetch(url, { cache: "no-store" });
-    const body = await res.text();
-    results.posts = {
-      status: res.status,
-      bodyPreview: body.slice(0, 300),
-    };
-  } catch (e) {
-    results.postsError = String(e);
+  const endpoints = ["methodologies", "companies", "insights"];
+
+  for (const cpt of endpoints) {
+    try {
+      const url = `${apiBase}/${cpt}?per_page=1`;
+      const res = await fetch(url, { cache: "no-store", redirect: "follow" });
+      const body = await res.text();
+      results[cpt] = {
+        status: res.status,
+        statusText: res.statusText,
+        redirected: res.redirected,
+        finalUrl: res.url,
+        bodyPreview: body.slice(0, 500),
+      };
+    } catch (e) {
+      results[cpt] = { error: String(e) };
+    }
   }
 
-  // Test glossary (category 15) fetch
+  // Also check /types to see registered CPTs
   try {
-    const url = `${publicApi}/posts?per_page=1&categories=15&_fields=id,title`;
-    const res = await fetch(url, { cache: "no-store" });
+    const url = `${apiBase}/types`;
+    const res = await fetch(url, { cache: "no-store", redirect: "follow" });
     const body = await res.text();
-    results.glossary = {
+    results.types = {
       status: res.status,
-      bodyPreview: body.slice(0, 300),
+      bodyPreview: body.slice(0, 1000),
     };
   } catch (e) {
-    results.glossaryError = String(e);
+    results.typesError = String(e);
   }
 
   return NextResponse.json(results, { status: 200 });

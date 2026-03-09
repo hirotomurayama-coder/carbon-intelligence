@@ -1,42 +1,59 @@
 // ============================================================
-// 記事 (WordPress posts)
+// メソドロジー (方法論) — CPT: methodologies
 // ============================================================
 
-/** WordPress カテゴリーID → 表示名のマッピング */
-export const CATEGORY_MAP: Record<number, ArticleCategory> = {
-  1: "国内ニュース",
-  29: "海外ニュース",
-  2: "コラム",
-  51: "オフセット事例",
-  15: "用語解説",
-};
+/** 算定手法の種類 */
+export type MethodologyType =
+  | "ARR"        // 新規植林・再植林
+  | "ALM"        // 農地管理
+  | "マングローブ"
+  | "REDD+"      // 森林減少・劣化の抑制
+  | "再生可能エネルギー"
+  | "省エネルギー";
 
-/** 記事カテゴリー */
-export type ArticleCategory =
-  | "国内ニュース"
-  | "海外ニュース"
-  | "コラム"
-  | "オフセット事例"
-  | "用語解説";
-
-/** 記事 */
-export type Article = {
+/** メソドロジー */
+export type Methodology = {
   id: string;
   title: string;
-  date: string; // ISO 日付文字列 "YYYY-MM-DD"
-  category: ArticleCategory;
-  excerpt: string;
-  link: string;
+  type: MethodologyType;
+  region: string;
+  validUntil: string;       // ISO 日付文字列 "YYYY-MM-DD"
+  summary: string;
+  reliabilityScore: number; // 0–100
 };
 
 // ============================================================
-// 用語集 (WordPress glossary CPT)
+// 企業 — CPT: companies
 // ============================================================
 
-/** 用語集エントリー */
-export type GlossaryTerm = {
+/** 企業カテゴリー */
+export type CompanyCategory =
+  | "創出事業者"
+  | "仲介"
+  | "コンサル"
+  | "検証機関";
+
+/** 企業 */
+export type Company = {
   id: string;
-  term: string;
-  slug: string;
-  description: string;
+  name: string;
+  category: CompanyCategory;
+  headquarters: string;
+  mainProjects: string[];
+};
+
+// ============================================================
+// インサイト (ニュース・分析) — CPT: insights
+// ============================================================
+
+/** インサイトカテゴリー */
+export type InsightCategory = "政策" | "市場" | "技術";
+
+/** インサイト */
+export type Insight = {
+  id: string;
+  title: string;
+  date: string;             // ISO 日付文字列 "YYYY-MM-DD"
+  category: InsightCategory;
+  summary: string;
 };

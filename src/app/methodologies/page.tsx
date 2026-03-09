@@ -1,0 +1,18 @@
+import { getMethodologies } from "@/lib/wordpress";
+import { MethodologyList } from "@/components/MethodologyList";
+
+export default async function MethodologiesPage() {
+  const data = await getMethodologies();
+
+  return (
+    <div className="space-y-6">
+      <div>
+        <h1 className="text-xl font-bold text-gray-900">メソドロジー</h1>
+        <p className="mt-1 text-sm text-gray-500">
+          カーボンクレジット算定手法の一覧
+        </p>
+      </div>
+      <MethodologyList data={data} />
+    </div>
+  );
+}
