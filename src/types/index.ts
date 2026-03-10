@@ -96,6 +96,12 @@ export type ScrapedMethodology = {
   lastUpdated: string | null;
   version: string | null;
   dataHash: string;         // SHA-256（コンテンツ変更検知用）
+  /** ディープスクレイピングで取得した詳細ページの本文テキスト（AI 推論用） */
+  detailText?: string;
+  /** Verra: Sectoral Scope（例: "11. Fugitive emissions from industrial gases"） */
+  sectoralScope?: string;
+  /** Verra: Mitigation Outcome Label（例: "Reductions", "Removals"） */
+  mitigationOutcome?: string;
 };
 
 /** ACF select フィールドの許可値（WordPress 側の定義に完全準拠） */
@@ -112,6 +118,7 @@ export type AiEnrichedFields = {
   subCategory: string | null;        // ACF: sub_category
   operationalStatus: OperationalStatus | null; // ACF: status
   certificationBody: string | null;  // ACF: standard — "Verra VCS", "Gold Standard" 等
+  reliabilityScore: number | null;   // ACF: reliability_score — 1〜5（AI が推論）
 };
 
 /** 同期結果のアクション種別 */

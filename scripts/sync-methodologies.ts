@@ -2,10 +2,11 @@
  * メソドロジー同期スクリプト（スタンドアロン実行用）
  *
  * 使用方法:
- *   npx tsx scripts/sync-methodologies.ts                      # 全レジストリ同期（AI エンリッチ付き）
+ *   npx tsx scripts/sync-methodologies.ts                      # 全レジストリ同期（AI エンリッチ + ディープスクレイピング付き）
  *   npx tsx scripts/sync-methodologies.ts --registry=Verra     # Verra のみ
  *   npx tsx scripts/sync-methodologies.ts --dry-run            # 書き込みなし（テスト用）
  *   npx tsx scripts/sync-methodologies.ts --skip-ai            # AI エンリッチなし
+ *   npx tsx scripts/sync-methodologies.ts --no-deep-scrape     # ディープスクレイピングなし（高速モード）
  *
  * 必須環境変数:
  *   NEXT_PUBLIC_WORDPRESS_API_URL   WordPress REST API URL
@@ -34,6 +35,9 @@ async function main() {
   // --skip-ai
   const skipAi = args.includes("--skip-ai");
 
+  // --no-deep-scrape（デフォルトはディープスクレイピング有効）
+  const deepScrape = !args.includes("--no-deep-scrape");
+
   const aiStatus = skipAi
     ? "OFF (--skip-ai)"
     : process.env.GOOGLE_GENERATIVE_AI_API_KEY
@@ -43,10 +47,11 @@ async function main() {
   console.log("========================================");
   console.log("  Carbon Intelligence — メソドロジー同期");
   console.log("========================================");
-  console.log(`API URL:  ${process.env.NEXT_PUBLIC_WORDPRESS_API_URL ?? "(未設定)"}`);
-  console.log(`Registry: ${registry ?? "全レジストリ"}`);
-  console.log(`Mode:     ${dryRun ? "DRY RUN (書き込みなし)" : "LIVE"}`);
-  console.log(`AI:       ${aiStatus}`);
+  console.log(`API URL:      ${process.env.NEXT_PUBLIC_WORDPRESS_API_URL ?? "(未設定)"}`);
+  console.log(`Registry:     ${registry ?? "全レジストリ"}`);
+  console.log(`Mode:         ${dryRun ? "DRY RUN (書き込みなし)" : "LIVE"}`);
+  console.log(`AI:           ${aiStatus}`);
+  console.log(`Deep Scrape:  ${deepScrape ? "ON" : "OFF (--no-deep-scrape)"}`);
   console.log("========================================\n");
 
   if (!process.env.NEXT_PUBLIC_WORDPRESS_API_URL) {
@@ -60,7 +65,7 @@ async function main() {
     process.exit(1);
   }
 
-  const result = await runSync(registry, dryRun, skipAi);
+  const result = await runSync(registry, dryRun, skipAi, deepScrape);
 
   console.log("\n========================================");
   console.log("  同期結果サマリー");

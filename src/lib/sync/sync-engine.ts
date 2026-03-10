@@ -15,15 +15,58 @@ import {
 } from "./wordpress-writer";
 import { enrichMethodology, isAiEnrichAvailable } from "./ai-enricher";
 import { SYNC_CONFIG } from "./config";
+import { VerraAdapter } from "./adapters/verra";
 
 // ============================================================
 // 同期エンジン（オーケストレーター）
-// スクレイピング → AI エンリッチ → 差分検出 → WordPress Upsert
+// スクレイピング → ディープスクレイピング → AI エンリッチ → 差分検出 → WordPress Upsert
 // ※ 通知は insights CPT に投稿しない（methodologies の synced_at で追跡）
 // ============================================================
 
 function generateRunId(): string {
   return `sync-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+}
+
+/**
+ * Verra メソドロジーに対してディープスクレイピングを実行。
+ * 詳細ページから Active Date, Sectoral Scope, Mitigation Outcome, 本文テキストを取得し、
+ * ScrapedMethodology に追加情報を付与する。
+ */
+async function deepScrapeVerra(
+  items: ScrapedMethodology[]
+): Promise<void> {
+  const verraAdapter = new VerraAdapter();
+  const verraItems = items.filter((i) => i.registry === "Verra");
+
+  if (verraItems.length === 0) return;
+
+  console.log(`[Sync] Deep scraping ${verraItems.length} Verra items...`);
+
+  for (let i = 0; i < verraItems.length; i++) {
+    const item = verraItems[i];
+    console.log(
+      `[Sync Deep] ${i + 1}/${verraItems.length}: ${item.name.slice(0, 60)}...`
+    );
+
+    const detail = await verraAdapter.scrapeDetailPage(item.sourceUrl);
+
+    // Active Date → lastUpdated に保存（external_last_updated へ書き込まれる）
+    if (detail.activeDate) {
+      item.lastUpdated = detail.activeDate;
+    }
+
+    // 詳細情報を ScrapedMethodology に付与（AI 推論で活用）
+    item.detailText = detail.detailText;
+    item.sectoralScope = detail.sectoralScope ?? undefined;
+    item.mitigationOutcome = detail.mitigationOutcome ?? undefined;
+
+    // レート制限（Verra サーバー負荷軽減）
+    if (i < verraItems.length - 1) {
+      await delay(SYNC_CONFIG.scrapeDelayMs);
+    }
+  }
+
+  console.log(`[Sync] Deep scraping complete`);
 }
 
 /**
@@ -60,6 +103,20 @@ async function processSingle(
     // 3b. 既存あり → ハッシュ比較で変更検知
     const existingHash = await getExistingHash(wpId);
     if (existingHash === scraped.dataHash) {
+      // ハッシュ一致でも AI フィールドが未設定なら再エンリッチ
+      if (!skipAi) {
+        const enriched = await safeEnrich(scraped);
+        if (enriched) {
+          await updateMethodology(wpId, scraped, enriched);
+          return {
+            methodologyName: scraped.name,
+            registry: scraped.registry,
+            action: "updated",
+            timestamp,
+            diff: ["ai_enrichment"],
+          };
+        }
+      }
       return {
         methodologyName: scraped.name,
         registry: scraped.registry,
@@ -109,11 +166,13 @@ async function safeEnrich(
  * @param registryFilter 特定レジストリのみ同期する場合に指定
  * @param dryRun true の場合、WordPress への書き込みをスキップ（スクレイピングのみ）
  * @param skipAi true の場合、AI エンリッチをスキップ（従来動作）
+ * @param deepScrape true の場合、詳細ページのディープスクレイピングを実行（デフォルト: true）
  */
 export async function runSync(
   registryFilter?: RegistryName,
   dryRun = false,
-  skipAi = false
+  skipAi = false,
+  deepScrape = true
 ): Promise<SyncRunResult> {
   const runId = generateRunId();
   const startedAt = new Date().toISOString();
@@ -125,7 +184,8 @@ export async function runSync(
     `[Sync] Run ${runId} started` +
       (registryFilter ? ` (filter: ${registryFilter})` : "") +
       (dryRun ? " [DRY RUN]" : "") +
-      (aiAvailable ? " [AI ENRICH ON]" : " [AI ENRICH OFF]")
+      (aiAvailable ? " [AI ENRICH ON]" : " [AI ENRICH OFF]") +
+      (deepScrape ? " [DEEP SCRAPE ON]" : " [DEEP SCRAPE OFF]")
   );
 
   // 1. アダプター取得
@@ -139,7 +199,7 @@ export async function runSync(
     console.warn("[Sync] No adapters available");
   }
 
-  // 2. スクレイピング
+  // 2. スクレイピング（一覧ページ）
   const allScraped: ScrapedMethodology[] = [];
   for (const adapter of adapters) {
     console.log(`[Sync] Scraping ${adapter.name}...`);
@@ -154,6 +214,11 @@ export async function runSync(
     console.warn(
       `[Sync] Limiting to ${SYNC_CONFIG.maxPerRun} items (${allScraped.length} total)`
     );
+  }
+
+  // 2.5. ディープスクレイピング（詳細ページ）
+  if (deepScrape) {
+    await deepScrapeVerra(toProcess);
   }
 
   // 3. WordPress Upsert（+ AI エンリッチ）

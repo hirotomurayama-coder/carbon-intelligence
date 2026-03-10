@@ -210,6 +210,7 @@ function buildPostBody(scraped: ScrapedMethodology, enriched?: AiEnrichedFields)
     title_ja: enriched?.titleJa ?? "",
     ai_summary: enriched?.aiSummary ?? "",
     standard: enriched?.certificationBody ?? "",
+    version: scraped.version ?? "",
   };
 
   // select フィールド — 値がある場合のみ送信（null / undefined は省略）
@@ -217,6 +218,11 @@ function buildPostBody(scraped: ScrapedMethodology, enriched?: AiEnrichedFields)
   if (enriched?.baseType) acf.base_type = enriched.baseType;
   if (enriched?.subCategory) acf.sub_category = enriched.subCategory;
   if (enriched?.operationalStatus) acf.status = enriched.operationalStatus;
+
+  // 数値フィールド — AI が推論した reliability_score（0–100 スケール）
+  if (enriched?.reliabilityScore != null && enriched.reliabilityScore > 0) {
+    acf.reliability_score = enriched.reliabilityScore;
+  }
 
   return {
     title,

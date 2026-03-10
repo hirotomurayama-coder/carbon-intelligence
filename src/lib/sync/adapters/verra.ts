@@ -5,15 +5,20 @@ import { computeMethodologyHash } from "../hash";
 import { SYNC_CONFIG } from "../config";
 
 /**
- * Verra VCS メソドロジー スクレイパー。
+ * Verra VCS メソドロジー スクレイパー（ディープスクレイピング対応）。
  *
- * サーバーレンダリングされた WordPress サイトから
- * アクティブなメソドロジー一覧を取得する。
+ * 1. 一覧ページからメソドロジーリンクを収集
+ * 2. 各詳細ページにアクセスして Active Date, Sectoral Scope, Mitigation Outcome,
+ *    本文テキストを取得（AI 推論の精度向上用）
  */
 export class VerraAdapter implements RegistryAdapter {
   readonly name = "Verra" as const;
   readonly baseUrl =
     "https://verra.org/program-methodology/vcs-program-standard/vcs-program-methodologies-active/";
+
+  /** ブラウザと同じ User-Agent（403 回避用） */
+  private static readonly BROWSER_UA =
+    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36";
 
   async scrape(): Promise<ScrapedMethodology[]> {
     try {
@@ -29,7 +34,7 @@ export class VerraAdapter implements RegistryAdapter {
 
         console.log(`[Verra] Fetching page ${page}: ${url}`);
         const res = await fetch(url, {
-          headers: { "User-Agent": SYNC_CONFIG.userAgent },
+          headers: { "User-Agent": VerraAdapter.BROWSER_UA },
           redirect: "follow",
         });
 
@@ -61,7 +66,6 @@ export class VerraAdapter implements RegistryAdapter {
           const vmId = vmMatch ? `VM${vmMatch[1].padStart(4, "0")}` : "";
 
           // "Active Date: ..." や "VM0001" プレフィックスを除去してタイトル抽出
-          // 実際のテキスト例: "VM0001 Active Date: November 5, 2024 VM0001 Refrigerant Leak Detection, v1.2"
           const titleCleaned = cleanedText
             .replace(/active\s*date[:\s]*\w+\s+\d{1,2},?\s*\d{4}/gi, "")
             .replace(/VM[R]?\d{4}\s*/g, "")
@@ -114,11 +118,124 @@ export class VerraAdapter implements RegistryAdapter {
         await this.delay(SYNC_CONFIG.scrapeDelayMs);
       }
 
-      console.log(`[Verra] ${results.length} methodologies scraped`);
+      console.log(`[Verra] ${results.length} methodologies scraped from list`);
       return results;
     } catch (e) {
       console.error(`[Verra] Scrape failed:`, e);
       return [];
+    }
+  }
+
+  /**
+   * ディープスクレイピング: 詳細ページにアクセスして追加情報を取得。
+   * Active Date, Sectoral Scope, Mitigation Outcome, 本文テキストを返す。
+   */
+  async scrapeDetailPage(sourceUrl: string): Promise<{
+    activeDate: string | null;
+    sectoralScope: string | null;
+    mitigationOutcome: string | null;
+    detailText: string;
+  }> {
+    try {
+      console.log(`[Verra Deep] Fetching: ${sourceUrl}`);
+      const res = await fetch(sourceUrl, {
+        headers: { "User-Agent": VerraAdapter.BROWSER_UA },
+        redirect: "follow",
+      });
+
+      if (!res.ok) {
+        console.warn(`[Verra Deep] ${sourceUrl} returned ${res.status}`);
+        return { activeDate: null, sectoralScope: null, mitigationOutcome: null, detailText: "" };
+      }
+
+      const html = await res.text();
+      const $ = cheerio.load(html);
+
+      // Active Date
+      let activeDate: string | null = null;
+      $(".info-line").each((_, el) => {
+        const $info = $(el);
+        const label = $info.find("span").first().text().trim();
+        if (label === "Active Date") {
+          const dateText = $info.find("p").first().text().trim();
+          if (dateText) {
+            activeDate = this.parseDateString(dateText);
+          }
+        }
+      });
+
+      // Sectoral Scope
+      let sectoralScope: string | null = null;
+      $(".info-line.scope, .info-line").each((_, el) => {
+        const $info = $(el);
+        const label = $info.find("span").first().text().trim();
+        if (label === "Sectoral Scope") {
+          const scopeTexts: string[] = [];
+          $info.find("p").each((__, p) => {
+            const t = $(p).text().trim();
+            if (t) scopeTexts.push(t);
+          });
+          sectoralScope = scopeTexts.join("; ") || null;
+        }
+      });
+
+      // Mitigation Outcome Label Eligibility
+      let mitigationOutcome: string | null = null;
+      $(".info-line").each((_, el) => {
+        const $info = $(el);
+        const label = this.cleanText($info.find("span").first().text());
+        if (label.includes("Mitigation") && label.includes("Outcome")) {
+          const texts: string[] = [];
+          $info.find("p").each((__, p) => {
+            const t = $(p).text().trim();
+            if (t) texts.push(t);
+          });
+          mitigationOutcome = texts.join(", ") || null;
+        }
+      });
+
+      // 本文テキスト（メソドロジーの説明文 + Development History の要約）
+      // info-line と methodology-documents の間にあるテキストを抽出
+      const bodyParts: string[] = [];
+
+      // メインの説明テキスト（info-line 後の p タグ）
+      $(".info-line").parent().find("p").each((_, el) => {
+        const text = $(el).text().trim();
+        // ナビゲーション系テキストを除外
+        if (text && text.length > 30 && !text.includes("menu-item")) {
+          bodyParts.push(text);
+        }
+      });
+
+      // Development History セクションのテキスト
+      $("[class*='consultation-archive'], [class*='collapse']").each((_, el) => {
+        const text = this.cleanText($(el).text());
+        if (text && text.length > 50) {
+          bodyParts.push(text.slice(0, 500)); // 長すぎる場合は切り詰め
+        }
+      });
+
+      // ページ全体からメソドロジー説明を取得（フォールバック）
+      if (bodyParts.length === 0) {
+        const pageText = this.cleanText($("body").text());
+        // メソドロジー名の後のテキストを抽出
+        const descMatch = pageText.match(
+          /(?:This methodology|This module|The methodology|The module)[^.]*\./i
+        );
+        if (descMatch) {
+          bodyParts.push(descMatch[0]);
+        }
+      }
+
+      const detailText = bodyParts
+        .filter((t, i, arr) => arr.indexOf(t) === i) // 重複除去
+        .join("\n")
+        .slice(0, 2000); // AI コスト抑制: 最大2000文字
+
+      return { activeDate, sectoralScope, mitigationOutcome, detailText };
+    } catch (e) {
+      console.warn(`[Verra Deep] Failed for ${sourceUrl}:`, e);
+      return { activeDate: null, sectoralScope: null, mitigationOutcome: null, detailText: "" };
     }
   }
 
@@ -147,8 +264,13 @@ export class VerraAdapter implements RegistryAdapter {
       /active\s*date[:\s]*(\d{1,2}\s+\w+\s+\d{4})/i
     );
     if (!match) return null;
+    return this.parseDateString(match[1]);
+  }
+
+  /** 英語日付文字列を ISO 日付に変換 */
+  private parseDateString(dateStr: string): string | null {
     try {
-      const d = new Date(match[1]);
+      const d = new Date(dateStr);
       return Number.isNaN(d.getTime()) ? null : d.toISOString().slice(0, 10);
     } catch {
       return null;
