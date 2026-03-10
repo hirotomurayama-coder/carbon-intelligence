@@ -41,9 +41,9 @@ export type Methodology = {
 // 企業 — CPT: companies
 // ============================================================
 
-/** 企業カテゴリー */
+/** 企業カテゴリー（WordPress ACF select の許可値に準拠） */
 export type CompanyCategory =
-  | "創出事業者"
+  | "創出"
   | "仲介"
   | "コンサル"
   | "検証機関";
@@ -55,6 +55,8 @@ export type Company = {
   category: CompanyCategory | null;     // ACF 未設定時は null
   headquarters: string | null;          // ACF 未設定時は null
   mainProjects: string[];
+  homepageUrl: string | null;           // ACF: homepage_url
+  description: string | null;           // ACF: company_description
 };
 
 // ============================================================

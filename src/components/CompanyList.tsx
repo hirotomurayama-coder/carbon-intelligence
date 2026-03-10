@@ -1,18 +1,20 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { SearchInput } from "@/components/ui/SearchInput";
 import { TabGroup } from "@/components/ui/TabGroup";
 import { Badge } from "@/components/ui/Badge";
 import type { Company, CompanyCategory } from "@/types";
 
 const ALL_TAB = "すべて";
-const TABS: string[] = [ALL_TAB, "創出事業者", "仲介", "コンサル", "検証機関"];
+const TABS: string[] = [ALL_TAB, "創出", "仲介", "コンサル", "検証機関"];
 
 function categoryVariant(cat: CompanyCategory | null) {
   if (cat === null) return "gray" as const;
   switch (cat) {
-    case "創出事業者":
+    case "創出":
       return "emerald" as const;
     case "仲介":
       return "blue" as const;
@@ -28,6 +30,7 @@ type Props = {
 };
 
 export function CompanyList({ data }: Props) {
+  const router = useRouter();
   const [activeTab, setActiveTab] = useState(ALL_TAB);
   const [keyword, setKeyword] = useState("");
 
@@ -65,21 +68,26 @@ export function CompanyList({ data }: Props) {
         {filtered.map((c) => (
           <div
             key={c.id}
-            className="flex flex-col rounded-xl border border-gray-200 bg-white p-5 shadow-sm"
+            className="group flex cursor-pointer flex-col rounded-xl border border-gray-200 bg-white p-5 shadow-sm transition-colors hover:border-emerald-200 hover:bg-emerald-50/30"
+            onClick={() => router.push(`/companies/${c.id}`)}
           >
-            <div className="flex items-start gap-3">
+            <Link
+              href={`/companies/${c.id}`}
+              className="flex items-start gap-3"
+              onClick={(e) => e.stopPropagation()}
+            >
               <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-emerald-50 text-sm font-bold text-emerald-700">
                 {c.name?.[0] ?? "?"}
               </div>
               <div className="min-w-0">
-                <p className="truncate text-sm font-semibold text-gray-900">
+                <p className="truncate text-sm font-semibold text-gray-900 group-hover:text-emerald-700">
                   {c.name}
                 </p>
                 <p className="mt-0.5 text-xs text-gray-400">
                   {c.headquarters ?? "\u2014"}
                 </p>
               </div>
-            </div>
+            </Link>
             <div className="mt-3">
               <Badge variant={categoryVariant(c.category)}>
                 {c.category ?? "\u672A\u5206\u985E"}

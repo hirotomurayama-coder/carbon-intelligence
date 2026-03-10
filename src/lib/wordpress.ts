@@ -248,7 +248,7 @@ function mapMethodology(wp: WPPost): Methodology {
 }
 
 const VALID_COMPANY_CATEGORIES: CompanyCategory[] = [
-  "創出事業者", "仲介", "コンサル", "検証機関",
+  "創出", "仲介", "コンサル", "検証機関",
 ];
 
 function mapCompany(wp: WPPost): Company {
@@ -256,6 +256,8 @@ function mapCompany(wp: WPPost): Company {
 
   let category: CompanyCategory | null = null;
   let headquarters: string | null = null;
+  let homepageUrl: string | null = null;
+  let description: string | null = null;
 
   if (hasData) {
     const rawCat = acfString(acf, "company_category", "");
@@ -263,6 +265,8 @@ function mapCompany(wp: WPPost): Company {
       ? (rawCat as CompanyCategory)
       : null;
     headquarters = acfString(acf, "headquarters", "") || null;
+    homepageUrl = acfString(acf, "homepage_url", "") || null;
+    description = acfString(acf, "company_description", "") || null;
   }
 
   return {
@@ -271,6 +275,8 @@ function mapCompany(wp: WPPost): Company {
     category,
     headquarters,
     mainProjects: hasData ? acfStringArray(acf, "main_projects") : [],
+    homepageUrl,
+    description,
   };
 }
 
@@ -357,15 +363,37 @@ export async function getMethodologies(): Promise<Methodology[]> {
   }
 }
 
-/** 企業一覧を取得（CPT: companies） */
+/** 企業を ID で1件取得（詳細ページ用） */
+export async function getCompanyById(id: string): Promise<Company | null> {
+  if (!isApiConfigured()) return null;
+  try {
+    const post = await wpFetchSingle<WPPost>(`companies/${id}`);
+    if (!post) return null;
+    return mapCompany(post);
+  } catch (e) {
+    console.error(`[WP FAIL] company/${id}:`, e);
+    return null;
+  }
+}
+
+/** 企業一覧を取得（CPT: companies、全件ページネーション対応） */
 export async function getCompanies(): Promise<Company[]> {
   if (!isApiConfigured()) {
     console.warn("[WP] companies — API not configured, returning []");
     return [];
   }
   try {
-    const posts = await wpFetch<WPPost>("companies?per_page=100");
-    return posts.map(mapCompany);
+    const allPosts: WPPost[] = [];
+    let page = 1;
+    while (true) {
+      const posts = await wpFetch<WPPost>(
+        `companies?per_page=100&page=${page}`
+      );
+      allPosts.push(...posts);
+      if (posts.length < 100) break;
+      page++;
+    }
+    return allPosts.map(mapCompany);
   } catch (e) {
     console.error("[WP FAIL] companies:", e);
     return [];

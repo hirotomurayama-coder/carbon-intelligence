@@ -175,7 +175,7 @@ export default async function Home() {
                         variant={
                           c.category === null
                             ? "gray"
-                            : c.category === "創出事業者"
+                            : c.category === "創出"
                               ? "emerald"
                               : c.category === "仲介"
                                 ? "blue"
