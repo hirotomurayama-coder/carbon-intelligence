@@ -85,14 +85,8 @@ export type InsightDetail = Insight & {
 // ロードマップ (政策タイムライン) — CPT: roadmap
 // ============================================================
 
-/** ロードマップイベントのカテゴリ（政策領域） */
-export type RoadmapCategory =
-  | "SSBJ"
-  | "GX-ETS"
-  | "TNFD"
-  | "J-Credit"
-  | "適格カーボンクレジット"
-  | "カーボンプライシング";
+/** ロードマップイベントのカテゴリ（政策領域） — WordPress で自由入力のため string */
+export type RoadmapCategory = string;
 
 /** ロードマップイベントのステータス */
 export type RoadmapStatus =
@@ -105,10 +99,10 @@ export type RoadmapStatus =
 export type RoadmapEvent = {
   id: string;
   title: string;
-  category: RoadmapCategory | null;    // ACF: roadmap_category
-  status: RoadmapStatus | null;        // ACF: roadmap_status
-  startDate: string | null;            // ACF: start_date — "YYYY-MM-DD"
-  endDate: string | null;              // ACF: end_date — "YYYY-MM-DD"
+  category: string | null;             // ACF: event_category
+  status: RoadmapStatus | null;        // ACF: event_status
+  startDate: string | null;            // ACF: start_date — "YYYY-MM-DD" に正規化済み
+  endDate: string | null;              // ACF: end_date — "YYYY-MM-DD" に正規化済み
   description: string;                 // plain text (要約用)
   descriptionHtml: string;             // content.rendered (Modal 表示用 HTML)
 };

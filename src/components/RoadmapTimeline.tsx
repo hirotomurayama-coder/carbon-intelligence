@@ -3,7 +3,7 @@
 import { useMemo, useState } from "react";
 import { Badge } from "@/components/ui/Badge";
 import { Modal } from "@/components/ui/Modal";
-import type { RoadmapEvent, RoadmapStatus, RoadmapCategory } from "@/types";
+import type { RoadmapEvent, RoadmapStatus } from "@/types";
 
 // ============================================================
 // 定数
@@ -18,12 +18,16 @@ const BAR_H = 28;
 /** バー間のパディング (px) */
 const LANE_H = 36;
 
-/** カテゴリの表示順序 */
-const CATEGORY_ORDER: RoadmapCategory[] = [
+/**
+ * カテゴリの優先表示順序。
+ * WordPress 側で自由入力されたカテゴリも動的に追加表示する。
+ */
+const CATEGORY_PRIORITY: string[] = [
   "SSBJ",
   "GX-ETS",
   "TNFD",
   "J-Credit",
+  "SBTi",
   "適格カーボンクレジット",
   "カーボンプライシング",
 ];
@@ -164,16 +168,29 @@ export function RoadmapTimeline({ data }: Props) {
         24,
       );
 
-      // event_category でグループ化 (定義順)
+      // event_category でグループ化（優先順序リスト → 新規カテゴリ → 未分類）
       const map = new Map<string, RoadmapEvent[]>();
-      for (const cat of CATEGORY_ORDER) {
+
+      // 1) 優先順序リストに含まれるカテゴリを先に配置
+      for (const cat of CATEGORY_PRIORITY) {
         const items = filtered.filter((e) => e.category === cat);
         if (items.length > 0) map.set(cat, items);
       }
-      // 未分類
-      const uncategorized = filtered.filter(
-        (e) => !e.category || !CATEGORY_ORDER.includes(e.category),
+
+      // 2) 優先リストに無い新規カテゴリを追加（WordPress で自由入力されたもの）
+      const knownCats = new Set(CATEGORY_PRIORITY);
+      const dynamicCats = new Set(
+        filtered
+          .map((e) => e.category)
+          .filter((c): c is string => !!c && !knownCats.has(c)),
       );
+      for (const cat of dynamicCats) {
+        const items = filtered.filter((e) => e.category === cat);
+        if (items.length > 0) map.set(cat, items);
+      }
+
+      // 3) カテゴリ未設定 → 「その他」
+      const uncategorized = filtered.filter((e) => !e.category);
       if (uncategorized.length > 0) map.set("その他", uncategorized);
 
       return {

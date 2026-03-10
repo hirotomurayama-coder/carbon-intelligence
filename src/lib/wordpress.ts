@@ -469,38 +469,46 @@ export async function getInsights(): Promise<Insight[]> {
 // ロードマップ (政策タイムライン) マッピング
 // ============================================================
 
-const VALID_ROADMAP_CATEGORIES: RoadmapCategory[] = [
-  "SSBJ", "GX-ETS", "TNFD", "J-Credit", "適格カーボンクレジット", "カーボンプライシング",
-];
-
 const VALID_ROADMAP_STATUSES: RoadmapStatus[] = [
   "完了", "進行中", "準備中", "予定",
 ];
 
+/**
+ * ACF 日付文字列を "YYYY-MM-DD" に正規化する。
+ * ACF の日付ピッカーは返却形式が設定依存で、
+ *   "YYYYMMDD" / "YYYY-MM-DD" / "YYYY/MM/DD" などを返す。
+ * すべてを統一形式に変換する。
+ */
+function normalizeDate(raw: string): string | null {
+  if (!raw) return null;
+  // ハイフンやスラッシュを除去して数字だけにする
+  const digits = raw.replace(/[-/]/g, "");
+  if (digits.length !== 8 || !/^\d{8}$/.test(digits)) return null;
+  return `${digits.slice(0, 4)}-${digits.slice(4, 6)}-${digits.slice(6, 8)}`;
+}
+
 function mapRoadmapEvent(wp: WPPost): RoadmapEvent {
   const { data: acf, hasData } = getAcf(wp);
 
-  let category: RoadmapCategory | null = null;
+  let category: string | null = null;
   let status: RoadmapStatus | null = null;
   let startDate: string | null = null;
   let endDate: string | null = null;
 
   if (hasData) {
-    // ACF フィールド名: event_category (カテゴリ)
+    // ACF フィールド名: event_category (カテゴリ — 自由入力)
     const rawCat = acfString(acf, "event_category", "");
-    category = VALID_ROADMAP_CATEGORIES.includes(rawCat as RoadmapCategory)
-      ? (rawCat as RoadmapCategory)
-      : null;
+    category = rawCat || null;
 
-    // ACF フィールド名: roadmap_status (ステータス)
-    const rawStatus = acfString(acf, "roadmap_status", "");
+    // ACF フィールド名: event_status (ステータス)
+    const rawStatus = acfString(acf, "event_status", "");
     status = VALID_ROADMAP_STATUSES.includes(rawStatus as RoadmapStatus)
       ? (rawStatus as RoadmapStatus)
       : null;
 
-    // ACF フィールド名: start_date, end_date (期間)
-    startDate = acfString(acf, "start_date", "") || null;
-    endDate = acfString(acf, "end_date", "") || null;
+    // ACF フィールド名: start_date, end_date (期間 — YYYYMMDD を YYYY-MM-DD に正規化)
+    startDate = normalizeDate(acfString(acf, "start_date", ""));
+    endDate = normalizeDate(acfString(acf, "end_date", ""));
   }
 
   const title = stripHtml(wp.title.rendered);
