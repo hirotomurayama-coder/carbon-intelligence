@@ -333,15 +333,24 @@ export async function getMethodologyById(id: string): Promise<Methodology | null
   }
 }
 
-/** メソドロジー一覧を取得（CPT: methodologies） */
+/** メソドロジー一覧を取得（CPT: methodologies、全件ページネーション対応） */
 export async function getMethodologies(): Promise<Methodology[]> {
   if (!isApiConfigured()) {
     console.warn("[WP] methodologies — API not configured, returning []");
     return [];
   }
   try {
-    const posts = await wpFetch<WPPost>("methodologies?per_page=100");
-    return posts.map(mapMethodology);
+    const allPosts: WPPost[] = [];
+    let page = 1;
+    while (true) {
+      const posts = await wpFetch<WPPost>(
+        `methodologies?per_page=100&page=${page}`
+      );
+      allPosts.push(...posts);
+      if (posts.length < 100) break;
+      page++;
+    }
+    return allPosts.map(mapMethodology);
   } catch (e) {
     console.error("[WP FAIL] methodologies:", e);
     return [];
