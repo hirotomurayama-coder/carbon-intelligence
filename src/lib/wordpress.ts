@@ -6,6 +6,9 @@ import type {
   Insight,
   InsightDetail,
   InsightCategory,
+  RoadmapEvent,
+  RoadmapCategory,
+  RoadmapStatus,
   RegistryName,
 } from "@/types";
 
@@ -458,6 +461,90 @@ export async function getInsights(): Promise<Insight[]> {
       .map(mapInsight);
   } catch (e) {
     console.error("[WP FAIL] insights:", e);
+    return [];
+  }
+}
+
+// ============================================================
+// ロードマップ (政策タイムライン) マッピング
+// ============================================================
+
+const VALID_ROADMAP_CATEGORIES: RoadmapCategory[] = [
+  "SSBJ", "GX-ETS", "TNFD", "J-Credit", "適格カーボンクレジット", "カーボンプライシング",
+];
+
+const VALID_ROADMAP_STATUSES: RoadmapStatus[] = [
+  "完了", "進行中", "準備中", "予定",
+];
+
+function mapRoadmapEvent(wp: WPPost): RoadmapEvent {
+  const { data: acf, hasData } = getAcf(wp);
+
+  let category: RoadmapCategory | null = null;
+  let status: RoadmapStatus | null = null;
+  let startDate: string | null = null;
+  let endDate: string | null = null;
+
+  if (hasData) {
+    const rawCat = acfString(acf, "roadmap_category", "");
+    category = VALID_ROADMAP_CATEGORIES.includes(rawCat as RoadmapCategory)
+      ? (rawCat as RoadmapCategory)
+      : null;
+
+    const rawStatus = acfString(acf, "roadmap_status", "");
+    status = VALID_ROADMAP_STATUSES.includes(rawStatus as RoadmapStatus)
+      ? (rawStatus as RoadmapStatus)
+      : null;
+
+    startDate = acfString(acf, "start_date", "") || null;
+    endDate = acfString(acf, "end_date", "") || null;
+  }
+
+  return {
+    id: String(wp.id),
+    title: stripHtml(wp.title.rendered),
+    category,
+    status,
+    startDate,
+    endDate,
+    description: stripHtml(wp.content.rendered).slice(0, 300),
+    descriptionHtml: wp.content.rendered,
+  };
+}
+
+/** ロードマップイベントを ID で1件取得 */
+export async function getRoadmapEventById(id: string): Promise<RoadmapEvent | null> {
+  if (!isApiConfigured()) return null;
+  try {
+    const post = await wpFetchSingle<WPPost>(`roadmap/${id}`);
+    if (!post) return null;
+    return mapRoadmapEvent(post);
+  } catch (e) {
+    console.error(`[WP FAIL] roadmap/${id}:`, e);
+    return null;
+  }
+}
+
+/** ロードマップイベント一覧を取得（CPT: roadmap、全件ページネーション対応） */
+export async function getRoadmapEvents(): Promise<RoadmapEvent[]> {
+  if (!isApiConfigured()) {
+    console.warn("[WP] roadmap — API not configured, returning []");
+    return [];
+  }
+  try {
+    const allPosts: WPPost[] = [];
+    let page = 1;
+    while (true) {
+      const posts = await wpFetch<WPPost>(
+        `roadmap?per_page=100&page=${page}`
+      );
+      allPosts.push(...posts);
+      if (posts.length < 100) break;
+      page++;
+    }
+    return allPosts.map(mapRoadmapEvent);
+  } catch (e) {
+    console.error("[WP FAIL] roadmap:", e);
     return [];
   }
 }

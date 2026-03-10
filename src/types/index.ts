@@ -82,6 +82,38 @@ export type InsightDetail = Insight & {
 };
 
 // ============================================================
+// ロードマップ (政策タイムライン) — CPT: roadmap
+// ============================================================
+
+/** ロードマップイベントのカテゴリ（政策領域） */
+export type RoadmapCategory =
+  | "SSBJ"
+  | "GX-ETS"
+  | "TNFD"
+  | "J-Credit"
+  | "適格カーボンクレジット"
+  | "カーボンプライシング";
+
+/** ロードマップイベントのステータス */
+export type RoadmapStatus =
+  | "完了"
+  | "進行中"
+  | "準備中"
+  | "予定";
+
+/** ロードマップイベント（ガントチャート1本分） */
+export type RoadmapEvent = {
+  id: string;
+  title: string;
+  category: RoadmapCategory | null;    // ACF: roadmap_category
+  status: RoadmapStatus | null;        // ACF: roadmap_status
+  startDate: string | null;            // ACF: start_date — "YYYY-MM-DD"
+  endDate: string | null;              // ACF: end_date — "YYYY-MM-DD"
+  description: string;                 // plain text (要約用)
+  descriptionHtml: string;             // content.rendered (Modal 表示用 HTML)
+};
+
+// ============================================================
 // レジストリ同期 — メソドロジー自動収集システム
 // ============================================================
 
