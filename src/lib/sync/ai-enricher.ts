@@ -365,13 +365,21 @@ function createFallback(scraped: ScrapedMethodology): AiEnrichedFields {
     "J-Credit": "J-クレジット制度",
   };
 
-  // Mitigation Outcome から creditType を推論
+  // Mitigation Outcome / detailText / カテゴリから creditType を推論
   let creditType: CreditType | null = null;
   if (scraped.mitigationOutcome) {
     const outcome = scraped.mitigationOutcome.toLowerCase();
     if (outcome.includes("removal")) {
       creditType = "除去系";
     } else if (outcome.includes("reduction")) {
+      creditType = "回避・削減系";
+    }
+  }
+  // detailText に吸収系ヒントがあれば除去系と推論（J-Credit 森林分野等）
+  if (!creditType && scraped.detailText) {
+    if (scraped.detailText.includes("吸収系") || scraped.detailText.includes("除去系")) {
+      creditType = "除去系";
+    } else if (scraped.detailText.includes("排出削減")) {
       creditType = "回避・削減系";
     }
   }
@@ -415,7 +423,7 @@ function createFallback(scraped: ScrapedMethodology): AiEnrichedFields {
 
   // カテゴリからの追加推論（scope がない場合のフォールバック）
   if (subCategory === null) {
-    if (cat === "arr" || nameL.includes("forest")) subCategory = "森林";
+    if (cat === "arr" || nameL.includes("forest") || cat.includes("森林")) subCategory = "森林";
     else if (cat.includes("redd")) subCategory = "森林";
     else if (cat.includes("省エネ")) subCategory = "省エネ・効率改善";
     else if (cat.includes("再生可能")) subCategory = "再生可能エネルギー";
@@ -439,7 +447,7 @@ function createFallback(scraped: ScrapedMethodology): AiEnrichedFields {
     }
   } else {
     // scope がない場合はカテゴリベース
-    if (cat === "arr" || cat.includes("redd") || cat.includes("alm") || cat.includes("forest") || cat.includes("農")) {
+    if (cat === "arr" || cat.includes("redd") || cat.includes("alm") || cat.includes("forest") || cat.includes("農") || cat.includes("森林")) {
       baseType = "自然ベース";
     } else if (cat.includes("再生可能") || cat.includes("renewable")) {
       baseType = "再エネ";

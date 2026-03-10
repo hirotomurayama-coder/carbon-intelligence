@@ -223,6 +223,147 @@ export class JCreditAdapter implements RegistryAdapter {
     });
   }
 
+  // ============================================================
+  // ディープスクレイピング: 一覧ページの備考テキスト＋カテゴリ情報を
+  // detailText として構築し、AI エンリッチに活用する。
+  // ※ J-Credit には HTML 詳細ページがなく PDF のみのため、
+  //    一覧ページから最大限の情報を抽出するアプローチを採用。
+  // ============================================================
+
+  /**
+   * 一覧ページを再取得し、該当メソドロジーの追加情報を抽出。
+   * 備考テキスト、概要版 PDF URL、カテゴリ情報を返す。
+   */
+  /**
+   * 一覧ページの HTML を1回だけ取得してキャッシュ。
+   * 全 J-Credit アイテムのディープスクレイピングで共有する。
+   */
+  async fetchListHtml(): Promise<string | null> {
+    try {
+      console.log(`[J-Credit Deep] Fetching list page...`);
+      const res = await fetch(this.baseUrl, {
+        headers: {
+          "User-Agent": JCreditAdapter.BROWSER_UA,
+          Accept: "text/html,application/xhtml+xml",
+          "Accept-Language": "ja,en;q=0.9",
+        },
+        redirect: "follow",
+      });
+      if (!res.ok) return null;
+      return await res.text();
+    } catch {
+      return null;
+    }
+  }
+
+  async scrapeDetailPage(
+    methodologyId: string,
+    existingCategory: string,
+    cachedHtml?: string
+  ): Promise<{
+    detailText: string;
+    outlinePdfUrl: string | null;
+    notes: string | null;
+    version: string | null;
+  }> {
+    try {
+      let html: string;
+      if (cachedHtml) {
+        html = cachedHtml;
+      } else {
+        console.log(`[J-Credit Deep] Fetching list page for: ${methodologyId}`);
+        const res = await fetch(this.baseUrl, {
+          headers: {
+            "User-Agent": JCreditAdapter.BROWSER_UA,
+            Accept: "text/html,application/xhtml+xml",
+            "Accept-Language": "ja,en;q=0.9",
+          },
+          redirect: "follow",
+        });
+
+        if (!res.ok) {
+          return { detailText: "", outlinePdfUrl: null, notes: null, version: null };
+        }
+
+        html = await res.text();
+      }
+
+      const $ = cheerio.load(html);
+
+      // メソドロジー ID（例: EN-S-001）の行を探す
+      let outlinePdfUrl: string | null = null;
+      let version: string | null = null;
+
+      // 全テーブルからメソドロジーの概要版 PDF リンクを探す
+      $("table.table-type01 tbody tr, table.table-type01 tr").each((_, row) => {
+        const cells = $(row).find("td");
+        if (cells.length < 3) return;
+        const id = this.cleanText($(cells[0]).text());
+        if (id !== methodologyId) return;
+
+        // 概要版列のリンクを探す（通常は cells[2]）
+        cells.each((__, cell) => {
+          const links = $(cell).find("a");
+          links.each((___, link) => {
+            const href = $(link).attr("href") ?? "";
+            if (href.includes("outline")) {
+              outlinePdfUrl = href.startsWith("http")
+                ? href
+                : `https://japancredit.go.jp${href}`;
+            }
+          });
+        });
+
+        // バージョン列（cells[3] or cells[2]）
+        if (cells.length >= 5) {
+          const vText = this.cleanText($(cells[3]).text());
+          version = this.extractVersion(vText);
+        }
+      });
+
+      // 備考テーブル（最後のテーブル）からメソドロジーの備考を探す
+      let notes: string | null = null;
+      const allTables = $("table.table-type01");
+      const lastTable = allTables.last();
+      if (lastTable.length) {
+        lastTable.find("tbody tr, tr").each((_, row) => {
+          const cells = $(row).find("td");
+          if (cells.length < 3) return;
+          const id = this.cleanText($(cells[0]).text());
+          if (id === methodologyId) {
+            const noteText = this.cleanText($(cells[cells.length - 1]).text());
+            if (noteText && noteText !== methodologyId) {
+              notes = noteText;
+            }
+          }
+        });
+      }
+
+      // detailText を構築: カテゴリ、メソドロジー名、備考、概要版情報
+      const parts: string[] = [
+        `J-クレジット制度 ${existingCategory}分野`,
+        `メソドロジーID: ${methodologyId}`,
+      ];
+      if (notes) {
+        parts.push(`備考: ${notes}`);
+      }
+      if (existingCategory === "森林") {
+        parts.push("分野特性: 森林分野は主に吸収系（除去系）のクレジット。森林経営活動や植林活動によるCO2吸収量をクレジット化。");
+      } else if (existingCategory === "農業") {
+        parts.push("分野特性: 農業分野は排出削減と一部吸収系。家畜管理、水田管理、バイオ炭等。");
+      } else {
+        parts.push(`分野特性: ${existingCategory}分野は排出削減系のクレジット。`);
+      }
+
+      const detailText = parts.join("\n");
+
+      return { detailText, outlinePdfUrl, notes, version };
+    } catch (e) {
+      console.warn(`[J-Credit Deep] Failed for ${methodologyId}:`, e);
+      return { detailText: "", outlinePdfUrl: null, notes: null, version: null };
+    }
+  }
+
   /** テキストの空白・改行を正規化 */
   private cleanText(raw: string): string {
     return raw

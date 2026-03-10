@@ -18,6 +18,7 @@ import {
 import { enrichMethodology, isAiEnrichAvailable, translateTitlesBatch } from "./ai-enricher";
 import { SYNC_CONFIG } from "./config";
 import { VerraAdapter } from "./adapters/verra";
+import { JCreditAdapter } from "./adapters/j-credit";
 
 // ============================================================
 // 同期エンジン（オーケストレーター）
@@ -74,6 +75,60 @@ async function deepScrapeVerra(
   }
 
   console.log(`[Sync] Deep scraping complete`);
+}
+
+/**
+ * J-Credit メソドロジーに対してディープスクレイピングを実行。
+ * 一覧ページを1回だけ取得し、備考テキスト・カテゴリ情報・概要版 PDF URL を
+ * ScrapedMethodology に追加して AI エンリッチの精度を高める。
+ */
+async function deepScrapeJCredit(
+  items: ScrapedMethodology[]
+): Promise<void> {
+  const jcreditItems = items.filter((i) => i.registry === "J-Credit");
+
+  if (jcreditItems.length === 0) return;
+
+  console.log(`[Sync] Deep scraping ${jcreditItems.length} J-Credit items...`);
+
+  const adapter = new JCreditAdapter();
+
+  // 一覧ページ HTML を1回だけ取得（全アイテムで共有）
+  const cachedHtml = await adapter.fetchListHtml();
+  if (!cachedHtml) {
+    console.warn("[Sync] J-Credit list page fetch failed — skipping deep scrape");
+    return;
+  }
+
+  for (let i = 0; i < jcreditItems.length; i++) {
+    const item = jcreditItems[i];
+
+    // メソドロジー ID を name の先頭から抽出（例: "EN-S-001 省エネルギー..." → "EN-S-001"）
+    const methodologyId = item.name.split(/\s+/)[0];
+    if (!methodologyId) continue;
+
+    console.log(
+      `[Sync Deep] ${i + 1}/${jcreditItems.length}: ${methodologyId}`
+    );
+
+    const detail = await adapter.scrapeDetailPage(
+      methodologyId,
+      item.category,
+      cachedHtml
+    );
+
+    // detailText を付与（AI 推論で活用）
+    if (detail.detailText) {
+      item.detailText = detail.detailText;
+    }
+
+    // ディープスクレイピングのバージョンで上書き（より正確な場合）
+    if (detail.version) {
+      item.version = detail.version;
+    }
+  }
+
+  console.log(`[Sync] J-Credit deep scraping complete`);
 }
 
 /**
@@ -245,6 +300,7 @@ export async function runSync(
   // 2.5. ディープスクレイピング（詳細ページ）
   if (deepScrape) {
     await deepScrapeVerra(toProcess);
+    await deepScrapeJCredit(toProcess);
   }
 
   // 3. WordPress Upsert（+ AI エンリッチ）
