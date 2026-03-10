@@ -2,14 +2,18 @@
  * メソドロジー同期スクリプト（スタンドアロン実行用）
  *
  * 使用方法:
- *   npx tsx scripts/sync-methodologies.ts                      # 全レジストリ同期
+ *   npx tsx scripts/sync-methodologies.ts                      # 全レジストリ同期（AI エンリッチ付き）
  *   npx tsx scripts/sync-methodologies.ts --registry=Verra     # Verra のみ
  *   npx tsx scripts/sync-methodologies.ts --dry-run            # 書き込みなし（テスト用）
+ *   npx tsx scripts/sync-methodologies.ts --skip-ai            # AI エンリッチなし
  *
  * 必須環境変数:
  *   NEXT_PUBLIC_WORDPRESS_API_URL   WordPress REST API URL
  *   WP_APP_USER                     WordPress ユーザー名
  *   WP_APP_PASSWORD                 WordPress Application Password
+ *
+ * オプション環境変数:
+ *   GOOGLE_GENERATIVE_AI_API_KEY    Google Gemini API キー（AI エンリッチ用）
  */
 
 import { runSync } from "../src/lib/sync/sync-engine";
@@ -27,12 +31,22 @@ async function main() {
   // --dry-run
   const dryRun = args.includes("--dry-run");
 
+  // --skip-ai
+  const skipAi = args.includes("--skip-ai");
+
+  const aiStatus = skipAi
+    ? "OFF (--skip-ai)"
+    : process.env.GOOGLE_GENERATIVE_AI_API_KEY
+      ? "ON (Gemini 2.0 Flash)"
+      : "OFF (GOOGLE_GENERATIVE_AI_API_KEY 未設定)";
+
   console.log("========================================");
   console.log("  Carbon Intelligence — メソドロジー同期");
   console.log("========================================");
-  console.log(`API URL: ${process.env.NEXT_PUBLIC_WORDPRESS_API_URL ?? "(未設定)"}`);
+  console.log(`API URL:  ${process.env.NEXT_PUBLIC_WORDPRESS_API_URL ?? "(未設定)"}`);
   console.log(`Registry: ${registry ?? "全レジストリ"}`);
-  console.log(`Mode: ${dryRun ? "DRY RUN (書き込みなし)" : "LIVE"}`);
+  console.log(`Mode:     ${dryRun ? "DRY RUN (書き込みなし)" : "LIVE"}`);
+  console.log(`AI:       ${aiStatus}`);
   console.log("========================================\n");
 
   if (!process.env.NEXT_PUBLIC_WORDPRESS_API_URL) {
@@ -46,7 +60,7 @@ async function main() {
     process.exit(1);
   }
 
-  const result = await runSync(registry, dryRun);
+  const result = await runSync(registry, dryRun, skipAi);
 
   console.log("\n========================================");
   console.log("  同期結果サマリー");

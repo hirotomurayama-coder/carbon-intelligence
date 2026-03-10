@@ -1,32 +1,21 @@
+import Link from "next/link";
 import { getMethodologies, getCompanies, getInsights } from "@/lib/wordpress";
 import { Badge } from "@/components/ui/Badge";
 import { UpdateTimeline } from "@/components/UpdateTimeline";
-import type { InsightCategory, MethodologyType } from "@/types";
+import type { InsightCategory, RegistryName } from "@/types";
 
-/** メソドロジー種別のバッジ色（null 対応） */
-function methodTypeBadge(type: MethodologyType | null) {
-  if (type === null) return "gray" as const;
-  switch (type) {
-    case "ARR":
+/** レジストリ名に応じたバッジ色 */
+function registryBadge(registry: RegistryName) {
+  switch (registry) {
+    case "Verra":
       return "emerald" as const;
-    case "ALM":
-      return "blue" as const;
-    case "REDD+":
+    case "Gold Standard":
       return "amber" as const;
-    case "マングローブ":
+    case "Puro.earth":
       return "cyan" as const;
-    case "再生可能エネルギー":
-      return "indigo" as const;
-    case "省エネルギー":
-      return "slate" as const;
+    default:
+      return "gray" as const;
   }
-}
-
-/** 信頼性スコアのバッジ色 */
-function scoreBadge(score: number) {
-  if (score >= 90) return "emerald" as const;
-  if (score >= 80) return "blue" as const;
-  return "amber" as const;
 }
 
 /** インサイトカテゴリーのバッジ色（null 対応） */
@@ -104,51 +93,51 @@ export default async function Home() {
               <thead>
                 <tr className="border-b border-gray-100 bg-gray-50/60">
                   <th className="px-5 py-3 font-medium text-gray-500">タイトル</th>
-                  <th className="px-5 py-3 font-medium text-gray-500">算定手法</th>
-                  <th className="px-5 py-3 font-medium text-gray-500">地域</th>
-                  <th className="px-5 py-3 font-medium text-gray-500">有効期限</th>
-                  <th className="px-5 py-3 text-right font-medium text-gray-500">
-                    信頼性
-                  </th>
+                  <th className="px-5 py-3 font-medium text-gray-500">レジストリ</th>
+                  <th className="hidden px-5 py-3 font-medium text-gray-500 md:table-cell">認証機関</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100">
-                {methodologies.slice(0, 5).map((m) => (
-                  <tr key={m.id} className="hover:bg-gray-50/50">
+                {methodologies.slice(0, 8).map((m) => (
+                  <tr key={m.id} className="hover:bg-emerald-50/40">
                     <td className="px-5 py-4">
-                      <p className="font-medium text-gray-900">{m.title}</p>
-                      {m.summary && (
-                        <p className="mt-0.5 text-xs leading-relaxed text-gray-400">
-                          {m.summary.length > 60
-                            ? m.summary.slice(0, 60) + "..."
-                            : m.summary}
+                      <Link href={`/methodologies/${m.id}`} className="block">
+                        <p className="font-medium text-gray-900 hover:text-emerald-700">
+                          {m.titleJa ?? m.title}
                         </p>
-                      )}
+                        {m.summary && (
+                          <p className="mt-0.5 text-xs leading-relaxed text-gray-400">
+                            {m.summary.length > 80
+                              ? m.summary.slice(0, 80) + "..."
+                              : m.summary}
+                          </p>
+                        )}
+                      </Link>
                     </td>
                     <td className="px-5 py-4">
-                      <Badge variant={methodTypeBadge(m.type)}>
-                        {m.type ?? "\u672A\u5206\u985E"}
-                      </Badge>
-                    </td>
-                    <td className="whitespace-nowrap px-5 py-4 text-gray-600">
-                      {m.region ?? "\u2014"}
-                    </td>
-                    <td className="whitespace-nowrap px-5 py-4 text-gray-600">
-                      {m.validUntil ?? "\u2014"}
-                    </td>
-                    <td className="px-5 py-4 text-right">
-                      {m.reliabilityScore !== null ? (
-                        <Badge variant={scoreBadge(m.reliabilityScore)}>
-                          {m.reliabilityScore}点
+                      {m.registry ? (
+                        <Badge variant={registryBadge(m.registry)}>
+                          {m.registry}
                         </Badge>
                       ) : (
-                        <span className="text-xs text-gray-300">\u2014</span>
+                        <span className="text-xs text-gray-300">{"\u2014"}</span>
                       )}
+                    </td>
+                    <td className="hidden whitespace-nowrap px-5 py-4 text-gray-600 md:table-cell">
+                      {m.certificationBody ?? "\u2014"}
                     </td>
                   </tr>
                 ))}
               </tbody>
             </table>
+            <div className="border-t border-gray-100 px-5 py-3 text-center">
+              <Link
+                href="/methodologies"
+                className="text-sm font-medium text-emerald-600 hover:text-emerald-700"
+              >
+                すべてのメソドロジーを見る →
+              </Link>
+            </div>
           </div>
         ) : (
           <p className="rounded-xl border border-gray-200 bg-white py-12 text-center text-sm text-gray-400 shadow-sm">

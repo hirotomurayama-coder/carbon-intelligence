@@ -1,5 +1,6 @@
 import type {
   ScrapedMethodology,
+  AiEnrichedFields,
   SyncResult,
   SyncRunResult,
   RegistryName,
@@ -13,11 +14,12 @@ import {
   getExistingHash,
   createSyncNotification,
 } from "./wordpress-writer";
+import { enrichMethodology, isAiEnrichAvailable } from "./ai-enricher";
 import { SYNC_CONFIG } from "./config";
 
 // ============================================================
 // 同期エンジン（オーケストレーター）
-// スクレイピング → 差分検出 → WordPress Upsert → 通知
+// スクレイピング → AI エンリッチ → 差分検出 → WordPress Upsert → 通知
 // ============================================================
 
 function generateRunId(): string {
@@ -25,10 +27,12 @@ function generateRunId(): string {
 }
 
 /**
- * 1 件のメソドロジーを処理: 既存検索 → ハッシュ比較 → 作成/更新/スキップ
+ * 1 件のメソドロジーを処理:
+ * 既存検索 → ハッシュ比較 → AI エンリッチ → 作成/更新/スキップ
  */
 async function processSingle(
-  scraped: ScrapedMethodology
+  scraped: ScrapedMethodology,
+  skipAi: boolean
 ): Promise<SyncResult> {
   const timestamp = new Date().toISOString();
 
@@ -42,8 +46,9 @@ async function processSingle(
     }
 
     if (wpId === null) {
-      // 3a. 新規作成
-      await createMethodology(scraped);
+      // 3a. 新規作成 → AI エンリッチ実行
+      const enriched = skipAi ? null : await safeEnrich(scraped);
+      await createMethodology(scraped, enriched);
       return {
         methodologyName: scraped.name,
         registry: scraped.registry,
@@ -63,8 +68,9 @@ async function processSingle(
       };
     }
 
-    // 3c. ハッシュ不一致 → 更新
-    await updateMethodology(wpId, scraped);
+    // 3c. ハッシュ不一致 → AI 再エンリッチ + 更新
+    const enriched = skipAi ? null : await safeEnrich(scraped);
+    await updateMethodology(wpId, scraped, enriched);
     return {
       methodologyName: scraped.name,
       registry: scraped.registry,
@@ -80,6 +86,20 @@ async function processSingle(
       timestamp,
       error: String(e),
     };
+  }
+}
+
+/**
+ * AI エンリッチのエラーを安全にキャッチ（エンリッチ失敗でも同期は続行）
+ */
+async function safeEnrich(
+  scraped: ScrapedMethodology
+): Promise<AiEnrichedFields | null> {
+  try {
+    return await enrichMethodology(scraped);
+  } catch (e) {
+    console.error(`[Sync] AI enrich failed for ${scraped.name}:`, e);
+    return null;
   }
 }
 
@@ -109,19 +129,24 @@ async function postNotifications(results: SyncResult[]): Promise<void> {
  *
  * @param registryFilter 特定レジストリのみ同期する場合に指定
  * @param dryRun true の場合、WordPress への書き込みをスキップ（スクレイピングのみ）
+ * @param skipAi true の場合、AI エンリッチをスキップ（従来動作）
  */
 export async function runSync(
   registryFilter?: RegistryName,
-  dryRun = false
+  dryRun = false,
+  skipAi = false
 ): Promise<SyncRunResult> {
   const runId = generateRunId();
   const startedAt = new Date().toISOString();
   const results: SyncResult[] = [];
 
+  const aiAvailable = !skipAi && isAiEnrichAvailable();
+
   console.log(
     `[Sync] Run ${runId} started` +
       (registryFilter ? ` (filter: ${registryFilter})` : "") +
-      (dryRun ? " [DRY RUN]" : "")
+      (dryRun ? " [DRY RUN]" : "") +
+      (aiAvailable ? " [AI ENRICH ON]" : " [AI ENRICH OFF]")
   );
 
   // 1. アダプター取得
@@ -152,10 +177,10 @@ export async function runSync(
     );
   }
 
-  // 3. WordPress Upsert
+  // 3. WordPress Upsert（+ AI エンリッチ）
   if (!dryRun) {
     for (const scraped of toProcess) {
-      const result = await processSingle(scraped);
+      const result = await processSingle(scraped, !aiAvailable);
       results.push(result);
       console.log(
         `[Sync] ${result.methodologyName}: ${result.action}` +

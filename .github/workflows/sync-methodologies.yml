@@ -20,6 +20,11 @@ on:
         required: false
         type: boolean
         default: false
+      skip_ai:
+        description: "AI エンリッチをスキップ"
+        required: false
+        type: boolean
+        default: false
 
 jobs:
   sync:
@@ -44,6 +49,7 @@ jobs:
           NEXT_PUBLIC_WORDPRESS_API_URL: ${{ secrets.NEXT_PUBLIC_WORDPRESS_API_URL }}
           WP_APP_USER: ${{ secrets.WP_APP_USER }}
           WP_APP_PASSWORD: ${{ secrets.WP_APP_PASSWORD }}
+          GOOGLE_GENERATIVE_AI_API_KEY: ${{ secrets.GOOGLE_GENERATIVE_AI_API_KEY }}
         run: |
           ARGS=""
           if [ -n "${{ inputs.registry }}" ]; then
@@ -51,5 +57,8 @@ jobs:
           fi
           if [ "${{ inputs.dry_run }}" = "true" ]; then
             ARGS="$ARGS --dry-run"
+          fi
+          if [ "${{ inputs.skip_ai }}" = "true" ]; then
+            ARGS="$ARGS --skip-ai"
           fi
           npx tsx scripts/sync-methodologies.ts $ARGS

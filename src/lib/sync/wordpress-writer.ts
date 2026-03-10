@@ -1,4 +1,4 @@
-import type { ScrapedMethodology, RegistryName } from "@/types";
+import type { ScrapedMethodology, AiEnrichedFields, RegistryName } from "@/types";
 
 // ============================================================
 // WordPress REST API 書き込みクライアント
@@ -116,15 +116,18 @@ export async function getExistingHash(
 
 /**
  * 新しいメソドロジー投稿を作成。
+ * @param scraped スクレイピング結果
+ * @param enriched AI エンリッチ結果（null の場合は AI フィールドなし）
  * @returns 作成された投稿の ID
  */
 export async function createMethodology(
-  scraped: ScrapedMethodology
+  scraped: ScrapedMethodology,
+  enriched?: AiEnrichedFields | null
 ): Promise<number> {
   if (!API_BASE) throw new Error("[WP Writer] API URL が未設定");
 
   const url = `${API_BASE}/methodologies`;
-  const body = buildPostBody(scraped);
+  const body = buildPostBody(scraped, enriched ?? undefined);
 
   const res = await fetch(url, {
     method: "POST",
@@ -149,15 +152,19 @@ export async function createMethodology(
 
 /**
  * 既存のメソドロジー投稿を更新。
+ * @param wpId WordPress 投稿 ID
+ * @param scraped スクレイピング結果
+ * @param enriched AI エンリッチ結果（null の場合は AI フィールドなし）
  */
 export async function updateMethodology(
   wpId: number,
-  scraped: ScrapedMethodology
+  scraped: ScrapedMethodology,
+  enriched?: AiEnrichedFields | null
 ): Promise<void> {
   if (!API_BASE) throw new Error("[WP Writer] API URL が未設定");
 
   const url = `${API_BASE}/methodologies/${wpId}`;
-  const body = buildPostBody(scraped);
+  const body = buildPostBody(scraped, enriched ?? undefined);
 
   const res = await fetch(url, {
     method: "PUT",
@@ -229,20 +236,40 @@ export async function createSyncNotification(
 // 内部ヘルパー
 // ============================================================
 
-/** ScrapedMethodology → WordPress POST body に変換 */
-function buildPostBody(scraped: ScrapedMethodology) {
+/** ScrapedMethodology (+ AI エンリッチ) → WordPress POST body に変換 */
+function buildPostBody(scraped: ScrapedMethodology, enriched?: AiEnrichedFields) {
+  // AI 翻訳がある場合は日本語タイトルを WP 投稿タイトルに設定
+  const title = enriched?.titleJa || scraped.name;
+  // AI 要約がある場合はコンテンツに設定
+  const content = enriched?.aiSummary
+    ? `<p>${enriched.aiSummary}</p>`
+    : `<p>${scraped.description}</p>`;
+
+  // ACF フィールドを構築（select フィールドは null の場合省略 — 空文字送信はバリデーションエラーになる）
+  const acf: Record<string, unknown> = {
+    // テキスト系フィールド（空文字OK）
+    methodology_type: mapCategoryToType(scraped.category),
+    registry: scraped.registry,
+    source_url: scraped.sourceUrl,
+    data_hash: scraped.dataHash,
+    external_last_updated: scraped.lastUpdated ?? "",
+    synced_at: new Date().toISOString(),
+    title_ja: enriched?.titleJa ?? "",
+    ai_summary: enriched?.aiSummary ?? "",
+    standard: enriched?.certificationBody ?? "",
+  };
+
+  // select フィールド — 値がある場合のみ送信（null / undefined は省略）
+  if (enriched?.creditType) acf.credit_type = enriched.creditType;
+  if (enriched?.baseType) acf.base_type = enriched.baseType;
+  if (enriched?.subCategory) acf.sub_category = enriched.subCategory;
+  if (enriched?.operationalStatus) acf.status = enriched.operationalStatus;
+
   return {
-    title: scraped.name,
-    content: `<p>${scraped.description}</p>`,
+    title,
+    content,
     status: "publish",
-    acf: {
-      methodology_type: mapCategoryToType(scraped.category),
-      registry: scraped.registry,
-      source_url: scraped.sourceUrl,
-      data_hash: scraped.dataHash,
-      external_last_updated: scraped.lastUpdated ?? "",
-      synced_at: new Date().toISOString(),
-    },
+    acf,
   };
 }
 

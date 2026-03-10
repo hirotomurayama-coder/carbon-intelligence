@@ -26,6 +26,15 @@ export type Methodology = {
   dataHash: string | null;              // ACF: data_hash
   externalLastUpdated: string | null;   // ACF: external_last_updated
   syncedAt: string | null;              // ACF: synced_at
+  // --- AI エンリッチフィールド（ACF 未設定時は null） ---
+  titleJa: string | null;              // ACF: title_ja — AI 翻訳日本語タイトル
+  aiSummary: string | null;            // ACF: ai_summary — AI 生成要約（150字）
+  creditType: string | null;           // ACF: credit_type — 回避・削減系 / 除去系
+  baseType: string | null;             // ACF: base_type — 自然ベース / 技術ベース / 再エネ
+  subCategory: string | null;          // ACF: sub_category — 詳細分類（森林, バイオ炭 等）
+  operationalStatus: string | null;    // ACF: status — 運用中 / 審査中 / 再審査中 / 却下 / 無効化
+  certificationBody: string | null;    // ACF: standard — 認証機関名
+  version: string | null;              // ACF: version — バージョン
 };
 
 // ============================================================
@@ -87,6 +96,22 @@ export type ScrapedMethodology = {
   lastUpdated: string | null;
   version: string | null;
   dataHash: string;         // SHA-256（コンテンツ変更検知用）
+};
+
+/** ACF select フィールドの許可値（WordPress 側の定義に完全準拠） */
+export type CreditType = "回避・削減系" | "除去系";
+export type BaseType = "自然ベース" | "技術ベース" | "再エネ";
+export type OperationalStatus = "運用中" | "審査中" | "再審査中" | "却下" | "無効化";
+
+/** AI エンリッチで生成されるフィールド */
+export type AiEnrichedFields = {
+  titleJa: string;              // 日本語翻訳タイトル
+  aiSummary: string;            // AI 生成の150字要約（日本語）
+  creditType: CreditType | null;     // ACF: credit_type
+  baseType: BaseType | null;         // ACF: base_type
+  subCategory: string | null;        // ACF: sub_category
+  operationalStatus: OperationalStatus | null; // ACF: status
+  certificationBody: string | null;  // ACF: standard — "Verra VCS", "Gold Standard" 等
 };
 
 /** 同期結果のアクション種別 */

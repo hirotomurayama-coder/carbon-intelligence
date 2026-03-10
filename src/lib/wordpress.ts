@@ -199,6 +199,30 @@ function mapMethodology(wp: WPPost): Methodology {
     syncedAt = acfString(acf, "synced_at", "") || null;
   }
 
+  // AI エンリッチフィールド（WordPress ACF フィールド名で読み取り）
+  let titleJa: string | null = null;
+  let aiSummary: string | null = null;
+  let creditType: string | null = null;
+  let baseType: string | null = null;
+  let subCategory: string | null = null;
+  let operationalStatus: string | null = null;
+  let certificationBody: string | null = null;
+  let version: string | null = null;
+
+  if (hasData) {
+    const rawTitleJa = acfString(acf, "title_ja", "");
+    // title_ja が英語原文と同じ場合は「翻訳なし」扱い → null
+    titleJa = rawTitleJa && rawTitleJa !== stripHtml(wp.title.rendered) ? rawTitleJa : null;
+    aiSummary = acfString(acf, "ai_summary", "") || null;
+    // select フィールド: WP が false を返す場合がある → acfString で空文字化 → || null で null に
+    creditType = acfString(acf, "credit_type", "") || null;
+    baseType = acfString(acf, "base_type", "") || null;
+    subCategory = acfString(acf, "sub_category", "") || null;
+    operationalStatus = acfString(acf, "status", "") || null;
+    certificationBody = acfString(acf, "standard", "") || null;
+    version = acfString(acf, "version", "") || null;
+  }
+
   return {
     id: String(wp.id),
     title: stripHtml(wp.title.rendered),
@@ -212,6 +236,14 @@ function mapMethodology(wp: WPPost): Methodology {
     dataHash,
     externalLastUpdated,
     syncedAt,
+    titleJa,
+    aiSummary,
+    creditType,
+    baseType,
+    subCategory,
+    operationalStatus,
+    certificationBody,
+    version,
   };
 }
 
@@ -269,6 +301,37 @@ function mapInsight(wp: WPPost): Insight {
 // 公開 API 関数 — 3つの CPT を直接取得
 // データ取得失敗時は空配列を返す（graceful degradation）
 // ============================================================
+
+/** 単一リソースを取得する汎用ヘルパー */
+async function wpFetchSingle<T>(endpoint: string): Promise<T | null> {
+  const url = `${API_BASE}/${endpoint}`;
+  console.log(`[WP] Fetching single: ${url}`);
+
+  const res = await fetch(url, {
+    redirect: "follow",
+    cache: "no-store",
+  });
+
+  if (!res.ok) {
+    console.error(`[WP ERROR] ${endpoint}: ${res.status} ${res.statusText}`);
+    return null;
+  }
+
+  return res.json();
+}
+
+/** メソドロジーを ID で1件取得（詳細ページ用） */
+export async function getMethodologyById(id: string): Promise<Methodology | null> {
+  if (!isApiConfigured()) return null;
+  try {
+    const post = await wpFetchSingle<WPPost>(`methodologies/${id}`);
+    if (!post) return null;
+    return mapMethodology(post);
+  } catch (e) {
+    console.error(`[WP FAIL] methodology/${id}:`, e);
+    return null;
+  }
+}
 
 /** メソドロジー一覧を取得（CPT: methodologies） */
 export async function getMethodologies(): Promise<Methodology[]> {

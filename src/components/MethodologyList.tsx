@@ -1,24 +1,42 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { SearchInput } from "@/components/ui/SearchInput";
 import { FilterSelect } from "@/components/ui/FilterSelect";
 import { Badge } from "@/components/ui/Badge";
-import type { Methodology, MethodologyType } from "@/types";
+import type { Methodology, RegistryName } from "@/types";
 
-const typeOptions: { label: string; value: MethodologyType }[] = [
-  { label: "ARR", value: "ARR" },
-  { label: "ALM", value: "ALM" },
-  { label: "マングローブ", value: "マングローブ" },
-  { label: "REDD+", value: "REDD+" },
-  { label: "再生可能エネルギー", value: "再生可能エネルギー" },
-  { label: "省エネルギー", value: "省エネルギー" },
+const registryOptions: { label: string; value: RegistryName }[] = [
+  { label: "Verra", value: "Verra" },
+  { label: "Gold Standard", value: "Gold Standard" },
+  { label: "Puro.earth", value: "Puro.earth" },
 ];
 
-function scoreBadgeVariant(score: number) {
-  if (score >= 90) return "emerald" as const;
-  if (score >= 80) return "blue" as const;
-  return "amber" as const;
+/** レジストリ名に応じたバッジ色 */
+function registryBadgeVariant(registry: RegistryName) {
+  switch (registry) {
+    case "Verra":
+      return "emerald" as const;
+    case "Gold Standard":
+      return "amber" as const;
+    case "Puro.earth":
+      return "cyan" as const;
+    default:
+      return "gray" as const;
+  }
+}
+
+/** 分類バッジ色 */
+function creditTypeBadgeVariant(v: string) {
+  return v === "除去系" ? ("indigo" as const) : ("blue" as const);
+}
+
+function baseTypeBadgeVariant(v: string) {
+  if (v === "自然ベース") return "emerald" as const;
+  if (v === "技術ベース") return "slate" as const;
+  return "amber" as const; // 再エネ
 }
 
 type Props = {
@@ -26,30 +44,28 @@ type Props = {
 };
 
 export function MethodologyList({ data }: Props) {
+  const router = useRouter();
   const [keyword, setKeyword] = useState("");
-  const [typeFilter, setTypeFilter] = useState("");
-  const [regionFilter, setRegionFilter] = useState("");
-
-  const regionOptions = useMemo(
-    () =>
-      [...new Set(data.map((m) => m.region).filter((r): r is string => r !== null))].map((r) => ({
-        label: r,
-        value: r,
-      })),
-    [data]
-  );
+  const [registryFilter, setRegistryFilter] = useState("");
 
   const filtered = useMemo(() => {
     return data.filter((m) => {
+      const searchTarget = [
+        m.title,
+        m.titleJa ?? "",
+        m.summary,
+        m.aiSummary ?? "",
+        m.certificationBody ?? "",
+      ]
+        .join(" ")
+        .toLowerCase();
       const matchesKeyword =
-        keyword === "" ||
-        m.title.toLowerCase().includes(keyword.toLowerCase()) ||
-        m.summary.toLowerCase().includes(keyword.toLowerCase());
-      const matchesType = typeFilter === "" || m.type === typeFilter;
-      const matchesRegion = regionFilter === "" || m.region === regionFilter;
-      return matchesKeyword && matchesType && matchesRegion;
+        keyword === "" || searchTarget.includes(keyword.toLowerCase());
+      const matchesRegistry =
+        registryFilter === "" || m.registry === registryFilter;
+      return matchesKeyword && matchesRegistry;
     });
-  }, [data, keyword, typeFilter, regionFilter]);
+  }, [data, keyword, registryFilter]);
 
   return (
     <div className="space-y-6">
@@ -63,16 +79,10 @@ export function MethodologyList({ data }: Props) {
           />
         </div>
         <FilterSelect
-          value={typeFilter}
-          onChange={setTypeFilter}
-          options={typeOptions}
-          placeholder="算定手法"
-        />
-        <FilterSelect
-          value={regionFilter}
-          onChange={setRegionFilter}
-          options={regionOptions}
-          placeholder="地域"
+          value={registryFilter}
+          onChange={setRegistryFilter}
+          options={registryOptions}
+          placeholder="レジストリ"
         />
         <span className="ml-auto text-sm text-gray-400">
           {filtered.length} 件
@@ -84,41 +94,111 @@ export function MethodologyList({ data }: Props) {
         <table className="w-full text-left text-sm">
           <thead>
             <tr className="border-b border-gray-100 bg-gray-50/60">
-              <th className="px-5 py-3 font-medium text-gray-500">タイトル</th>
-              <th className="px-5 py-3 font-medium text-gray-500">算定手法</th>
-              <th className="px-5 py-3 font-medium text-gray-500">地域</th>
-              <th className="px-5 py-3 font-medium text-gray-500">有効期限</th>
-              <th className="px-5 py-3 text-right font-medium text-gray-500">
-                信頼性
+              <th className="px-5 py-3 font-medium text-gray-500">
+                タイトル
+              </th>
+              <th className="px-5 py-3 font-medium text-gray-500">
+                レジストリ
+              </th>
+              <th className="hidden px-5 py-3 font-medium text-gray-500 md:table-cell">
+                認証機関
+              </th>
+              <th className="hidden px-5 py-3 font-medium text-gray-500 lg:table-cell">
+                分類
+              </th>
+              <th className="hidden px-5 py-3 font-medium text-gray-500 lg:table-cell">
+                ステータス
               </th>
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-100">
             {filtered.map((m) => (
-              <tr key={m.id} className="hover:bg-gray-50/50">
+              <tr
+                key={m.id}
+                className="group cursor-pointer transition-colors hover:bg-emerald-50/40"
+                onClick={() => router.push(`/methodologies/${m.id}`)}
+              >
+                {/* タイトル */}
                 <td className="px-5 py-4">
-                  <p className="font-medium text-gray-900">{m.title}</p>
-                  <p className="mt-0.5 text-xs leading-relaxed text-gray-400">
-                    {m.summary.length > 80
-                      ? m.summary.slice(0, 80) + "…"
-                      : m.summary}
-                  </p>
+                  <Link
+                    href={`/methodologies/${m.id}`}
+                    className="block"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    {/* 日本語翻訳がある場合: 日本語メイン + 英語サブ */}
+                    {m.titleJa ? (
+                      <>
+                        <p className="font-medium text-gray-900 group-hover:text-emerald-700">
+                          {m.titleJa}
+                        </p>
+                        <p className="mt-0.5 text-xs text-gray-400">
+                          {m.title.length > 80
+                            ? m.title.slice(0, 80) + "…"
+                            : m.title}
+                        </p>
+                      </>
+                    ) : (
+                      /* 日本語翻訳がない場合: 英語タイトルを大きく表示 */
+                      <>
+                        <p className="font-medium text-gray-900 group-hover:text-emerald-700">
+                          {m.title}
+                        </p>
+                        {m.summary && (
+                          <p className="mt-0.5 text-xs leading-relaxed text-gray-400">
+                            {m.summary.length > 100
+                              ? m.summary.slice(0, 100) + "…"
+                              : m.summary}
+                          </p>
+                        )}
+                      </>
+                    )}
+                  </Link>
                 </td>
+
+                {/* レジストリ */}
                 <td className="px-5 py-4">
-                  <Badge variant={m.type !== null ? "slate" : "gray"}>
-                    {m.type ?? "\u672A\u5206\u985E"}
-                  </Badge>
+                  {m.registry ? (
+                    <Badge variant={registryBadgeVariant(m.registry)}>
+                      {m.registry}
+                    </Badge>
+                  ) : (
+                    <span className="text-xs text-gray-300">{"\u2014"}</span>
+                  )}
                 </td>
-                <td className="whitespace-nowrap px-5 py-4 text-gray-600">
-                  {m.region ?? "\u2014"}
+
+                {/* 認証機関 */}
+                <td className="hidden px-5 py-4 text-gray-600 md:table-cell">
+                  {m.certificationBody ?? "\u2014"}
                 </td>
-                <td className="whitespace-nowrap px-5 py-4 text-gray-600">
-                  {m.validUntil ?? "\u2014"}
+
+                {/* 分類 */}
+                <td className="hidden px-5 py-4 lg:table-cell">
+                  <div className="flex flex-col gap-1">
+                    {m.creditType && (
+                      <Badge variant={creditTypeBadgeVariant(m.creditType)}>
+                        {m.creditType}
+                      </Badge>
+                    )}
+                    {m.baseType && (
+                      <Badge variant={baseTypeBadgeVariant(m.baseType)}>
+                        {m.baseType}
+                      </Badge>
+                    )}
+                    {!m.creditType && !m.baseType && (
+                      <span className="text-xs text-gray-300">{"\u2014"}</span>
+                    )}
+                  </div>
                 </td>
-                <td className="px-5 py-4 text-right">
-                  {m.reliabilityScore !== null ? (
-                    <Badge variant={scoreBadgeVariant(m.reliabilityScore)}>
-                      {m.reliabilityScore}点
+
+                {/* ステータス */}
+                <td className="hidden px-5 py-4 lg:table-cell">
+                  {m.operationalStatus ? (
+                    <Badge
+                      variant={
+                        m.operationalStatus === "運用中" ? "emerald" : "gray"
+                      }
+                    >
+                      {m.operationalStatus}
                     </Badge>
                   ) : (
                     <span className="text-xs text-gray-300">{"\u2014"}</span>
