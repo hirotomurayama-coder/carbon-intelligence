@@ -233,8 +233,10 @@ export class VerraAdapter implements RegistryAdapter {
         .join("\n")
         .slice(0, 2000); // AI コスト抑制: 最大2000文字
 
-      // バージョン抽出: URL スラッグを最優先、次にページ本文テキスト
-      const version = this.extractVersionFromUrl(sourceUrl);
+      // バージョン抽出（優先順位: ページタイトル(h1) ＞ URL スラッグ）
+      const pageTitle = $("h1").first().text().trim();
+      const version = this.extractVersionFromTitle(pageTitle)
+        ?? this.extractVersionFromUrl(sourceUrl);
 
       return { activeDate, sectoralScope, mitigationOutcome, detailText, version };
     } catch (e) {
@@ -286,7 +288,19 @@ export class VerraAdapter implements RegistryAdapter {
     return match ? `v${match[1]}` : null;
   }
 
-  /** URL スラッグからバージョン番号を抽出（例: -v1-2 → v1.2） */
+  /** ページタイトル（h1）末尾からバージョンを抽出（例: "... Systems v1.0" → v1.0） */
+  private extractVersionFromTitle(title: string): string | null {
+    if (!title) return null;
+    // タイトル末尾の v[数字].[数字] パターン（例: v1.0, v3.1）
+    const match = title.match(/v(\d+\.\d+)\s*$/i);
+    if (match) return `v${match[1]}`;
+    // タイトル中の v[数字].[数字] パターン（末尾でなくても）
+    const matchAny = title.match(/v(\d+\.\d+)/i);
+    if (matchAny) return `v${matchAny[1]}`;
+    return null;
+  }
+
+  /** URL スラッグからバージョン番号を抽出（例: -v1-0 → v1.0） */
   private extractVersionFromUrl(url: string): string | null {
     const match = url.match(/-v(\d+)-(\d+)\/?$/i);
     if (match) return `v${match[1]}.${match[2]}`;
