@@ -67,7 +67,7 @@ function statusBarClass(status: RoadmapStatus | null): string {
 
 /** ステータスに応じた Badge variant */
 function statusBadgeVariant(
-  status: RoadmapStatus | null
+  status: RoadmapStatus | null,
 ): "emerald" | "blue" | "amber" | "gray" {
   switch (status) {
     case "完了":
@@ -94,9 +94,9 @@ function formatDate(dateStr: string | null): string {
  */
 function assignLanes(events: RoadmapEvent[]): Map<string, number> {
   const sorted = [...events].sort((a, b) =>
-    (a.startDate ?? "").localeCompare(b.startDate ?? "")
+    (a.startDate ?? "").localeCompare(b.startDate ?? ""),
   );
-  const lanes: string[][] = []; // lanes[i] = そのレーンの最後の endDate
+  const lanes: string[][] = [];
   const assignment = new Map<string, number>();
 
   for (const event of sorted) {
@@ -130,63 +130,71 @@ export function RoadmapTimeline({ data }: Props) {
   const [selectedEvent, setSelectedEvent] = useState<RoadmapEvent | null>(null);
   const [statusFilter, setStatusFilter] = useState("");
 
-  // 日付のあるイベントと日付のないイベントを分離
-  const withDates = useMemo(
-    () => data.filter((e) => e.startDate),
-    [data]
-  );
-  const withoutDates = useMemo(
-    () => data.filter((e) => !e.startDate),
-    [data]
-  );
+  const { grouped, originYear, originMonth, totalMonths, skippedCount } =
+    useMemo(() => {
+      // 日付のあるイベントのみガントチャートに表示
+      const withDates = data.filter((e) => e.startDate);
+      const skipped = data.length - withDates.length;
 
-  const { grouped, originYear, originMonth, totalMonths } = useMemo(() => {
-    // ステータスフィルタ
-    const filtered = statusFilter
-      ? withDates.filter((e) => e.status === statusFilter)
-      : withDates;
+      // ステータスフィルタ
+      const filtered = statusFilter
+        ? withDates.filter((e) => e.status === statusFilter)
+        : withDates;
 
-    // タイムライン範囲の算出
-    let minDate = "9999-12-31";
-    let maxDate = "0000-01-01";
-    for (const e of filtered) {
-      if (e.startDate && e.startDate < minDate) minDate = e.startDate;
-      const end = e.endDate ?? e.startDate ?? "";
-      if (end > maxDate) maxDate = end;
-    }
+      // タイムライン範囲の算出
+      let minDate = "9999-12-31";
+      let maxDate = "0000-01-01";
+      for (const e of filtered) {
+        if (e.startDate && e.startDate < minDate) minDate = e.startDate;
+        const end = e.endDate ?? e.startDate ?? "";
+        if (end > maxDate) maxDate = end;
+      }
 
-    // デフォルト範囲 (データがない場合)
-    const oYear = filtered.length > 0 ? new Date(minDate).getFullYear() : 2023;
-    const oMonth = filtered.length > 0 ? Math.floor(new Date(minDate).getMonth() / 3) * 3 : 0; // 四半期開始月
-    const eDate = filtered.length > 0 ? new Date(maxDate) : new Date(2029, 0, 1);
-    const totalM = Math.max(
-      (eDate.getFullYear() - oYear) * 12 + (eDate.getMonth() - oMonth) + 3,
-      24
-    );
+      // デフォルト範囲 (データがない場合は 2023-01 〜 2029-01)
+      const oYear =
+        filtered.length > 0 ? new Date(minDate).getFullYear() : 2023;
+      const oMonth =
+        filtered.length > 0
+          ? Math.floor(new Date(minDate).getMonth() / 3) * 3
+          : 0;
+      const eDate =
+        filtered.length > 0 ? new Date(maxDate) : new Date(2029, 0, 1);
+      const totalM = Math.max(
+        (eDate.getFullYear() - oYear) * 12 + (eDate.getMonth() - oMonth) + 3,
+        24,
+      );
 
-    // カテゴリでグループ化 (定義順)
-    const map = new Map<string, RoadmapEvent[]>();
-    for (const cat of CATEGORY_ORDER) {
-      const items = filtered.filter((e) => e.category === cat);
-      if (items.length > 0) map.set(cat, items);
-    }
-    // 未分類
-    const uncategorized = filtered.filter(
-      (e) => !e.category || !CATEGORY_ORDER.includes(e.category)
-    );
-    if (uncategorized.length > 0) map.set("その他", uncategorized);
+      // event_category でグループ化 (定義順)
+      const map = new Map<string, RoadmapEvent[]>();
+      for (const cat of CATEGORY_ORDER) {
+        const items = filtered.filter((e) => e.category === cat);
+        if (items.length > 0) map.set(cat, items);
+      }
+      // 未分類
+      const uncategorized = filtered.filter(
+        (e) => !e.category || !CATEGORY_ORDER.includes(e.category),
+      );
+      if (uncategorized.length > 0) map.set("その他", uncategorized);
 
-    return { grouped: map, originYear: oYear, originMonth: oMonth, totalMonths: totalM };
-  }, [withDates, statusFilter]);
+      return {
+        grouped: map,
+        originYear: oYear,
+        originMonth: oMonth,
+        totalMonths: totalM,
+        skippedCount: skipped,
+      };
+    }, [data, statusFilter]);
 
   // Today ラインの位置
   const today = new Date();
   const todayMonthIdx = monthIndex(
     today.toISOString().slice(0, 10),
     originYear,
-    originMonth
+    originMonth,
   );
-  const todayDayFraction = (today.getDate() - 1) / daysInMonth(today.getFullYear(), today.getMonth());
+  const todayDayFraction =
+    (today.getDate() - 1) /
+    daysInMonth(today.getFullYear(), today.getMonth());
   const todayLeft = LABEL_W + (todayMonthIdx + todayDayFraction) * MONTH_W;
 
   // 年ヘッダーの構築
@@ -202,17 +210,12 @@ export function RoadmapTimeline({ data }: Props) {
       });
     }
   }
-  // 最後の年のスパンを調整
   if (years.length > 0) {
     const last = years[years.length - 1];
     last.span = Math.min(last.span, totalMonths - last.startCol);
   }
 
-  // フィルタ適用後の日付なしイベント
-  const filteredWithoutDates = statusFilter
-    ? withoutDates.filter((e) => e.status === statusFilter)
-    : withoutDates;
-
+  // ----- データが 0 件の場合 -----
   if (data.length === 0) {
     return (
       <p className="py-12 text-center text-gray-400">
@@ -221,230 +224,198 @@ export function RoadmapTimeline({ data }: Props) {
     );
   }
 
-  const hasGanttData = grouped.size > 0;
+  // ----- 日付入りイベントが 0 件の場合 -----
+  if (grouped.size === 0) {
+    return (
+      <div className="space-y-4">
+        {/* コントロールバーは表示しておく */}
+        <ControlBar
+          statusFilter={statusFilter}
+          onFilterChange={setStatusFilter}
+        />
 
+        <div className="rounded-xl border border-gray-200 bg-white p-12 text-center shadow-sm">
+          <p className="text-gray-500">
+            {skippedCount > 0 ? (
+              <>
+                {skippedCount}件のイベントが登録されていますが、
+                <br />
+                ACF の日付フィールド（<code className="text-xs bg-gray-100 px-1 py-0.5 rounded">start_date</code>
+                ・<code className="text-xs bg-gray-100 px-1 py-0.5 rounded">end_date</code>）が
+                未設定のためチャートに表示できません。
+                <br />
+                <span className="mt-2 block text-xs text-gray-400">
+                  WordPress 管理画面で roadmap CPT の ACF フィールドグループを作成し、
+                  各投稿に日付を入力してください。
+                </span>
+              </>
+            ) : (
+              "フィルタに一致するイベントはありません"
+            )}
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  // ----- ガントチャート描画 -----
   return (
     <div className="space-y-4">
       {/* コントロールバー */}
-      <div className="flex flex-wrap items-center gap-4">
-        <select
-          className="rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm text-gray-700 focus:border-emerald-400 focus:outline-none focus:ring-1 focus:ring-emerald-400"
-          value={statusFilter}
-          onChange={(e) => setStatusFilter(e.target.value)}
+      <ControlBar
+        statusFilter={statusFilter}
+        onFilterChange={setStatusFilter}
+      />
+
+      {/* ガントチャート */}
+      <div className="overflow-x-auto rounded-xl border border-gray-200 bg-white shadow-sm">
+        <div
+          className="relative"
+          style={{ minWidth: `${LABEL_W + totalMonths * MONTH_W}px` }}
         >
-          <option value="">すべてのステータス</option>
-          <option value="完了">完了</option>
-          <option value="進行中">進行中</option>
-          <option value="準備中">準備中</option>
-          <option value="予定">予定</option>
-        </select>
-
-        {/* 凡例 */}
-        <div className="ml-auto flex items-center gap-3">
-          {(["完了", "進行中", "準備中", "予定"] as RoadmapStatus[]).map((s) => (
-            <div key={s} className="flex items-center gap-1.5">
-              <span
-                className={`h-3 w-3 rounded-full border ${statusBarClass(s)}`}
-              />
-              <span className="text-xs text-gray-500">{s}</span>
-            </div>
-          ))}
-          <div className="flex items-center gap-1.5">
-            <span className="h-3 w-0.5 bg-red-500" />
-            <span className="text-xs text-gray-500">今日</span>
-          </div>
-        </div>
-      </div>
-
-      {/* ===== ガントチャート ===== */}
-      {hasGanttData && (
-        <div className="overflow-x-auto rounded-xl border border-gray-200 bg-white shadow-sm">
+          {/* ===== 年ヘッダー (sticky top) ===== */}
           <div
-            className="relative"
-            style={{ minWidth: `${LABEL_W + totalMonths * MONTH_W}px` }}
+            className="sticky top-0 z-10 flex border-b border-gray-200 bg-gray-50"
+            style={{ height: 32 }}
           >
-            {/* ===== 年ヘッダー ===== */}
             <div
-              className="sticky top-0 z-10 flex border-b border-gray-200 bg-gray-50"
-              style={{ height: 32 }}
-            >
+              className="sticky left-0 z-20 shrink-0 border-r border-gray-200 bg-gray-50"
+              style={{ width: LABEL_W }}
+            />
+            {years.map((y) => (
               <div
-                className="sticky left-0 z-20 shrink-0 border-r border-gray-200 bg-gray-50"
-                style={{ width: LABEL_W }}
-              />
-              {years.map((y) => (
-                <div
-                  key={y.year}
-                  className="flex items-center justify-center border-r border-gray-100 text-xs font-semibold text-gray-600"
-                  style={{ width: y.span * MONTH_W }}
-                >
-                  {y.year}
-                </div>
-              ))}
-            </div>
+                key={y.year}
+                className="flex items-center justify-center border-r border-gray-100 text-xs font-semibold text-gray-600"
+                style={{ width: y.span * MONTH_W }}
+              >
+                {y.year}
+              </div>
+            ))}
+          </div>
 
-            {/* ===== 月ヘッダー ===== */}
+          {/* ===== 月ヘッダー (sticky top) ===== */}
+          <div
+            className="sticky top-8 z-10 flex border-b border-gray-200 bg-gray-50"
+            style={{ height: 28 }}
+          >
             <div
-              className="sticky top-8 z-10 flex border-b border-gray-200 bg-gray-50"
-              style={{ height: 28 }}
-            >
-              <div
-                className="sticky left-0 z-20 shrink-0 border-r border-gray-200 bg-gray-50"
-                style={{ width: LABEL_W }}
-              />
-              {Array.from({ length: totalMonths }).map((_, i) => {
-                const mIdx = (originMonth + i) % 12;
-                return (
-                  <div
-                    key={i}
-                    className="flex items-center justify-center border-r border-gray-50 text-[10px] text-gray-400"
-                    style={{ width: MONTH_W }}
-                  >
-                    {MONTH_LABELS[mIdx]}
-                  </div>
-                );
-              })}
-            </div>
-
-            {/* ===== カテゴリ行 ===== */}
-            {Array.from(grouped.entries()).map(([category, events]) => {
-              const laneMap = assignLanes(events);
-              const maxLane = Math.max(...Array.from(laneMap.values()), 0);
-              const rowH = (maxLane + 1) * LANE_H + 16;
-
+              className="sticky left-0 z-20 shrink-0 border-r border-gray-200 bg-gray-50"
+              style={{ width: LABEL_W }}
+            />
+            {Array.from({ length: totalMonths }).map((_, i) => {
+              const mIdx = (originMonth + i) % 12;
               return (
                 <div
-                  key={category}
-                  className="flex border-b border-gray-100"
-                  style={{ height: rowH }}
+                  key={i}
+                  className="flex items-center justify-center border-r border-gray-50 text-[10px] text-gray-400"
+                  style={{ width: MONTH_W }}
                 >
-                  {/* カテゴリラベル (sticky) */}
-                  <div
-                    className="sticky left-0 z-20 flex shrink-0 items-start border-r border-gray-200 bg-white px-4 pt-3"
-                    style={{ width: LABEL_W }}
-                  >
-                    <span className="text-sm font-semibold text-gray-900">
-                      {category}
-                    </span>
-                  </div>
-
-                  {/* イベントバー領域 */}
-                  <div
-                    className="relative flex-1"
-                    style={{ minWidth: totalMonths * MONTH_W }}
-                  >
-                    {/* グリッド背景線 */}
-                    {Array.from({ length: totalMonths }).map((_, i) => {
-                      const mIdx = (originMonth + i) % 12;
-                      return (
-                        <div
-                          key={i}
-                          className={`absolute top-0 bottom-0 border-r ${mIdx === 0 ? "border-gray-200" : "border-gray-50"}`}
-                          style={{ left: i * MONTH_W, width: MONTH_W }}
-                        />
-                      );
-                    })}
-
-                    {/* イベントバー */}
-                    {events.map((event) => {
-                      if (!event.startDate) return null;
-                      const colStart = monthIndex(
-                        event.startDate,
-                        originYear,
-                        originMonth
-                      );
-                      const colEnd = event.endDate
-                        ? monthIndex(event.endDate, originYear, originMonth)
-                        : colStart;
-                      const lane = laneMap.get(event.id) ?? 0;
-                      const barWidth = Math.max(
-                        (colEnd - colStart + 1) * MONTH_W - 8,
-                        40
-                      );
-
-                      return (
-                        <button
-                          key={event.id}
-                          type="button"
-                          className={`absolute flex items-center rounded-full border px-3 text-xs font-medium truncate cursor-pointer transition-opacity hover:opacity-80 ${statusBarClass(event.status)}`}
-                          style={{
-                            left: colStart * MONTH_W + 4,
-                            width: barWidth,
-                            top: 8 + lane * LANE_H,
-                            height: BAR_H,
-                          }}
-                          title={`${event.title} (${formatDate(event.startDate)} ~ ${formatDate(event.endDate)})`}
-                          onClick={() => setSelectedEvent(event)}
-                        >
-                          {event.title}
-                        </button>
-                      );
-                    })}
-                  </div>
+                  {MONTH_LABELS[mIdx]}
                 </div>
               );
             })}
+          </div>
 
-            {/* ===== Today ライン ===== */}
-            {todayMonthIdx >= 0 && todayMonthIdx < totalMonths && (
+          {/* ===== カテゴリ行 (event_category ごと) ===== */}
+          {Array.from(grouped.entries()).map(([category, events]) => {
+            const laneMap = assignLanes(events);
+            const maxLane = Math.max(...Array.from(laneMap.values()), 0);
+            const rowH = (maxLane + 1) * LANE_H + 16;
+
+            return (
               <div
-                className="pointer-events-none absolute top-0 bottom-0 z-30 w-0.5 bg-red-500"
-                style={{ left: todayLeft }}
+                key={category}
+                className="flex border-b border-gray-100"
+                style={{ height: rowH }}
               >
-                <div className="absolute top-1 left-1 whitespace-nowrap rounded bg-red-500 px-1.5 py-0.5 text-[10px] font-bold text-white">
-                  今日
+                {/* カテゴリラベル (sticky left) */}
+                <div
+                  className="sticky left-0 z-20 flex shrink-0 items-start border-r border-gray-200 bg-white px-4 pt-3"
+                  style={{ width: LABEL_W }}
+                >
+                  <span className="text-sm font-semibold text-gray-900">
+                    {category}
+                  </span>
+                </div>
+
+                {/* イベントバー領域 */}
+                <div
+                  className="relative flex-1"
+                  style={{ minWidth: totalMonths * MONTH_W }}
+                >
+                  {/* グリッド背景線 */}
+                  {Array.from({ length: totalMonths }).map((_, i) => {
+                    const mIdx = (originMonth + i) % 12;
+                    return (
+                      <div
+                        key={i}
+                        className={`absolute top-0 bottom-0 border-r ${
+                          mIdx === 0 ? "border-gray-200" : "border-gray-50"
+                        }`}
+                        style={{ left: i * MONTH_W, width: MONTH_W }}
+                      />
+                    );
+                  })}
+
+                  {/* イベントバー — start_date / end_date 基準で描画 */}
+                  {events.map((event) => {
+                    if (!event.startDate) return null;
+                    const colStart = monthIndex(
+                      event.startDate,
+                      originYear,
+                      originMonth,
+                    );
+                    const colEnd = event.endDate
+                      ? monthIndex(event.endDate, originYear, originMonth)
+                      : colStart;
+                    const lane = laneMap.get(event.id) ?? 0;
+                    const barWidth = Math.max(
+                      (colEnd - colStart + 1) * MONTH_W - 8,
+                      40,
+                    );
+
+                    return (
+                      <button
+                        key={event.id}
+                        type="button"
+                        className={`absolute flex items-center rounded-full border px-3 text-xs font-medium truncate cursor-pointer transition-opacity hover:opacity-80 ${statusBarClass(event.status)}`}
+                        style={{
+                          left: colStart * MONTH_W + 4,
+                          width: barWidth,
+                          top: 8 + lane * LANE_H,
+                          height: BAR_H,
+                        }}
+                        title={`${event.title} (${formatDate(event.startDate)} ~ ${formatDate(event.endDate)})`}
+                        onClick={() => setSelectedEvent(event)}
+                      >
+                        {event.title}
+                      </button>
+                    );
+                  })}
                 </div>
               </div>
-            )}
-          </div>
-        </div>
-      )}
+            );
+          })}
 
-      {/* ===== 日付未設定イベント一覧（ACFフィールド未設定のWPデータ等） ===== */}
-      {filteredWithoutDates.length > 0 && (
-        <div className="space-y-3">
-          <h2 className="text-sm font-semibold text-gray-700">
-            登録済みイベント（日付未設定）
-            <span className="ml-2 text-xs font-normal text-gray-400">
-              {filteredWithoutDates.length}件
-            </span>
-          </h2>
-          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-            {filteredWithoutDates.map((event) => (
-              <button
-                key={event.id}
-                type="button"
-                className="rounded-lg border border-gray-200 bg-white p-4 text-left shadow-sm transition-shadow hover:shadow-md"
-                onClick={() => setSelectedEvent(event)}
-              >
-                <div className="mb-2 flex flex-wrap gap-1.5">
-                  {event.category && (
-                    <Badge variant="indigo">{event.category}</Badge>
-                  )}
-                  {event.status && (
-                    <Badge variant={statusBadgeVariant(event.status)}>
-                      {event.status}
-                    </Badge>
-                  )}
-                </div>
-                <h3 className="text-sm font-semibold text-gray-900 line-clamp-2">
-                  {event.title}
-                </h3>
-                {event.description && (
-                  <p className="mt-1 text-xs text-gray-500 line-clamp-2">
-                    {event.description}
-                  </p>
-                )}
-              </button>
-            ))}
-          </div>
+          {/* ===== Today ライン (赤い縦線) ===== */}
+          {todayMonthIdx >= 0 && todayMonthIdx < totalMonths && (
+            <div
+              className="pointer-events-none absolute top-0 bottom-0 z-30 w-0.5 bg-red-500"
+              style={{ left: todayLeft }}
+            >
+              <div className="absolute top-1 left-1 whitespace-nowrap rounded bg-red-500 px-1.5 py-0.5 text-[10px] font-bold text-white">
+                今日
+              </div>
+            </div>
+          )}
         </div>
-      )}
+      </div>
 
-      {/* 日付ありイベントも日付なしイベントもゼロの場合 */}
-      {!hasGanttData && filteredWithoutDates.length === 0 && data.length > 0 && (
-        <p className="py-8 text-center text-gray-400">
-          現在のフィルタに一致するイベントはありません
+      {/* 日付なしイベントの注釈 (あれば) */}
+      {skippedCount > 0 && (
+        <p className="text-xs text-gray-400">
+          ※ 日付（ACF）未設定のイベントが{skippedCount}件あります。
+          WordPress 管理画面で start_date / end_date を入力するとチャートに表示されます。
         </p>
       )}
 
@@ -479,6 +450,50 @@ export function RoadmapTimeline({ data }: Props) {
           </div>
         )}
       </Modal>
+    </div>
+  );
+}
+
+// ============================================================
+// サブコンポーネント: コントロールバー (フィルタ + 凡例)
+// ============================================================
+
+function ControlBar({
+  statusFilter,
+  onFilterChange,
+}: {
+  statusFilter: string;
+  onFilterChange: (v: string) => void;
+}) {
+  return (
+    <div className="flex flex-wrap items-center gap-4">
+      <select
+        className="rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm text-gray-700 focus:border-emerald-400 focus:outline-none focus:ring-1 focus:ring-emerald-400"
+        value={statusFilter}
+        onChange={(e) => onFilterChange(e.target.value)}
+      >
+        <option value="">すべてのステータス</option>
+        <option value="完了">完了</option>
+        <option value="進行中">進行中</option>
+        <option value="準備中">準備中</option>
+        <option value="予定">予定</option>
+      </select>
+
+      {/* 凡例 */}
+      <div className="ml-auto flex items-center gap-3">
+        {(["完了", "進行中", "準備中", "予定"] as RoadmapStatus[]).map((s) => (
+          <div key={s} className="flex items-center gap-1.5">
+            <span
+              className={`h-3 w-3 rounded-full border ${statusBarClass(s)}`}
+            />
+            <span className="text-xs text-gray-500">{s}</span>
+          </div>
+        ))}
+        <div className="flex items-center gap-1.5">
+          <span className="h-3 w-0.5 bg-red-500" />
+          <span className="text-xs text-gray-500">今日</span>
+        </div>
+      </div>
     </div>
   );
 }

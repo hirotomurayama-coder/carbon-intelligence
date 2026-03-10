@@ -486,23 +486,33 @@ function mapRoadmapEvent(wp: WPPost): RoadmapEvent {
   let endDate: string | null = null;
 
   if (hasData) {
-    const rawCat = acfString(acf, "roadmap_category", "");
+    // ACF フィールド名: event_category (カテゴリ)
+    const rawCat = acfString(acf, "event_category", "");
     category = VALID_ROADMAP_CATEGORIES.includes(rawCat as RoadmapCategory)
       ? (rawCat as RoadmapCategory)
       : null;
 
+    // ACF フィールド名: roadmap_status (ステータス)
     const rawStatus = acfString(acf, "roadmap_status", "");
     status = VALID_ROADMAP_STATUSES.includes(rawStatus as RoadmapStatus)
       ? (rawStatus as RoadmapStatus)
       : null;
 
+    // ACF フィールド名: start_date, end_date (期間)
     startDate = acfString(acf, "start_date", "") || null;
     endDate = acfString(acf, "end_date", "") || null;
   }
 
+  const title = stripHtml(wp.title.rendered);
+
+  // 日付データが無い場合は警告ログを出力
+  if (!startDate) {
+    console.warn(`[Roadmap] ID=${wp.id} "${title}": start_date が未設定のためチャートに表示されません`);
+  }
+
   return {
     id: String(wp.id),
-    title: stripHtml(wp.title.rendered),
+    title,
     category,
     status,
     startDate,
