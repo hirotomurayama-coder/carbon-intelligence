@@ -13,6 +13,7 @@ export const NAV_ITEMS: NavItem[] = [
     children: [
       { label: "メソドロジー", href: "/methodologies" },
       { label: "企業データベース", href: "/companies" },
+      { label: "インサイト", href: "/insights" },
     ],
   },
   { label: "分析", href: "/analytics", icon: "analytics" },

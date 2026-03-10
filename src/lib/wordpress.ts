@@ -4,6 +4,7 @@ import type {
   Company,
   CompanyCategory,
   Insight,
+  InsightDetail,
   InsightCategory,
   RegistryName,
 } from "@/types";
@@ -303,6 +304,32 @@ function mapInsight(wp: WPPost): Insight {
   };
 }
 
+/** WPPost + _embedded を扱う拡張型 */
+type WPPostWithEmbed = WPPost & {
+  featured_media?: number;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  _embedded?: { "wp:featuredmedia"?: any[] };
+};
+
+/** 詳細用マッピング — 本文 HTML とアイキャッチ画像を含む */
+function mapInsightDetail(wp: WPPostWithEmbed): InsightDetail {
+  const base = mapInsight(wp);
+
+  // アイキャッチ画像 URL を _embedded から取得
+  let featuredImageUrl: string | null = null;
+  const media = wp._embedded?.["wp:featuredmedia"];
+  if (Array.isArray(media) && media.length > 0) {
+    const src = media[0]?.source_url;
+    if (typeof src === "string") featuredImageUrl = src;
+  }
+
+  return {
+    ...base,
+    content: wp.content.rendered,
+    featuredImageUrl,
+  };
+}
+
 // ============================================================
 // 公開 API 関数 — 3つの CPT を直接取得
 // データ取得失敗時は空配列を返す（graceful degradation）
@@ -397,6 +424,19 @@ export async function getCompanies(): Promise<Company[]> {
   } catch (e) {
     console.error("[WP FAIL] companies:", e);
     return [];
+  }
+}
+
+/** インサイトを ID で1件取得（詳細ページ用、_embed でアイキャッチ画像も取得） */
+export async function getInsightById(id: string): Promise<InsightDetail | null> {
+  if (!isApiConfigured()) return null;
+  try {
+    const post = await wpFetchSingle<WPPostWithEmbed>(`insights/${id}?_embed`);
+    if (!post) return null;
+    return mapInsightDetail(post);
+  } catch (e) {
+    console.error(`[WP FAIL] insight/${id}:`, e);
+    return null;
   }
 }
 

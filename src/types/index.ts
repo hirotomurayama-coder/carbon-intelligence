@@ -66,13 +66,19 @@ export type Company = {
 /** インサイトカテゴリー */
 export type InsightCategory = "政策" | "市場" | "技術";
 
-/** インサイト */
+/** インサイト（一覧用） */
 export type Insight = {
   id: string;
   title: string;
   date: string;             // ISO 日付文字列 "YYYY-MM-DD"
   category: InsightCategory | null;     // ACF 未設定時は null
   summary: string;
+};
+
+/** インサイト詳細（記事ページ用） — Insight に本文・画像を追加 */
+export type InsightDetail = Insight & {
+  content: string;                      // WordPress content.rendered（HTML）
+  featuredImageUrl: string | null;      // アイキャッチ画像 URL
 };
 
 // ============================================================
