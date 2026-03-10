@@ -386,40 +386,56 @@ export async function getInsights(): Promise<Insight[]> {
 }
 
 /**
- * 最近同期・更新されたメソドロジーを取得（レジストリ更新セクション用）。
- * WordPress REST API の modified フィールド（投稿の更新日時）を使い、
- * 最新の更新を降順で返す。
+ * 最近更新されたメソドロジーを取得（レジストリ更新セクション用）。
+ * ACF の external_last_updated（外部サイト側の最終更新日）を基準にソートし、
+ * 外部更新日が新しい順に返す。
+ * external_last_updated が空のアイテムはリスト末尾に「日付不明」として配置。
  */
 export type RecentUpdate = {
   id: string;
   title: string;
   registry: RegistryName | null;
-  syncedAt: string | null;
+  externalLastUpdated: string | null;
   modifiedAt: string;
 };
 
 export async function getRecentUpdates(limit = 10): Promise<RecentUpdate[]> {
   if (!isApiConfigured()) return [];
   try {
-    // modified 降順で取得（最近更新されたメソドロジーが先頭）
+    // 多めに取得してクライアント側で external_last_updated でソート
+    // （WP REST API は ACF カスタムフィールドでの orderby をサポートしない）
     const posts = await wpFetch<WPPost & { modified: string }>(
-      `methodologies?per_page=${limit}&orderby=modified&order=desc`
+      `methodologies?per_page=100&orderby=modified&order=desc`
     );
-    return posts.map((wp) => {
+
+    const mapped = posts.map((wp) => {
       const { data: acf, hasData } = getAcf(wp);
       const rawRegistry = hasData ? acfString(acf, "registry", "") : "";
       const registry = VALID_REGISTRY_NAMES.includes(rawRegistry as RegistryName)
         ? (rawRegistry as RegistryName)
         : null;
-      const syncedAt = hasData ? acfString(acf, "synced_at", "") || null : null;
+      const externalLastUpdated =
+        hasData ? acfString(acf, "external_last_updated", "") || null : null;
       return {
         id: String(wp.id),
         title: stripHtml(wp.title.rendered),
         registry,
-        syncedAt,
+        externalLastUpdated,
         modifiedAt: wp.modified ?? wp.date,
       };
     });
+
+    // external_last_updated でソート（日付あり → 新しい順、日付なし → 末尾）
+    mapped.sort((a, b) => {
+      if (a.externalLastUpdated && b.externalLastUpdated) {
+        return b.externalLastUpdated.localeCompare(a.externalLastUpdated);
+      }
+      if (a.externalLastUpdated && !b.externalLastUpdated) return -1;
+      if (!a.externalLastUpdated && b.externalLastUpdated) return 1;
+      return 0;
+    });
+
+    return mapped.slice(0, limit);
   } catch (e) {
     console.error("[WP FAIL] recentUpdates:", e);
     return [];

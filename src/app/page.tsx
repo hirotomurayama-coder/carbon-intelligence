@@ -267,9 +267,9 @@ export default async function Home() {
                         </p>
                       </Link>
                       <span className="text-[10px] text-gray-400">
-                        {u.syncedAt
-                          ? u.syncedAt.slice(0, 10)
-                          : u.modifiedAt.slice(0, 10)}
+                        {u.externalLastUpdated
+                          ? u.externalLastUpdated.slice(0, 10)
+                          : "日付不明"}
                       </span>
                     </div>
                   </div>

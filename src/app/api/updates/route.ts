@@ -3,9 +3,9 @@ import { NextResponse } from "next/server";
 /**
  * GET /api/updates — 最近更新されたメソドロジーを取得
  *
- * methodologies CPT の modified 日時を元に、最近更新されたメソドロジーを返す。
- * ※ 以前は insights CPT の同期通知を返していたが、
- *   通知は insights に投稿しない方針に変更。
+ * methodologies CPT の external_last_updated（外部サイト側の更新日）を基準に、
+ * 最近更新されたメソドロジーを返す。
+ * external_last_updated が空のものは末尾に配置。
  */
 export async function GET() {
   const API_BASE = process.env.NEXT_PUBLIC_WORDPRESS_API_URL ?? "";
@@ -39,7 +39,7 @@ export async function GET() {
     const updates = posts.map((p) => {
       const title = stripHtml(p.title.rendered);
       let registry = "不明";
-      let syncedAt: string | null = null;
+      let externalLastUpdated: string | null = null;
 
       if (
         p.acf &&
@@ -48,17 +48,27 @@ export async function GET() {
       ) {
         const reg = p.acf.registry;
         if (typeof reg === "string" && reg) registry = reg;
-        const sa = p.acf.synced_at;
-        if (typeof sa === "string" && sa) syncedAt = sa;
+        const elu = p.acf.external_last_updated;
+        if (typeof elu === "string" && elu) externalLastUpdated = elu;
       }
 
       return {
         id: String(p.id),
         title,
         registry,
-        syncedAt,
+        externalLastUpdated,
         modifiedAt: p.modified ?? p.date,
       };
+    });
+
+    // external_last_updated でソート（日付あり → 新しい順、日付なし → 末尾）
+    updates.sort((a, b) => {
+      if (a.externalLastUpdated && b.externalLastUpdated) {
+        return b.externalLastUpdated.localeCompare(a.externalLastUpdated);
+      }
+      if (a.externalLastUpdated && !b.externalLastUpdated) return -1;
+      if (!a.externalLastUpdated && b.externalLastUpdated) return 1;
+      return 0;
     });
 
     return NextResponse.json({
