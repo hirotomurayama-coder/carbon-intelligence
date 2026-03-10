@@ -371,9 +371,57 @@ export async function getInsights(): Promise<Insight[]> {
   }
   try {
     const posts = await wpFetch<WPPost>("insights?per_page=100");
-    return posts.map(mapInsight);
+    // 同期エンジンが過去に作成した通知投稿（タイトルに【】を含む）を除外し、
+    // 手動で作成された本来のインサイト記事のみを返す
+    return posts
+      .filter((p) => {
+        const title = stripHtml(p.title.rendered);
+        return !(title.includes("【") && title.includes("】"));
+      })
+      .map(mapInsight);
   } catch (e) {
     console.error("[WP FAIL] insights:", e);
+    return [];
+  }
+}
+
+/**
+ * 最近同期・更新されたメソドロジーを取得（レジストリ更新セクション用）。
+ * WordPress REST API の modified フィールド（投稿の更新日時）を使い、
+ * 最新の更新を降順で返す。
+ */
+export type RecentUpdate = {
+  id: string;
+  title: string;
+  registry: RegistryName | null;
+  syncedAt: string | null;
+  modifiedAt: string;
+};
+
+export async function getRecentUpdates(limit = 10): Promise<RecentUpdate[]> {
+  if (!isApiConfigured()) return [];
+  try {
+    // modified 降順で取得（最近更新されたメソドロジーが先頭）
+    const posts = await wpFetch<WPPost & { modified: string }>(
+      `methodologies?per_page=${limit}&orderby=modified&order=desc`
+    );
+    return posts.map((wp) => {
+      const { data: acf, hasData } = getAcf(wp);
+      const rawRegistry = hasData ? acfString(acf, "registry", "") : "";
+      const registry = VALID_REGISTRY_NAMES.includes(rawRegistry as RegistryName)
+        ? (rawRegistry as RegistryName)
+        : null;
+      const syncedAt = hasData ? acfString(acf, "synced_at", "") || null : null;
+      return {
+        id: String(wp.id),
+        title: stripHtml(wp.title.rendered),
+        registry,
+        syncedAt,
+        modifiedAt: wp.modified ?? wp.date,
+      };
+    });
+  } catch (e) {
+    console.error("[WP FAIL] recentUpdates:", e);
     return [];
   }
 }

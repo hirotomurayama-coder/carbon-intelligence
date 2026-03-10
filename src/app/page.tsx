@@ -1,7 +1,6 @@
 import Link from "next/link";
-import { getMethodologies, getCompanies, getInsights } from "@/lib/wordpress";
+import { getMethodologies, getCompanies, getInsights, getRecentUpdates } from "@/lib/wordpress";
 import { Badge } from "@/components/ui/Badge";
-import { UpdateTimeline } from "@/components/UpdateTimeline";
 import type { InsightCategory, RegistryName } from "@/types";
 
 /** レジストリ名に応じたバッジ色 */
@@ -32,10 +31,11 @@ function insightBadge(cat: InsightCategory | null) {
 }
 
 export default async function Home() {
-  const [methodologies, companies, insights] = await Promise.all([
+  const [methodologies, companies, insights, recentUpdates] = await Promise.all([
     getMethodologies(),
     getCompanies(),
     getInsights(),
+    getRecentUpdates(10),
   ]);
 
   // KPI 計算 — null スコアは分母から除外
@@ -233,12 +233,54 @@ export default async function Home() {
           )}
         </section>
 
-        {/* 最近の更新タイムライン */}
+        {/* 最近の更新（methodologies の更新日時ベース） */}
         <section>
           <h2 className="mb-4 text-lg font-semibold text-gray-900">
             レジストリ更新
           </h2>
-          <UpdateTimeline />
+          {recentUpdates.length > 0 ? (
+            <div className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm">
+              <div className="mb-4 flex items-center justify-between">
+                <h3 className="text-sm font-semibold text-gray-900">
+                  最近の更新
+                </h3>
+                <Badge variant="emerald">{recentUpdates.length}件</Badge>
+              </div>
+              <div className="space-y-3">
+                {recentUpdates.map((u) => (
+                  <div
+                    key={u.id}
+                    className="relative border-l-2 border-emerald-200 pl-4"
+                  >
+                    <div className="absolute -left-[5px] top-1.5 h-2 w-2 rounded-full bg-emerald-400" />
+                    <div className="min-w-0">
+                      <div className="flex items-center gap-2">
+                        {u.registry && (
+                          <Badge variant={registryBadge(u.registry)}>
+                            {u.registry}
+                          </Badge>
+                        )}
+                      </div>
+                      <Link href={`/methodologies/${u.id}`}>
+                        <p className="mt-1 text-xs font-medium text-gray-800 line-clamp-2 hover:text-emerald-700">
+                          {u.title}
+                        </p>
+                      </Link>
+                      <span className="text-[10px] text-gray-400">
+                        {u.syncedAt
+                          ? u.syncedAt.slice(0, 10)
+                          : u.modifiedAt.slice(0, 10)}
+                      </span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ) : (
+            <p className="rounded-xl border border-gray-200 bg-white py-12 text-center text-sm text-gray-400 shadow-sm">
+              更新情報はまだありません
+            </p>
+          )}
         </section>
       </div>
     </div>

@@ -12,14 +12,14 @@ import {
   createMethodology,
   updateMethodology,
   getExistingHash,
-  createSyncNotification,
 } from "./wordpress-writer";
 import { enrichMethodology, isAiEnrichAvailable } from "./ai-enricher";
 import { SYNC_CONFIG } from "./config";
 
 // ============================================================
 // 同期エンジン（オーケストレーター）
-// スクレイピング → AI エンリッチ → 差分検出 → WordPress Upsert → 通知
+// スクレイピング → AI エンリッチ → 差分検出 → WordPress Upsert
+// ※ 通知は insights CPT に投稿しない（methodologies の synced_at で追跡）
 // ============================================================
 
 function generateRunId(): string {
@@ -100,27 +100,6 @@ async function safeEnrich(
   } catch (e) {
     console.error(`[Sync] AI enrich failed for ${scraped.name}:`, e);
     return null;
-  }
-}
-
-/**
- * 同期通知を WordPress insights CPT に投稿する。
- */
-async function postNotifications(results: SyncResult[]): Promise<void> {
-  const actionable = results.filter(
-    (r) => r.action === "created" || r.action === "updated"
-  );
-
-  for (const result of actionable) {
-    const verb = result.action === "created" ? "新規追加" : "更新";
-    const title = `【${result.registry}】${result.methodologyName} が${verb}されました`;
-    const content =
-      result.action === "updated" && result.diff
-        ? `${result.registry} のメソドロジー「${result.methodologyName}」が${verb}されました。変更フィールド: ${result.diff.join(", ")}`
-        : `${result.registry} のメソドロジー「${result.methodologyName}」が${verb}されました。`;
-
-    await createSyncNotification(title, content, result.registry);
-    await delay(SYNC_CONFIG.writeDelayMs);
   }
 }
 
@@ -207,12 +186,6 @@ export async function runSync(
     unchanged: results.filter((r) => r.action === "unchanged").length,
     errors: results.filter((r) => r.action === "error").length,
   };
-
-  // 4. 通知投稿
-  if (!dryRun && (summary.created > 0 || summary.updated > 0)) {
-    console.log("[Sync] Posting notifications...");
-    await postNotifications(results);
-  }
 
   console.log(
     `[Sync] Run ${runId} complete: ` +

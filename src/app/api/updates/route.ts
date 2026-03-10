@@ -1,73 +1,73 @@
 import { NextResponse } from "next/server";
 
 /**
- * GET /api/updates — 最近の同期通知を取得
+ * GET /api/updates — 最近更新されたメソドロジーを取得
  *
- * insights CPT から「同期通知」に該当するインサイトを取得して返す。
- * 同期エンジンが作成した通知投稿のタイトルには「【レジストリ名】」が含まれる。
+ * methodologies CPT の modified 日時を元に、最近更新されたメソドロジーを返す。
+ * ※ 以前は insights CPT の同期通知を返していたが、
+ *   通知は insights に投稿しない方針に変更。
  */
 export async function GET() {
   const API_BASE = process.env.NEXT_PUBLIC_WORDPRESS_API_URL ?? "";
 
   if (!API_BASE) {
     return NextResponse.json({
-      notifications: [],
+      updates: [],
       total: 0,
     });
   }
 
   try {
-    // insights CPT から最新20件を取得
-    const url = `${API_BASE}/insights?per_page=20&orderby=date&order=desc`;
+    const url = `${API_BASE}/methodologies?per_page=15&orderby=modified&order=desc`;
     const res = await fetch(url, { cache: "no-store" });
 
     if (!res.ok) {
       console.error(`[API /updates] WordPress returned ${res.status}`);
-      return NextResponse.json({ notifications: [], total: 0 });
+      return NextResponse.json({ updates: [], total: 0 });
     }
 
-    type WPInsight = {
+    type WPMethodology = {
       id: number;
       date: string;
+      modified: string;
       title: { rendered: string };
-      content: { rendered: string };
       acf?: Record<string, unknown> | unknown[];
     };
 
-    const posts: WPInsight[] = await res.json();
+    const posts: WPMethodology[] = await res.json();
 
-    // 同期通知をフィルタ（タイトルに【】を含むもの）
-    const notifications = posts
-      .filter((p) => {
-        const title = stripHtml(p.title.rendered);
-        return title.includes("【") && title.includes("】");
-      })
-      .map((p) => {
-        const title = stripHtml(p.title.rendered);
-        const registryMatch = title.match(/【(.+?)】/);
-        const registry = registryMatch ? registryMatch[1] : "不明";
-        const isNew =
-          title.includes("新規追加") || title.includes("が追加");
-        const isUpdate =
-          title.includes("更新") || title.includes("アップデート");
+    const updates = posts.map((p) => {
+      const title = stripHtml(p.title.rendered);
+      let registry = "不明";
+      let syncedAt: string | null = null;
 
-        return {
-          id: String(p.id),
-          title,
-          description: stripHtml(p.content.rendered).slice(0, 200),
-          registry,
-          date: p.date ? p.date.slice(0, 10) : "",
-          type: isNew ? "new" : isUpdate ? "updated" : "info",
-        };
-      });
+      if (
+        p.acf &&
+        !Array.isArray(p.acf) &&
+        typeof p.acf === "object"
+      ) {
+        const reg = p.acf.registry;
+        if (typeof reg === "string" && reg) registry = reg;
+        const sa = p.acf.synced_at;
+        if (typeof sa === "string" && sa) syncedAt = sa;
+      }
+
+      return {
+        id: String(p.id),
+        title,
+        registry,
+        syncedAt,
+        modifiedAt: p.modified ?? p.date,
+      };
+    });
 
     return NextResponse.json({
-      notifications,
-      total: notifications.length,
+      updates,
+      total: updates.length,
     });
   } catch (e) {
     console.error("[API /updates] Error:", e);
-    return NextResponse.json({ notifications: [], total: 0 });
+    return NextResponse.json({ updates: [], total: 0 });
   }
 }
 

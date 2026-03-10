@@ -1,4 +1,4 @@
-import type { ScrapedMethodology, AiEnrichedFields, RegistryName } from "@/types";
+import type { ScrapedMethodology, AiEnrichedFields } from "@/types";
 
 // ============================================================
 // WordPress REST API 書き込みクライアント
@@ -183,53 +183,6 @@ export async function updateMethodology(
   }
 
   console.log(`[WP Writer] Updated: ${scraped.name} (ID ${wpId})`);
-}
-
-/**
- * insights CPT に同期通知を投稿。
- */
-export async function createSyncNotification(
-  title: string,
-  content: string,
-  registry: RegistryName
-): Promise<number | null> {
-  if (!API_BASE) return null;
-
-  try {
-    const url = `${API_BASE}/insights`;
-    const body = {
-      title,
-      content: `<p>${content}</p>`,
-      status: "publish",
-      acf: {
-        insight_category: "技術",
-      },
-    };
-
-    const res = await fetch(url, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: getAuthHeader(),
-      },
-      body: JSON.stringify(body),
-    });
-
-    if (!res.ok) {
-      console.error(
-        `[WP Writer] 通知作成失敗: ${res.status}`,
-        await res.text().catch(() => "")
-      );
-      return null;
-    }
-
-    const created = await res.json();
-    console.log(`[WP Writer] Notification: ${title} → ID ${created.id}`);
-    return created.id;
-  } catch (e) {
-    console.error(`[WP Writer] 通知作成エラー:`, e);
-    return null;
-  }
 }
 
 // ============================================================
