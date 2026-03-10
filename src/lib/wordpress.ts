@@ -10,6 +10,10 @@ import type {
   RoadmapCategory,
   RoadmapStatus,
   RegistryName,
+  PriceTrend,
+  CreditMarketId,
+  TrendDirection,
+  PriceHistoryEntry,
 } from "@/types";
 
 // ============================================================
@@ -564,6 +568,131 @@ export async function getRoadmapEvents(): Promise<RoadmapEvent[]> {
   } catch (e) {
     console.error("[WP FAIL] roadmap:", e);
     return [];
+  }
+}
+
+// ============================================================
+// クレジット価格動向 (price_trends) マッピング
+// ============================================================
+
+const VALID_MARKET_IDS: CreditMarketId[] = [
+  "eu-ets", "jcredit-renewable", "jcredit-energy-saving", "vcs-geo", "vcs-ngeo",
+];
+
+const VALID_TREND_DIRECTIONS: TrendDirection[] = ["up", "down", "stable"];
+
+/** ACF Textarea に格納された JSON 文字列を PriceHistoryEntry[] にパースする */
+function parsePriceHistory(acf: Record<string, unknown>, key: string): PriceHistoryEntry[] {
+  const raw = acf[key];
+  if (typeof raw !== "string" || raw.trim() === "") return [];
+  try {
+    const parsed = JSON.parse(raw);
+    if (!Array.isArray(parsed)) return [];
+    return parsed
+      .filter(
+        (e: unknown): e is { date: string; price: number; priceJpy: number } =>
+          typeof e === "object" &&
+          e !== null &&
+          typeof (e as Record<string, unknown>).date === "string" &&
+          typeof (e as Record<string, unknown>).price === "number" &&
+          typeof (e as Record<string, unknown>).priceJpy === "number"
+      )
+      .map((e) => ({ date: e.date, price: e.price, priceJpy: e.priceJpy }));
+  } catch {
+    console.warn(`[PriceTrend] price_history JSON パースに失敗: ${String(raw).slice(0, 100)}`);
+    return [];
+  }
+}
+
+function mapPriceTrend(wp: WPPost): PriceTrend {
+  const { data: acf, hasData } = getAcf(wp);
+
+  let marketId: CreditMarketId | null = null;
+  let sourceCurrency: string | null = null;
+  let latestPrice: number | null = null;
+  let latestPriceJpy: number | null = null;
+  let fxRate: number | null = null;
+  let priceUnit: string | null = null;
+  let sourceName: string | null = null;
+  let sourceUrl: string | null = null;
+  let priceHistory: PriceHistoryEntry[] = [];
+  let trendDirection: TrendDirection | null = null;
+  let trendPercentage: number | null = null;
+  let lastSynced: string | null = null;
+  let creditType: string | null = null;
+
+  if (hasData) {
+    const rawMarketId = acfString(acf, "market_id", "");
+    marketId = VALID_MARKET_IDS.includes(rawMarketId as CreditMarketId)
+      ? (rawMarketId as CreditMarketId)
+      : null;
+
+    sourceCurrency = acfString(acf, "source_currency", "") || null;
+    const rawPrice = acfNumber(acf, "latest_price", -1);
+    latestPrice = rawPrice >= 0 ? rawPrice : null;
+    const rawPriceJpy = acfNumber(acf, "latest_price_jpy", -1);
+    latestPriceJpy = rawPriceJpy >= 0 ? rawPriceJpy : null;
+    const rawFx = acfNumber(acf, "fx_rate", -1);
+    fxRate = rawFx > 0 ? rawFx : null;
+    priceUnit = acfString(acf, "price_unit", "") || null;
+    sourceName = acfString(acf, "source_name", "") || null;
+    sourceUrl = acfString(acf, "source_url", "") || null;
+    priceHistory = parsePriceHistory(acf, "price_history");
+
+    const rawDirection = acfString(acf, "trend_direction", "");
+    trendDirection = VALID_TREND_DIRECTIONS.includes(rawDirection as TrendDirection)
+      ? (rawDirection as TrendDirection)
+      : null;
+    const rawPercent = acfNumber(acf, "trend_percentage", -999);
+    trendPercentage = rawPercent !== -999 ? rawPercent : null;
+    lastSynced = acfString(acf, "last_synced", "") || null;
+    creditType = acfString(acf, "credit_type", "") || null;
+  }
+
+  return {
+    id: String(wp.id),
+    title: stripHtml(wp.title.rendered),
+    creditType,
+    marketId,
+    sourceCurrency,
+    latestPrice,
+    latestPriceJpy,
+    fxRate,
+    priceUnit,
+    sourceName,
+    sourceUrl,
+    priceHistory,
+    trendDirection,
+    trendPercentage,
+    lastSynced,
+  };
+}
+
+/** クレジット価格動向一覧を取得（CPT: price_trends） */
+export async function getPriceTrends(): Promise<PriceTrend[]> {
+  if (!isApiConfigured()) {
+    console.warn("[WP] price_trends — API not configured, returning []");
+    return [];
+  }
+  try {
+    const posts = await wpFetch<WPPost>("price_trends?per_page=100");
+    return posts.map(mapPriceTrend);
+  } catch (e) {
+    console.error("[WP FAIL] price_trends:", e);
+    return [];
+  }
+}
+
+/** クレジット価格動向を ID で1件取得 */
+export async function getPriceTrendById(id: string): Promise<PriceTrend | null> {
+  if (!isApiConfigured()) return null;
+  try {
+    const post = await wpFetchSingle<WPPost>(`price_trends/${id}`);
+    if (!post) return null;
+    return mapPriceTrend(post);
+  } catch (e) {
+    console.error(`[WP FAIL] price_trends/${id}:`, e);
+    return null;
   }
 }
 

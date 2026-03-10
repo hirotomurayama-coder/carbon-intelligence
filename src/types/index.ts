@@ -155,6 +155,47 @@ export type AiEnrichedFields = {
   reliabilityScore: number | null;   // ACF: reliability_score — 1〜5（AI が推論）
 };
 
+// ============================================================
+// クレジット価格動向 — CPT: price_trends
+// ============================================================
+
+/** 対象市場 ID */
+export type CreditMarketId =
+  | "eu-ets"
+  | "jcredit-renewable"
+  | "jcredit-energy-saving"
+  | "vcs-geo"
+  | "vcs-ngeo";
+
+/** トレンド方向 */
+export type TrendDirection = "up" | "down" | "stable";
+
+/** 価格履歴の1エントリ */
+export type PriceHistoryEntry = {
+  date: string;        // "YYYY-MM-DD"
+  price: number;       // 元通貨建て価格
+  priceJpy: number;    // JPY 換算価格
+};
+
+/** クレジット価格動向（ACF フィールド対応） */
+export type PriceTrend = {
+  id: string;
+  title: string;                          // WordPress タイトル（市場名）
+  creditType: string | null;              // ACF: credit_type — 表示用種別
+  marketId: CreditMarketId | null;        // ACF: market_id
+  sourceCurrency: string | null;          // ACF: source_currency — "EUR" / "USD" / "JPY"
+  latestPrice: number | null;             // ACF: latest_price — 元通貨建て最新価格
+  latestPriceJpy: number | null;          // ACF: latest_price_jpy — JPY 換算価格
+  fxRate: number | null;                  // ACF: fx_rate — 為替レート
+  priceUnit: string | null;              // ACF: price_unit — "tCO2e"
+  sourceName: string | null;             // ACF: source_name — データソース名
+  sourceUrl: string | null;              // ACF: source_url — 参照元 URL
+  priceHistory: PriceHistoryEntry[];     // ACF: price_history — JSON パース済み
+  trendDirection: TrendDirection | null; // ACF: trend_direction
+  trendPercentage: number | null;        // ACF: trend_percentage — 変動率 (%)
+  lastSynced: string | null;            // ACF: last_synced — ISO 日時文字列
+};
+
 /** 同期結果のアクション種別 */
 export type SyncAction = "created" | "updated" | "unchanged" | "error";
 
