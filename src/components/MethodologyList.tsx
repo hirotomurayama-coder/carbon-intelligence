@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { SearchInput } from "@/components/ui/SearchInput";
@@ -61,6 +61,23 @@ export function MethodologyList({ data }: Props) {
   const [creditTypeFilter, setCreditTypeFilter] = useState("");
   const [sortBy, setSortBy] = useState("date_desc");
 
+  // フィルタバーの高さを動的計測（thead の sticky top に使用）
+  const filterRef = useRef<HTMLDivElement>(null);
+  const [filterHeight, setFilterHeight] = useState(0);
+
+  useEffect(() => {
+    const el = filterRef.current;
+    if (!el) return;
+    const ro = new ResizeObserver(([entry]) => {
+      setFilterHeight(
+        entry.borderBoxSize?.[0]?.blockSize
+          ?? entry.target.getBoundingClientRect().height
+      );
+    });
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
+
   const filtered = useMemo(() => {
     const result = data.filter((m) => {
       const searchTarget = [
@@ -104,7 +121,7 @@ export function MethodologyList({ data }: Props) {
   return (
     <div>
       {/* フィルタバー（Sticky） */}
-      <div className="sticky top-0 z-20 bg-white pb-4 pt-1 shadow-[0_1px_0_0_#e5e7eb]">
+      <div ref={filterRef} className="sticky top-0 z-30 -mx-6 bg-white px-6 py-4 shadow-[0_-50px_0_0_white,0_1px_0_0_#e5e7eb]">
         <div className="flex flex-wrap items-center gap-3">
           <div className="w-full sm:w-72">
             <SearchInput
@@ -140,7 +157,10 @@ export function MethodologyList({ data }: Props) {
       {/* テーブル */}
       <div className="mt-6 rounded-xl border border-gray-200 bg-white shadow-sm">
         <table className="w-full text-left text-sm">
-          <thead>
+          <thead
+            className="sticky z-20 bg-gray-50"
+            style={{ top: `${filterHeight}px` }}
+          >
             <tr className="border-b border-gray-100 bg-gray-50">
               <th className="px-5 py-3 font-medium text-gray-500">
                 タイトル
