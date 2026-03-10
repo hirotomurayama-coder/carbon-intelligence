@@ -326,67 +326,75 @@ export function PriceTrendDashboard({ data }: Props) {
 
         {/* チャート */}
         {chartData.length > 0 ? (
-          <div className="h-80">
-            <ResponsiveContainer width="100%" height="100%">
-              <LineChart
-                data={chartData}
-                margin={{ top: 5, right: 20, left: 10, bottom: 5 }}
-              >
-                <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
-                <XAxis
-                  dataKey="date"
-                  tick={{ fontSize: 11, fill: "#9ca3af" }}
-                  tickFormatter={(d: string) => {
-                    // "2026-03-10" → "3/10"
-                    const parts = d.split("-");
-                    return `${Number(parts[1])}/${Number(parts[2])}`;
-                  }}
-                />
-                <YAxis
-                  tick={{ fontSize: 11, fill: "#9ca3af" }}
-                  tickFormatter={(v: number) =>
-                    v >= 1000
-                      ? `¥${(v / 1000).toFixed(1)}k`
-                      : `¥${v}`
-                  }
-                  width={60}
-                />
-                <Tooltip
-                  contentStyle={{
-                    fontSize: 12,
-                    borderRadius: 8,
-                    borderColor: "#e5e7eb",
-                  }}
-                  formatter={(value: unknown, name: unknown) => {
-                    const v = typeof value === "number" ? value : 0;
-                    const n = typeof name === "string" ? name : "";
-                    const label =
-                      MARKET_SHORT_NAMES[n as CreditMarketId] ?? n;
-                    return [`¥${v.toLocaleString("ja-JP")}`, label];
-                  }}
-                  labelFormatter={(label: unknown) => `日付: ${String(label)}`}
-                />
-                <Legend
-                  formatter={(value: unknown) => {
-                    const v = typeof value === "string" ? value : String(value);
-                    return MARKET_SHORT_NAMES[v as CreditMarketId] ?? v;
-                  }}
-                  wrapperStyle={{ fontSize: 11 }}
-                />
-                {chartMarkets.map((mid) => (
-                  <Line
-                    key={mid}
-                    type="monotone"
-                    dataKey={mid}
-                    stroke={MARKET_COLORS[mid]}
-                    strokeWidth={2}
-                    dot={chartData.length <= 30}
-                    activeDot={{ r: 5 }}
-                    connectNulls
+          <div>
+            {chartData.length === 1 && (
+              <p className="mb-2 text-xs text-gray-400">
+                現在1日分のデータのみ。同期を繰り返すことで推移グラフが描画されます。
+              </p>
+            )}
+            <div className="h-80">
+              <ResponsiveContainer width="100%" height="100%">
+                <LineChart
+                  data={chartData}
+                  margin={{ top: 5, right: 20, left: 10, bottom: 5 }}
+                >
+                  <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+                  <XAxis
+                    dataKey="date"
+                    tick={{ fontSize: 11, fill: "#9ca3af" }}
+                    tickFormatter={(d: string) => {
+                      // "2026-03-10" → "3/10"
+                      const parts = d.split("-");
+                      return `${Number(parts[1])}/${Number(parts[2])}`;
+                    }}
                   />
-                ))}
-              </LineChart>
-            </ResponsiveContainer>
+                  <YAxis
+                    tick={{ fontSize: 11, fill: "#9ca3af" }}
+                    tickFormatter={(v: number) =>
+                      v >= 1000
+                        ? `¥${(v / 1000).toFixed(1)}k`
+                        : `¥${v}`
+                    }
+                    width={60}
+                    domain={chartData.length === 1 ? ["dataMin * 0.8", "dataMax * 1.2"] : ["auto", "auto"]}
+                  />
+                  <Tooltip
+                    contentStyle={{
+                      fontSize: 12,
+                      borderRadius: 8,
+                      borderColor: "#e5e7eb",
+                    }}
+                    formatter={(value: unknown, name: unknown) => {
+                      const v = typeof value === "number" ? value : 0;
+                      const n = typeof name === "string" ? name : "";
+                      const label =
+                        MARKET_SHORT_NAMES[n as CreditMarketId] ?? n;
+                      return [`¥${v.toLocaleString("ja-JP")}`, label];
+                    }}
+                    labelFormatter={(label: unknown) => `日付: ${String(label)}`}
+                  />
+                  <Legend
+                    formatter={(value: unknown) => {
+                      const v = typeof value === "string" ? value : String(value);
+                      return MARKET_SHORT_NAMES[v as CreditMarketId] ?? v;
+                    }}
+                    wrapperStyle={{ fontSize: 11 }}
+                  />
+                  {chartMarkets.map((mid) => (
+                    <Line
+                      key={mid}
+                      type="monotone"
+                      dataKey={mid}
+                      stroke={MARKET_COLORS[mid]}
+                      strokeWidth={2}
+                      dot={{ r: chartData.length <= 5 ? 6 : chartData.length <= 30 ? 3 : 0 }}
+                      activeDot={{ r: 6 }}
+                      connectNulls
+                    />
+                  ))}
+                </LineChart>
+              </ResponsiveContainer>
+            </div>
           </div>
         ) : (
           <div className="flex h-48 items-center justify-center text-sm text-gray-400">

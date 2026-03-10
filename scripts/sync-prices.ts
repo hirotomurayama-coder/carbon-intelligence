@@ -209,8 +209,23 @@ function calculateTrend(
 type WPSearchResult = {
   id: number;
   title: { rendered: string };
+  content: { rendered: string };
   acf?: Record<string, unknown> | unknown[];
 };
+
+/**
+ * コンテンツ HTML 内の <!-- PRICE_DATA_JSON:{...} --> コメントから JSON をパースする。
+ * ACF が REST API で返されない場合のフォールバック。
+ */
+function parseContentJson(contentHtml: string): Record<string, unknown> | null {
+  const match = contentHtml.match(/<!-- PRICE_DATA_JSON:(.*?) -->/s);
+  if (!match) return null;
+  try {
+    return JSON.parse(match[1]);
+  } catch {
+    return null;
+  }
+}
 
 async function findExistingPriceTrend(
   marketId: string
@@ -222,6 +237,7 @@ async function findExistingPriceTrend(
     const posts: WPSearchResult[] = await res.json();
 
     for (const p of posts) {
+      // 1. ACF から market_id を確認
       const acf =
         p.acf &&
         !Array.isArray(p.acf) &&
@@ -229,19 +245,38 @@ async function findExistingPriceTrend(
         Object.keys(p.acf).length > 0
           ? p.acf
           : null;
+
+      let foundMarketId: string | null = null;
+      let existingHistory: PriceHistoryEntry[] = [];
+
       if (acf && acf.market_id === marketId) {
-        // 既存の price_history を取得
-        let existingHistory: PriceHistoryEntry[] = [];
+        foundMarketId = marketId;
+        // ACF の price_history を取得
         if (typeof acf.price_history === "string" && acf.price_history.trim()) {
           try {
             const parsed = JSON.parse(acf.price_history as string);
-            if (Array.isArray(parsed)) {
-              existingHistory = parsed;
-            }
-          } catch {
-            // パース失敗 → 空履歴
+            if (Array.isArray(parsed)) existingHistory = parsed;
+          } catch { /* パース失敗 → 空履歴 */ }
+        }
+      }
+
+      // 2. ACF が空の場合、コンテンツ内 JSON コメントからフォールバック
+      if (!foundMarketId) {
+        const contentData = parseContentJson(p.content.rendered);
+        if (contentData && contentData.market_id === marketId) {
+          foundMarketId = marketId;
+          if (typeof contentData.price_history === "string") {
+            try {
+              const parsed = JSON.parse(contentData.price_history as string);
+              if (Array.isArray(parsed)) existingHistory = parsed;
+            } catch { /* パース失敗 */ }
+          } else if (Array.isArray(contentData.price_history)) {
+            existingHistory = contentData.price_history as PriceHistoryEntry[];
           }
         }
+      }
+
+      if (foundMarketId) {
         return { wpId: p.id, existingHistory };
       }
     }
@@ -249,6 +284,19 @@ async function findExistingPriceTrend(
   } catch {
     return null;
   }
+}
+
+/**
+ * 価格データを含む投稿コンテンツを生成する。
+ * ACF が REST API で返されない場合のフォールバックとして、
+ * HTML コメント内に JSON データを埋め込む。
+ */
+function buildContent(
+  market: MarketDefinition,
+  priceData: Record<string, unknown>
+): string {
+  const jsonStr = JSON.stringify(priceData);
+  return `<!-- PRICE_DATA_JSON:${jsonStr} -->\n<p>${market.title}の価格データ</p>`;
 }
 
 async function upsertPriceTrend(
@@ -260,7 +308,7 @@ async function upsertPriceTrend(
   trend: { direction: string; percentage: number },
   now: string
 ): Promise<void> {
-  const acf = {
+  const acfData = {
     market_id: market.marketId,
     credit_type: market.creditType,
     source_currency: market.sourceCurrency,
@@ -275,6 +323,14 @@ async function upsertPriceTrend(
     trend_percentage: trend.percentage,
     last_synced: now,
   };
+
+  // コンテンツ用 JSON（price_history は配列のまま保持）
+  const contentData = {
+    ...acfData,
+    price_history: history,
+  };
+
+  const content = buildContent(market, contentData);
 
   const existing = await findExistingPriceTrend(market.marketId);
 
@@ -294,7 +350,8 @@ async function upsertPriceTrend(
       },
       body: JSON.stringify({
         title: market.title,
-        acf,
+        content,
+        acf: acfData,
       }),
     });
     if (!res.ok) {
@@ -317,9 +374,9 @@ async function upsertPriceTrend(
       },
       body: JSON.stringify({
         title: market.title,
-        content: `<p>${market.title}の価格データ</p>`,
+        content,
         status: "publish",
-        acf,
+        acf: acfData,
       }),
     });
     if (!res.ok) {

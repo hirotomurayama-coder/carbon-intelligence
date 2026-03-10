@@ -584,70 +584,107 @@ const VALID_TREND_DIRECTIONS: TrendDirection[] = ["up", "down", "stable"];
 /** ACF Textarea に格納された JSON 文字列を PriceHistoryEntry[] にパースする */
 function parsePriceHistory(acf: Record<string, unknown>, key: string): PriceHistoryEntry[] {
   const raw = acf[key];
-  if (typeof raw !== "string" || raw.trim() === "") return [];
-  try {
-    const parsed = JSON.parse(raw);
-    if (!Array.isArray(parsed)) return [];
-    return parsed
-      .filter(
-        (e: unknown): e is { date: string; price: number; priceJpy: number } =>
-          typeof e === "object" &&
-          e !== null &&
-          typeof (e as Record<string, unknown>).date === "string" &&
-          typeof (e as Record<string, unknown>).price === "number" &&
-          typeof (e as Record<string, unknown>).priceJpy === "number"
-      )
-      .map((e) => ({ date: e.date, price: e.price, priceJpy: e.priceJpy }));
-  } catch {
-    console.warn(`[PriceTrend] price_history JSON パースに失敗: ${String(raw).slice(0, 100)}`);
+  // JSON 文字列の場合
+  if (typeof raw === "string" && raw.trim() !== "") {
+    try {
+      const parsed = JSON.parse(raw);
+      if (Array.isArray(parsed)) return validatePriceHistory(parsed);
+    } catch {
+      console.warn(`[PriceTrend] price_history JSON パースに失敗: ${String(raw).slice(0, 100)}`);
+    }
     return [];
+  }
+  // すでに配列の場合（コンテンツ JSON フォールバック経由）
+  if (Array.isArray(raw)) return validatePriceHistory(raw);
+  return [];
+}
+
+/** PriceHistoryEntry の配列バリデーション */
+function validatePriceHistory(arr: unknown[]): PriceHistoryEntry[] {
+  return arr
+    .filter(
+      (e: unknown): e is { date: string; price: number; priceJpy: number } =>
+        typeof e === "object" &&
+        e !== null &&
+        typeof (e as Record<string, unknown>).date === "string" &&
+        typeof (e as Record<string, unknown>).price === "number" &&
+        typeof (e as Record<string, unknown>).priceJpy === "number"
+    )
+    .map((e) => ({ date: e.date, price: e.price, priceJpy: e.priceJpy }));
+}
+
+/**
+ * コンテンツ HTML 内の <!-- PRICE_DATA_JSON:{...} --> コメントから JSON をパースする。
+ * ACF が REST API で返されない場合のフォールバック。
+ */
+function parsePriceContentJson(contentHtml: string): Record<string, unknown> | null {
+  const match = contentHtml.match(/<!-- PRICE_DATA_JSON:([\s\S]*?) -->/);
+  if (!match) return null;
+  try {
+    return JSON.parse(match[1]);
+  } catch {
+    return null;
   }
 }
 
 function mapPriceTrend(wp: WPPost): PriceTrend {
   const { data: acf, hasData } = getAcf(wp);
 
-  let marketId: CreditMarketId | null = null;
-  let sourceCurrency: string | null = null;
-  let latestPrice: number | null = null;
-  let latestPriceJpy: number | null = null;
-  let fxRate: number | null = null;
-  let priceUnit: string | null = null;
-  let sourceName: string | null = null;
-  let sourceUrl: string | null = null;
-  let priceHistory: PriceHistoryEntry[] = [];
-  let trendDirection: TrendDirection | null = null;
-  let trendPercentage: number | null = null;
-  let lastSynced: string | null = null;
-  let creditType: string | null = null;
+  // ACF が有効な場合はそちらを使用
+  // ACF が空（`[]`）の場合は content 内 JSON コメントからフォールバック
+  let source: Record<string, unknown>;
+  let sourceType: "acf" | "content" | "none";
 
   if (hasData) {
-    const rawMarketId = acfString(acf, "market_id", "");
-    marketId = VALID_MARKET_IDS.includes(rawMarketId as CreditMarketId)
-      ? (rawMarketId as CreditMarketId)
-      : null;
-
-    sourceCurrency = acfString(acf, "source_currency", "") || null;
-    const rawPrice = acfNumber(acf, "latest_price", -1);
-    latestPrice = rawPrice >= 0 ? rawPrice : null;
-    const rawPriceJpy = acfNumber(acf, "latest_price_jpy", -1);
-    latestPriceJpy = rawPriceJpy >= 0 ? rawPriceJpy : null;
-    const rawFx = acfNumber(acf, "fx_rate", -1);
-    fxRate = rawFx > 0 ? rawFx : null;
-    priceUnit = acfString(acf, "price_unit", "") || null;
-    sourceName = acfString(acf, "source_name", "") || null;
-    sourceUrl = acfString(acf, "source_url", "") || null;
-    priceHistory = parsePriceHistory(acf, "price_history");
-
-    const rawDirection = acfString(acf, "trend_direction", "");
-    trendDirection = VALID_TREND_DIRECTIONS.includes(rawDirection as TrendDirection)
-      ? (rawDirection as TrendDirection)
-      : null;
-    const rawPercent = acfNumber(acf, "trend_percentage", -999);
-    trendPercentage = rawPercent !== -999 ? rawPercent : null;
-    lastSynced = acfString(acf, "last_synced", "") || null;
-    creditType = acfString(acf, "credit_type", "") || null;
+    source = acf;
+    sourceType = "acf";
+  } else {
+    const contentData = parsePriceContentJson(wp.content.rendered);
+    if (contentData) {
+      source = contentData;
+      sourceType = "content";
+    } else {
+      source = {};
+      sourceType = "none";
+    }
   }
+
+  if (sourceType === "none") {
+    console.warn(`[PriceTrend] ID=${wp.id}: ACF もコンテンツ JSON もありません`);
+  }
+
+  const rawMarketId = typeof source.market_id === "string" ? source.market_id : "";
+  const marketId = VALID_MARKET_IDS.includes(rawMarketId as CreditMarketId)
+    ? (rawMarketId as CreditMarketId)
+    : null;
+
+  const sourceCurrency = (typeof source.source_currency === "string" ? source.source_currency : "") || null;
+
+  const rawPrice = typeof source.latest_price === "number" ? source.latest_price : -1;
+  const latestPrice = rawPrice >= 0 ? rawPrice : null;
+
+  const rawPriceJpy = typeof source.latest_price_jpy === "number" ? source.latest_price_jpy : -1;
+  const latestPriceJpy = rawPriceJpy >= 0 ? rawPriceJpy : null;
+
+  const rawFx = typeof source.fx_rate === "number" ? source.fx_rate : -1;
+  const fxRate = rawFx > 0 ? rawFx : null;
+
+  const priceUnit = (typeof source.price_unit === "string" ? source.price_unit : "") || null;
+  const sourceName = (typeof source.source_name === "string" ? source.source_name : "") || null;
+  const sourceUrl = (typeof source.source_url === "string" ? source.source_url : "") || null;
+
+  const priceHistory = parsePriceHistory(source, "price_history");
+
+  const rawDirection = typeof source.trend_direction === "string" ? source.trend_direction : "";
+  const trendDirection = VALID_TREND_DIRECTIONS.includes(rawDirection as TrendDirection)
+    ? (rawDirection as TrendDirection)
+    : null;
+
+  const rawPercent = typeof source.trend_percentage === "number" ? source.trend_percentage : -999;
+  const trendPercentage = rawPercent !== -999 ? rawPercent : null;
+
+  const lastSynced = (typeof source.last_synced === "string" ? source.last_synced : "") || null;
+  const creditType = (typeof source.credit_type === "string" ? source.credit_type : "") || null;
 
   return {
     id: String(wp.id),
