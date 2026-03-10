@@ -102,9 +102,9 @@ export function MethodologyList({ data }: Props) {
   }, [data, keyword, registryFilter, creditTypeFilter, sortBy]);
 
   return (
-    <div className="space-y-6">
+    <div>
       {/* フィルタバー（Sticky） */}
-      <div className="sticky top-0 z-20 bg-white/95 pb-4 pt-1 backdrop-blur-sm">
+      <div className="sticky top-0 z-20 bg-white pb-4 pt-1 shadow-[0_1px_0_0_#e5e7eb]">
         <div className="flex flex-wrap items-center gap-3">
           <div className="w-full sm:w-72">
             <SearchInput
@@ -138,9 +138,9 @@ export function MethodologyList({ data }: Props) {
       </div>
 
       {/* テーブル */}
-      <div className="overflow-x-auto rounded-xl border border-gray-200 bg-white shadow-sm">
+      <div className="mt-6 rounded-xl border border-gray-200 bg-white shadow-sm">
         <table className="w-full text-left text-sm">
-          <thead className="sticky top-[52px] z-10">
+          <thead>
             <tr className="border-b border-gray-100 bg-gray-50">
               <th className="px-5 py-3 font-medium text-gray-500">
                 タイトル
