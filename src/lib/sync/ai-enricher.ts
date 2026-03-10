@@ -39,36 +39,76 @@ function getClient(): GoogleGenerativeAI | null {
 /**
  * AI エンリッチのシステムプロンプト。
  * WordPress ACF select フィールドの許可値に完全準拠。
+ * メソドロジー名・説明・レジストリ・カテゴリ情報から分類を推論する。
  */
-const SYSTEM_PROMPT = `あなたはカーボンクレジットのメソドロジー（方法論）の専門家です。
-英語のメソドロジー情報を受け取り、以下のJSON形式で回答してください。
+const SYSTEM_PROMPT = `あなたはカーボンクレジットのメソドロジー（方法論）分類・翻訳の専門家です。
 
+## タスク
+メソドロジーの情報（タイトル、説明、レジストリ、カテゴリ）を受け取り、以下を推論してJSON形式で返してください。
+
+## 出力JSON形式
 {
-  "titleJa": "自然な日本語のタイトル（直訳ではなく、専門用語を適切に使った翻訳）",
-  "aiSummary": "このメソドロジーの概要を150字以内の日本語で説明。対象分野、主な手法、適用条件を含める",
-  "creditType": "回避・削減系" または "除去系" または null,
-  "baseType": "自然ベース" または "技術ベース" または "再エネ" または null,
-  "subCategory": 下記の許可値リストから1つ選択 または null,
-  "operationalStatus": "運用中" または "審査中" または "再審査中" または "却下" または "無効化" または null,
-  "certificationBody": "認証機関名（例: Verra VCS, Gold Standard, Puro.earth）" または null
+  "titleJa": "日本語タイトル",
+  "aiSummary": "150字以内の日本語要約",
+  "creditType": "回避・削減系" or "除去系" or null,
+  "baseType": "自然ベース" or "技術ベース" or "再エネ" or null,
+  "subCategory": "許可値リストから1つ" or null,
+  "operationalStatus": "運用中" or "審査中" or "再審査中" or "却下" or "無効化" or null,
+  "certificationBody": "認証機関名" or null
 }
 
-分類ルール:
-- creditType（クレジット種別）:
-  - "回避・削減系": 排出を防ぐ、または削減するメソドロジー（REDD+、省エネ、再エネ等）
-  - "除去系": 大気中のCO2を直接除去するメソドロジー（植林、DACCS、バイオ炭等）
-- baseType（基本分類）:
-  - "自然ベース": 森林、農地、マングローブ、土壌等の自然生態系を活用
-  - "技術ベース": 工業プロセス、CCS、メタン回収等の技術的手法
-  - "再エネ": 太陽光、風力、水力、バイオマス等の再生可能エネルギー
-- subCategory（詳細分類、以下のいずれか1つのみ選択可能）:
-  森林, 土壌炭素, バイオ炭, ERW（岩石風化促進）, 農業, 海洋, 生態系再生複合,
-  CCS, CCU, CCUS, DACCS, BECCS, BiCRS, BECCU, 工業材料固定,
-  省エネ・効率改善, 燃料転換, 工業プロセス改善, 廃熱回収・再利用,
-  廃棄物管理, 調理改善, 冷媒管理, 調達・物流, 低炭素原材料,
-  土地利用, 畜産, エネルギー転換・輸送, 都市, 再生可能エネルギー, バイオマス
-- operationalStatus: 情報が不明な場合は "運用中" をデフォルトとする
-- certificationBody: レジストリ名から推定（Verra → "Verra VCS", Gold Standard → "Gold Standard"）
+## titleJa（日本語タイトル）翻訳ルール
+- 英語タイトルの場合: 自然な日本語に翻訳。カーボンクレジット業界の専門用語を適切に使用
+  - 例: "Afforestation, Reforestation and Revegetation" → "植林・再植林・緑化"
+  - 例: "Reducing emissions from deforestation" → "森林減少からの排出削減（REDD+）"
+- 既に日本語タイトルの場合: そのまま使用（J-クレジット等）
+  - 例: "EN-S-001 ボイラーの導入" → "ボイラーの導入"（メソドロジーIDは除去）
+
+## creditType（クレジット種別）推論ルール
+必ず "回避・削減系" か "除去系" のどちらかを選択してください（nullは最終手段）:
+- "回避・削減系": 排出を防ぐ、または削減する手法
+  - キーワード: REDD+, 省エネ, エネルギー効率, 再エネ, 燃料転換, メタン回収, 冷媒管理, ボイラー, LED, コジェネ, ヒートポンプ
+  - J-クレジット省エネ分野・再エネ分野・工業プロセス分野・廃棄物分野の多くはこちら
+- "除去系": 大気中のCO2を直接除去する手法
+  - キーワード: 植林, 再植林, ARR, DACCS, バイオ炭, CCS, 土壌炭素, マングローブ, 森林経営
+  - J-クレジット森林分野のほとんどはこちら
+
+## baseType（基本分類）推論ルール
+- "自然ベース": 森林, 農地, マングローブ, 土壌, 海洋等の自然生態系を活用
+- "技術ベース": 工業プロセス, CCS, メタン回収, ボイラー, LED, コジェネ等の技術的手法
+- "再エネ": 太陽光, 風力, 水力, バイオマス発電, 地熱等の再生可能エネルギー
+※ J-クレジット分野との対応: 省エネ→技術ベース, 再エネ→再エネ, 工業プロセス→技術ベース, 農業→自然ベース, 廃棄物→技術ベース, 森林→自然ベース
+
+## subCategory（詳細分類）— 以下の許可値リストからのみ選択
+森林, 土壌炭素, バイオ炭, ERW（岩石風化促進）, 農業, 海洋, 生態系再生複合,
+CCS, CCU, CCUS, DACCS, BECCS, BiCRS, BECCU, 工業材料固定,
+省エネ・効率改善, 燃料転換, 工業プロセス改善, 廃熱回収・再利用,
+廃棄物管理, 調理改善, 冷媒管理, 調達・物流, 低炭素原材料,
+土地利用, 畜産, エネルギー転換・輸送, 都市, 再生可能エネルギー, バイオマス
+
+推論例:
+- ボイラー導入、LED照明、コジェネ → "省エネ・効率改善"
+- 太陽光発電、風力発電、バイオマス発電 → "再生可能エネルギー"
+- 森林経営、植林 → "森林"
+- 家畜排泄物管理 → "畜産"
+- 冷媒の回収・破壊 → "冷媒管理"
+- メタン回収 → "廃棄物管理"
+
+## operationalStatus（運用状況）
+- ステータスが "Active" の場合 → "運用中"
+- ステータスが明示的に非アクティブでない限り、"運用中" をデフォルトとする
+- J-クレジット: 廃止でなければ → "運用中"
+
+## certificationBody（認証機関）
+レジストリから推定:
+- Verra → "Verra VCS"
+- Gold Standard → "Gold Standard"
+- Puro.earth → "Puro.earth"
+- J-Credit → "J-クレジット制度"
+
+## aiSummary（日本語要約）
+- 150字以内で、このメソドロジーの対象分野、主な手法、適用条件を簡潔に説明
+- カーボンクレジット専門家向けの文体で
 
 必ず有効なJSONのみを返してください。マークダウンのコードブロック(\`\`\`)は使わないでください。`;
 
@@ -162,7 +202,7 @@ export function isAiEnrichAvailable(): boolean {
 // 内部ヘルパー
 // ============================================================
 
-/** ユーザーメッセージを構築 */
+/** ユーザーメッセージを構築（推論に使える全情報を提供） */
 function buildUserMessage(scraped: ScrapedMethodology): string {
   return [
     `メソドロジー名: ${scraped.name}`,
@@ -171,6 +211,8 @@ function buildUserMessage(scraped: ScrapedMethodology): string {
     `カテゴリ: ${scraped.category}`,
     `ステータス: ${scraped.status}`,
     scraped.version ? `バージョン: ${scraped.version}` : "",
+    scraped.sourceUrl ? `ソースURL: ${scraped.sourceUrl}` : "",
+    scraped.lastUpdated ? `最終更新: ${scraped.lastUpdated}` : "",
   ]
     .filter(Boolean)
     .join("\n");
@@ -254,10 +296,11 @@ function createFallback(scraped: ScrapedMethodology): AiEnrichedFields {
     Verra: "Verra VCS",
     "Gold Standard": "Gold Standard",
     "Puro.earth": "Puro.earth",
+    "J-Credit": "J-クレジット制度",
   };
 
   return {
-    titleJa: scraped.name, // 英語原文をそのまま使用
+    titleJa: scraped.name, // 原文をそのまま使用
     aiSummary: "",
     creditType: null,        // select フィールド → null で WP に送らない
     baseType: null,

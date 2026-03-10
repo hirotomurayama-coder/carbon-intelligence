@@ -27,8 +27,8 @@ export const REGISTRY_CONFIG: Record<
   },
   "J-Credit": {
     url: "https://japancredit.go.jp/about/methodology/",
-    enabled: false,
-    notes: "403 ブロック。手動入力で対応。将来対応。",
+    enabled: true,
+    notes: "サーバーレンダリング HTML。Cheerio で解析。6カテゴリ（省エネ, 再エネ, 工業, 農業, 廃棄物, 森林）。",
   },
 };
 

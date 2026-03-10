@@ -3,6 +3,7 @@ import type { RegistryName } from "@/types";
 import { VerraAdapter } from "./verra";
 import { GoldStandardAdapter } from "./gold-standard";
 import { PuroEarthAdapter } from "./puro-earth";
+import { JCreditAdapter } from "./j-credit";
 import { REGISTRY_CONFIG } from "../config";
 
 /** 利用可能なアダプターの登録マップ */
@@ -10,6 +11,7 @@ const ADAPTER_MAP: Partial<Record<RegistryName, () => RegistryAdapter>> = {
   Verra: () => new VerraAdapter(),
   "Gold Standard": () => new GoldStandardAdapter(),
   "Puro.earth": () => new PuroEarthAdapter(),
+  "J-Credit": () => new JCreditAdapter(),
 };
 
 /** 有効な全アダプターを取得 */
