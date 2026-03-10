@@ -22,12 +22,6 @@ function registryBadgeVariant(registry: RegistryName) {
   }
 }
 
-function scoreBadgeVariant(score: number) {
-  if (score >= 90) return "emerald" as const;
-  if (score >= 80) return "blue" as const;
-  return "amber" as const;
-}
-
 /** 情報行コンポーネント */
 function InfoRow({ label, value }: { label: string; value: React.ReactNode }) {
   return (
@@ -150,26 +144,6 @@ export default async function MethodologyDetailPage({ params }: Props) {
                 methodology.registry ? (
                   <Badge variant={registryBadgeVariant(methodology.registry)}>
                     {methodology.registry}
-                  </Badge>
-                ) : null
-              }
-            />
-            <InfoRow
-              label="算定手法"
-              value={
-                methodology.type ? (
-                  <Badge variant="slate">{methodology.type}</Badge>
-                ) : null
-              }
-            />
-            <InfoRow label="地域" value={methodology.region} />
-            <InfoRow label="有効期限" value={methodology.validUntil} />
-            <InfoRow
-              label="信頼性スコア"
-              value={
-                methodology.reliabilityScore !== null ? (
-                  <Badge variant={scoreBadgeVariant(methodology.reliabilityScore)}>
-                    {methodology.reliabilityScore}点
                   </Badge>
                 ) : null
               }

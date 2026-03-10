@@ -12,8 +12,10 @@ import {
   createMethodology,
   updateMethodology,
   getExistingHash,
+  patchTitleJa,
+  getAllMethodologiesBasic,
 } from "./wordpress-writer";
-import { enrichMethodology, isAiEnrichAvailable } from "./ai-enricher";
+import { enrichMethodology, isAiEnrichAvailable, translateTitlesBatch } from "./ai-enricher";
 import { SYNC_CONFIG } from "./config";
 import { VerraAdapter } from "./adapters/verra";
 
@@ -60,6 +62,11 @@ async function deepScrapeVerra(
     item.sectoralScope = detail.sectoralScope ?? undefined;
     item.mitigationOutcome = detail.mitigationOutcome ?? undefined;
 
+    // ディープスクレイピングのバージョンで上書き（一覧ページより正確）
+    if (detail.version) {
+      item.version = detail.version;
+    }
+
     // レート制限（Verra サーバー負荷軽減）
     if (i < verraItems.length - 1) {
       await delay(SYNC_CONFIG.scrapeDelayMs);
@@ -72,10 +79,13 @@ async function deepScrapeVerra(
 /**
  * 1 件のメソドロジーを処理:
  * 既存検索 → ハッシュ比較 → AI エンリッチ → 作成/更新/スキップ
+ *
+ * @param forceUpdate true の場合、ハッシュ比較をスキップして無条件で更新
  */
 async function processSingle(
   scraped: ScrapedMethodology,
-  skipAi: boolean
+  skipAi: boolean,
+  forceUpdate = false
 ): Promise<SyncResult> {
   const timestamp = new Date().toISOString();
 
@@ -97,6 +107,19 @@ async function processSingle(
         registry: scraped.registry,
         action: "created",
         timestamp,
+      };
+    }
+
+    // 3b-force. 強制更新モード → ハッシュ比較をスキップして無条件更新
+    if (forceUpdate) {
+      const enriched = skipAi ? null : await safeEnrich(scraped);
+      await updateMethodology(wpId, scraped, enriched);
+      return {
+        methodologyName: scraped.name,
+        registry: scraped.registry,
+        action: "updated",
+        timestamp,
+        diff: ["force"],
       };
     }
 
@@ -167,12 +190,14 @@ async function safeEnrich(
  * @param dryRun true の場合、WordPress への書き込みをスキップ（スクレイピングのみ）
  * @param skipAi true の場合、AI エンリッチをスキップ（従来動作）
  * @param deepScrape true の場合、詳細ページのディープスクレイピングを実行（デフォルト: true）
+ * @param forceUpdate true の場合、ハッシュ比較をスキップして全件を強制更新
  */
 export async function runSync(
   registryFilter?: RegistryName,
   dryRun = false,
   skipAi = false,
-  deepScrape = true
+  deepScrape = true,
+  forceUpdate = false
 ): Promise<SyncRunResult> {
   const runId = generateRunId();
   const startedAt = new Date().toISOString();
@@ -185,7 +210,8 @@ export async function runSync(
       (registryFilter ? ` (filter: ${registryFilter})` : "") +
       (dryRun ? " [DRY RUN]" : "") +
       (aiAvailable ? " [AI ENRICH ON]" : " [AI ENRICH OFF]") +
-      (deepScrape ? " [DEEP SCRAPE ON]" : " [DEEP SCRAPE OFF]")
+      (deepScrape ? " [DEEP SCRAPE ON]" : " [DEEP SCRAPE OFF]") +
+      (forceUpdate ? " [FORCE UPDATE]" : "")
   );
 
   // 1. アダプター取得
@@ -224,7 +250,7 @@ export async function runSync(
   // 3. WordPress Upsert（+ AI エンリッチ）
   if (!dryRun) {
     for (const scraped of toProcess) {
-      const result = await processSingle(scraped, !aiAvailable);
+      const result = await processSingle(scraped, !aiAvailable, forceUpdate);
       results.push(result);
       console.log(
         `[Sync] ${result.methodologyName}: ${result.action}` +
@@ -259,6 +285,72 @@ export async function runSync(
   );
 
   return { runId, startedAt, completedAt, results, summary };
+}
+
+// ============================================================
+// タイトル翻訳専用モード
+// ============================================================
+
+/**
+ * 既存メソドロジーの title_ja を AI で翻訳する専用モード。
+ * 5秒間隔、失敗時スキップ、ループなし。
+ */
+export async function runTitleTranslation(
+  registryFilter?: RegistryName
+): Promise<{ translated: number; skipped: number; errors: number }> {
+  console.log("[Sync] Title translation mode started");
+
+  const allPosts = await getAllMethodologiesBasic();
+
+  // レジストリフィルタ + 翻訳が必要なものを抽出
+  const needsTranslation = allPosts.filter((p) => {
+    if (registryFilter && p.registry !== registryFilter) return false;
+    // title_ja が空 or 英語原文と同一 → 翻訳が必要
+    return !p.titleJa || p.titleJa === p.name;
+  });
+
+  console.log(
+    `[Sync] ${needsTranslation.length} items need title translation ` +
+      `(out of ${allPosts.length} total)`
+  );
+
+  if (needsTranslation.length === 0) {
+    return { translated: 0, skipped: 0, errors: 0 };
+  }
+
+  if (!isAiEnrichAvailable()) {
+    console.warn("[Sync] AI not available — タイトル翻訳をスキップ");
+    return { translated: 0, skipped: needsTranslation.length, errors: 0 };
+  }
+
+  const translations = await translateTitlesBatch(
+    needsTranslation.map((p) => ({ sourceUrl: p.sourceUrl, name: p.name }))
+  );
+
+  let translated = 0;
+  let skipped = 0;
+  let errors = 0;
+
+  for (const post of needsTranslation) {
+    const titleJa = translations.get(post.sourceUrl);
+    if (!titleJa) {
+      skipped++;
+      continue;
+    }
+    try {
+      await patchTitleJa(post.wpId, titleJa);
+      translated++;
+      await delay(500);
+    } catch (e) {
+      console.error(`[Sync] title_ja 更新失敗: ${post.name}`, e);
+      errors++;
+    }
+  }
+
+  console.log(
+    `[Sync] Title translation complete: ${translated} translated, ${skipped} skipped, ${errors} errors`
+  );
+  return { translated, skipped, errors };
 }
 
 function delay(ms: number): Promise<void> {

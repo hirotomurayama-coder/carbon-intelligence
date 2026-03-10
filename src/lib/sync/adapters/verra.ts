@@ -128,13 +128,14 @@ export class VerraAdapter implements RegistryAdapter {
 
   /**
    * ディープスクレイピング: 詳細ページにアクセスして追加情報を取得。
-   * Active Date, Sectoral Scope, Mitigation Outcome, 本文テキストを返す。
+   * Active Date, Sectoral Scope, Mitigation Outcome, 本文テキスト, バージョンを返す。
    */
   async scrapeDetailPage(sourceUrl: string): Promise<{
     activeDate: string | null;
     sectoralScope: string | null;
     mitigationOutcome: string | null;
     detailText: string;
+    version: string | null;
   }> {
     try {
       console.log(`[Verra Deep] Fetching: ${sourceUrl}`);
@@ -145,7 +146,7 @@ export class VerraAdapter implements RegistryAdapter {
 
       if (!res.ok) {
         console.warn(`[Verra Deep] ${sourceUrl} returned ${res.status}`);
-        return { activeDate: null, sectoralScope: null, mitigationOutcome: null, detailText: "" };
+        return { activeDate: null, sectoralScope: null, mitigationOutcome: null, detailText: "", version: null };
       }
 
       const html = await res.text();
@@ -232,10 +233,13 @@ export class VerraAdapter implements RegistryAdapter {
         .join("\n")
         .slice(0, 2000); // AI コスト抑制: 最大2000文字
 
-      return { activeDate, sectoralScope, mitigationOutcome, detailText };
+      // バージョン抽出: URL スラッグを最優先、次にページ本文テキスト
+      const version = this.extractVersionFromUrl(sourceUrl);
+
+      return { activeDate, sectoralScope, mitigationOutcome, detailText, version };
     } catch (e) {
       console.warn(`[Verra Deep] Failed for ${sourceUrl}:`, e);
-      return { activeDate: null, sectoralScope: null, mitigationOutcome: null, detailText: "" };
+      return { activeDate: null, sectoralScope: null, mitigationOutcome: null, detailText: "", version: null };
     }
   }
 
@@ -280,6 +284,15 @@ export class VerraAdapter implements RegistryAdapter {
   private extractVersion(title: string): string | null {
     const match = title.match(/v(?:ersion\s*)?(\d+(?:\.\d+)*)/i);
     return match ? `v${match[1]}` : null;
+  }
+
+  /** URL スラッグからバージョン番号を抽出（例: -v1-2 → v1.2） */
+  private extractVersionFromUrl(url: string): string | null {
+    const match = url.match(/-v(\d+)-(\d+)\/?$/i);
+    if (match) return `v${match[1]}.${match[2]}`;
+    const matchMajor = url.match(/-v(\d+)\/?$/i);
+    if (matchMajor) return `v${matchMajor[1]}.0`;
+    return null;
   }
 
   private delay(ms: number): Promise<void> {

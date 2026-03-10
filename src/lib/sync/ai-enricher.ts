@@ -463,3 +463,90 @@ function createFallback(scraped: ScrapedMethodology): AiEnrichedFields {
 function delay(ms: number): Promise<void> {
   return new Promise((r) => setTimeout(r, ms));
 }
+
+// ============================================================
+// タイトル翻訳専用モード（軽量・安全モード）
+// ============================================================
+
+const TITLE_ONLY_PROMPT = `あなたはカーボンクレジットの専門翻訳者です。
+メソドロジー名を自然な日本語に翻訳してください。
+
+ルール:
+- VM番号（VM0001等）やメソドロジーID（EN-S-001等）は除去して翻訳
+- カーボンクレジット業界の専門用語を適切に使用
+- 既に日本語の場合はそのまま返す（メソドロジーIDは除去）
+- 例: "Afforestation, Reforestation and Revegetation" → "植林・再植林・緑化"
+- 例: "Reducing emissions from deforestation" → "森林減少からの排出削減（REDD+）"
+- 例: "Refrigerant Leak Detection" → "冷媒漏洩検知"
+
+JSON形式で返してください: {"titleJa": "日本語タイトル"}`;
+
+/**
+ * タイトルのみを日本語に翻訳する軽量モード。
+ * 失敗時は null を返す（ループ・リトライなし）。
+ */
+export async function translateTitleOnly(
+  name: string
+): Promise<string | null> {
+  const client = getClient();
+  if (!client) return null;
+
+  try {
+    const model = client.getGenerativeModel({
+      model: "gemini-2.0-flash",
+      generationConfig: {
+        temperature: 0.2,
+        maxOutputTokens: 200,
+        responseMimeType: "application/json",
+      },
+    });
+
+    const prompt = `${TITLE_ONLY_PROMPT}\n\nメソドロジー名: ${name}`;
+    const result = await model.generateContent(prompt);
+    const text = result.response.text();
+    if (!text) return null;
+
+    const cleaned = text
+      .replace(/^```(?:json)?\s*/i, "")
+      .replace(/```\s*$/, "")
+      .trim();
+    const parsed = JSON.parse(cleaned);
+    return typeof parsed.titleJa === "string" && parsed.titleJa.trim()
+      ? parsed.titleJa.trim()
+      : null;
+  } catch (e) {
+    console.warn(`[AI Title] 翻訳失敗 (${name}):`, (e as Error).message ?? e);
+    return null;
+  }
+}
+
+/**
+ * タイトル翻訳バッチ処理 — 5秒間隔、失敗時スキップ
+ */
+export async function translateTitlesBatch(
+  items: { sourceUrl: string; name: string }[],
+  delayMs = 5000
+): Promise<Map<string, string>> {
+  const results = new Map<string, string>();
+
+  for (let i = 0; i < items.length; i++) {
+    const item = items[i];
+    console.log(
+      `[AI Title] ${i + 1}/${items.length}: ${item.name.slice(0, 60)}...`
+    );
+
+    const titleJa = await translateTitleOnly(item.name);
+    if (titleJa) {
+      results.set(item.sourceUrl, titleJa);
+      console.log(`[AI Title] → ${titleJa}`);
+    } else {
+      console.log(`[AI Title] → スキップ (翻訳失敗)`);
+    }
+
+    if (i < items.length - 1) {
+      await delay(delayMs);
+    }
+  }
+
+  return results;
+}

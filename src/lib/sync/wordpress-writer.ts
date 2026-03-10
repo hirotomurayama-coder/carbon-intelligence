@@ -256,3 +256,65 @@ function mapCategoryToType(category: string): string {
 function stripHtmlSimple(html: string): string {
   return html.replace(/<[^>]*>/g, "").trim();
 }
+
+// ============================================================
+// タイトル翻訳専用の軽量関数
+// ============================================================
+
+/**
+ * title_ja ACF フィールドのみを更新する軽量パッチ。
+ */
+export async function patchTitleJa(
+  wpId: number,
+  titleJa: string
+): Promise<void> {
+  if (!API_BASE) throw new Error("[WP Writer] API URL が未設定");
+
+  const res = await fetch(`${API_BASE}/methodologies/${wpId}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: getAuthHeader(),
+    },
+    body: JSON.stringify({ acf: { title_ja: titleJa } }),
+  });
+
+  if (!res.ok) {
+    const text = await res.text().catch(() => "");
+    throw new Error(
+      `[WP Writer] title_ja 更新失敗 (ID ${wpId}): ${res.status} ${text.slice(0, 300)}`
+    );
+  }
+
+  console.log(`[WP Writer] title_ja updated: ID ${wpId} → ${titleJa}`);
+}
+
+/**
+ * 全メソドロジーの基本情報を取得（タイトル翻訳の対象判定に使用）。
+ */
+export async function getAllMethodologiesBasic(): Promise<
+  { wpId: number; name: string; sourceUrl: string; titleJa: string; registry: string }[]
+> {
+  if (!API_BASE) return [];
+  try {
+    const res = await fetch(`${API_BASE}/methodologies?per_page=100`, {
+      cache: "no-store",
+    });
+    if (!res.ok) return [];
+    const posts: WPMinimalPost[] = await res.json();
+    return posts
+      .filter((p) => p.acf && !Array.isArray(p.acf))
+      .map((p) => {
+        const acf = p.acf as Record<string, unknown>;
+        return {
+          wpId: p.id,
+          name: stripHtmlSimple(p.title.rendered),
+          sourceUrl: (acf.source_url as string) ?? "",
+          titleJa: (acf.title_ja as string) ?? "",
+          registry: (acf.registry as string) ?? "",
+        };
+      });
+  } catch {
+    return [];
+  }
+}

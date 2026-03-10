@@ -9,7 +9,7 @@ import type { RegistryName } from "@/types";
  *   Authorization: Bearer {SYNC_API_KEY} (任意、設定時のみ検証)
  *
  * Body (JSON):
- *   { registry?: RegistryName, dryRun?: boolean }
+ *   { registry?: RegistryName, dryRun?: boolean, forceUpdate?: boolean }
  *
  * Returns: SyncRunResult
  */
@@ -41,8 +41,9 @@ export async function POST(request: Request) {
     const body = await request.json().catch(() => ({}));
     const registry = body.registry as RegistryName | undefined;
     const dryRun = body.dryRun === true;
+    const forceUpdate = body.forceUpdate === true;
 
-    const result = await runSync(registry, dryRun);
+    const result = await runSync(registry, dryRun, false, true, forceUpdate);
     return NextResponse.json(result, { status: 200 });
   } catch (e) {
     console.error("[API /sync] Error:", e);

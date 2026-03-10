@@ -12,6 +12,17 @@ const registryOptions: { label: string; value: RegistryName }[] = [
   { label: "Verra", value: "Verra" },
   { label: "Gold Standard", value: "Gold Standard" },
   { label: "Puro.earth", value: "Puro.earth" },
+  { label: "J-Credit", value: "J-Credit" },
+];
+
+const creditTypeOptions: { label: string; value: string }[] = [
+  { label: "回避・削減系", value: "回避・削減系" },
+  { label: "除去系", value: "除去系" },
+];
+
+const sortOptions: { label: string; value: string }[] = [
+  { label: "更新日（新しい順）", value: "date_desc" },
+  { label: "タイトル順", value: "title_asc" },
 ];
 
 /** レジストリ名に応じたバッジ色 */
@@ -47,9 +58,11 @@ export function MethodologyList({ data }: Props) {
   const router = useRouter();
   const [keyword, setKeyword] = useState("");
   const [registryFilter, setRegistryFilter] = useState("");
+  const [creditTypeFilter, setCreditTypeFilter] = useState("");
+  const [sortBy, setSortBy] = useState("date_desc");
 
   const filtered = useMemo(() => {
-    return data.filter((m) => {
+    const result = data.filter((m) => {
       const searchTarget = [
         m.title,
         m.titleJa ?? "",
@@ -63,37 +76,72 @@ export function MethodologyList({ data }: Props) {
         keyword === "" || searchTarget.includes(keyword.toLowerCase());
       const matchesRegistry =
         registryFilter === "" || m.registry === registryFilter;
-      return matchesKeyword && matchesRegistry;
+      const matchesCreditType =
+        creditTypeFilter === "" || m.creditType === creditTypeFilter;
+      return matchesKeyword && matchesRegistry && matchesCreditType;
     });
-  }, [data, keyword, registryFilter]);
+
+    // ソート
+    const effectiveSort = sortBy || "date_desc";
+    result.sort((a, b) => {
+      if (effectiveSort === "title_asc") {
+        const titleA = (a.titleJa ?? a.title).toLowerCase();
+        const titleB = (b.titleJa ?? b.title).toLowerCase();
+        return titleA.localeCompare(titleB, "ja");
+      }
+      // デフォルト: 外部更新日（新しい順）
+      const dateA = a.externalLastUpdated ?? "";
+      const dateB = b.externalLastUpdated ?? "";
+      if (dateA && dateB) return dateB.localeCompare(dateA);
+      if (dateA && !dateB) return -1;
+      if (!dateA && dateB) return 1;
+      return 0;
+    });
+
+    return result;
+  }, [data, keyword, registryFilter, creditTypeFilter, sortBy]);
 
   return (
     <div className="space-y-6">
-      {/* フィルタバー */}
-      <div className="flex flex-wrap items-center gap-3">
-        <div className="w-full sm:w-72">
-          <SearchInput
-            value={keyword}
-            onChange={setKeyword}
-            placeholder="メソドロジーを検索..."
+      {/* フィルタバー（Sticky） */}
+      <div className="sticky top-0 z-20 bg-white/95 pb-4 pt-1 backdrop-blur-sm">
+        <div className="flex flex-wrap items-center gap-3">
+          <div className="w-full sm:w-72">
+            <SearchInput
+              value={keyword}
+              onChange={setKeyword}
+              placeholder="メソドロジーを検索..."
+            />
+          </div>
+          <FilterSelect
+            value={registryFilter}
+            onChange={setRegistryFilter}
+            options={registryOptions}
+            placeholder="レジストリ"
           />
+          <FilterSelect
+            value={creditTypeFilter}
+            onChange={setCreditTypeFilter}
+            options={creditTypeOptions}
+            placeholder="クレジット種別"
+          />
+          <FilterSelect
+            value={sortBy}
+            onChange={setSortBy}
+            options={sortOptions}
+            placeholder="更新日（新しい順）"
+          />
+          <span className="ml-auto text-sm text-gray-400">
+            {filtered.length} 件
+          </span>
         </div>
-        <FilterSelect
-          value={registryFilter}
-          onChange={setRegistryFilter}
-          options={registryOptions}
-          placeholder="レジストリ"
-        />
-        <span className="ml-auto text-sm text-gray-400">
-          {filtered.length} 件
-        </span>
       </div>
 
       {/* テーブル */}
       <div className="overflow-x-auto rounded-xl border border-gray-200 bg-white shadow-sm">
         <table className="w-full text-left text-sm">
-          <thead>
-            <tr className="border-b border-gray-100 bg-gray-50/60">
+          <thead className="sticky top-[52px] z-10">
+            <tr className="border-b border-gray-100 bg-gray-50">
               <th className="px-5 py-3 font-medium text-gray-500">
                 タイトル
               </th>
