@@ -137,12 +137,20 @@ async function wpFetch<T>(endpoint: string): Promise<T[]> {
   const res = await fetch(url, {
     redirect: "follow",
     cache: "no-store",
+    headers: { Accept: "application/json" },
   });
 
   console.log(
     `[WP] ${endpoint}: ${res.status} ${res.statusText}` +
       (res.redirected ? ` (redirected → ${res.url})` : "")
   );
+
+  // リダイレクト先が carboncredits.jp（既存ニュースサイト）の場合は拒否
+  if (res.redirected && res.url.includes("carboncredits.jp") && !res.url.includes("wpcomstaging")) {
+    const msg = `[WP ERROR] ${endpoint}: carboncredits.jp にリダイレクトされました（staging URL のみ使用可）`;
+    console.error(msg);
+    throw new Error(msg);
+  }
 
   if (!res.ok) {
     const body = await res.text().catch(() => "(読み取り不可)");
@@ -151,11 +159,28 @@ async function wpFetch<T>(endpoint: string): Promise<T[]> {
     throw new Error(msg);
   }
 
-  const json = await res.json();
+  // Content-Type 検証: HTML が返された場合は JSON パースせずエラー
+  const contentType = res.headers.get("content-type") ?? "";
+  if (!contentType.includes("json") && contentType.includes("html")) {
+    const body = await res.text().catch(() => "");
+    const msg = `[WP ERROR] ${endpoint}: JSON ではなく HTML が返されました (Content-Type: ${contentType}). Body: ${body.slice(0, 200)}`;
+    console.error(msg);
+    throw new Error(msg);
+  }
+
+  let json: unknown;
+  try {
+    json = await res.json();
+  } catch (parseErr) {
+    const msg = `[WP ERROR] ${endpoint}: JSON パース失敗 — ${parseErr instanceof Error ? parseErr.message : String(parseErr)}`;
+    console.error(msg);
+    throw new Error(msg);
+  }
+
   const count = Array.isArray(json) ? json.length : "not-array";
   console.log(`[WP] ${endpoint}: ${count} items returned`);
 
-  return json;
+  return json as T[];
 }
 
 // ============================================================
@@ -713,7 +738,18 @@ export async function getPriceTrends(): Promise<PriceTrend[]> {
   }
   try {
     const posts = await wpFetch<WPPost>("price_trends?per_page=100");
-    return posts.map(mapPriceTrend);
+    console.log(`[PriceTrend] Fetched ${posts.length} posts, mapping...`);
+    const mapped = posts.map((post, i) => {
+      try {
+        const trend = mapPriceTrend(post);
+        console.log(`[PriceTrend] [${i}] ${trend.title}: marketId=${trend.marketId}, priceJpy=${trend.latestPriceJpy}, historyLen=${trend.priceHistory.length}`);
+        return trend;
+      } catch (mapErr) {
+        console.error(`[PriceTrend] mapping failed for post ID=${post.id}:`, mapErr);
+        return null;
+      }
+    });
+    return mapped.filter((t): t is PriceTrend => t !== null);
   } catch (e) {
     console.error("[WP FAIL] price_trends:", e);
     return [];

@@ -1,7 +1,6 @@
 import { getPriceTrends } from "@/lib/wordpress";
 import { PriceTrendDashboard } from "@/components/PriceTrendDashboard";
 import type { Metadata } from "next";
-import type { PriceTrend } from "@/types";
 
 export const dynamic = "force-dynamic";
 
@@ -12,15 +11,20 @@ export const metadata: Metadata = {
 };
 
 export default async function AnalyticsPage() {
-  let trends: PriceTrend[] = [];
+  // getPriceTrends は内部で try-catch し、エラー時は [] を返す。
+  // ここでの try-catch は予期しない例外（型エラー等）の最終防壁。
+  let trends = await getPriceTrends();
   let fetchError: string | null = null;
 
-  try {
-    trends = await getPriceTrends();
-  } catch (e) {
-    fetchError =
-      e instanceof Error ? e.message : "WordPress API からのデータ取得に失敗しました";
+  // getPriceTrends が例外を返すケースの防衛（通常は到達しない）
+  if (!Array.isArray(trends)) {
+    console.error("[AnalyticsPage] getPriceTrends returned non-array:", trends);
+    trends = [];
+    fetchError = "データの取得中に予期しないエラーが発生しました";
   }
+
+  // データが0件でも「取得失敗」ではなく空表示。
+  // エラーバナーは本当に例外が発生した場合のみ。
 
   return (
     <div className="space-y-6">
