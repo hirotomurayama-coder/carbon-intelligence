@@ -193,7 +193,8 @@ export function PriceTrendDashboard({ data }: Props) {
           dateMap.set(entry.date, { date: 0 }); // date placeholder
         }
         const row = dateMap.get(entry.date)!;
-        row[trend.marketId] = entry.priceJpy;
+        // priceJpy が文字列で入っている可能性に対応（WordPress JSON 経由）
+        row[trend.marketId] = Number(entry.priceJpy) || 0;
       }
     }
 
@@ -441,18 +442,25 @@ function ChartSection({
             <XAxis
               dataKey="date"
               tick={{ fontSize: 11, fill: "#9ca3af" }}
-              tickFormatter={(d: string) => {
-                const parts = d.split("-");
-                return `${Number(parts[1])}/${Number(parts[2])}`;
+              tickFormatter={(d: unknown) => {
+                // Recharts は数値を渡す場合がある → 必ず文字列化
+                const s = String(d ?? "");
+                const parts = s.split("-");
+                if (parts.length >= 3) {
+                  return `${Number(parts[1])}/${Number(parts[2])}`;
+                }
+                return s;
               }}
             />
             <YAxis
               tick={{ fontSize: 11, fill: "#9ca3af" }}
-              tickFormatter={(v: number) =>
-                v >= 1000
-                  ? `\u00a5${(v / 1000).toFixed(1)}k`
-                  : `\u00a5${v}`
-              }
+              tickFormatter={(v: unknown) => {
+                const n = Number(v);
+                if (isNaN(n)) return String(v);
+                return n >= 1000
+                  ? `\u00a5${(n / 1000).toFixed(1)}k`
+                  : `\u00a5${n}`;
+              }}
               width={60}
               domain={chartData.length === 1 ? ["dataMin * 0.8", "dataMax * 1.2"] : ["auto", "auto"]}
             />

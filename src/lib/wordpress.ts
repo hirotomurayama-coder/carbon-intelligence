@@ -633,18 +633,20 @@ function parsePriceHistory(acf: Record<string, unknown>, key: string): PriceHist
   return [];
 }
 
-/** PriceHistoryEntry の配列バリデーション */
+/** PriceHistoryEntry の配列バリデーション — 文字列数値にも対応 */
 function validatePriceHistory(arr: unknown[]): PriceHistoryEntry[] {
   return arr
     .filter(
-      (e: unknown): e is { date: string; price: number; priceJpy: number } =>
+      (e: unknown): e is Record<string, unknown> =>
         typeof e === "object" &&
         e !== null &&
-        typeof (e as Record<string, unknown>).date === "string" &&
-        typeof (e as Record<string, unknown>).price === "number" &&
-        typeof (e as Record<string, unknown>).priceJpy === "number"
+        typeof (e as Record<string, unknown>).date === "string"
     )
-    .map((e) => ({ date: e.date, price: e.price, priceJpy: e.priceJpy }));
+    .map((e) => ({
+      date: e.date as string,
+      price: Number(e.price) || 0,
+      priceJpy: Number(e.priceJpy) || 0,
+    }));
 }
 
 /**
@@ -694,14 +696,15 @@ function mapPriceTrend(wp: WPPost): PriceTrend {
 
   const sourceCurrency = (typeof source.source_currency === "string" ? source.source_currency : "") || null;
 
-  const rawPrice = typeof source.latest_price === "number" ? source.latest_price : -1;
-  const latestPrice = rawPrice >= 0 ? rawPrice : null;
+  // 数値フィールドは文字列で入っている場合もある（WordPress JSON 経由）ため Number() で統一
+  const rawPrice = Number(source.latest_price);
+  const latestPrice = isFinite(rawPrice) && rawPrice >= 0 ? rawPrice : null;
 
-  const rawPriceJpy = typeof source.latest_price_jpy === "number" ? source.latest_price_jpy : -1;
-  const latestPriceJpy = rawPriceJpy >= 0 ? rawPriceJpy : null;
+  const rawPriceJpy = Number(source.latest_price_jpy);
+  const latestPriceJpy = isFinite(rawPriceJpy) && rawPriceJpy >= 0 ? rawPriceJpy : null;
 
-  const rawFx = typeof source.fx_rate === "number" ? source.fx_rate : -1;
-  const fxRate = rawFx > 0 ? rawFx : null;
+  const rawFx = Number(source.fx_rate);
+  const fxRate = isFinite(rawFx) && rawFx > 0 ? rawFx : null;
 
   const priceUnit = (typeof source.price_unit === "string" ? source.price_unit : "") || null;
   const sourceName = (typeof source.source_name === "string" ? source.source_name : "") || null;
@@ -714,8 +717,8 @@ function mapPriceTrend(wp: WPPost): PriceTrend {
     ? (rawDirection as TrendDirection)
     : null;
 
-  const rawPercent = typeof source.trend_percentage === "number" ? source.trend_percentage : -999;
-  const trendPercentage = rawPercent !== -999 ? rawPercent : null;
+  const rawPercent = Number(source.trend_percentage);
+  const trendPercentage = isFinite(rawPercent) ? rawPercent : null;
 
   const lastSynced = (typeof source.last_synced === "string" ? source.last_synced : "") || null;
   const creditType = (typeof source.credit_type === "string" ? source.credit_type : "") || null;
