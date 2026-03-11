@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "sync-prices": "tsx scripts/sync-prices.ts"
+    "sync-prices": "tsx scripts/sync-prices.ts",
+    "backfill-prices": "tsx scripts/backfill-prices.ts"
   },
   "dependencies": {
     "@google/generative-ai": "^0.24.1",
