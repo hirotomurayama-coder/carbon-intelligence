@@ -8,27 +8,33 @@ import type { PriceTrend, CreditMarketId, TrendDirection } from "@/types";
 // ============================================================
 
 const MARKET_ORDER: CreditMarketId[] = [
-  "eu-ets",
-  "jcredit-renewable",
   "jcredit-energy-saving",
-  "vcs-geo",
-  "vcs-ngeo",
+  "jcredit-forest",
+  "jcredit-agri-midseason",
+  "jcredit-agri-biochar",
+  "eu-ets",
+  "vol-biochar",
+  "vol-nature-removal",
 ];
 
 const MARKET_COLORS: Record<CreditMarketId, string> = {
-  "eu-ets": "#10b981",            // emerald
-  "jcredit-renewable": "#3b82f6", // blue
-  "jcredit-energy-saving": "#8b5cf6", // violet
-  "vcs-geo": "#f59e0b",          // amber
-  "vcs-ngeo": "#ef4444",         // red
+  "jcredit-energy-saving": "#3b82f6", // blue
+  "jcredit-forest": "#10b981",        // emerald
+  "jcredit-agri-midseason": "#8b5cf6", // violet
+  "jcredit-agri-biochar": "#14b8a6",  // teal
+  "eu-ets": "#f59e0b",                // amber
+  "vol-biochar": "#ef4444",           // red
+  "vol-nature-removal": "#f97316",    // orange
 };
 
 const MARKET_SHORT_NAMES: Record<CreditMarketId, string> = {
-  "eu-ets": "EU ETS",
-  "jcredit-renewable": "J-Credit 再エネ",
   "jcredit-energy-saving": "J-Credit 省エネ",
-  "vcs-geo": "GEO",
-  "vcs-ngeo": "N-GEO",
+  "jcredit-forest": "J-Credit 森林",
+  "jcredit-agri-midseason": "J-Credit 中干し",
+  "jcredit-agri-biochar": "J-Credit バイオ炭",
+  "eu-ets": "EU ETS",
+  "vol-biochar": "Biochar",
+  "vol-nature-removal": "Nature Removal",
 };
 
 // ============================================================
@@ -233,7 +239,7 @@ export function PriceTrendDashboard({ data }: Props) {
   return (
     <div className="space-y-6">
       {/* ── 価格カード ── */}
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         {sortedData.map((trend) => {
           const mid = trend.marketId as CreditMarketId | null;
           const isSelected =

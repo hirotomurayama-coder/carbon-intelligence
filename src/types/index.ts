@@ -161,11 +161,13 @@ export type AiEnrichedFields = {
 
 /** 対象市場 ID */
 export type CreditMarketId =
-  | "eu-ets"
-  | "jcredit-renewable"
-  | "jcredit-energy-saving"
-  | "vcs-geo"
-  | "vcs-ngeo";
+  | "eu-ets"                  // EU ETS (EUA)
+  | "jcredit-energy-saving"   // J-Credit 省エネルギー
+  | "jcredit-forest"          // J-Credit 森林
+  | "jcredit-agri-midseason"  // J-Credit 農業（中干し）
+  | "jcredit-agri-biochar"    // J-Credit 農業（バイオ炭）
+  | "vol-biochar"             // Voluntary Biochar
+  | "vol-nature-removal";     // Voluntary Nature-based Removal
 
 /** トレンド方向 */
 export type TrendDirection = "up" | "down" | "stable";

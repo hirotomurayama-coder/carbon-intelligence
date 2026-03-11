@@ -610,7 +610,9 @@ export async function getRoadmapEvents(): Promise<RoadmapEvent[]> {
 // ============================================================
 
 const VALID_MARKET_IDS: CreditMarketId[] = [
-  "eu-ets", "jcredit-renewable", "jcredit-energy-saving", "vcs-geo", "vcs-ngeo",
+  "eu-ets", "jcredit-energy-saving", "jcredit-forest",
+  "jcredit-agri-midseason", "jcredit-agri-biochar",
+  "vol-biochar", "vol-nature-removal",
 ];
 
 const VALID_TREND_DIRECTIONS: TrendDirection[] = ["up", "down", "stable"];
