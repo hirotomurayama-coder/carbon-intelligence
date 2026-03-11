@@ -1,17 +1,7 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import type { PriceTrend, CreditMarketId, TrendDirection } from "@/types";
-import {
-  ResponsiveContainer,
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  Legend,
-} from "recharts";
 
 // ============================================================
 // 市場表示順序 & カラー定義
@@ -56,31 +46,38 @@ const PERIODS: { key: PeriodKey; label: string; months: number }[] = [
 ];
 
 // ============================================================
-// ヘルパー
+// ヘルパー（ハイドレーション安全: toLocaleString 不使用）
 // ============================================================
 
+/** JPY 書式化 — サーバー/クライアントで差異が出ないよう手動フォーマット */
 function formatJpy(value: number | null): string {
-  if (value === null) return "—";
-  return `¥${value.toLocaleString("ja-JP", { maximumFractionDigits: 0 })}`;
+  if (value === null) return "\u2014";
+  // 手動カンマ区切り（toLocaleString はサーバー/ブラウザで差異あり）
+  const rounded = Math.round(value);
+  const str = Math.abs(rounded).toString();
+  const withComma = str.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  return `\u00a5${rounded < 0 ? "-" : ""}${withComma}`;
 }
 
+/** 元通貨書式化 */
 function formatSourcePrice(
   price: number | null,
   currency: string | null
 ): string {
   if (price === null || currency === null) return "";
-  const symbol = currency === "EUR" ? "€" : currency === "USD" ? "$" : "¥";
-  return `${symbol}${price.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+  const symbol = currency === "EUR" ? "\u20ac" : currency === "USD" ? "$" : "\u00a5";
+  const fixed = price.toFixed(2);
+  return `${symbol}${fixed}`;
 }
 
 function trendIcon(direction: TrendDirection | null): string {
   switch (direction) {
     case "up":
-      return "↑";
+      return "\u2191";
     case "down":
-      return "↓";
+      return "\u2193";
     default:
-      return "→";
+      return "\u2192";
   }
 }
 
@@ -95,22 +92,33 @@ function trendColor(direction: TrendDirection | null): string {
   }
 }
 
+/** 相対時刻 — クライアントのみで使用（mounted 後） */
 function relativeTime(isoString: string | null): string {
-  if (!isoString) return "—";
+  if (!isoString) return "\u2014";
   try {
     const date = new Date(isoString);
     const now = new Date();
     const diffMs = now.getTime() - date.getTime();
     const diffMin = Math.floor(diffMs / 60000);
-    if (diffMin < 1) return "たった今";
-    if (diffMin < 60) return `${diffMin}分前`;
+    if (diffMin < 1) return "\u305f\u3063\u305f\u4eca";
+    if (diffMin < 60) return `${diffMin}\u5206\u524d`;
     const diffHours = Math.floor(diffMin / 60);
-    if (diffHours < 24) return `${diffHours}時間前`;
+    if (diffHours < 24) return `${diffHours}\u6642\u9593\u524d`;
     const diffDays = Math.floor(diffHours / 24);
-    return `${diffDays}日前`;
+    return `${diffDays}\u65e5\u524d`;
   } catch {
-    return "—";
+    return "\u2014";
   }
+}
+
+/** 日付を短い形式で表示（ハイドレーション安全: 純粋な文字列操作のみ） */
+function formatShortDate(isoString: string | null): string {
+  if (!isoString) return "\u2014";
+  // "2026-03-10T..." → "3/10"
+  const datePart = isoString.slice(0, 10);
+  const parts = datePart.split("-");
+  if (parts.length < 3) return datePart;
+  return `${Number(parts[1])}/${Number(parts[2])}`;
 }
 
 // ============================================================
@@ -126,10 +134,18 @@ type Props = {
 // ============================================================
 
 export function PriceTrendDashboard({ data }: Props) {
+  // ---- ハイドレーション対策: mounted フラグ ----
+  // サーバー描画時は mounted=false → Recharts/relativeTime を描画しない
+  // クライアントで useEffect 後に mounted=true → 初めて描画
+  const [mounted, setMounted] = useState(false);
   const [selectedMarket, setSelectedMarket] = useState<CreditMarketId | "all">(
     "all"
   );
   const [period, setPeriod] = useState<PeriodKey>("ALL");
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   // 市場順にソート
   const sortedData = useMemo(() => {
@@ -146,14 +162,16 @@ export function PriceTrendDashboard({ data }: Props) {
   }, [data]);
 
   // 期間フィルタで切り出した日付の閾値
+  // ※ mounted 後のみ new Date() を使う（ハイドレーション対策）
   const cutoffDate = useMemo(() => {
+    if (!mounted) return null; // サーバーでは常に ALL
     if (period === "ALL") return null;
     const months = PERIODS.find((p) => p.key === period)?.months ?? 0;
     if (months === 0) return null;
     const d = new Date();
     d.setMonth(d.getMonth() - months);
     return d.toISOString().slice(0, 10);
-  }, [period]);
+  }, [period, mounted]);
 
   // チャート用データ: 全市場の price_history を date をキーに結合
   const chartData = useMemo(() => {
@@ -248,8 +266,8 @@ export function PriceTrendDashboard({ data }: Props) {
                 {trend.title}
               </div>
 
-              {/* JPY 価格 */}
-              <div className="mt-1 text-2xl font-bold text-gray-900">
+              {/* JPY 価格 — suppressHydrationWarning で安全に */}
+              <div className="mt-1 text-2xl font-bold text-gray-900" suppressHydrationWarning>
                 {formatJpy(trend.latestPriceJpy)}
                 <span className="ml-1 text-xs font-normal text-gray-400">
                   /{trend.priceUnit ?? "tCO2e"}
@@ -258,7 +276,7 @@ export function PriceTrendDashboard({ data }: Props) {
 
               {/* 元通貨 + FX */}
               {trend.sourceCurrency !== "JPY" && (
-                <div className="mt-0.5 text-xs text-gray-400">
+                <div className="mt-0.5 text-xs text-gray-400" suppressHydrationWarning>
                   {formatSourcePrice(trend.latestPrice, trend.sourceCurrency)}
                   {trend.fxRate
                     ? ` (FX: ${trend.fxRate.toFixed(2)})`
@@ -283,10 +301,12 @@ export function PriceTrendDashboard({ data }: Props) {
                 </span>
               </div>
 
-              {/* ソース + 更新日 */}
+              {/* ソース + 更新日 — relativeTime はクライアントのみ */}
               <div className="mt-2 flex items-center justify-between text-[10px] text-gray-400">
-                <span>{trend.sourceName ?? "—"}</span>
-                <span>{relativeTime(trend.lastSynced)}</span>
+                <span>{trend.sourceName ?? "\u2014"}</span>
+                <span suppressHydrationWarning>
+                  {mounted ? relativeTime(trend.lastSynced) : formatShortDate(trend.lastSynced)}
+                </span>
               </div>
             </button>
           );
@@ -300,7 +320,7 @@ export function PriceTrendDashboard({ data }: Props) {
           <h2 className="text-sm font-semibold text-gray-700">
             価格推移（JPY/tCO2e）
             {selectedMarket !== "all" &&
-              ` — ${
+              ` \u2014 ${
                 MARKET_SHORT_NAMES[selectedMarket] ?? selectedMarket
               }`}
           </h2>
@@ -324,81 +344,18 @@ export function PriceTrendDashboard({ data }: Props) {
           </div>
         </div>
 
-        {/* チャート */}
-        {chartData.length > 0 ? (
-          <div>
-            {chartData.length === 1 && (
-              <p className="mb-2 text-xs text-gray-400">
-                現在1日分のデータのみ。同期を繰り返すことで推移グラフが描画されます。
-              </p>
-            )}
-            <div className="h-80">
-              <ResponsiveContainer width="100%" height="100%">
-                <LineChart
-                  data={chartData}
-                  margin={{ top: 5, right: 20, left: 10, bottom: 5 }}
-                >
-                  <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
-                  <XAxis
-                    dataKey="date"
-                    tick={{ fontSize: 11, fill: "#9ca3af" }}
-                    tickFormatter={(d: string) => {
-                      // "2026-03-10" → "3/10"
-                      const parts = d.split("-");
-                      return `${Number(parts[1])}/${Number(parts[2])}`;
-                    }}
-                  />
-                  <YAxis
-                    tick={{ fontSize: 11, fill: "#9ca3af" }}
-                    tickFormatter={(v: number) =>
-                      v >= 1000
-                        ? `¥${(v / 1000).toFixed(1)}k`
-                        : `¥${v}`
-                    }
-                    width={60}
-                    domain={chartData.length === 1 ? ["dataMin * 0.8", "dataMax * 1.2"] : ["auto", "auto"]}
-                  />
-                  <Tooltip
-                    contentStyle={{
-                      fontSize: 12,
-                      borderRadius: 8,
-                      borderColor: "#e5e7eb",
-                    }}
-                    formatter={(value: unknown, name: unknown) => {
-                      const v = typeof value === "number" ? value : 0;
-                      const n = typeof name === "string" ? name : "";
-                      const label =
-                        MARKET_SHORT_NAMES[n as CreditMarketId] ?? n;
-                      return [`¥${v.toLocaleString("ja-JP")}`, label];
-                    }}
-                    labelFormatter={(label: unknown) => `日付: ${String(label)}`}
-                  />
-                  <Legend
-                    formatter={(value: unknown) => {
-                      const v = typeof value === "string" ? value : String(value);
-                      return MARKET_SHORT_NAMES[v as CreditMarketId] ?? v;
-                    }}
-                    wrapperStyle={{ fontSize: 11 }}
-                  />
-                  {chartMarkets.map((mid) => (
-                    <Line
-                      key={mid}
-                      type="monotone"
-                      dataKey={mid}
-                      stroke={MARKET_COLORS[mid]}
-                      strokeWidth={2}
-                      dot={{ r: chartData.length <= 5 ? 6 : chartData.length <= 30 ? 3 : 0 }}
-                      activeDot={{ r: 6 }}
-                      connectNulls
-                    />
-                  ))}
-                </LineChart>
-              </ResponsiveContainer>
+        {/* チャート — クライアントマウント後にのみ描画（Recharts SSR 不一致対策） */}
+        {mounted ? (
+          chartData.length > 0 ? (
+            <ChartSection chartData={chartData} chartMarkets={chartMarkets} />
+          ) : (
+            <div className="flex h-48 items-center justify-center text-sm text-gray-400">
+              選択期間のデータがありません
             </div>
-          </div>
+          )
         ) : (
-          <div className="flex h-48 items-center justify-center text-sm text-gray-400">
-            選択期間のデータがありません
+          <div className="flex h-80 items-center justify-center text-sm text-gray-300">
+            チャートを読み込み中...
           </div>
         )}
 
@@ -440,6 +397,101 @@ export function PriceTrendDashboard({ data }: Props) {
               </a>
             ))}
         </div>
+      </div>
+    </div>
+  );
+}
+
+// ============================================================
+// Recharts チャート — 別コンポーネントに分離（dynamic import 対応準備）
+// ============================================================
+
+import {
+  ResponsiveContainer,
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+} from "recharts";
+
+function ChartSection({
+  chartData,
+  chartMarkets,
+}: {
+  chartData: Record<string, unknown>[];
+  chartMarkets: CreditMarketId[];
+}) {
+  return (
+    <div>
+      {chartData.length === 1 && (
+        <p className="mb-2 text-xs text-gray-400">
+          現在1日分のデータのみ。同期を繰り返すことで推移グラフが描画されます。
+        </p>
+      )}
+      <div className="h-80">
+        <ResponsiveContainer width="100%" height="100%">
+          <LineChart
+            data={chartData}
+            margin={{ top: 5, right: 20, left: 10, bottom: 5 }}
+          >
+            <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+            <XAxis
+              dataKey="date"
+              tick={{ fontSize: 11, fill: "#9ca3af" }}
+              tickFormatter={(d: string) => {
+                const parts = d.split("-");
+                return `${Number(parts[1])}/${Number(parts[2])}`;
+              }}
+            />
+            <YAxis
+              tick={{ fontSize: 11, fill: "#9ca3af" }}
+              tickFormatter={(v: number) =>
+                v >= 1000
+                  ? `\u00a5${(v / 1000).toFixed(1)}k`
+                  : `\u00a5${v}`
+              }
+              width={60}
+              domain={chartData.length === 1 ? ["dataMin * 0.8", "dataMax * 1.2"] : ["auto", "auto"]}
+            />
+            <Tooltip
+              contentStyle={{
+                fontSize: 12,
+                borderRadius: 8,
+                borderColor: "#e5e7eb",
+              }}
+              formatter={(value: unknown, name: unknown) => {
+                const v = typeof value === "number" ? value : 0;
+                const n = typeof name === "string" ? name : "";
+                const label =
+                  MARKET_SHORT_NAMES[n as CreditMarketId] ?? n;
+                return [`\u00a5${v.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`, label];
+              }}
+              labelFormatter={(label: unknown) => `日付: ${String(label)}`}
+            />
+            <Legend
+              formatter={(value: unknown) => {
+                const v = typeof value === "string" ? value : String(value);
+                return MARKET_SHORT_NAMES[v as CreditMarketId] ?? v;
+              }}
+              wrapperStyle={{ fontSize: 11 }}
+            />
+            {chartMarkets.map((mid) => (
+              <Line
+                key={mid}
+                type="monotone"
+                dataKey={mid}
+                stroke={MARKET_COLORS[mid]}
+                strokeWidth={2}
+                dot={{ r: chartData.length <= 5 ? 6 : chartData.length <= 30 ? 3 : 0 }}
+                activeDot={{ r: 6 }}
+                connectNulls
+              />
+            ))}
+          </LineChart>
+        </ResponsiveContainer>
       </div>
     </div>
   );

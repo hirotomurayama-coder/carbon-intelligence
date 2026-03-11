@@ -1,5 +1,6 @@
 import { getPriceTrends } from "@/lib/wordpress";
 import { PriceTrendDashboard } from "@/components/PriceTrendDashboard";
+import { ErrorBoundary } from "@/components/ErrorBoundary";
 import type { Metadata } from "next";
 import type { PriceTrend } from "@/types";
 
@@ -14,22 +15,24 @@ export const metadata: Metadata = {
 export default async function AnalyticsPage() {
   let trends: PriceTrend[] = [];
   let fetchError: string | null = null;
-  let debugInfo: string | null = null;
 
   const apiUrl = process.env.NEXT_PUBLIC_WORDPRESS_API_URL ?? "(未設定)";
 
   try {
     trends = await getPriceTrends();
     // getPriceTrends は内部 catch で [] を返すため、ここに来た時点で成功
-    debugInfo = `API: ${apiUrl} | 取得件数: ${trends.length}`;
   } catch (e) {
     // getPriceTrends 自体が catch 済みなので通常到達しない。
     // 到達した場合は import エラーやランタイム異常。
     const msg = e instanceof Error ? e.message : String(e);
     fetchError = msg;
-    debugInfo = `API: ${apiUrl} | エラー: ${msg}`;
     console.error("[AnalyticsPage] 予期しない例外:", e);
   }
+
+  // デバッグ情報（サーバー側で確定した値をそのまま表示）
+  const debugLine = fetchError
+    ? `API: ${apiUrl} | エラー: ${fetchError}`
+    : `API: ${apiUrl} | 取得件数: ${trends.length} | 先頭ID: ${trends[0]?.id ?? "なし"} | 先頭市場: ${trends[0]?.marketId ?? "なし"} | 先頭JPY: ${trends[0]?.latestPriceJpy ?? "なし"}`;
 
   return (
     <div className="space-y-6">
@@ -39,13 +42,6 @@ export default async function AnalyticsPage() {
           主要カーボンクレジット市場の最新価格と推移
         </p>
       </div>
-
-      {/* デバッグ情報（一時的） */}
-      {debugInfo && (
-        <p className="text-[10px] text-gray-300 font-mono break-all">
-          {debugInfo}
-        </p>
-      )}
 
       {fetchError && (
         <div className="rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-700">
@@ -57,7 +53,21 @@ export default async function AnalyticsPage() {
         </div>
       )}
 
-      <PriceTrendDashboard data={trends} />
+      {/* ErrorBoundary でクライアントサイドエラーを捕捉 */}
+      <ErrorBoundary>
+        <PriceTrendDashboard data={trends} />
+      </ErrorBoundary>
+
+      {/* ===== デバッグ情報（常に最下部に表示） ===== */}
+      <div
+        className="border-t border-gray-100 pt-3 text-[10px] text-gray-300 font-mono break-all"
+        suppressHydrationWarning
+      >
+        <p>{debugLine}</p>
+        <p className="mt-1">
+          SSR時刻: {new Date().toISOString()} | dynamic: force-dynamic
+        </p>
+      </div>
     </div>
   );
 }
