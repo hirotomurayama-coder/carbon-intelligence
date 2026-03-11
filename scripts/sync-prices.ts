@@ -106,11 +106,13 @@ async function fetchFxRates(): Promise<FxRates> {
 
 // ============================================================
 // 2. J-Credit 価格取得（JPX PDF 解析）
+//    ※ 最新の日報 PDF 1件のみを取得し、当日の価格を抽出する。
+//    ※ 過去データのバックフィルは行わない。
 // ============================================================
 
 const JPX_DAILY_URL = "https://www.jpx.co.jp/equities/carbon-credit/daily/index.html";
 
-/** JPX ページから最新 PDF リンクを取得 */
+/** JPX 日次データページから最新の PDF リンク1件のみを取得 */
 async function findLatestJpxPdfUrl(): Promise<string | null> {
   console.log("[JPX] 日次データページを取得中...");
   const res = await fetch(JPX_DAILY_URL, {

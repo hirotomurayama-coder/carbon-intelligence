@@ -1,9 +1,9 @@
 /**
  * AI ベースのボランタリークレジット価格抽出モジュール。
  *
- * - 指定 URL からページ内容を取得
+ * - 複数のソース（Senken, Regreener, Carbon Herald 等）から最新ページを取得
  * - Google Generative AI (Gemini) で価格情報を抽出
- * - 複数ソースの平均値を算出
+ * - 「実行時点から過去1ヶ月以内」のデータのみを対象とする鮮度フィルタ付き
  *
  * 使用 API キー: GOOGLE_GENERATIVE_AI_API_KEY
  */
@@ -27,6 +27,38 @@ export type VoluntaryPriceResult = {
   /** 情報源名 */
   sources: string[];
 };
+
+// ============================================================
+// ソース定義 — 鮮度重視で複数ソースを巡回
+// ============================================================
+
+type SourceDef = {
+  name: string;
+  url: string;
+};
+
+/**
+ * ソース URL リスト。
+ * 各 URL は実行時点で最新の価格情報を含む可能性があるページ。
+ */
+const SOURCES: SourceDef[] = [
+  {
+    name: "Senken Academy",
+    url: "https://www.senken.io/academy/carbon-credit-price",
+  },
+  {
+    name: "Regreener Blog",
+    url: "https://www.regreener.earth/blog/voluntary-carbon-market-update",
+  },
+  {
+    name: "Carbon Herald",
+    url: "https://carbonherald.com/category/carbon-credits/",
+  },
+  {
+    name: "Carbon Credits (market prices)",
+    url: "https://carboncredits.com/carbon-prices-today/",
+  },
+];
 
 // ============================================================
 // HTML テキスト抽出
@@ -54,11 +86,11 @@ async function fetchPageText(url: string): Promise<string> {
     const $ = cheerio.load(html);
 
     // 不要要素を除去
-    $("script, style, nav, footer, header, iframe, noscript").remove();
+    $("script, style, nav, footer, header, iframe, noscript, aside, .ad, .advertisement").remove();
 
-    // テキスト抽出（最初の 8000 文字に制限）
+    // テキスト抽出（最初の 6000 文字に制限）
     const text = $("body").text().replace(/\s+/g, " ").trim();
-    return text.slice(0, 8000);
+    return text.slice(0, 6000);
   } catch (e) {
     console.warn(`  [AI] ${url} 取得失敗: ${e}`);
     return "";
@@ -66,59 +98,80 @@ async function fetchPageText(url: string): Promise<string> {
 }
 
 // ============================================================
-// Gemini による価格抽出
+// 日付ユーティリティ — 鮮度フィルタ
 // ============================================================
 
-const EXTRACTION_PROMPT = `あなたはカーボンクレジット市場の価格アナリストです。
-以下のWebページ内容から、ボランタリーカーボンクレジットの価格情報を抽出してください。
+/** 過去1ヶ月の日付範囲を "YYYY-MM-DD" で返す */
+function getOneMonthAgoISO(): string {
+  const d = new Date();
+  d.setMonth(d.getMonth() - 1);
+  return d.toISOString().slice(0, 10);
+}
+
+// ============================================================
+// Gemini による価格抽出（鮮度制約付きプロンプト）
+// ============================================================
+
+function buildExtractionPrompt(): string {
+  const today = new Date().toISOString().slice(0, 10);
+  const oneMonthAgo = getOneMonthAgoISO();
+
+  return `あなたはカーボンクレジット市場の価格アナリストです。
+以下のWebページ内容から、ボランタリーカーボンクレジットの **最新** 価格情報を抽出してください。
+
+【重要な制約】
+- 今日の日付: ${today}
+- 対象期間: ${oneMonthAgo} 〜 ${today}（過去1ヶ月以内のデータのみ）
+- 1ヶ月より古い価格データは無視してください
+- 日付が不明でも、ページの文脈から最近のデータと判断できる場合は採用してください
 
 特に以下のクレジット種別の USD/tCO2e 価格を探してください:
-1. **Biochar**（バイオ炭） — 技術ベース除去クレジット
-2. **Nature-based Removal**（自然ベース除去） — 森林・土壌ベースの除去クレジット
+1. **Biochar**（バイオ炭） — 技術ベース除去クレジット（CDR）
+2. **Nature-based Removal**（自然ベース除去） — 森林再生・土壌炭素ベースの除去クレジット
 
 以下の JSON 形式で回答してください（他のテキストは不要）:
 \`\`\`json
 {
-  "biochar": { "low": <数値|null>, "mid": <数値|null>, "high": <数値|null> },
-  "nature_removal": { "low": <数値|null>, "mid": <数値|null>, "high": <数値|null> }
+  "biochar": { "low": <数値|null>, "mid": <数値|null>, "high": <数値|null>, "confidence": "<high|medium|low>" },
+  "nature_removal": { "low": <数値|null>, "mid": <数値|null>, "high": <数値|null>, "confidence": "<high|medium|low>" }
 }
 \`\`\`
 
 - 価格が見つからない場合は mid を null にしてください
+- confidence は情報の鮮度と信頼性を示します:
+  - high: 明確な日付付きの最新データ
+  - medium: 最近のデータだが日付が不明確
+  - low: 推定値またはやや古い可能性
 - 金額は USD/tCO2e で統一
-- レンジが見つかった場合は low/high にも入れてください
 
 Webページ内容:
 ---
 `;
+}
 
 export async function extractVoluntaryPrices(
   apiKey: string
 ): Promise<VoluntaryPriceResult[]> {
+  if (!apiKey) {
+    console.warn("  [AI] API キー未設定。フォールバック価格を使用します。");
+    return getDefaultPrices();
+  }
+
   const genAI = new GoogleGenerativeAI(apiKey);
   const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
 
-  // ソース URL リスト
-  const sources = [
-    {
-      name: "Senken Academy",
-      url: "https://www.senken.io/academy/carbon-credit-price",
-    },
-    {
-      name: "Regreener",
-      url: "https://www.regreener.earth/blog/voluntary-carbon-market-update",
-    },
-  ];
-
   // 全ソースのテキストを収集
   const pageTexts: { name: string; text: string }[] = [];
-  for (const src of sources) {
+  for (const src of SOURCES) {
     const text = await fetchPageText(src.url);
     if (text.length > 100) {
       pageTexts.push({ name: src.name, text });
+      console.log(`  [AI] ✓ ${src.name}: ${text.length} 文字取得`);
+    } else {
+      console.log(`  [AI] ✗ ${src.name}: テキスト不足（${text.length} 文字）`);
     }
     // レート制限対策
-    await new Promise((r) => setTimeout(r, 1000));
+    await new Promise((r) => setTimeout(r, 1500));
   }
 
   if (pageTexts.length === 0) {
@@ -132,10 +185,9 @@ export async function extractVoluntaryPrices(
     .join("\n\n---\n\n");
 
   try {
-    console.log("  [AI] Gemini で価格抽出中...");
-    const result = await model.generateContent(
-      EXTRACTION_PROMPT + combinedText
-    );
+    console.log(`  [AI] Gemini で価格抽出中...（ソース: ${pageTexts.length} 件）`);
+    const prompt = buildExtractionPrompt();
+    const result = await model.generateContent(prompt + combinedText);
     const responseText = result.response.text();
 
     // JSON 部分を抽出
@@ -146,8 +198,8 @@ export async function extractVoluntaryPrices(
     }
 
     const parsed = JSON.parse(jsonMatch[0]) as {
-      biochar?: { low?: number | null; mid?: number | null; high?: number | null };
-      nature_removal?: { low?: number | null; mid?: number | null; high?: number | null };
+      biochar?: { low?: number | null; mid?: number | null; high?: number | null; confidence?: string };
+      nature_removal?: { low?: number | null; mid?: number | null; high?: number | null; confidence?: string };
     };
 
     const results: VoluntaryPriceResult[] = [];
@@ -163,6 +215,7 @@ export async function extractVoluntaryPrices(
         priceHigh: bc.high ?? null,
         sources: srcNames,
       });
+      console.log(`  [AI] Biochar: $${bc.mid}/tCO2e (confidence: ${bc.confidence ?? "unknown"})`);
     }
 
     // Nature-based Removal
@@ -175,18 +228,13 @@ export async function extractVoluntaryPrices(
         priceHigh: nr.high ?? null,
         sources: srcNames,
       });
+      console.log(`  [AI] Nature Removal: $${nr.mid}/tCO2e (confidence: ${nr.confidence ?? "unknown"})`);
     }
 
     // AI が価格を見つけられなかった場合はフォールバック
     if (results.length === 0) {
       console.warn("  [AI] AI 抽出結果が空です。フォールバック価格を使用します。");
       return getDefaultPrices();
-    }
-
-    for (const r of results) {
-      console.log(
-        `  [AI] ${r.name}: $${r.priceUsd}/tCO2e (${r.priceLow ?? "?"} - ${r.priceHigh ?? "?"})`
-      );
     }
 
     return results;
