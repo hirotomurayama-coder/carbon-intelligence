@@ -1,6 +1,7 @@
 import { getPriceTrends } from "@/lib/wordpress";
 import { PriceTrendDashboard } from "@/components/PriceTrendDashboard";
 import type { Metadata } from "next";
+import type { PriceTrend } from "@/types";
 
 export const dynamic = "force-dynamic";
 
@@ -11,20 +12,24 @@ export const metadata: Metadata = {
 };
 
 export default async function AnalyticsPage() {
-  // getPriceTrends は内部で try-catch し、エラー時は [] を返す。
-  // ここでの try-catch は予期しない例外（型エラー等）の最終防壁。
-  let trends = await getPriceTrends();
+  let trends: PriceTrend[] = [];
   let fetchError: string | null = null;
+  let debugInfo: string | null = null;
 
-  // getPriceTrends が例外を返すケースの防衛（通常は到達しない）
-  if (!Array.isArray(trends)) {
-    console.error("[AnalyticsPage] getPriceTrends returned non-array:", trends);
-    trends = [];
-    fetchError = "データの取得中に予期しないエラーが発生しました";
+  const apiUrl = process.env.NEXT_PUBLIC_WORDPRESS_API_URL ?? "(未設定)";
+
+  try {
+    trends = await getPriceTrends();
+    // getPriceTrends は内部 catch で [] を返すため、ここに来た時点で成功
+    debugInfo = `API: ${apiUrl} | 取得件数: ${trends.length}`;
+  } catch (e) {
+    // getPriceTrends 自体が catch 済みなので通常到達しない。
+    // 到達した場合は import エラーやランタイム異常。
+    const msg = e instanceof Error ? e.message : String(e);
+    fetchError = msg;
+    debugInfo = `API: ${apiUrl} | エラー: ${msg}`;
+    console.error("[AnalyticsPage] 予期しない例外:", e);
   }
-
-  // データが0件でも「取得失敗」ではなく空表示。
-  // エラーバナーは本当に例外が発生した場合のみ。
 
   return (
     <div className="space-y-6">
@@ -35,10 +40,20 @@ export default async function AnalyticsPage() {
         </p>
       </div>
 
+      {/* デバッグ情報（一時的） */}
+      {debugInfo && (
+        <p className="text-[10px] text-gray-300 font-mono break-all">
+          {debugInfo}
+        </p>
+      )}
+
       {fetchError && (
         <div className="rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-700">
           <p className="font-semibold">データ取得エラー</p>
-          <p className="mt-1">{fetchError}</p>
+          <p className="mt-1 break-all">{fetchError}</p>
+          <p className="mt-2 text-xs text-red-400 break-all">
+            対象 URL: {apiUrl}/price_trends?per_page=100
+          </p>
         </div>
       )}
 

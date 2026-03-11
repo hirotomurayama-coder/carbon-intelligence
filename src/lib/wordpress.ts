@@ -36,11 +36,19 @@ type WPPost = {
 // ※ carboncredits.jp（既存ニュースサイト）には一切接続しない
 // ============================================================
 
+// 末尾スラッシュを正規化して除去（"https://…/wp/v2/" → "https://…/wp/v2"）
 const API_BASE =
-  process.env.NEXT_PUBLIC_WORDPRESS_API_URL ?? "";
+  (process.env.NEXT_PUBLIC_WORDPRESS_API_URL ?? "").replace(/\/+$/, "");
 
 function isApiConfigured(): boolean {
   return API_BASE !== "" && !API_BASE.includes("example.com");
+}
+
+/** API_BASE + endpoint を安全に結合する */
+function buildApiUrl(endpoint: string): string {
+  // endpoint 先頭スラッシュも除去して二重スラッシュを防止
+  const ep = endpoint.replace(/^\/+/, "");
+  return `${API_BASE}/${ep}`;
 }
 
 // ============================================================
@@ -130,7 +138,7 @@ function stripHtml(html: string): string {
 // ============================================================
 
 async function wpFetch<T>(endpoint: string): Promise<T[]> {
-  const url = `${API_BASE}/${endpoint}`;
+  const url = buildApiUrl(endpoint);
 
   console.log(`[WP] Fetching: ${url}`);
 
@@ -369,12 +377,13 @@ function mapInsightDetail(wp: WPPostWithEmbed): InsightDetail {
 
 /** 単一リソースを取得する汎用ヘルパー */
 async function wpFetchSingle<T>(endpoint: string): Promise<T | null> {
-  const url = `${API_BASE}/${endpoint}`;
+  const url = buildApiUrl(endpoint);
   console.log(`[WP] Fetching single: ${url}`);
 
   const res = await fetch(url, {
     redirect: "follow",
     cache: "no-store",
+    headers: { Accept: "application/json" },
   });
 
   if (!res.ok) {
