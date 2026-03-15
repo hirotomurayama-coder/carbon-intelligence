@@ -725,6 +725,27 @@ function mapPriceTrend(wp: WPPost): PriceTrend {
   const lastSynced = (typeof source.last_synced === "string" ? source.last_synced : "") || null;
   const creditType = (typeof source.credit_type === "string" ? source.credit_type : "") || null;
 
+  // AI 分析データの取得
+  let analysis: import("@/types").MarketAnalysis | null = null;
+  const rawAnalysis = source.market_analysis;
+  if (rawAnalysis) {
+    try {
+      const parsed = typeof rawAnalysis === "string" ? JSON.parse(rawAnalysis) : rawAnalysis;
+      if (parsed && typeof parsed === "object" && !Array.isArray(parsed)) {
+        const a = parsed as Record<string, unknown>;
+        analysis = {
+          factors: Array.isArray(a.factors) ? a.factors.map(String) : [],
+          monthlyRangeLow: Number(a.monthly_range_low) || null,
+          monthlyRangeHigh: Number(a.monthly_range_high) || null,
+          outlook: typeof a.outlook === "string" ? a.outlook : null,
+          summary: typeof a.summary === "string" ? a.summary : null,
+          analysisSources: Array.isArray(a.analysis_sources) ? a.analysis_sources.map(String) : [],
+          analyzedAt: typeof a.analyzed_at === "string" ? a.analyzed_at : null,
+        };
+      }
+    } catch { /* analysis parse failure — leave as null */ }
+  }
+
   return {
     id: String(wp.id),
     title: stripHtml(wp.title.rendered),
@@ -741,6 +762,7 @@ function mapPriceTrend(wp: WPPost): PriceTrend {
     trendDirection,
     trendPercentage,
     lastSynced,
+    analysis,
   };
 }
 
@@ -768,6 +790,12 @@ export async function getPriceTrends(): Promise<PriceTrend[]> {
     console.error("[WP FAIL] price_trends:", e);
     return [];
   }
+}
+
+/** クレジット価格動向を marketId で1件取得（詳細ページ用） */
+export async function getPriceTrendByMarketId(marketId: string): Promise<PriceTrend | null> {
+  const trends = await getPriceTrends();
+  return trends.find((t) => t.marketId === marketId) ?? null;
 }
 
 /** クレジット価格動向を ID で1件取得 */

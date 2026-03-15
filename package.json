@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "eslint",
     "sync-prices": "tsx scripts/sync-prices.ts",
-    "backfill-prices": "tsx scripts/backfill-prices.ts"
+    "backfill-prices": "tsx scripts/backfill-prices.ts",
+    "analyze-market": "tsx scripts/analyze-market.ts"
   },
   "dependencies": {
     "@google/generative-ai": "^0.24.1",

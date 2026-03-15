@@ -196,6 +196,28 @@ export type PriceTrend = {
   trendDirection: TrendDirection | null; // ACF: trend_direction
   trendPercentage: number | null;        // ACF: trend_percentage — 変動率 (%)
   lastSynced: string | null;            // ACF: last_synced — ISO 日時文字列
+  analysis: MarketAnalysis | null;     // ACF: market_analysis — AI 分析データ
+};
+
+// ============================================================
+// マーケット分析 — ACF: market_analysis (price_trends 内フィールド)
+// ============================================================
+
+/** AI 生成のマーケット分析データ */
+export type MarketAnalysis = {
+  /** 価格変動の主な要因 */
+  factors: string[];
+  /** 過去1ヶ月の価格レンジ（JPY） */
+  monthlyRangeLow: number | null;
+  monthlyRangeHigh: number | null;
+  /** 今後の短期見通し */
+  outlook: string | null;
+  /** AI 生成のサマリー（1〜2文） */
+  summary: string | null;
+  /** 分析に使用したソース */
+  analysisSources: string[];
+  /** 分析更新日時 */
+  analyzedAt: string | null;
 };
 
 /** 同期結果のアクション種別 */

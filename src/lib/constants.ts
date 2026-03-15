@@ -17,7 +17,7 @@ export const NAV_ITEMS: NavItem[] = [
       { label: "政策ロードマップ", href: "/roadmap" },
     ],
   },
-  { label: "分析", href: "/analytics", icon: "analytics" },
+  { label: "分析", href: "/analysis", icon: "analytics" },
   { label: "ポートフォリオ", href: "/portfolio", icon: "portfolio" },
   { label: "設定", href: "/settings", icon: "settings" },
 ];
