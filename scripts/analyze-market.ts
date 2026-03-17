@@ -70,6 +70,7 @@ type AnalysisResult = {
 // ============================================================
 
 const MARKETS: MarketDef[] = [
+  // ── コンプライアンス市場 ──
   {
     id: "jcredit-energy-saving",
     name: "J-Credit（省エネルギー）",
@@ -120,6 +121,7 @@ const MARKETS: MarketDef[] = [
     ],
     context: "EU 域内排出量取引制度の排出枠（EUA）。世界最大の炭素市場。マクロ経済、エネルギー価格、EU 気候政策に大きく影響される。",
   },
+  // ── ボランタリー：炭素除去（Removal） ──
   {
     id: "vol-biochar",
     name: "Biochar（バイオ炭除去）",
@@ -130,6 +132,78 @@ const MARKETS: MarketDef[] = [
     ],
     context: "技術ベース炭素除去（CDR）のバイオ炭クレジット。Puro.earth 等で取引。高い永続性（100年以上）が特徴。",
   },
+  {
+    id: "vol-dac",
+    name: "DAC（Direct Air Capture）",
+    searchQueries: [
+      "direct air capture carbon credit price 2026",
+      "DAC CDR carbon removal market Climeworks",
+      "DAC 直接空気回収 カーボンクレジット 価格",
+    ],
+    context: "大気中のCO2を直接回収するDAC技術による除去クレジット。Climeworks、Carbon Engineering等が主要プレイヤー。最も高価だが永続性が最高（1000年以上）。$400-1200/tCO2e の価格帯。",
+  },
+  {
+    id: "vol-erw",
+    name: "ERW（Enhanced Rock Weathering）",
+    searchQueries: [
+      "enhanced rock weathering carbon credit price 2026",
+      "ERW carbon removal credit Isometric Puro",
+      "風化促進 岩石風化 カーボンクレジット",
+    ],
+    context: "玄武岩等の岩石粉砕物を農地に散布し、風化反応でCO2を固定する技術。UNDO、Lithos等が展開。Puro.earth、Isometric等で認証。新興CDR技術として注目。",
+  },
+  {
+    id: "vol-blue-carbon",
+    name: "Blue Carbon（マングローブ・海草）",
+    searchQueries: [
+      "blue carbon credit mangrove price 2026",
+      "blue carbon seagrass wetland credit market",
+      "ブルーカーボン マングローブ カーボンクレジット 価格",
+    ],
+    context: "マングローブ・海草藻場・塩性湿地等の沿岸生態系による炭素吸収・固定クレジット。Verra VCS、Plan Vivo等で認証。生物多様性の共便益が高い。",
+  },
+  {
+    id: "vol-soil-carbon",
+    name: "Soil Carbon（土壌炭素貯留）",
+    searchQueries: [
+      "soil carbon credit price 2026 regenerative agriculture",
+      "soil carbon sequestration voluntary market",
+      "土壌炭素 再生型農業 カーボンクレジット",
+    ],
+    context: "再生型農業（不耕起栽培、被覆作物等）による土壌への炭素貯留クレジット。Verra、Gold Standard等で認証。永続性の課題から価格は比較的低い。",
+  },
+  // ── ボランタリー：回避・削減（Avoidance） ──
+  {
+    id: "vol-redd-plus",
+    name: "REDD+（森林減少回避）",
+    searchQueries: [
+      "REDD+ carbon credit price 2026 voluntary market",
+      "REDD avoided deforestation credit Verra",
+      "REDD+ 森林減少回避 カーボンクレジット 価格",
+    ],
+    context: "途上国の森林減少・劣化を防止することで排出を回避するREDD+クレジット。Verra VCSが最大の発行プラットフォーム。近年は品質議論（過大なベースライン問題）で価格が低迷。",
+  },
+  {
+    id: "vol-cookstoves",
+    name: "Clean Cookstoves（改良かまど）",
+    searchQueries: [
+      "clean cookstoves carbon credit price 2026",
+      "improved cookstove carbon credit Gold Standard",
+      "改良かまど クリーンクックストーブ カーボンクレジット",
+    ],
+    context: "途上国で効率的な調理用ストーブを普及させ、薪・炭の使用量を削減するプロジェクト。Gold Standard認証が主流。SDGs共便益（健康改善、女性の負担軽減）が高い。",
+  },
+  {
+    id: "vol-methane",
+    name: "Methane Capture（メタン回収）",
+    searchQueries: [
+      "methane capture carbon credit price 2026",
+      "landfill gas methane avoidance credit voluntary",
+      "メタン回収 埋立地ガス カーボンクレジット 価格",
+    ],
+    context: "埋立地ガス・農業排水・炭鉱等からのメタン排出を回収・利用するプロジェクト。メタンのGWP（温暖化係数）が高いためCO2e換算で大量のクレジットを発行可能。",
+  },
+  // ── レガシー ──
   {
     id: "vol-nature-removal",
     name: "Nature-based Removal",
@@ -230,6 +304,18 @@ async function collectMarketNews(market: MarketDef): Promise<string> {
     ],
     "jcredit-energy-saving": [
       "https://carbon-markets.env.go.jp/",
+    ],
+    "vol-dac": [
+      "https://carbonherald.com/category/direct-air-capture/",
+    ],
+    "vol-redd-plus": [
+      "https://carbonherald.com/category/redd/",
+    ],
+    "vol-biochar": [
+      "https://carbonherald.com/category/biochar/",
+    ],
+    "vol-blue-carbon": [
+      "https://carbonherald.com/category/blue-carbon/",
     ],
   };
 

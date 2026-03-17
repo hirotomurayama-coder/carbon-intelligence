@@ -495,7 +495,16 @@ async function collectAllPrices(fx: FxRates): Promise<MarketResult[]> {
     name: string;
     fallbackPrice: number;
   }[] = [
+    // 炭素除去（Removal）
     { marketId: "vol-biochar", title: "Biochar（バイオ炭除去）", name: "Biochar", fallbackPrice: 120 },
+    { marketId: "vol-dac", title: "DAC（Direct Air Capture）", name: "DAC", fallbackPrice: 600 },
+    { marketId: "vol-erw", title: "ERW（Enhanced Rock Weathering）", name: "ERW", fallbackPrice: 100 },
+    { marketId: "vol-blue-carbon", title: "Blue Carbon（マングローブ・海草）", name: "Blue Carbon", fallbackPrice: 20 },
+    { marketId: "vol-soil-carbon", title: "Soil Carbon（土壌炭素貯留）", name: "Soil Carbon", fallbackPrice: 15 },
+    // 回避・削減（Avoidance）
+    { marketId: "vol-redd-plus", title: "REDD+（森林減少回避）", name: "REDD+", fallbackPrice: 8 },
+    { marketId: "vol-cookstoves", title: "Clean Cookstoves（改良かまど）", name: "Clean Cookstoves", fallbackPrice: 6 },
+    { marketId: "vol-methane", title: "Methane Capture（メタン回収）", name: "Methane Capture", fallbackPrice: 10 },
     { marketId: "vol-nature-removal", title: "Nature-based Removal", name: "Nature-based Removal", fallbackPrice: 25 },
   ];
 

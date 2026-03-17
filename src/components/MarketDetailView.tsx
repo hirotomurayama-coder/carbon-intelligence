@@ -14,6 +14,13 @@ const MARKET_COLORS: Record<string, string> = {
   "jcredit-agri-biochar": "#14b8a6",
   "eu-ets": "#f59e0b",
   "vol-biochar": "#ef4444",
+  "vol-dac": "#6366f1",
+  "vol-erw": "#a855f7",
+  "vol-blue-carbon": "#06b6d4",
+  "vol-soil-carbon": "#84cc16",
+  "vol-redd-plus": "#22c55e",
+  "vol-cookstoves": "#f97316",
+  "vol-methane": "#64748b",
   "vol-nature-removal": "#f97316",
 };
 
@@ -24,6 +31,13 @@ const MARKET_DESCRIPTIONS: Record<string, string> = {
   "jcredit-agri-biochar": "バイオ炭の農地施用由来のJ-クレジット。炭素固定による除去量を認証。",
   "eu-ets": "EU域内排出量取引制度（EU-ETS）の排出許可証（EUA）。欧州最大の炭素市場。",
   "vol-biochar": "バイオ炭を用いた技術ベースの炭素除去（CDR）クレジット。高い永続性が特徴。",
+  "vol-dac": "大気中のCO2を直接回収するDAC（Direct Air Capture）技術による除去クレジット。最も高い永続性（1000年以上）を持つが、現時点では最も高価。",
+  "vol-erw": "玄武岩等の岩石粉砕物を農地に散布し、風化反応によりCO2を鉱物として固定する新興CDR技術。農地の土壌改良効果も期待される。",
+  "vol-blue-carbon": "マングローブ・海草藻場・塩性湿地等の沿岸生態系によるCO2吸収・固定クレジット。生物多様性保全の共便益が大きい。",
+  "vol-soil-carbon": "再生型農業（不耕起栽培、被覆作物、輪作等）による土壌への炭素貯留クレジット。農業生産性向上の共便益がある。",
+  "vol-redd-plus": "途上国の森林減少・劣化を防止することで温室効果ガスの排出を回避するREDD+クレジット。世界最大規模のボランタリークレジットカテゴリー。",
+  "vol-cookstoves": "途上国で効率的な調理用ストーブを普及させ、薪・炭の使用量を削減するプロジェクト。健康改善・女性の負担軽減等のSDGs共便益が高い。",
+  "vol-methane": "埋立地ガス・農業排水・炭鉱等からのメタン排出を回収・利用するプロジェクト。メタンの温暖化係数が高いため、大きなCO2e削減効果。",
   "vol-nature-removal": "森林再生・土壌炭素固定等の自然ベース炭素除去クレジット。",
 };
 

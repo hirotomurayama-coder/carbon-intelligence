@@ -161,13 +161,23 @@ export type AiEnrichedFields = {
 
 /** 対象市場 ID */
 export type CreditMarketId =
+  // コンプライアンス市場
   | "eu-ets"                  // EU ETS (EUA)
   | "jcredit-energy-saving"   // J-Credit 省エネルギー
   | "jcredit-forest"          // J-Credit 森林
   | "jcredit-agri-midseason"  // J-Credit 農業（中干し）
   | "jcredit-agri-biochar"    // J-Credit 農業（バイオ炭）
-  | "vol-biochar"             // Voluntary Biochar
-  | "vol-nature-removal";     // Voluntary Nature-based Removal
+  // ボランタリー：炭素除去（Removal）
+  | "vol-biochar"             // Biochar（バイオ炭）
+  | "vol-dac"                 // DAC (Direct Air Capture)
+  | "vol-erw"                 // ERW (Enhanced Rock Weathering)
+  | "vol-blue-carbon"         // Blue Carbon (Mangroves)
+  | "vol-soil-carbon"         // Soil Carbon
+  // ボランタリー：回避・削減（Avoidance）
+  | "vol-redd-plus"           // REDD+ (Avoided Deforestation)
+  | "vol-cookstoves"          // Clean Cookstoves
+  | "vol-methane"             // Methane Capture
+  | "vol-nature-removal";     // Nature-based Removal (レガシー)
 
 /** トレンド方向 */
 export type TrendDirection = "up" | "down" | "stable";

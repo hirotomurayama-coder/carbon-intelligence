@@ -14,17 +14,31 @@ const MARKET_ORDER: CreditMarketId[] = [
   "jcredit-agri-biochar",
   "eu-ets",
   "vol-biochar",
+  "vol-dac",
+  "vol-erw",
+  "vol-blue-carbon",
+  "vol-soil-carbon",
+  "vol-redd-plus",
+  "vol-cookstoves",
+  "vol-methane",
   "vol-nature-removal",
 ];
 
 const MARKET_COLORS: Record<CreditMarketId, string> = {
-  "jcredit-energy-saving": "#3b82f6", // blue
-  "jcredit-forest": "#10b981",        // emerald
-  "jcredit-agri-midseason": "#8b5cf6", // violet
-  "jcredit-agri-biochar": "#14b8a6",  // teal
-  "eu-ets": "#f59e0b",                // amber
-  "vol-biochar": "#ef4444",           // red
-  "vol-nature-removal": "#f97316",    // orange
+  "jcredit-energy-saving": "#3b82f6",
+  "jcredit-forest": "#10b981",
+  "jcredit-agri-midseason": "#8b5cf6",
+  "jcredit-agri-biochar": "#14b8a6",
+  "eu-ets": "#f59e0b",
+  "vol-biochar": "#ef4444",
+  "vol-dac": "#6366f1",
+  "vol-erw": "#a855f7",
+  "vol-blue-carbon": "#06b6d4",
+  "vol-soil-carbon": "#84cc16",
+  "vol-redd-plus": "#22c55e",
+  "vol-cookstoves": "#f97316",
+  "vol-methane": "#64748b",
+  "vol-nature-removal": "#f97316",
 };
 
 const MARKET_SHORT_NAMES: Record<CreditMarketId, string> = {
@@ -34,6 +48,13 @@ const MARKET_SHORT_NAMES: Record<CreditMarketId, string> = {
   "jcredit-agri-biochar": "J-Credit バイオ炭",
   "eu-ets": "EU ETS",
   "vol-biochar": "Biochar",
+  "vol-dac": "DAC",
+  "vol-erw": "ERW",
+  "vol-blue-carbon": "Blue Carbon",
+  "vol-soil-carbon": "Soil Carbon",
+  "vol-redd-plus": "REDD+",
+  "vol-cookstoves": "Cookstoves",
+  "vol-methane": "Methane",
   "vol-nature-removal": "Nature Removal",
 };
 

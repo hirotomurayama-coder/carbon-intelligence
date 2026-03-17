@@ -5,13 +5,61 @@ import type { PriceTrend, CreditMarketId, TrendDirection } from "@/types";
 import Link from "next/link";
 
 // ============================================================
-// 定数
+// グループ定義
 // ============================================================
 
-const MARKET_ORDER: CreditMarketId[] = [
-  "jcredit-energy-saving", "jcredit-forest", "jcredit-agri-midseason",
-  "jcredit-agri-biochar", "eu-ets", "vol-biochar", "vol-nature-removal",
+type MarketGroup = {
+  id: string;
+  label: string;
+  description: string;
+  icon: string;
+  marketIds: CreditMarketId[];
+};
+
+const MARKET_GROUPS: MarketGroup[] = [
+  {
+    id: "compliance",
+    label: "コンプライアンス市場",
+    description: "規制に基づく排出量取引制度",
+    icon: "🏛️",
+    marketIds: [
+      "eu-ets",
+      "jcredit-energy-saving",
+      "jcredit-forest",
+      "jcredit-agri-midseason",
+      "jcredit-agri-biochar",
+    ],
+  },
+  {
+    id: "removal",
+    label: "ボランタリー：炭素除去（Removal）",
+    description: "大気中のCO2を直接除去する技術・自然ベースのクレジット",
+    icon: "🔬",
+    marketIds: [
+      "vol-dac",
+      "vol-biochar",
+      "vol-erw",
+      "vol-blue-carbon",
+      "vol-soil-carbon",
+      "vol-nature-removal",
+    ],
+  },
+  {
+    id: "avoidance",
+    label: "ボランタリー：回避・削減（Avoidance）",
+    description: "排出を未然に防ぐ、または削減するプロジェクト",
+    icon: "🌍",
+    marketIds: [
+      "vol-redd-plus",
+      "vol-cookstoves",
+      "vol-methane",
+    ],
+  },
 ];
+
+// ============================================================
+// 定数
+// ============================================================
 
 const MARKET_COLORS: Record<CreditMarketId, string> = {
   "jcredit-energy-saving": "#3b82f6",
@@ -20,17 +68,31 @@ const MARKET_COLORS: Record<CreditMarketId, string> = {
   "jcredit-agri-biochar": "#14b8a6",
   "eu-ets": "#f59e0b",
   "vol-biochar": "#ef4444",
+  "vol-dac": "#6366f1",
+  "vol-erw": "#a855f7",
+  "vol-blue-carbon": "#06b6d4",
+  "vol-soil-carbon": "#84cc16",
+  "vol-redd-plus": "#22c55e",
+  "vol-cookstoves": "#f97316",
+  "vol-methane": "#64748b",
   "vol-nature-removal": "#f97316",
 };
 
-const MARKET_CATEGORIES: Record<CreditMarketId, string> = {
+const MARKET_BADGES: Record<CreditMarketId, string> = {
   "jcredit-energy-saving": "J-Credit",
   "jcredit-forest": "J-Credit",
   "jcredit-agri-midseason": "J-Credit",
   "jcredit-agri-biochar": "J-Credit",
   "eu-ets": "EU ETS",
-  "vol-biochar": "ボランタリー",
-  "vol-nature-removal": "ボランタリー",
+  "vol-biochar": "CDR",
+  "vol-dac": "CDR",
+  "vol-erw": "CDR",
+  "vol-blue-carbon": "Blue Carbon",
+  "vol-soil-carbon": "Soil",
+  "vol-redd-plus": "REDD+",
+  "vol-cookstoves": "Avoidance",
+  "vol-methane": "Avoidance",
+  "vol-nature-removal": "Removal",
 };
 
 // ============================================================
@@ -77,21 +139,104 @@ function relativeTime(isoString: string | null): string {
 }
 
 // ============================================================
-// Component
+// カードコンポーネント
+// ============================================================
+
+function MarketCard({ trend }: { trend: PriceTrend }) {
+  const mid = trend.marketId as CreditMarketId | null;
+  const color = mid ? MARKET_COLORS[mid] : "#9ca3af";
+  const badge = mid ? MARKET_BADGES[mid] : "";
+  const analysis = trend.analysis;
+  const hasAnalysis = !!analysis?.summary;
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+
+  return (
+    <Link
+      href={mid ? `/analysis/${mid}` : "#"}
+      className="group block rounded-xl border border-gray-200 bg-white transition-all hover:shadow-lg hover:border-gray-300"
+    >
+      {/* カラーバー */}
+      <div className="h-1.5 rounded-t-xl" style={{ backgroundColor: color }} />
+
+      <div className="p-5">
+        {/* ヘッダー */}
+        <div className="flex items-start justify-between">
+          <div>
+            <span className="text-[10px] font-semibold uppercase tracking-wider text-gray-400">
+              {badge}
+            </span>
+            <h3 className="mt-0.5 text-sm font-bold text-gray-900 group-hover:text-emerald-700 transition">
+              {trend.title}
+            </h3>
+          </div>
+          <span
+            className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${trendColor(trend.trendDirection)}`}
+          >
+            {trendIcon(trend.trendDirection)}
+            {trend.trendPercentage !== null && (
+              <span className="ml-0.5">
+                {trend.trendPercentage > 0 ? "+" : ""}
+                {trend.trendPercentage.toFixed(1)}%
+              </span>
+            )}
+          </span>
+        </div>
+
+        {/* 価格 */}
+        <div className="mt-3" suppressHydrationWarning>
+          <span className="text-2xl font-bold text-gray-900">
+            {formatJpy(trend.latestPriceJpy)}
+          </span>
+          <span className="ml-1 text-xs text-gray-400">
+            /{trend.priceUnit ?? "tCO2e"}
+          </span>
+        </div>
+
+        {/* 価格レンジ（AI分析データがある場合） */}
+        {analysis?.monthlyRangeLow && analysis?.monthlyRangeHigh && (
+          <div className="mt-1.5 text-xs text-gray-400">
+            過去1ヶ月: {formatJpy(analysis.monthlyRangeLow)} 〜 {formatJpy(analysis.monthlyRangeHigh)}
+          </div>
+        )}
+
+        {/* AI サマリー */}
+        {hasAnalysis ? (
+          <p className="mt-3 text-xs leading-relaxed text-gray-600 line-clamp-2">
+            {analysis.summary}
+          </p>
+        ) : (
+          <p className="mt-3 text-xs text-gray-300 italic">
+            AI分析は次回の週次更新で生成されます
+          </p>
+        )}
+
+        {/* フッター */}
+        <div className="mt-4 flex items-center justify-between border-t border-gray-50 pt-3">
+          <span className="text-[10px] text-gray-400">
+            {trend.sourceName ?? "\u2014"}
+          </span>
+          <div className="flex items-center gap-2">
+            <span className="text-[10px] text-gray-400" suppressHydrationWarning>
+              {mounted ? relativeTime(trend.lastSynced) : ""}
+            </span>
+            <span className="text-xs text-emerald-600 opacity-0 group-hover:opacity-100 transition">
+              詳細 →
+            </span>
+          </div>
+        </div>
+      </div>
+    </Link>
+  );
+}
+
+// ============================================================
+// メインコンポーネント
 // ============================================================
 
 type Props = { data: PriceTrend[] };
 
 export function MarketInsightCards({ data }: Props) {
-  const [mounted, setMounted] = useState(false);
-  useEffect(() => setMounted(true), []);
-
-  const sorted = [...data].sort((a, b) => {
-    const ai = a.marketId ? MARKET_ORDER.indexOf(a.marketId) : 999;
-    const bi = b.marketId ? MARKET_ORDER.indexOf(b.marketId) : 999;
-    return (ai === -1 ? 999 : ai) - (bi === -1 ? 999 : bi);
-  });
-
   if (data.length === 0) {
     return (
       <div className="rounded-lg border border-gray-200 bg-white p-8 text-center text-sm text-gray-500">
@@ -106,92 +251,39 @@ export function MarketInsightCards({ data }: Props) {
     );
   }
 
+  // データを marketId でインデックス化
+  const trendMap = new Map<string, PriceTrend>();
+  for (const t of data) {
+    if (t.marketId) trendMap.set(t.marketId, t);
+  }
+
   return (
-    <div className="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-3">
-      {sorted.map((trend) => {
-        const mid = trend.marketId as CreditMarketId | null;
-        const color = mid ? MARKET_COLORS[mid] : "#9ca3af";
-        const category = mid ? MARKET_CATEGORIES[mid] : "";
-        const analysis = trend.analysis;
-        const hasAnalysis = !!analysis?.summary;
+    <div className="space-y-10">
+      {MARKET_GROUPS.map((group) => {
+        const groupTrends = group.marketIds
+          .map((mid) => trendMap.get(mid))
+          .filter((t): t is PriceTrend => t !== undefined);
+
+        if (groupTrends.length === 0) return null;
 
         return (
-          <Link
-            key={trend.id}
-            href={mid ? `/analysis/${mid}` : "#"}
-            className="group block rounded-xl border border-gray-200 bg-white transition-all hover:shadow-lg hover:border-gray-300"
-          >
-            {/* カラーバー */}
-            <div className="h-1.5 rounded-t-xl" style={{ backgroundColor: color }} />
-
-            <div className="p-5">
-              {/* ヘッダー */}
-              <div className="flex items-start justify-between">
-                <div>
-                  <span className="text-[10px] font-semibold uppercase tracking-wider text-gray-400">
-                    {category}
-                  </span>
-                  <h3 className="mt-0.5 text-sm font-bold text-gray-900 group-hover:text-emerald-700 transition">
-                    {trend.title}
-                  </h3>
-                </div>
-                <span
-                  className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${trendColor(trend.trendDirection)}`}
-                >
-                  {trendIcon(trend.trendDirection)}
-                  {trend.trendPercentage !== null && (
-                    <span className="ml-0.5">
-                      {trend.trendPercentage > 0 ? "+" : ""}
-                      {trend.trendPercentage.toFixed(1)}%
-                    </span>
-                  )}
-                </span>
-              </div>
-
-              {/* 価格 */}
-              <div className="mt-3" suppressHydrationWarning>
-                <span className="text-2xl font-bold text-gray-900">
-                  {formatJpy(trend.latestPriceJpy)}
-                </span>
-                <span className="ml-1 text-xs text-gray-400">
-                  /{trend.priceUnit ?? "tCO2e"}
-                </span>
-              </div>
-
-              {/* 価格レンジ（AI分析データがある場合） */}
-              {analysis?.monthlyRangeLow && analysis?.monthlyRangeHigh && (
-                <div className="mt-1.5 text-xs text-gray-400">
-                  過去1ヶ月: {formatJpy(analysis.monthlyRangeLow)} 〜 {formatJpy(analysis.monthlyRangeHigh)}
-                </div>
-              )}
-
-              {/* AI サマリー */}
-              {hasAnalysis ? (
-                <p className="mt-3 text-xs leading-relaxed text-gray-600 line-clamp-2">
-                  {analysis.summary}
-                </p>
-              ) : (
-                <p className="mt-3 text-xs text-gray-300 italic">
-                  AI分析は次回の週次更新で生成されます
-                </p>
-              )}
-
-              {/* フッター */}
-              <div className="mt-4 flex items-center justify-between border-t border-gray-50 pt-3">
-                <span className="text-[10px] text-gray-400">
-                  {trend.sourceName ?? "\u2014"}
-                </span>
-                <div className="flex items-center gap-2">
-                  <span className="text-[10px] text-gray-400" suppressHydrationWarning>
-                    {mounted ? relativeTime(trend.lastSynced) : ""}
-                  </span>
-                  <span className="text-xs text-emerald-600 opacity-0 group-hover:opacity-100 transition">
-                    詳細 →
-                  </span>
-                </div>
+          <section key={group.id}>
+            {/* グループヘッダー */}
+            <div className="mb-4 flex items-center gap-2">
+              <span className="text-lg">{group.icon}</span>
+              <div>
+                <h2 className="text-base font-bold text-gray-900">{group.label}</h2>
+                <p className="text-xs text-gray-400">{group.description}</p>
               </div>
             </div>
-          </Link>
+
+            {/* カードグリッド */}
+            <div className="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-3">
+              {groupTrends.map((trend) => (
+                <MarketCard key={trend.id} trend={trend} />
+              ))}
+            </div>
+          </section>
         );
       })}
     </div>

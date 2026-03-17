@@ -10,7 +10,9 @@ export const dynamic = "force-dynamic";
 const VALID_MARKET_IDS: CreditMarketId[] = [
   "eu-ets", "jcredit-energy-saving", "jcredit-forest",
   "jcredit-agri-midseason", "jcredit-agri-biochar",
-  "vol-biochar", "vol-nature-removal",
+  "vol-biochar", "vol-dac", "vol-erw", "vol-blue-carbon", "vol-soil-carbon",
+  "vol-redd-plus", "vol-cookstoves", "vol-methane",
+  "vol-nature-removal",
 ];
 
 const MARKET_TITLES: Record<CreditMarketId, string> = {
@@ -20,6 +22,13 @@ const MARKET_TITLES: Record<CreditMarketId, string> = {
   "jcredit-agri-midseason": "J-Credit（農業・中干し）",
   "jcredit-agri-biochar": "J-Credit（農業・バイオ炭）",
   "vol-biochar": "Biochar（バイオ炭除去）",
+  "vol-dac": "DAC（Direct Air Capture）",
+  "vol-erw": "ERW（Enhanced Rock Weathering）",
+  "vol-blue-carbon": "Blue Carbon（マングローブ・海草）",
+  "vol-soil-carbon": "Soil Carbon（土壌炭素貯留）",
+  "vol-redd-plus": "REDD+（森林減少回避）",
+  "vol-cookstoves": "Clean Cookstoves（改良かまど）",
+  "vol-methane": "Methane Capture（メタン回収）",
   "vol-nature-removal": "Nature-based Removal",
 };
 

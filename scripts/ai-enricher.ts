@@ -58,6 +58,25 @@ const SOURCES: SourceDef[] = [
     name: "Carbon Credits (market prices)",
     url: "https://carboncredits.com/carbon-prices-today/",
   },
+  // CDR 専門ソース
+  {
+    name: "CDR.fyi (removal prices)",
+    url: "https://www.cdr.fyi/",
+  },
+  {
+    name: "Carbon Herald (DAC)",
+    url: "https://carbonherald.com/category/direct-air-capture/",
+  },
+  // REDD+ / Avoidance ソース
+  {
+    name: "Carbon Herald (REDD)",
+    url: "https://carbonherald.com/category/redd/",
+  },
+  // Platts / S&P Global Commodity Insights
+  {
+    name: "S&P Global Carbon",
+    url: "https://www.spglobal.com/commodityinsights/en/market-insights/topics/carbon",
+  },
 ];
 
 // ============================================================
@@ -126,14 +145,32 @@ function buildExtractionPrompt(): string {
 - 日付が不明でも、ページの文脈から最近のデータと判断できる場合は採用してください
 
 特に以下のクレジット種別の USD/tCO2e 価格を探してください:
+
+**炭素除去（Removal）:**
 1. **Biochar**（バイオ炭） — 技術ベース除去クレジット（CDR）
-2. **Nature-based Removal**（自然ベース除去） — 森林再生・土壌炭素ベースの除去クレジット
+2. **DAC** (Direct Air Capture) — 大気直接回収。Climeworks等
+3. **ERW** (Enhanced Rock Weathering) — 風化促進。UNDO, Lithos等
+4. **Blue Carbon** — マングローブ・海草藻場の沿岸炭素
+5. **Soil Carbon** — 土壌炭素貯留・再生型農業
+6. **Nature-based Removal**（自然ベース除去） — 森林再生・植林
+
+**回避・削減（Avoidance）:**
+7. **REDD+** — 森林減少回避（Verra VCS）
+8. **Clean Cookstoves** — 改良かまど（Gold Standard）
+9. **Methane Capture** — 埋立地ガス・メタン回収
 
 以下の JSON 形式で回答してください（他のテキストは不要）:
 \`\`\`json
 {
   "biochar": { "low": <数値|null>, "mid": <数値|null>, "high": <数値|null>, "confidence": "<high|medium|low>" },
-  "nature_removal": { "low": <数値|null>, "mid": <数値|null>, "high": <数値|null>, "confidence": "<high|medium|low>" }
+  "dac": { "low": <数値|null>, "mid": <数値|null>, "high": <数値|null>, "confidence": "<high|medium|low>" },
+  "erw": { "low": <数値|null>, "mid": <数値|null>, "high": <数値|null>, "confidence": "<high|medium|low>" },
+  "blue_carbon": { "low": <数値|null>, "mid": <数値|null>, "high": <数値|null>, "confidence": "<high|medium|low>" },
+  "soil_carbon": { "low": <数値|null>, "mid": <数値|null>, "high": <数値|null>, "confidence": "<high|medium|low>" },
+  "nature_removal": { "low": <数値|null>, "mid": <数値|null>, "high": <数値|null>, "confidence": "<high|medium|low>" },
+  "redd_plus": { "low": <数値|null>, "mid": <数値|null>, "high": <数値|null>, "confidence": "<high|medium|low>" },
+  "cookstoves": { "low": <数値|null>, "mid": <数値|null>, "high": <数値|null>, "confidence": "<high|medium|low>" },
+  "methane_capture": { "low": <数値|null>, "mid": <数値|null>, "high": <数値|null>, "confidence": "<high|medium|low>" }
 }
 \`\`\`
 
@@ -197,38 +234,37 @@ export async function extractVoluntaryPrices(
       return getDefaultPrices();
     }
 
-    const parsed = JSON.parse(jsonMatch[0]) as {
-      biochar?: { low?: number | null; mid?: number | null; high?: number | null; confidence?: string };
-      nature_removal?: { low?: number | null; mid?: number | null; high?: number | null; confidence?: string };
-    };
+    type PriceEntry = { low?: number | null; mid?: number | null; high?: number | null; confidence?: string };
+    const parsed = JSON.parse(jsonMatch[0]) as Record<string, PriceEntry | undefined>;
 
     const results: VoluntaryPriceResult[] = [];
     const srcNames = pageTexts.map((p) => p.name);
 
-    // Biochar
-    const bc = parsed.biochar;
-    if (bc && bc.mid != null && bc.mid > 0) {
-      results.push({
-        name: "Biochar",
-        priceUsd: bc.mid,
-        priceLow: bc.low ?? null,
-        priceHigh: bc.high ?? null,
-        sources: srcNames,
-      });
-      console.log(`  [AI] Biochar: $${bc.mid}/tCO2e (confidence: ${bc.confidence ?? "unknown"})`);
-    }
+    // 全市場マッピング: JSON キー → 表示名
+    const marketKeyMap: { key: string; name: string }[] = [
+      { key: "biochar", name: "Biochar" },
+      { key: "dac", name: "DAC" },
+      { key: "erw", name: "ERW" },
+      { key: "blue_carbon", name: "Blue Carbon" },
+      { key: "soil_carbon", name: "Soil Carbon" },
+      { key: "nature_removal", name: "Nature-based Removal" },
+      { key: "redd_plus", name: "REDD+" },
+      { key: "cookstoves", name: "Clean Cookstoves" },
+      { key: "methane_capture", name: "Methane Capture" },
+    ];
 
-    // Nature-based Removal
-    const nr = parsed.nature_removal;
-    if (nr && nr.mid != null && nr.mid > 0) {
-      results.push({
-        name: "Nature-based Removal",
-        priceUsd: nr.mid,
-        priceLow: nr.low ?? null,
-        priceHigh: nr.high ?? null,
-        sources: srcNames,
-      });
-      console.log(`  [AI] Nature Removal: $${nr.mid}/tCO2e (confidence: ${nr.confidence ?? "unknown"})`);
+    for (const { key, name } of marketKeyMap) {
+      const entry = parsed[key];
+      if (entry && entry.mid != null && entry.mid > 0) {
+        results.push({
+          name,
+          priceUsd: entry.mid,
+          priceLow: entry.low ?? null,
+          priceHigh: entry.high ?? null,
+          sources: srcNames,
+        });
+        console.log(`  [AI] ${name}: $${entry.mid}/tCO2e (confidence: ${entry.confidence ?? "unknown"})`);
+      }
     }
 
     // AI が価格を見つけられなかった場合はフォールバック
@@ -250,20 +286,18 @@ export async function extractVoluntaryPrices(
 
 function getDefaultPrices(): VoluntaryPriceResult[] {
   console.log("  [AI] フォールバック参考価格を使用");
+  const fallbackSource = ["参考値（AI取得失敗時のフォールバック）"];
   return [
-    {
-      name: "Biochar",
-      priceUsd: 120,
-      priceLow: 80,
-      priceHigh: 160,
-      sources: ["参考値（AI取得失敗時のフォールバック）"],
-    },
-    {
-      name: "Nature-based Removal",
-      priceUsd: 25,
-      priceLow: 10,
-      priceHigh: 50,
-      sources: ["参考値（AI取得失敗時のフォールバック）"],
-    },
+    // 炭素除去（Removal）
+    { name: "Biochar", priceUsd: 120, priceLow: 80, priceHigh: 160, sources: fallbackSource },
+    { name: "DAC", priceUsd: 600, priceLow: 400, priceHigh: 1200, sources: fallbackSource },
+    { name: "ERW", priceUsd: 100, priceLow: 50, priceHigh: 200, sources: fallbackSource },
+    { name: "Blue Carbon", priceUsd: 20, priceLow: 10, priceHigh: 35, sources: fallbackSource },
+    { name: "Soil Carbon", priceUsd: 15, priceLow: 8, priceHigh: 30, sources: fallbackSource },
+    { name: "Nature-based Removal", priceUsd: 25, priceLow: 10, priceHigh: 50, sources: fallbackSource },
+    // 回避・削減（Avoidance）
+    { name: "REDD+", priceUsd: 8, priceLow: 3, priceHigh: 15, sources: fallbackSource },
+    { name: "Clean Cookstoves", priceUsd: 6, priceLow: 3, priceHigh: 12, sources: fallbackSource },
+    { name: "Methane Capture", priceUsd: 10, priceLow: 5, priceHigh: 20, sources: fallbackSource },
   ];
 }
