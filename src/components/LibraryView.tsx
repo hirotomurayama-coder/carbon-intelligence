@@ -261,9 +261,18 @@ export function LibraryView() {
                 Beta
               </span>
             </div>
-            <p className="text-[10px] text-gray-400 mt-0.5 ml-0">
+            <p className="text-[10px] text-gray-400 mt-0.5">
               Google Drive の {files.length} 件以上の資料から関連ドキュメントを検索
             </p>
+          </div>
+
+          {/* Beta 注記 + Gemini Tips */}
+          <div className="rounded-lg border border-amber-200 bg-amber-50/60 px-3 py-2 mb-3 text-[11px] text-gray-600 leading-relaxed">
+            <span className="font-bold text-amber-700">Beta：</span>
+            検索精度は今後改善予定です。より正確な情報を得るには、検索結果のファイルを Google Drive で開き、右側の{" "}
+            <span className="font-semibold text-blue-600">Gemini</span>{" "}
+            に同じ質問を入力してください。ドキュメントの内容に基づいた回答が得られます。
+          </div>
           </div>
 
           {/* 検索フォーム */}
@@ -445,39 +454,8 @@ export function LibraryView() {
                     ))}
                   </div>
 
-                  {/* Gemini 活用 Tips */}
-                  <div className="mt-6 rounded-xl border border-blue-100 bg-blue-50/50 p-4">
-                    <div className="flex items-start gap-3">
-                      <span className="text-lg flex-shrink-0">💡</span>
-                      <div className="text-xs text-gray-600 leading-relaxed">
-                        <p className="font-bold text-gray-700 mb-1">
-                          より詳しい情報を得るには
-                        </p>
-                        <p>
-                          上記のドキュメントを Google Drive
-                          で開くと、ファイルの右側に{" "}
-                          <span className="font-semibold text-blue-700">
-                            Gemini（AI アシスタント）
-                          </span>
-                          が表示されます。
-                          そこに検索キーワードと同じ質問（例：「
-                          <span className="font-medium">
-                            {searchQuery || "GX-ETSの制度設計について教えて"}
-                          </span>
-                          」）を入力すると、そのドキュメントの内容に基づいた具体的な回答を得ることができます。
-                        </p>
-                      </div>
-                    </div>
-                  </div>
                 </>
               )}
-
-              {/* Beta 注記 */}
-              <div className="mt-4 text-center">
-                <p className="text-[10px] text-gray-300">
-                  この機能はベータ版です。検索精度は今後改善予定です。フォルダ構造・ファイル名・本文インデックスを組み合わせた検索を行っています。
-                </p>
-              </div>
             </div>
           )}
         </div>
