@@ -273,7 +273,6 @@ export function LibraryView() {
             <span className="font-semibold text-blue-600">Gemini</span>{" "}
             に同じ質問を入力してください。ドキュメントの内容に基づいた回答が得られます。
           </div>
-          </div>
 
           {/* 検索フォーム */}
           <div className="flex gap-2">
