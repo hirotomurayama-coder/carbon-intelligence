@@ -149,7 +149,9 @@ export function LibraryView() {
       });
 
       if (!res.ok) {
-        throw new Error(`HTTP ${res.status}`);
+        const errBody = await res.json().catch(() => null);
+        const errMsg = errBody?.error ?? `HTTP ${res.status}`;
+        throw new Error(errMsg);
       }
 
       const reader = res.body?.getReader();

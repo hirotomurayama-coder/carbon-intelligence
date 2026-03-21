@@ -8,6 +8,14 @@ import { NextResponse } from "next/server";
 import { listFiles } from "@/lib/google-drive";
 
 export async function GET() {
+  // Google Drive 設定チェック
+  if (!process.env.GOOGLE_DRIVE_FOLDER_ID) {
+    return NextResponse.json({
+      files: [],
+      error: "GOOGLE_DRIVE_FOLDER_ID が未設定です",
+    });
+  }
+
   try {
     const files = await listFiles();
     return NextResponse.json({ files });

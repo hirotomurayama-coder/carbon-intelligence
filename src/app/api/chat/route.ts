@@ -39,8 +39,8 @@ export async function POST(request: NextRequest) {
   const apiKey = process.env.ANTHROPIC_API_KEY;
   if (!apiKey) {
     return new Response(
-      JSON.stringify({ error: "ANTHROPIC_API_KEY が未設定です" }),
-      { status: 500, headers: { "Content-Type": "application/json" } }
+      JSON.stringify({ error: "ANTHROPIC_API_KEY が未設定です。Vercel ダッシュボードで環境変数を設定してください。" }),
+      { status: 503, headers: { "Content-Type": "application/json" } }
     );
   }
 
