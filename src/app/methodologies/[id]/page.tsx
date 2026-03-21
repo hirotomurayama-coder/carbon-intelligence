@@ -254,19 +254,23 @@ export default async function MethodologyDetailPage({ params }: Props) {
   );
 }
 
-/** 類似メソドロジー — 同じ creditType + baseType の上位5件 */
+/** 類似メソドロジー — 詳細分類（subCategory）を最重要基準として類似度スコアリング */
 async function SimilarMethodologies({ current }: { current: Methodology }) {
   const all = await getMethodologies();
 
-  // スコアリング: creditType一致+2, baseType一致+2, registry一致+1, subCategory一致+3
+  // スコアリング: subCategory が最重要、次に creditType・baseType
   const scored = all
     .filter((m) => m.id !== current.id)
     .map((m) => {
       let score = 0;
-      if (m.creditType && m.creditType === current.creditType) score += 2;
-      if (m.baseType && m.baseType === current.baseType) score += 2;
+      // 最重要: 詳細分類（ACF sub_category）が一致 → +10
+      if (m.subCategory && current.subCategory && m.subCategory === current.subCategory) score += 10;
+      // 重要: creditType（回避・削減系 / 除去系）一致 → +3
+      if (m.creditType && m.creditType === current.creditType) score += 3;
+      // 重要: baseType（自然ベース / 技術ベース / 再エネ）一致 → +3
+      if (m.baseType && m.baseType === current.baseType) score += 3;
+      // 補助: 同一レジストリ → +1
       if (m.registry && m.registry === current.registry) score += 1;
-      if (m.subCategory && m.subCategory === current.subCategory) score += 3;
       return { ...m, score };
     })
     .filter((m) => m.score > 0)
@@ -290,6 +294,9 @@ async function SimilarMethodologies({ current }: { current: Methodology }) {
                 {m.titleJa ?? m.title}
               </p>
               <div className="mt-1 flex flex-wrap gap-1">
+                {m.subCategory && (
+                  <Badge variant="emerald">{m.subCategory}</Badge>
+                )}
                 {m.registry && (
                   <Badge variant={registryBadgeVariant(m.registry)}>{m.registry}</Badge>
                 )}
