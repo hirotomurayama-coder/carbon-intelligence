@@ -120,61 +120,59 @@ export async function POST(request: NextRequest) {
     getAllFiles(),
   ]);
 
-  // ── ファイル名スコアリング ──
-  const nameMatches: { file: DriveFile; score: number }[] = [];
+  // ── スコアリング: 全戦略のスコアを加算 ──
+  // 同一ファイルが複数戦略でヒット → スコア加算（関連性が高い）
+  const scoreMap = new Map<string, { file: DriveFile; score: number; matches: Set<string> }>();
+
+  function addScore(file: DriveFile, points: number, matchType: string) {
+    if (file.mimeType === "application/vnd.google-apps.folder") return;
+    const existing = scoreMap.get(file.id);
+    if (existing) {
+      existing.score += points;
+      existing.matches.add(matchType);
+    } else {
+      scoreMap.set(file.id, { file, score: points, matches: new Set([matchType]) });
+    }
+  }
+
+  // 戦略A: フォルダ名マッチ（+50点）
+  for (const f of folderResults) {
+    addScore(f, 50, "folder");
+  }
+
+  // 戦略B: fullText検索（Google の関連度順、上位ほど高スコア）
+  for (let i = 0; i < fullTextResults.length; i++) {
+    addScore(fullTextResults[i], 40 - i, "fulltext");
+  }
+
+  // 戦略C: ファイル名キーワードマッチ（キーワード数×15点）
   for (const f of allFiles) {
     if (f.mimeType === "application/vnd.google-apps.folder") continue;
     const name = f.name.toLowerCase();
-    let score = 0;
+    let kwHits = 0;
     for (const kw of expandedKeywords) {
-      if (name.includes(kw.toLowerCase())) score += 10;
+      if (name.includes(kw.toLowerCase())) kwHits++;
     }
-    if (score > 0) nameMatches.push({ file: f, score });
-  }
-  nameMatches.sort((a, b) => b.score - a.score);
-
-  // ── 統合・スコアリング ──
-  const resultMap = new Map<string, RecommendedFile>();
-
-  // フォルダ検索（最高スコア）
-  for (const f of folderResults) {
-    if (!resultMap.has(f.id)) {
-      resultMap.set(f.id, {
-        ...f,
-        matchType: "folder",
-        relevanceScore: 100,
-      });
+    if (kwHits > 0) {
+      addScore(f, kwHits * 15, "filename");
     }
   }
 
-  // ファイル名マッチ
-  for (const { file, score } of nameMatches.slice(0, 30)) {
-    if (!resultMap.has(file.id)) {
-      resultMap.set(file.id, {
-        ...file,
-        matchType: "filename",
-        relevanceScore: 50 + score,
-      });
-    }
-  }
+  // 最終マッチタイプを決定（最もスコアが高い戦略）
+  const results: RecommendedFile[] = Array.from(scoreMap.values())
+    .sort((a, b) => b.score - a.score)
+    .slice(0, 30)
+    .map(({ file, score, matches }) => ({
+      ...file,
+      matchType: matches.has("folder")
+        ? "folder"
+        : matches.has("fulltext")
+          ? "fulltext"
+          : "filename",
+      relevanceScore: score,
+    }));
 
-  // fullText検索
-  for (let i = 0; i < fullTextResults.length; i++) {
-    const f = fullTextResults[i];
-    if (!resultMap.has(f.id)) {
-      resultMap.set(f.id, {
-        ...f,
-        matchType: "fulltext",
-        relevanceScore: 40 - i, // 検索順位で減衰
-      });
-    }
-  }
-
-  const results = Array.from(resultMap.values())
-    .sort((a, b) => b.relevanceScore - a.relevanceScore)
-    .slice(0, 30);
-
-  console.log(`[Search] 結果: ${results.length}件 (フォルダ: ${folderResults.length}, 全文: ${fullTextResults.length}, ファイル名: ${nameMatches.length})`);
+  console.log(`[Search] 結果: ${results.length}件 (フォルダ: ${folderResults.length}, 全文: ${fullTextResults.length}, 合計候補: ${scoreMap.size})`);
 
   return NextResponse.json({ results });
 }
