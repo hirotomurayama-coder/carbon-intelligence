@@ -151,7 +151,7 @@ export async function searchFiles(query: string): Promise<DriveFile[]> {
     q: `fullText contains '${escaped}' and mimeType != '${FOLDER_MIME}' and trashed = false`,
     fields: "files(id, name, mimeType, modifiedTime, size, webViewLink)",
     orderBy: "relevance",
-    pageSize: 10,
+    pageSize: 30,
     supportsAllDrives: true,
     includeItemsFromAllDrives: true,
   });
