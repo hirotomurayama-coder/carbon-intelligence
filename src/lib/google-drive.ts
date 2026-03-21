@@ -65,23 +65,21 @@ function getDriveClient(): drive_v3.Drive {
 }
 
 // ============================================================
-// ファイル一覧
+// ファイル一覧（再帰的にサブフォルダも探索）
 // ============================================================
 
-export async function listFiles(folderId?: string): Promise<DriveFile[]> {
+const FOLDER_MIME = "application/vnd.google-apps.folder";
+
+/** 単一フォルダ内のファイル・フォルダを取得（共有ドライブ対応） */
+async function listDirect(folderId: string): Promise<DriveFile[]> {
   const drive = getDriveClient();
-  const targetFolder = folderId ?? FOLDER_ID;
-
-  if (!targetFolder) {
-    console.warn("[Google Drive] GOOGLE_DRIVE_FOLDER_ID が未設定です");
-    return [];
-  }
-
   const res = await drive.files.list({
-    q: `'${targetFolder}' in parents and trashed = false`,
+    q: `'${folderId}' in parents and trashed = false`,
     fields: "files(id, name, mimeType, modifiedTime, size, webViewLink)",
     orderBy: "modifiedTime desc",
-    pageSize: 100,
+    pageSize: 200,
+    supportsAllDrives: true,
+    includeItemsFromAllDrives: true,
   });
 
   return (res.data.files ?? []).map((f) => ({
@@ -94,24 +92,63 @@ export async function listFiles(folderId?: string): Promise<DriveFile[]> {
   }));
 }
 
+/**
+ * 指定フォルダ以下の全ファイルを再帰取得。
+ * 最大深度2（フォルダ → サブフォルダ → ファイル）で制限。
+ */
+export async function listFiles(folderId?: string, depth = 0): Promise<DriveFile[]> {
+  const targetFolder = folderId ?? FOLDER_ID;
+
+  if (!targetFolder) {
+    console.warn("[Google Drive] GOOGLE_DRIVE_FOLDER_ID が未設定です");
+    return [];
+  }
+
+  const items = await listDirect(targetFolder);
+  const files: DriveFile[] = [];
+  const subfolders: DriveFile[] = [];
+
+  for (const item of items) {
+    if (item.mimeType === FOLDER_MIME) {
+      subfolders.push(item);
+    } else {
+      files.push(item);
+    }
+  }
+
+  // サブフォルダを再帰（深度制限: 2階層まで）
+  if (depth < 2 && subfolders.length > 0) {
+    const subResults = await Promise.all(
+      subfolders.map((sf) => listFiles(sf.id, depth + 1).catch(() => []))
+    );
+    for (const sub of subResults) {
+      files.push(...sub);
+    }
+  }
+
+  return files;
+}
+
 // ============================================================
-// 全文検索
+// 全文検索（サービスアカウントがアクセス可能な全ファイルを対象）
 // ============================================================
 
 export async function searchFiles(query: string): Promise<DriveFile[]> {
   const drive = getDriveClient();
-  const targetFolder = FOLDER_ID;
 
-  if (!targetFolder) return [];
+  if (!FOLDER_ID) return [];
 
-  // クエリ文字列のエスケープ（シングルクォート）
+  // サービスアカウントはこのフォルダしか共有されていないので
+  // フォルダ制約なしで全文検索しても安全
   const escaped = query.replace(/'/g, "\\'");
 
   const res = await drive.files.list({
-    q: `fullText contains '${escaped}' and '${targetFolder}' in parents and trashed = false`,
+    q: `fullText contains '${escaped}' and mimeType != '${FOLDER_MIME}' and trashed = false`,
     fields: "files(id, name, mimeType, modifiedTime, size, webViewLink)",
     orderBy: "relevance",
     pageSize: 10,
+    supportsAllDrives: true,
+    includeItemsFromAllDrives: true,
   });
 
   return (res.data.files ?? []).map((f) => ({
