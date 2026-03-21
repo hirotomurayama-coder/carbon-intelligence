@@ -25,7 +25,7 @@ export type DriveFile = {
 // 認証・クライアント
 // ============================================================
 
-const SCOPES = ["https://www.googleapis.com/auth/drive.readonly"];
+const SCOPES = ["https://www.googleapis.com/auth/drive"];
 const FOLDER_ID = process.env.GOOGLE_DRIVE_FOLDER_ID ?? "";
 
 let cachedDrive: drive_v3.Drive | null = null;
@@ -94,7 +94,7 @@ async function listDirect(folderId: string): Promise<DriveFile[]> {
 
 /**
  * 指定フォルダ以下の全ファイルを再帰取得。
- * 最大深度2（フォルダ → サブフォルダ → ファイル）で制限。
+ * 最大深度3（ルート → サブフォルダ → サブサブフォルダ → ファイル）で制限。
  */
 export async function listFiles(folderId?: string, depth = 0): Promise<DriveFile[]> {
   const targetFolder = folderId ?? FOLDER_ID;
@@ -116,13 +116,18 @@ export async function listFiles(folderId?: string, depth = 0): Promise<DriveFile
     }
   }
 
-  // サブフォルダを再帰（深度制限: 2階層まで）
-  if (depth < 2 && subfolders.length > 0) {
-    const subResults = await Promise.all(
-      subfolders.map((sf) => listFiles(sf.id, depth + 1).catch(() => []))
-    );
-    for (const sub of subResults) {
-      files.push(...sub);
+  // サブフォルダを再帰（深度制限: 3階層まで）
+  if (depth < 3 && subfolders.length > 0) {
+    // 並列数を制限（API レート対策）
+    const batchSize = 5;
+    for (let i = 0; i < subfolders.length; i += batchSize) {
+      const batch = subfolders.slice(i, i + batchSize);
+      const subResults = await Promise.all(
+        batch.map((sf) => listFiles(sf.id, depth + 1).catch(() => []))
+      );
+      for (const sub of subResults) {
+        files.push(...sub);
+      }
     }
   }
 
@@ -194,14 +199,50 @@ export async function extractFileText(
       return text.slice(0, MAX_CHARS_PER_FILE);
     }
 
-    // PDF → ダウンロード → pdfjs-dist でテキスト抽出
+    // PDF → pdfjs-dist で抽出、失敗時は Google Docs 変換でフォールバック
     if (mimeType === "application/pdf") {
-      const res = await drive.files.get(
-        { fileId, alt: "media", supportsAllDrives: true },
-        { responseType: "arraybuffer" }
-      );
-      const buffer = Buffer.from(res.data as ArrayBuffer);
-      return await extractPdfText(buffer);
+      // 方法1: pdfjs-dist でローカル抽出
+      try {
+        const res = await drive.files.get(
+          { fileId, alt: "media", supportsAllDrives: true },
+          { responseType: "arraybuffer" }
+        );
+        const buffer = Buffer.from(res.data as ArrayBuffer);
+        const text = await extractPdfText(buffer);
+        if (text.replace(/\s/g, "").length > 50) return text;
+      } catch (e) {
+        console.warn(`[Google Drive] pdfjs-dist 抽出失敗 (${fileId}):`, e);
+      }
+
+      // 方法2: Google Drive の OCR 機能（PDF → Google Docs → テキスト）
+      try {
+        const copyRes = await drive.files.copy({
+          fileId,
+          requestBody: {
+            mimeType: "application/vnd.google-apps.document",
+            name: `_temp_ocr_${fileId}`,
+            parents: undefined,
+          },
+          supportsAllDrives: true,
+          ocrLanguage: "ja",
+        });
+        const tempId = copyRes.data.id!;
+        try {
+          const textRes = await drive.files.export(
+            { fileId: tempId, mimeType: "text/plain" },
+            { responseType: "text" }
+          );
+          const text = typeof textRes.data === "string" ? textRes.data : String(textRes.data);
+          if (text.replace(/\s/g, "").length > 50) return text.slice(0, MAX_CHARS_PER_FILE);
+        } finally {
+          // 一時ファイルを削除（読み取り専用なら失敗しても OK）
+          await drive.files.delete({ fileId: tempId, supportsAllDrives: true }).catch(() => {});
+        }
+      } catch (e) {
+        console.warn(`[Google Drive] OCR フォールバック失敗 (${fileId}):`, e);
+      }
+
+      return "[PDF テキスト抽出に失敗しました]";
     }
 
     // DOCX → バイナリダウンロード → mammoth

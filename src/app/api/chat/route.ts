@@ -82,8 +82,8 @@ export async function POST(request: NextRequest) {
     }
   }
 
-  // 上位3件に絞る
-  const topFiles = relevantFiles.slice(0, 3);
+  // 上位5件に絞る
+  const topFiles = relevantFiles.slice(0, 5);
 
   // ── 2. テキスト抽出（並列） ──
   const extractionResults = await Promise.allSettled(
