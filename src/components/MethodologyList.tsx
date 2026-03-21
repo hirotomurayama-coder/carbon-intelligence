@@ -12,6 +12,7 @@ const registryOptions: { label: string; value: RegistryName }[] = [
   { label: "Verra", value: "Verra" },
   { label: "Gold Standard", value: "Gold Standard" },
   { label: "Puro.earth", value: "Puro.earth" },
+  { label: "Isometric", value: "Isometric" },
   { label: "J-Credit", value: "J-Credit" },
 ];
 
@@ -20,9 +21,17 @@ const creditTypeOptions: { label: string; value: string }[] = [
   { label: "除去系", value: "除去系" },
 ];
 
+const baseTypeOptions: { label: string; value: string }[] = [
+  { label: "自然ベース", value: "自然ベース" },
+  { label: "技術ベース", value: "技術ベース" },
+  { label: "再エネ", value: "再エネ" },
+];
+
 const sortOptions: { label: string; value: string }[] = [
   { label: "更新日（新しい順）", value: "date_desc" },
-  { label: "タイトル順", value: "title_asc" },
+  { label: "更新日（古い順）", value: "date_asc" },
+  { label: "タイトル順（A→Z）", value: "title_asc" },
+  { label: "タイトル順（Z→A）", value: "title_desc" },
 ];
 
 /** レジストリ名に応じたバッジ色 */
@@ -59,6 +68,7 @@ export function MethodologyList({ data }: Props) {
   const [keyword, setKeyword] = useState("");
   const [registryFilter, setRegistryFilter] = useState("");
   const [creditTypeFilter, setCreditTypeFilter] = useState("");
+  const [baseTypeFilter, setBaseTypeFilter] = useState("");
   const [sortBy, setSortBy] = useState("date_desc");
 
   // フィルタバーの高さを動的計測（thead の sticky top に使用）
@@ -86,6 +96,8 @@ export function MethodologyList({ data }: Props) {
         m.summary,
         m.aiSummary ?? "",
         m.certificationBody ?? "",
+        m.subCategory ?? "",
+        m.type ?? "",
       ]
         .join(" ")
         .toLowerCase();
@@ -95,28 +107,36 @@ export function MethodologyList({ data }: Props) {
         registryFilter === "" || m.registry === registryFilter;
       const matchesCreditType =
         creditTypeFilter === "" || m.creditType === creditTypeFilter;
-      return matchesKeyword && matchesRegistry && matchesCreditType;
+      const matchesBaseType =
+        baseTypeFilter === "" || m.baseType === baseTypeFilter;
+      return matchesKeyword && matchesRegistry && matchesCreditType && matchesBaseType;
     });
 
     // ソート
     const effectiveSort = sortBy || "date_desc";
     result.sort((a, b) => {
-      if (effectiveSort === "title_asc") {
+      if (effectiveSort === "title_asc" || effectiveSort === "title_desc") {
         const titleA = (a.titleJa ?? a.title).toLowerCase();
         const titleB = (b.titleJa ?? b.title).toLowerCase();
-        return titleA.localeCompare(titleB, "ja");
+        const cmp = titleA.localeCompare(titleB, "ja");
+        return effectiveSort === "title_desc" ? -cmp : cmp;
       }
-      // デフォルト: 外部更新日（新しい順）
+      // 日付順
       const dateA = a.externalLastUpdated ?? "";
       const dateB = b.externalLastUpdated ?? "";
-      if (dateA && dateB) return dateB.localeCompare(dateA);
-      if (dateA && !dateB) return -1;
-      if (!dateA && dateB) return 1;
-      return 0;
+      const cmp =
+        dateA && dateB
+          ? dateB.localeCompare(dateA)
+          : dateA
+            ? -1
+            : dateB
+              ? 1
+              : 0;
+      return effectiveSort === "date_asc" ? -cmp : cmp;
     });
 
     return result;
-  }, [data, keyword, registryFilter, creditTypeFilter, sortBy]);
+  }, [data, keyword, registryFilter, creditTypeFilter, baseTypeFilter, sortBy]);
 
   return (
     <div>
@@ -143,10 +163,16 @@ export function MethodologyList({ data }: Props) {
             placeholder="クレジット種別"
           />
           <FilterSelect
+            value={baseTypeFilter}
+            onChange={setBaseTypeFilter}
+            options={baseTypeOptions}
+            placeholder="種類"
+          />
+          <FilterSelect
             value={sortBy}
             onChange={setSortBy}
             options={sortOptions}
-            placeholder="更新日（新しい順）"
+            placeholder="並べ替え"
           />
           <span className="ml-auto text-sm text-gray-400">
             {filtered.length} 件
