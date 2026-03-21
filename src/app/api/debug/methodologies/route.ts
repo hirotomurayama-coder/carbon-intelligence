@@ -25,24 +25,48 @@ export async function GET() {
     const data2 = await res2.json();
     const count2 = Array.isArray(data2) ? data2.length : "not-array";
 
-    // Step 3: getMethodologies を呼ぶ
-    let gmResult: string;
-    let gmCount: number;
+    // Step 3: wpFetch と同じロジックを手動で実行
+    const allPosts: unknown[] = [];
+    let page = 1;
+    const pageLog: string[] = [];
+    while (true) {
+      const pUrl = `${apiBase}/methodologies?per_page=100&page=${page}`;
+      const pRes = await fetch(pUrl, { cache: "no-store", headers: { Accept: "application/json" } });
+      if (!pRes.ok) {
+        pageLog.push(`page ${page}: HTTP ${pRes.status}`);
+        break;
+      }
+      const pData = await pRes.json();
+      const pCount = Array.isArray(pData) ? pData.length : 0;
+      pageLog.push(`page ${page}: ${pCount} items`);
+      if (Array.isArray(pData)) allPosts.push(...pData);
+      if (pCount < 100) break;
+      page++;
+    }
+
+    // Step 4: mapMethodology をテスト
+    let mapResult: string;
+    let mapCount: number;
+    let mapSample: unknown = null;
     try {
       const { getMethodologies } = await import("@/lib/wordpress");
       const methodologies = await getMethodologies();
-      gmCount = methodologies.length;
-      gmResult = "success";
+      mapCount = methodologies.length;
+      mapResult = "success";
+      if (methodologies.length > 0) {
+        mapSample = { title: methodologies[0].title, registry: methodologies[0].registry };
+      }
     } catch (e) {
-      gmResult = `error: ${e instanceof Error ? e.message : String(e)}`;
-      gmCount = 0;
+      mapResult = `error: ${e instanceof Error ? e.message : String(e)}\n${e instanceof Error ? e.stack : ""}`;
+      mapCount = 0;
     }
 
     return NextResponse.json({
       apiBase,
       page1: { url: url1, status: res1.status, count: count1, redirected: res1.redirected, finalUrl: res1.url },
       page2: { url: url2, status: res2.status, count: count2 },
-      getMethodologies: { result: gmResult, count: gmCount },
+      manualPagination: { totalPosts: allPosts.length, pages: pageLog },
+      getMethodologies: { result: mapResult, count: mapCount, sample: mapSample },
     });
   } catch (e) {
     return NextResponse.json({
