@@ -151,6 +151,57 @@ export async function listFiles(
 }
 
 // ============================================================
+// フォルダ名検索 → そのフォルダ内のファイルを返す
+// ============================================================
+
+/**
+ * フォルダ名にキーワードが含まれるフォルダを見つけ、
+ * そのフォルダ内のファイルを直接取得して返す。
+ * 例: 「GX-ETS」→ "2209-2302【GXリーグ】GX-ETS 第1フェーズ" フォルダ内のファイル
+ */
+export async function searchByFolderName(
+  keywords: string[]
+): Promise<DriveFile[]> {
+  const drive = getDriveClient();
+  if (!FOLDER_ID) return [];
+
+  const results: DriveFile[] = [];
+  const seenIds = new Set<string>();
+
+  for (const kw of keywords) {
+    if (kw.length < 2) continue;
+    try {
+      const escaped = kw.replace(/'/g, "\\'");
+      const res = await drive.files.list({
+        q: `name contains '${escaped}' and mimeType = '${FOLDER_MIME}' and trashed = false`,
+        fields: "files(id, name)",
+        pageSize: 10,
+        supportsAllDrives: true,
+        includeItemsFromAllDrives: true,
+      });
+
+      for (const folder of res.data.files ?? []) {
+        if (!folder.id) continue;
+        console.log(`[フォルダ検索] "${kw}" → フォルダ "${folder.name}" 発見`);
+
+        // フォルダ内のファイルを取得（1階層のみ）
+        const files = await listDirect(folder.id);
+        for (const f of files) {
+          if (f.mimeType !== FOLDER_MIME && !seenIds.has(f.id)) {
+            seenIds.add(f.id);
+            results.push(f);
+          }
+        }
+      }
+    } catch (e) {
+      console.warn(`[フォルダ検索] エラー (${kw}):`, e);
+    }
+  }
+
+  return results;
+}
+
+// ============================================================
 // 全文検索
 // ============================================================
 

@@ -1,10 +1,11 @@
 /**
  * チャット API — Google Drive の全ドキュメントを検索し、Claude でストリーミング応答を生成。
  *
- * 検索戦略:
- *   1. Google Drive fullText 検索（全ファイルの中身をGoogleインデックスで検索）
- *   2. ファイル名検索（サブフォルダ含む全ファイル名からキーワードマッチ）
- *   3. 全ファイル名一覧を Claude に渡し、存在するドキュメントを把握させる
+ * 検索戦略（3段階）:
+ *   1. キーワード展開（同義語・表記ゆれ対応）
+ *   2. フォルダ名マッチ（フォルダ名にキーワードを含むフォルダ内のファイルを取得）
+ *   3. Google Drive fullText 検索（全ファイルの中身をインデックス検索）
+ *   4. ファイル名マッチ（全ファイル名からキーワードマッチ）
  *
  * POST /api/chat
  * Body: { message: string, history: Array<{role, content}> }
@@ -15,12 +16,13 @@ import { NextRequest } from "next/server";
 import Anthropic from "@anthropic-ai/sdk";
 import {
   searchFiles,
+  searchByFolderName,
   extractFileText,
   listFiles,
   type DriveFile,
 } from "@/lib/google-drive";
 
-export const maxDuration = 60; // Vercel Pro: 60秒タイムアウト
+export const maxDuration = 60;
 
 type ChatRequest = {
   message: string;
@@ -28,10 +30,9 @@ type ChatRequest = {
 };
 
 // ============================================================
-// キーワード抽出（改良版）
+// キーワード抽出 + 同義語展開
 // ============================================================
 
-/** 日本語の助詞・接続詞を除外 */
 const STOP_WORDS = new Set([
   "の", "に", "は", "を", "で", "が", "と", "も", "から", "まで",
   "より", "ため", "こと", "もの", "する", "ある", "いる", "なる",
@@ -40,6 +41,28 @@ const STOP_WORDS = new Set([
   "教えて", "教えて下さい", "教えてください", "ください", "知りたい",
   "what", "how", "the", "is", "are", "about",
 ]);
+
+/** 略語・表記ゆれの同義語マップ */
+const SYNONYMS: Record<string, string[]> = {
+  gxets: ["GX-ETS", "GXリーグ", "GX排出量取引", "GXETS"],
+  "gx-ets": ["GX-ETS", "GXリーグ", "GX排出量取引", "GXETS"],
+  gxリーグ: ["GX-ETS", "GXリーグ", "GX排出量取引"],
+  jcredit: ["J-クレジット", "Jクレジット", "J-Credit"],
+  "j-credit": ["J-クレジット", "Jクレジット", "J-Credit"],
+  "j-クレジット": ["J-クレジット", "Jクレジット", "J-Credit"],
+  jクレジット: ["J-クレジット", "Jクレジット", "J-Credit"],
+  euets: ["EU-ETS", "EU ETS", "EUA"],
+  "eu-ets": ["EU-ETS", "EU ETS", "EUA"],
+  redd: ["REDD+", "REDD", "森林減少"],
+  "redd+": ["REDD+", "REDD", "森林減少"],
+  sbti: ["SBTi", "SBT", "Science Based Targets"],
+  sbt: ["SBTi", "SBT", "Science Based Targets"],
+  vcm: ["VCM", "ボランタリー", "自主的炭素市場"],
+  カーボンオフセット: ["カーボン・オフセット", "カーボンオフセット", "オフセット"],
+  カーボンニュートラル: ["カーボンニュートラル", "CN", "脱炭素"],
+  jcm: ["JCM", "二国間クレジット"],
+  tcfd: ["TCFD", "気候関連財務情報開示"],
+};
 
 function extractKeywords(message: string): string[] {
   const cleaned = message
@@ -53,8 +76,24 @@ function extractKeywords(message: string): string[] {
   return tokens.slice(0, 8);
 }
 
+/** キーワードから同義語を含む検索語リストを生成 */
+function expandKeywords(keywords: string[]): string[] {
+  const expanded = new Set<string>();
+
+  for (const kw of keywords) {
+    expanded.add(kw);
+    const lower = kw.toLowerCase();
+    const synonyms = SYNONYMS[lower];
+    if (synonyms) {
+      for (const s of synonyms) expanded.add(s);
+    }
+  }
+
+  return Array.from(expanded);
+}
+
 // ============================================================
-// ファイル名からキーワードマッチ
+// ファイル名スコアリング
 // ============================================================
 
 function scoreFileByName(file: DriveFile, keywords: string[]): number {
@@ -69,12 +108,12 @@ function scoreFileByName(file: DriveFile, keywords: string[]): number {
 }
 
 // ============================================================
-// 全ファイルキャッシュ（リクエスト間で共有）
+// 全ファイルキャッシュ
 // ============================================================
 
 let cachedFileList: DriveFile[] | null = null;
 let cacheTimestamp = 0;
-const CACHE_TTL = 5 * 60 * 1000; // 5分
+const CACHE_TTL = 5 * 60 * 1000;
 
 async function getAllFiles(): Promise<DriveFile[]> {
   const now = Date.now();
@@ -120,56 +159,67 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  // ── 1. キーワード抽出 ──
-  const keywords = extractKeywords(message);
-  const searchQuery = keywords.join(" ");
+  // ── 1. キーワード抽出 + 同義語展開 ──
+  const rawKeywords = extractKeywords(message);
+  const expandedKeywords = expandKeywords(rawKeywords);
+  const searchQuery = rawKeywords.join(" ");
 
-  // ── 2. 複数の検索戦略を並列実行 ──
-  const [fullTextResults, allFiles] = await Promise.all([
-    // 戦略A: Google Drive 全文検索（Google のインデックスで全ファイルを検索）
+  console.log(`[Chat] 質問: "${message}"`);
+  console.log(`[Chat] キーワード: ${rawKeywords.join(", ")}`);
+  console.log(`[Chat] 展開後: ${expandedKeywords.join(", ")}`);
+
+  // ── 2. 3つの検索戦略を並列実行 ──
+  const [folderResults, fullTextResults, allFiles] = await Promise.all([
+    // 戦略A: フォルダ名検索（最重要！フォルダ名にキーワードを含む→中のファイルを取得）
+    searchByFolderName(expandedKeywords).catch(() => [] as DriveFile[]),
+    // 戦略B: Google Drive 全文検索（ファイル本文のインデックス検索）
     searchQuery
       ? searchFiles(searchQuery).catch(() => [] as DriveFile[])
       : ([] as DriveFile[]),
-    // 戦略B: 全ファイル一覧（ファイル名マッチ + Claude への一覧提供用）
+    // 戦略C: 全ファイル一覧
     getAllFiles(),
   ]);
 
-  // ── 3. ファイル名スコアリング ──
+  console.log(
+    `[Chat] フォルダ検索: ${folderResults.length}件, 全文検索: ${fullTextResults.length}件, 全ファイル: ${allFiles.length}件`
+  );
+
+  // ── 3. ファイル名スコアリング（展開後キーワードで） ──
   const nameScored = allFiles
     .filter((f) => f.mimeType !== "application/vnd.google-apps.folder")
-    .map((f) => ({ file: f, score: scoreFileByName(f, keywords) }))
+    .map((f) => ({ file: f, score: scoreFileByName(f, expandedKeywords) }))
     .filter((item) => item.score > 0)
     .sort((a, b) => b.score - a.score)
     .slice(0, 20);
 
-  // ── 4. 結果を統合・重複排除 ──
+  // ── 4. 結果を統合・重複排除（フォルダ検索を最優先） ──
   const fileMap = new Map<string, DriveFile>();
-  // 全文検索結果を優先
-  for (const f of fullTextResults) {
+
+  // 優先度1: フォルダ名マッチ（最も関連性が高い）
+  for (const f of folderResults) {
     fileMap.set(f.id, f);
   }
-  // ファイル名マッチを追加
+  // 優先度2: ファイル名マッチ
   for (const item of nameScored) {
     if (!fileMap.has(item.file.id)) {
       fileMap.set(item.file.id, item.file);
     }
   }
-
-  let relevantFiles = Array.from(fileMap.values());
-
-  // 検索結果が少なければ最新ファイルを補完
-  if (relevantFiles.length < 3) {
-    const existingIds = new Set(relevantFiles.map((f) => f.id));
-    for (const f of allFiles) {
-      if (
-        !existingIds.has(f.id) &&
-        f.mimeType !== "application/vnd.google-apps.folder"
-      ) {
-        relevantFiles.push(f);
-        if (relevantFiles.length >= 10) break;
-      }
+  // 優先度3: 全文検索結果
+  for (const f of fullTextResults) {
+    if (!fileMap.has(f.id)) {
+      fileMap.set(f.id, f);
     }
   }
+
+  const relevantFiles = Array.from(fileMap.values());
+
+  console.log(
+    `[Chat] 統合結果: ${relevantFiles.length}件 (上位: ${relevantFiles
+      .slice(0, 5)
+      .map((f) => f.name)
+      .join(", ")})`
+  );
 
   // 上位10件のテキストを抽出
   const topFiles = relevantFiles.slice(0, 10);
@@ -199,11 +249,15 @@ export async function POST(request: NextRequest) {
     )
     .map((r) => r.value);
 
-  // ── 6. 全ファイル名一覧を構築（Claude に「何が存在するか」を伝える） ──
+  console.log(
+    `[Chat] テキスト抽出成功: ${documents.length}/${topFiles.length}件`
+  );
+
+  // ── 6. 全ファイル名一覧 ──
   const fileIndex = allFiles
     .filter((f) => f.mimeType !== "application/vnd.google-apps.folder")
     .map((f) => f.name)
-    .slice(0, 500); // 最大500件のファイル名
+    .slice(0, 500);
 
   // ── 7. システムプロンプト構築 ──
   const documentContext =
@@ -251,14 +305,12 @@ ${fileIndex.join("\n")}`;
   const readable = new ReadableStream({
     async start(controller) {
       try {
-        // ソース情報を送信
         controller.enqueue(
           encoder.encode(
             `data: ${JSON.stringify({ type: "sources", files: fileMetadata })}\n\n`
           )
         );
 
-        // Claude ストリーミング
         const stream = client.messages.stream({
           model: "claude-sonnet-4-20250514",
           max_tokens: 4096,
