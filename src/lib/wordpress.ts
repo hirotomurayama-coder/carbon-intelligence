@@ -416,13 +416,19 @@ export async function getMethodologies(): Promise<Methodology[]> {
   try {
     const allPosts: WPPost[] = [];
     let page = 1;
-    while (true) {
-      const posts = await wpFetch<WPPost>(
-        `methodologies?per_page=100&page=${page}`
-      );
-      allPosts.push(...posts);
-      if (posts.length < 100) break;
-      page++;
+    while (page <= 10) { // 安全上限: 最大10ページ
+      try {
+        const posts = await wpFetch<WPPost>(
+          `methodologies?per_page=100&page=${page}`
+        );
+        allPosts.push(...posts);
+        if (posts.length < 100) break;
+        page++;
+      } catch (pageErr) {
+        // ページが存在しない（400/404）場合は正常終了
+        console.warn(`[WP] methodologies page ${page} failed, stopping pagination:`, pageErr);
+        break;
+      }
     }
     return allPosts.map(mapMethodology);
   } catch (e) {
