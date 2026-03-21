@@ -253,14 +253,17 @@ export function LibraryView() {
                 />
               </svg>
             </button>
-            <div>
+            <div className="flex items-center gap-2">
               <h2 className="text-base font-bold text-gray-900">
                 ドキュメント検索
               </h2>
-              <p className="text-[10px] text-gray-400">
-                Google Drive の {files.length} 件以上の資料から関連ドキュメントを検索
-              </p>
+              <span className="rounded-full bg-amber-100 text-amber-700 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider">
+                Beta
+              </span>
             </div>
+            <p className="text-[10px] text-gray-400 mt-0.5 ml-0">
+              Google Drive の {files.length} 件以上の資料から関連ドキュメントを検索
+            </p>
           </div>
 
           {/* 検索フォーム */}
@@ -397,50 +400,84 @@ export function LibraryView() {
                   </p>
                 </div>
               ) : (
-                <div className="space-y-2">
-                  {searchResults.map((f, i) => (
-                    <a
-                      key={f.id}
-                      href={f.webViewLink ?? `https://drive.google.com/file/d/${f.id}/view`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex items-start gap-3 px-4 py-3 rounded-xl border border-gray-100 hover:border-emerald-200 hover:bg-emerald-50/50 transition group"
-                    >
-                      <span className="text-xl mt-0.5 flex-shrink-0">
-                        {mimeIcon(f.mimeType)}
-                      </span>
-                      <div className="min-w-0 flex-1">
-                        <div className="flex items-center gap-2 mb-0.5">
-                          <span className="text-[10px] text-gray-400 font-mono">
-                            #{i + 1}
-                          </span>
-                          {matchBadge(f.matchType)}
+                <>
+                  <div className="space-y-2">
+                    {searchResults.map((f, i) => (
+                      <a
+                        key={f.id}
+                        href={f.webViewLink ?? `https://drive.google.com/file/d/${f.id}/view`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-start gap-3 px-4 py-3 rounded-xl border border-gray-100 hover:border-emerald-200 hover:bg-emerald-50/50 transition group"
+                      >
+                        <span className="text-xl mt-0.5 flex-shrink-0">
+                          {mimeIcon(f.mimeType)}
+                        </span>
+                        <div className="min-w-0 flex-1">
+                          <div className="flex items-center gap-2 mb-0.5">
+                            <span className="text-[10px] text-gray-400 font-mono">
+                              #{i + 1}
+                            </span>
+                            {matchBadge(f.matchType)}
+                          </div>
+                          <p className="text-sm font-medium text-gray-800 group-hover:text-emerald-700 transition leading-snug">
+                            {f.name}
+                          </p>
+                          <p className="text-[11px] text-gray-400 mt-1">
+                            {relativeTime(f.modifiedTime)}
+                            {f.size ? ` · ${formatFileSize(f.size)}` : ""}
+                          </p>
                         </div>
-                        <p className="text-sm font-medium text-gray-800 group-hover:text-emerald-700 transition leading-snug">
-                          {f.name}
+                        <svg
+                          className="h-4 w-4 text-gray-300 group-hover:text-emerald-500 mt-1 flex-shrink-0 transition"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                          strokeWidth={2}
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            d="M13.5 6H5.25A2.25 2.25 0 0 0 3 8.25v10.5A2.25 2.25 0 0 0 5.25 21h10.5A2.25 2.25 0 0 0 18 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25"
+                          />
+                        </svg>
+                      </a>
+                    ))}
+                  </div>
+
+                  {/* Gemini 活用 Tips */}
+                  <div className="mt-6 rounded-xl border border-blue-100 bg-blue-50/50 p-4">
+                    <div className="flex items-start gap-3">
+                      <span className="text-lg flex-shrink-0">💡</span>
+                      <div className="text-xs text-gray-600 leading-relaxed">
+                        <p className="font-bold text-gray-700 mb-1">
+                          より詳しい情報を得るには
                         </p>
-                        <p className="text-[11px] text-gray-400 mt-1">
-                          {relativeTime(f.modifiedTime)}
-                          {f.size ? ` · ${formatFileSize(f.size)}` : ""}
+                        <p>
+                          上記のドキュメントを Google Drive
+                          で開くと、ファイルの右側に{" "}
+                          <span className="font-semibold text-blue-700">
+                            Gemini（AI アシスタント）
+                          </span>
+                          が表示されます。
+                          そこに検索キーワードと同じ質問（例：「
+                          <span className="font-medium">
+                            {searchQuery || "GX-ETSの制度設計について教えて"}
+                          </span>
+                          」）を入力すると、そのドキュメントの内容に基づいた具体的な回答を得ることができます。
                         </p>
                       </div>
-                      <svg
-                        className="h-4 w-4 text-gray-300 group-hover:text-emerald-500 mt-1 flex-shrink-0 transition"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                        strokeWidth={2}
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          d="M13.5 6H5.25A2.25 2.25 0 0 0 3 8.25v10.5A2.25 2.25 0 0 0 5.25 21h10.5A2.25 2.25 0 0 0 18 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25"
-                        />
-                      </svg>
-                    </a>
-                  ))}
-                </div>
+                    </div>
+                  </div>
+                </>
               )}
+
+              {/* Beta 注記 */}
+              <div className="mt-4 text-center">
+                <p className="text-[10px] text-gray-300">
+                  この機能はベータ版です。検索精度は今後改善予定です。フォルダ構造・ファイル名・本文インデックスを組み合わせた検索を行っています。
+                </p>
+              </div>
             </div>
           )}
         </div>
