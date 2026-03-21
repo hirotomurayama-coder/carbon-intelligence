@@ -12,9 +12,12 @@
     "analyze-market": "tsx scripts/analyze-market.ts"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.80.0",
     "@google/generative-ai": "^0.24.1",
     "@tailwindcss/typography": "^0.5.19",
     "cheerio": "^1.2.0",
+    "googleapis": "^171.4.0",
+    "mammoth": "^1.12.0",
     "next": "16.1.6",
     "pdf-parse": "^2.4.5",
     "react": "19.2.3",

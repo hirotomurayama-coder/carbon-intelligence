@@ -18,4 +18,5 @@ export type NavIcon =
   | "market"
   | "analytics"
   | "portfolio"
+  | "library"
   | "settings";
