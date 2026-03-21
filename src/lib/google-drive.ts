@@ -2,6 +2,8 @@
  * Google Drive API サービス層。
  * サービスアカウントで管理者の固定フォルダにアクセスし、
  * ファイル一覧・全文検索・テキスト抽出を提供する。
+ *
+ * PDF は pdfjs-dist で抽出し、失敗時は Google Docs 変換（OCR 内蔵）でフォールバック。
  */
 
 import { google, type drive_v3 } from "googleapis";
@@ -25,7 +27,8 @@ export type DriveFile = {
 // 認証・クライアント
 // ============================================================
 
-const SCOPES = ["https://www.googleapis.com/auth/drive.readonly"];
+// drive（フルアクセス）: PDF→Docs 変換用の一時コピー作成・削除に必要
+const SCOPES = ["https://www.googleapis.com/auth/drive"];
 const FOLDER_ID = process.env.GOOGLE_DRIVE_FOLDER_ID ?? "";
 
 let cachedDrive: drive_v3.Drive | null = null;
@@ -87,7 +90,6 @@ async function listDirect(folderId: string): Promise<DriveFile[]> {
     });
 
     for (const f of res.data.files ?? []) {
-      // _temp_ocr_ ファイルを除外
       if (f.name?.startsWith("_temp_ocr_")) continue;
       all.push({
         id: f.id ?? "",
@@ -107,7 +109,7 @@ async function listDirect(folderId: string): Promise<DriveFile[]> {
 
 /**
  * 指定フォルダ以下の全ファイルを再帰取得。
- * 最大深度3（ルート → サブフォルダ → サブサブフォルダ → ファイル）で制限。
+ * 最大深度3で制限。
  */
 export async function listFiles(
   folderId?: string,
@@ -132,7 +134,6 @@ export async function listFiles(
     }
   }
 
-  // サブフォルダを再帰（深度制限: 3階層まで）
   if (depth < 3 && subfolders.length > 0) {
     const batchSize = 5;
     for (let i = 0; i < subfolders.length; i += batchSize) {
@@ -150,27 +151,17 @@ export async function listFiles(
 }
 
 // ============================================================
-// 全文検索（Google Drive のインデックスで全ファイルを対象に検索）
+// 全文検索
 // ============================================================
 
-/**
- * Google Drive の fullText 検索を使い、全ファイルの内容を対象に検索。
- * Google がサーバー側でインデックスを持っており、PDF・DOCX・Google Docs 等の
- * 中身を含めて全件検索される。
- *
- * 複数キーワードの場合、個別にも検索して結果を統合する。
- */
 export async function searchFiles(query: string): Promise<DriveFile[]> {
   const drive = getDriveClient();
-
   if (!FOLDER_ID) return [];
 
   const fileMap = new Map<string, DriveFile>();
 
-  // 戦略1: 全キーワードで一括検索
   await searchOnce(drive, query, fileMap);
 
-  // 戦略2: 個別キーワードでも検索（日本語で分かち書き問題がある場合に対応）
   const words = query.split(/\s+/).filter((w) => w.length >= 2);
   if (words.length > 1) {
     for (const word of words.slice(0, 3)) {
@@ -257,19 +248,9 @@ export async function extractFileText(
       return text.slice(0, MAX_CHARS_PER_FILE);
     }
 
-    // PDF → pdfjs-dist でテキスト抽出
+    // PDF → pdfjs-dist で抽出、失敗時は Google Docs OCR 変換でフォールバック
     if (mimeType === "application/pdf") {
-      const res = await drive.files.get(
-        { fileId, alt: "media", supportsAllDrives: true },
-        { responseType: "arraybuffer" }
-      );
-      const buffer = Buffer.from(res.data as ArrayBuffer);
-      const text = await extractPdfText(buffer);
-      // テキストがほぼ空の場合（スキャンPDF等）
-      if (text.replace(/\s/g, "").length < 50) {
-        return `[このPDFはスキャン画像のためテキスト抽出ができませんでした。ファイル名: ${fileId}]`;
-      }
-      return text;
+      return await extractPdfFromDrive(drive, fileId);
     }
 
     // DOCX → mammoth
@@ -285,19 +266,8 @@ export async function extractFileText(
       return await extractDocxText(buffer);
     }
 
-    // PPTX → テキスト抽出は限定的だがファイル名を返す
-    if (
-      mimeType ===
-      "application/vnd.openxmlformats-officedocument.presentationml.presentation"
-    ) {
-      return `[PowerPoint ファイル — テキスト自動抽出は未対応]`;
-    }
-
     // プレーンテキスト / CSV / TSV
-    if (
-      mimeType.startsWith("text/") ||
-      mimeType === "application/csv"
-    ) {
+    if (mimeType.startsWith("text/") || mimeType === "application/csv") {
       const res = await drive.files.get(
         { fileId, alt: "media", supportsAllDrives: true },
         { responseType: "text" }
@@ -306,7 +276,7 @@ export async function extractFileText(
       return text.slice(0, MAX_CHARS_PER_FILE);
     }
 
-    return `[${mimeType} 形式のファイルはテキスト抽出に未対応です]`;
+    return `[${mimeType} 形式は未対応]`;
   } catch (e) {
     console.error(`[Google Drive] テキスト抽出エラー (${fileId}):`, e);
     return "[テキスト抽出に失敗しました]";
@@ -314,8 +284,77 @@ export async function extractFileText(
 }
 
 // ============================================================
-// PDF テキスト抽出（pdfjs-dist — サーバーレス互換）
+// PDF テキスト抽出 — 2段階戦略
+//   1. pdfjs-dist でローカル抽出（テキスト埋め込みPDF用）
+//   2. 失敗時: Google Docs 変換（OCR 内蔵）でフォールバック
 // ============================================================
+
+async function extractPdfFromDrive(
+  drive: drive_v3.Drive,
+  fileId: string
+): Promise<string> {
+  // --- 方法1: pdfjs-dist ---
+  try {
+    const res = await drive.files.get(
+      { fileId, alt: "media", supportsAllDrives: true },
+      { responseType: "arraybuffer" }
+    );
+    const buffer = Buffer.from(res.data as ArrayBuffer);
+    const text = await extractPdfText(buffer);
+    if (text.replace(/\s/g, "").length > 50) {
+      return text;
+    }
+  } catch (e) {
+    console.warn(`[PDF] pdfjs-dist 失敗 (${fileId}):`, e);
+  }
+
+  // --- 方法2: Google Docs OCR 変換 ---
+  // サービスアカウントの My Drive に一時的な Google Docs コピーを作成（OCR付き）
+  // → テキスト抽出 → 一時ファイルを即座に削除
+  let tempDocId: string | null = null;
+  try {
+    console.log(`[PDF→Docs] OCR 変換開始: ${fileId}`);
+    const copyRes = await drive.files.copy({
+      fileId,
+      requestBody: {
+        mimeType: "application/vnd.google-apps.document",
+        name: `_temp_ocr_${Date.now()}`,
+        // parents を指定しない → サービスアカウント自身の My Drive に作成
+      },
+      supportsAllDrives: true,
+      ocrLanguage: "ja",
+    });
+    tempDocId = copyRes.data.id ?? null;
+
+    if (tempDocId) {
+      const textRes = await drive.files.export(
+        { fileId: tempDocId, mimeType: "text/plain" },
+        { responseType: "text" }
+      );
+      const text =
+        typeof textRes.data === "string" ? textRes.data : String(textRes.data);
+      if (text.replace(/\s/g, "").length > 30) {
+        console.log(
+          `[PDF→Docs] OCR 成功: ${fileId} (${text.length} chars)`
+        );
+        return text.slice(0, MAX_CHARS_PER_FILE);
+      }
+    }
+  } catch (e) {
+    console.warn(`[PDF→Docs] OCR 変換失敗 (${fileId}):`, e);
+  } finally {
+    // 一時ファイルを確実に削除（サービスアカウントの My Drive なので削除可能）
+    if (tempDocId) {
+      drive.files
+        .delete({ fileId: tempDocId })
+        .catch((e) =>
+          console.warn(`[PDF→Docs] 一時ファイル削除失敗: ${tempDocId}`, e)
+        );
+    }
+  }
+
+  return "[PDF テキスト抽出に失敗しました]";
+}
 
 async function extractPdfText(buffer: Buffer): Promise<string> {
   try {
@@ -326,13 +365,17 @@ async function extractPdfText(buffer: Buffer): Promise<string> {
     }).promise;
 
     const pages: string[] = [];
-    const maxPages = Math.min(doc.numPages, 30); // 最大30ページ
+    const maxPages = Math.min(doc.numPages, 30);
 
     for (let i = 1; i <= maxPages; i++) {
       const page = await doc.getPage(i);
       const content = await page.getTextContent();
       const text = content.items
-        .filter((item) => "str" in item && typeof (item as { str: string }).str === "string")
+        .filter(
+          (item) =>
+            "str" in item &&
+            typeof (item as { str: string }).str === "string"
+        )
         .map((item) => (item as { str: string }).str)
         .join(" ");
       if (text.trim()) pages.push(text);
