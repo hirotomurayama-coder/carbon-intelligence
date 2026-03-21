@@ -25,7 +25,7 @@ export type DriveFile = {
 // 認証・クライアント
 // ============================================================
 
-const SCOPES = ["https://www.googleapis.com/auth/drive"];
+const SCOPES = ["https://www.googleapis.com/auth/drive.readonly"];
 const FOLDER_ID = process.env.GOOGLE_DRIVE_FOLDER_ID ?? "";
 
 let cachedDrive: drive_v3.Drive | null = null;
@@ -194,9 +194,14 @@ export async function extractFileText(
       return text.slice(0, MAX_CHARS_PER_FILE);
     }
 
-    // PDF → Google Docs 変換経由でテキスト抽出（サーバーレス互換）
+    // PDF → ダウンロード → pdfjs-dist でテキスト抽出
     if (mimeType === "application/pdf") {
-      return await extractPdfViaGoogleDocs(drive, fileId);
+      const res = await drive.files.get(
+        { fileId, alt: "media", supportsAllDrives: true },
+        { responseType: "arraybuffer" }
+      );
+      const buffer = Buffer.from(res.data as ArrayBuffer);
+      return await extractPdfText(buffer);
     }
 
     // DOCX → バイナリダウンロード → mammoth
@@ -230,58 +235,27 @@ export async function extractFileText(
 }
 
 // ============================================================
-// PDF テキスト抽出（Google Docs 変換方式 — サーバーレス互換）
+// PDF テキスト抽出（pdfjs-dist — サーバーレス互換）
 // ============================================================
 
-/**
- * PDFをGoogle Docsにコピー変換し、text/plainでエクスポートしてテキストを取得。
- * pdf-parse の DOMMatrix 問題を回避するため、Google 側で変換処理を行う。
- */
-async function extractPdfViaGoogleDocs(
-  drive: drive_v3.Drive,
-  fileId: string
-): Promise<string> {
-  try {
-    // PDFファイルの内容をダウンロード
-    const downloadRes = await drive.files.get(
-      { fileId, alt: "media", supportsAllDrives: true },
-      { responseType: "arraybuffer" }
-    );
-    const buffer = Buffer.from(downloadRes.data as ArrayBuffer);
+async function extractPdfText(buffer: Buffer): Promise<string> {
+  const pdfjsLib = await import("pdfjs-dist/legacy/build/pdf.mjs");
+  const doc = await pdfjsLib.getDocument({ data: new Uint8Array(buffer) }).promise;
 
-    // Google Docs として一時アップロード（OCR 変換）
-    const createRes = await drive.files.create({
-      requestBody: {
-        name: `_temp_ocr_${fileId}`,
-        mimeType: "application/vnd.google-apps.document",
-      },
-      media: {
-        mimeType: "application/pdf",
-        body: require("stream").Readable.from(buffer),
-      },
-      fields: "id",
-      supportsAllDrives: true,
-    });
+  const pages: string[] = [];
+  const maxPages = Math.min(doc.numPages, 50); // 最大50ページ
 
-    const tempDocId = createRes.data.id;
-    if (!tempDocId) return "[PDF変換に失敗しました]";
-
-    try {
-      // テキストとしてエクスポート
-      const exportRes = await drive.files.export(
-        { fileId: tempDocId, mimeType: "text/plain" },
-        { responseType: "text" }
-      );
-      const text = typeof exportRes.data === "string" ? exportRes.data : String(exportRes.data);
-      return text.slice(0, MAX_CHARS_PER_FILE);
-    } finally {
-      // 一時ファイルを削除
-      await drive.files.delete({ fileId: tempDocId, supportsAllDrives: true }).catch(() => {});
-    }
-  } catch (e) {
-    console.error(`[Google Drive] PDF→Docs変換エラー:`, e);
-    return "[PDFのテキスト抽出に失敗しました]";
+  for (let i = 1; i <= maxPages; i++) {
+    const page = await doc.getPage(i);
+    const content = await page.getTextContent();
+    const text = content.items
+      .filter((item) => "str" in item && typeof (item as { str: string }).str === "string")
+      .map((item) => (item as { str: string }).str)
+      .join(" ");
+    pages.push(text);
   }
+
+  return pages.join("\n").slice(0, MAX_CHARS_PER_FILE);
 }
 
 // ============================================================
