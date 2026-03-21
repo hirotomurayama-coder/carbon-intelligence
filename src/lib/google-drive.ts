@@ -156,8 +156,8 @@ export async function listFiles(
 
 /**
  * フォルダ名にキーワードが含まれるフォルダを見つけ、
- * そのフォルダ内のファイルを直接取得して返す。
- * 例: 「GX-ETS」→ "2209-2302【GXリーグ】GX-ETS 第1フェーズ" フォルダ内のファイル
+ * そのフォルダ内のファイルを再帰的に取得して返す（2階層分潜る）。
+ * 例: 「GX-ETS」→ "2209-2302【GXリーグ】GX-ETS 第1フェーズ" → サブフォルダ → ファイル
  */
 export async function searchByFolderName(
   keywords: string[]
@@ -167,11 +167,16 @@ export async function searchByFolderName(
 
   const results: DriveFile[] = [];
   const seenIds = new Set<string>();
+  const seenFolders = new Set<string>();
 
   for (const kw of keywords) {
     if (kw.length < 2) continue;
+    // ハイフン・スラッシュ等を除去してフォルダ名検索
+    const cleanKw = kw.replace(/[-\/\\]/g, " ").trim();
+    if (!cleanKw) continue;
+
     try {
-      const escaped = kw.replace(/'/g, "\\'");
+      const escaped = cleanKw.replace(/'/g, "\\'");
       const res = await drive.files.list({
         q: `name contains '${escaped}' and mimeType = '${FOLDER_MIME}' and trashed = false`,
         fields: "files(id, name)",
@@ -181,17 +186,12 @@ export async function searchByFolderName(
       });
 
       for (const folder of res.data.files ?? []) {
-        if (!folder.id) continue;
+        if (!folder.id || seenFolders.has(folder.id)) continue;
+        seenFolders.add(folder.id);
         console.log(`[フォルダ検索] "${kw}" → フォルダ "${folder.name}" 発見`);
 
-        // フォルダ内のファイルを取得（1階層のみ）
-        const files = await listDirect(folder.id);
-        for (const f of files) {
-          if (f.mimeType !== FOLDER_MIME && !seenIds.has(f.id)) {
-            seenIds.add(f.id);
-            results.push(f);
-          }
-        }
+        // フォルダ内を再帰取得（2階層分）
+        await collectFilesFromFolder(folder.id, results, seenIds, 0, 2);
       }
     } catch (e) {
       console.warn(`[フォルダ検索] エラー (${kw}):`, e);
@@ -199,6 +199,29 @@ export async function searchByFolderName(
   }
 
   return results;
+}
+
+/** フォルダ内のファイルを再帰的に収集 */
+async function collectFilesFromFolder(
+  folderId: string,
+  results: DriveFile[],
+  seenIds: Set<string>,
+  depth: number,
+  maxDepth: number
+): Promise<void> {
+  const items = await listDirect(folderId);
+
+  for (const item of items) {
+    if (item.mimeType === FOLDER_MIME) {
+      // サブフォルダをさらに掘る
+      if (depth < maxDepth) {
+        await collectFilesFromFolder(item.id, results, seenIds, depth + 1, maxDepth);
+      }
+    } else if (!seenIds.has(item.id)) {
+      seenIds.add(item.id);
+      results.push(item);
+    }
+  }
 }
 
 // ============================================================
@@ -229,12 +252,19 @@ async function searchOnce(
   results: Map<string, DriveFile>
 ): Promise<void> {
   try {
-    const escaped = query.replace(/'/g, "\\'");
+    // Google Drive fullText 検索ではハイフン等の特殊文字がエラーになるため除去
+    const sanitized = query
+      .replace(/'/g, "\\'")
+      .replace(/[-+&|!(){}\[\]^"~*?:\\/]/g, " ")
+      .replace(/\s+/g, " ")
+      .trim();
+    if (!sanitized || sanitized.length < 2) return;
+
     const res = await drive.files.list({
-      q: `fullText contains '${escaped}' and mimeType != '${FOLDER_MIME}' and trashed = false and not name contains '_temp_ocr_'`,
+      q: `fullText contains '${sanitized}' and mimeType != '${FOLDER_MIME}' and trashed = false and not name contains '_temp_ocr_'`,
       fields: "files(id, name, mimeType, modifiedTime, size, webViewLink)",
-      orderBy: "relevance",
       pageSize: 20,
+      corpora: "allDrives",
       supportsAllDrives: true,
       includeItemsFromAllDrives: true,
     });
