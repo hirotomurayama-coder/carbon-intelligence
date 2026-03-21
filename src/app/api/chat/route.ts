@@ -193,8 +193,9 @@ export async function POST(request: NextRequest) {
         text: string;
       }> =>
         r.status === "fulfilled" &&
-        r.value.text.length > 10 &&
-        !r.value.text.startsWith("[")
+        r.value.text.length > 50 &&
+        !r.value.text.startsWith("[") &&
+        !r.value.text.includes("テキスト抽出に失敗")
     )
     .map((r) => r.value);
 
