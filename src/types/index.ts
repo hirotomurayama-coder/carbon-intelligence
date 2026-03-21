@@ -48,6 +48,13 @@ export type CompanyCategory =
   | "コンサル"
   | "検証機関";
 
+/** carboncredits.jp の関連記事 */
+export type RelatedArticle = {
+  title: string;
+  url: string;
+  date: string;  // "YYYY-MM-DD"
+};
+
 /** 企業 */
 export type Company = {
   id: string;
@@ -57,6 +64,7 @@ export type Company = {
   mainProjects: string[];
   homepageUrl: string | null;           // ACF: homepage_url
   description: string | null;           // ACF: company_description
+  relatedArticles: RelatedArticle[];    // ACF: related_articles (JSON)
 };
 
 // ============================================================

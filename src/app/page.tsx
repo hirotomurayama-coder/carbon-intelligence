@@ -142,54 +142,68 @@ export default async function Home() {
 
       {/* ── 企業 / インサイト / 更新 3カラム ── */}
       <div className="grid grid-cols-1 gap-6 xl:grid-cols-3">
-        {/* 企業カード */}
+        {/* 注目企業（記事数が多い順） */}
         <section>
           <h2 className="mb-4 text-lg font-semibold text-gray-900">
-            企業情報
+            注目企業
           </h2>
-          {companies.length > 0 ? (
-            <div className="space-y-3">
-              {companies.slice(0, 4).map((c) => (
-                <div
-                  key={c.id}
-                  className="flex items-start gap-3 rounded-xl border border-gray-200 bg-white p-4 shadow-sm"
-                >
-                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-emerald-50 text-sm font-bold text-emerald-700">
-                    {c.name?.[0] ?? "?"}
-                  </div>
-                  <div className="min-w-0">
-                    <p className="truncate text-sm font-semibold text-gray-900">
-                      {c.name}
-                    </p>
-                    <p className="text-xs text-gray-400">
-                      {c.headquarters ?? "\u2014"}
-                    </p>
-                    <div className="mt-1.5">
-                      <Badge
-                        variant={
-                          c.category === null
-                            ? "gray"
-                            : c.category === "創出"
-                              ? "emerald"
-                              : c.category === "仲介"
-                                ? "blue"
-                                : c.category === "コンサル"
-                                  ? "indigo"
-                                  : "amber"
-                        }
-                      >
-                        {c.category ?? "\u672A\u5206\u985E"}
-                      </Badge>
+          {(() => {
+            const featured = [...companies]
+              .filter((c) => c.relatedArticles.length > 0)
+              .sort((a, b) => b.relatedArticles.length - a.relatedArticles.length)
+              .slice(0, 5);
+            const display = featured.length > 0 ? featured : companies.slice(0, 4);
+
+            return display.length > 0 ? (
+              <div className="space-y-3">
+                {display.map((c) => (
+                  <Link
+                    key={c.id}
+                    href={`/companies/${c.id}`}
+                    className="flex items-start gap-3 rounded-xl border border-gray-200 bg-white p-4 shadow-sm transition hover:border-emerald-200"
+                  >
+                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-emerald-50 text-sm font-bold text-emerald-700">
+                      {c.name?.[0] ?? "?"}
                     </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          ) : (
-            <p className="rounded-xl border border-gray-200 bg-white py-12 text-center text-sm text-gray-400 shadow-sm">
-              企業が登録されていません
-            </p>
-          )}
+                    <div className="min-w-0 flex-1">
+                      <p className="truncate text-sm font-semibold text-gray-900">
+                        {c.name}
+                      </p>
+                      <p className="text-xs text-gray-400">
+                        {c.headquarters ?? "\u2014"}
+                      </p>
+                      <div className="mt-1.5 flex gap-1.5">
+                        <Badge
+                          variant={
+                            c.category === null
+                              ? "gray"
+                              : c.category === "創出"
+                                ? "emerald"
+                                : c.category === "仲介"
+                                  ? "blue"
+                                  : c.category === "コンサル"
+                                    ? "indigo"
+                                    : "amber"
+                          }
+                        >
+                          {c.category ?? "\u672A\u5206\u985E"}
+                        </Badge>
+                        {c.relatedArticles.length > 0 && (
+                          <Badge variant="slate">
+                            {c.relatedArticles.length} 記事
+                          </Badge>
+                        )}
+                      </div>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            ) : (
+              <p className="rounded-xl border border-gray-200 bg-white py-12 text-center text-sm text-gray-400 shadow-sm">
+                企業が登録されていません
+              </p>
+            );
+          })()}
         </section>
 
         {/* インサイトリスト */}

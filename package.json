@@ -9,7 +9,8 @@
     "lint": "eslint",
     "sync-prices": "tsx scripts/sync-prices.ts",
     "backfill-prices": "tsx scripts/backfill-prices.ts",
-    "analyze-market": "tsx scripts/analyze-market.ts"
+    "analyze-market": "tsx scripts/analyze-market.ts",
+    "sync-companies": "tsx scripts/sync-companies.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.80.0",

@@ -1,0 +1,54 @@
+name: Monthly Company Enrichment
+
+on:
+  schedule:
+    # 毎月1日 09:00 JST（UTC 00:00）に実行
+    - cron: "0 0 1 * *"
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Dry Run（書き込みなしテスト）"
+        required: false
+        type: boolean
+        default: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Validate environment variables
+        run: |
+          missing=""
+          [ -z "${{ secrets.NEXT_PUBLIC_WORDPRESS_API_URL }}" ] && missing="$missing NEXT_PUBLIC_WORDPRESS_API_URL"
+          [ -z "${{ secrets.WP_APP_USER }}" ] && missing="$missing WP_APP_USER"
+          [ -z "${{ secrets.WP_APP_PASSWORD }}" ] && missing="$missing WP_APP_PASSWORD"
+          if [ -n "$missing" ]; then
+            echo "::error::Missing secrets:$missing"
+            exit 1
+          fi
+
+      - name: Run company sync
+        env:
+          NEXT_PUBLIC_WORDPRESS_API_URL: ${{ secrets.NEXT_PUBLIC_WORDPRESS_API_URL }}
+          WP_APP_USER: ${{ secrets.WP_APP_USER }}
+          WP_APP_PASSWORD: ${{ secrets.WP_APP_PASSWORD }}
+        run: |
+          ARGS=""
+          if [ "${{ inputs.dry_run }}" = "true" ]; then
+            ARGS="$ARGS --dry-run"
+          fi
+          npx tsx scripts/sync-companies.ts $ARGS

@@ -9,7 +9,8 @@ import { Badge } from "@/components/ui/Badge";
 import type { Company, CompanyCategory } from "@/types";
 
 const ALL_TAB = "すべて";
-const TABS: string[] = [ALL_TAB, "創出", "仲介", "コンサル", "検証機関"];
+const ARTICLE_TAB = "記事あり";
+const TABS: string[] = [ALL_TAB, "創出", "仲介", "コンサル", "検証機関", ARTICLE_TAB];
 
 function categoryVariant(cat: CompanyCategory | null) {
   if (cat === null) return "gray" as const;
@@ -36,13 +37,21 @@ export function CompanyList({ data }: Props) {
 
   const filtered = useMemo(() => {
     return data.filter((c) => {
-      const matchesTab = activeTab === ALL_TAB || c.category === activeTab;
+      // タブフィルタ
+      const matchesTab =
+        activeTab === ALL_TAB ||
+        (activeTab === ARTICLE_TAB
+          ? c.relatedArticles.length > 0
+          : c.category === activeTab);
+
+      // キーワード検索（名前・プロジェクト・説明文）
+      const kw = keyword.toLowerCase();
       const matchesKeyword =
         keyword === "" ||
-        c.name.toLowerCase().includes(keyword.toLowerCase()) ||
-        c.mainProjects.some((p) =>
-          p.toLowerCase().includes(keyword.toLowerCase())
-        );
+        c.name.toLowerCase().includes(kw) ||
+        c.mainProjects.some((p) => p.toLowerCase().includes(kw)) ||
+        (c.description?.toLowerCase().includes(kw) ?? false);
+
       return matchesTab && matchesKeyword;
     });
   }, [data, activeTab, keyword]);
@@ -56,7 +65,7 @@ export function CompanyList({ data }: Props) {
           <SearchInput
             value={keyword}
             onChange={setKeyword}
-            placeholder="企業名・プロジェクトを検索..."
+            placeholder="企業名・プロジェクト・概要を検索..."
           />
         </div>
       </div>
@@ -88,10 +97,15 @@ export function CompanyList({ data }: Props) {
                 </p>
               </div>
             </Link>
-            <div className="mt-3">
+            <div className="mt-3 flex flex-wrap gap-1.5">
               <Badge variant={categoryVariant(c.category)}>
                 {c.category ?? "\u672A\u5206\u985E"}
               </Badge>
+              {c.relatedArticles.length > 0 && (
+                <Badge variant="slate">
+                  {c.relatedArticles.length} 記事
+                </Badge>
+              )}
             </div>
             {c.mainProjects.length > 0 && (
               <div className="mt-4 border-t border-gray-100 pt-3">

@@ -3,6 +3,7 @@ import type {
   MethodologyType,
   Company,
   CompanyCategory,
+  RelatedArticle,
   Insight,
   InsightDetail,
   InsightCategory,
@@ -292,22 +293,60 @@ const VALID_COMPANY_CATEGORIES: CompanyCategory[] = [
   "創出", "仲介", "コンサル", "検証機関",
 ];
 
+function parseCompanyContentJson(contentHtml: string): Record<string, unknown> | null {
+  const match = contentHtml.match(/<!-- COMPANY_DATA_JSON:([\s\S]*?) -->/);
+  if (!match) return null;
+  try {
+    return JSON.parse(match[1]);
+  } catch {
+    return null;
+  }
+}
+
+function parseRelatedArticles(source: Record<string, unknown>): RelatedArticle[] {
+  const raw = source.related_articles;
+  let arr: unknown[] = [];
+  if (typeof raw === "string" && raw.trim()) {
+    try {
+      const parsed = JSON.parse(raw);
+      if (Array.isArray(parsed)) arr = parsed;
+    } catch { /* pass */ }
+  } else if (Array.isArray(raw)) {
+    arr = raw;
+  }
+  return arr
+    .filter((item): item is Record<string, unknown> =>
+      typeof item === "object" && item !== null &&
+      typeof (item as Record<string, unknown>).title === "string" &&
+      typeof (item as Record<string, unknown>).url === "string"
+    )
+    .map((item) => ({
+      title: String(item.title),
+      url: String(item.url),
+      date: typeof item.date === "string" ? item.date : "",
+    }));
+}
+
 function mapCompany(wp: WPPost): Company {
   const { data: acf, hasData } = getAcf(wp);
+
+  // content JSON フォールバック（ACF REST API 未対応時）
+  const contentData = parseCompanyContentJson(wp.content?.rendered ?? "");
+  const source: Record<string, unknown> = hasData ? acf : (contentData ?? {});
 
   let category: CompanyCategory | null = null;
   let headquarters: string | null = null;
   let homepageUrl: string | null = null;
   let description: string | null = null;
 
-  if (hasData) {
-    const rawCat = acfString(acf, "company_category", "");
+  if (hasData || contentData) {
+    const rawCat = acfString(source, "company_category", "");
     category = VALID_COMPANY_CATEGORIES.includes(rawCat as CompanyCategory)
       ? (rawCat as CompanyCategory)
       : null;
-    headquarters = acfString(acf, "headquarters", "") || null;
-    homepageUrl = acfString(acf, "homepage_url", "") || null;
-    description = acfString(acf, "company_description", "") || null;
+    headquarters = acfString(source, "headquarters", "") || null;
+    homepageUrl = acfString(source, "homepage_url", "") || null;
+    description = acfString(source, "company_description", "") || null;
   }
 
   return {
@@ -315,9 +354,10 @@ function mapCompany(wp: WPPost): Company {
     name: stripHtml(wp.title.rendered),
     category,
     headquarters,
-    mainProjects: hasData ? acfStringArray(acf, "main_projects") : [],
+    mainProjects: (hasData || contentData) ? acfStringArray(source, "main_projects") : [],
     homepageUrl,
     description,
+    relatedArticles: parseRelatedArticles(source),
   };
 }
 

@@ -1,8 +1,8 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { getCompanyById } from "@/lib/wordpress";
+import { getCompanyById, getCompanies } from "@/lib/wordpress";
 import { Badge } from "@/components/ui/Badge";
-import type { CompanyCategory } from "@/types";
+import type { Company, CompanyCategory } from "@/types";
 
 type Props = {
   params: Promise<{ id: string }>;
@@ -153,6 +153,43 @@ export default async function CompanyDetailPage({ params }: Props) {
         </div>
       </div>
 
+      {/* 関連記事（carboncredits.jp） */}
+      {company.relatedArticles.length > 0 && (
+        <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
+          <div className="mb-4 flex items-center gap-2">
+            <h3 className="text-sm font-semibold text-gray-900">関連記事</h3>
+            <Badge variant="slate">{company.relatedArticles.length}件</Badge>
+          </div>
+          <div className="divide-y divide-gray-100">
+            {company.relatedArticles.slice(0, 20).map((article, i) => (
+              <div key={i} className="flex items-start justify-between gap-3 py-3">
+                <a
+                  href={article.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-sm text-gray-700 hover:text-emerald-600 transition line-clamp-2"
+                >
+                  {article.title}
+                </a>
+                {article.date && (
+                  <span className="flex-shrink-0 text-xs text-gray-400 whitespace-nowrap">
+                    {article.date}
+                  </span>
+                )}
+              </div>
+            ))}
+          </div>
+          {company.relatedArticles.length > 20 && (
+            <p className="mt-3 text-xs text-gray-400">
+              他 {company.relatedArticles.length - 20} 件の記事
+            </p>
+          )}
+        </div>
+      )}
+
+      {/* 同じカテゴリの企業 */}
+      <SimilarCompanies current={company} />
+
       {/* 戻るリンク */}
       <div>
         <Link
@@ -164,6 +201,43 @@ export default async function CompanyDetailPage({ params }: Props) {
           </svg>
           企業一覧に戻る
         </Link>
+      </div>
+    </div>
+  );
+}
+
+/** 同じカテゴリの企業を最大4件表示 */
+async function SimilarCompanies({ current }: { current: Company }) {
+  if (!current.category) return null;
+
+  const all = await getCompanies();
+  const similar = all
+    .filter((c) => c.category === current.category && c.id !== current.id)
+    .slice(0, 4);
+
+  if (similar.length === 0) return null;
+
+  return (
+    <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
+      <h3 className="mb-4 text-sm font-semibold text-gray-900">
+        同じカテゴリの企業（{current.category}）
+      </h3>
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+        {similar.map((c) => (
+          <Link
+            key={c.id}
+            href={`/companies/${c.id}`}
+            className="flex items-center gap-3 rounded-lg border border-gray-100 p-3 transition hover:border-emerald-200 hover:bg-emerald-50/30"
+          >
+            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-emerald-50 text-sm font-bold text-emerald-700">
+              {c.name?.[0] ?? "?"}
+            </div>
+            <div className="min-w-0">
+              <p className="text-sm font-medium text-gray-900 truncate">{c.name}</p>
+              <p className="text-xs text-gray-400">{c.headquarters ?? "\u2014"}</p>
+            </div>
+          </Link>
+        ))}
       </div>
     </div>
   );
