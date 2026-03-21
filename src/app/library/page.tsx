@@ -6,7 +6,7 @@ export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
   title: "ライブラリ | Carbon Intelligence",
   description:
-    "社内ドキュメントのAIチャット検索。Google Driveの資料をもとに質問に回答します。",
+    "Google Driveの社内ドキュメントをキーワード検索。関連資料をレコメンド表示します。",
 };
 
 export default function LibraryPage() {
