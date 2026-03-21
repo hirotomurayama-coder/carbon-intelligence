@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import { getMethodologies } from "@/lib/wordpress";
 import { MethodologyList } from "@/components/MethodologyList";
 
@@ -15,7 +16,9 @@ export default async function MethodologiesPage() {
           カーボンクレジット算定手法の一覧
         </p>
       </div>
-      <MethodologyList data={data} />
+      <Suspense fallback={<div className="py-12 text-center text-sm text-gray-400">読み込み中...</div>}>
+        <MethodologyList data={data} />
+      </Suspense>
     </div>
   );
 }

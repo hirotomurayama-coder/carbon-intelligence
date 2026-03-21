@@ -85,69 +85,60 @@ export default async function Home() {
         ))}
       </section>
 
-      {/* ── メソドロジーテーブル ── */}
-      <section>
-        <h2 className="mb-4 text-lg font-semibold text-gray-900">
-          メソドロジー
-        </h2>
-        {methodologies.length > 0 ? (
-          <div className="overflow-x-auto rounded-xl border border-gray-200 bg-white shadow-sm">
-            <table className="w-full text-left text-sm">
-              <thead>
-                <tr className="border-b border-gray-100 bg-gray-50/60">
-                  <th className="px-5 py-3 font-medium text-gray-500">タイトル</th>
-                  <th className="px-5 py-3 font-medium text-gray-500">レジストリ</th>
-                  <th className="hidden px-5 py-3 font-medium text-gray-500 md:table-cell">認証機関</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-100">
-                {methodologies.slice(0, 8).map((m) => (
-                  <tr key={m.id} className="hover:bg-emerald-50/40">
-                    <td className="px-5 py-4">
-                      <Link href={`/methodologies/${m.id}`} className="block">
-                        <p className="font-medium text-gray-900 hover:text-emerald-700">
-                          {m.titleJa ?? m.title}
-                        </p>
-                        {m.summary && (
-                          <p className="mt-0.5 text-xs leading-relaxed text-gray-400">
-                            {m.summary.length > 80
-                              ? m.summary.slice(0, 80) + "..."
-                              : m.summary}
-                          </p>
-                        )}
-                      </Link>
-                    </td>
-                    <td className="px-5 py-4">
-                      {m.registry ? (
-                        <Badge variant={registryBadge(m.registry)}>
-                          {m.registry}
-                        </Badge>
-                      ) : (
-                        <span className="text-xs text-gray-300">{"\u2014"}</span>
-                      )}
-                    </td>
-                    <td className="hidden whitespace-nowrap px-5 py-4 text-gray-600 md:table-cell">
-                      {m.certificationBody ?? "\u2014"}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-            <div className="border-t border-gray-100 px-5 py-3 text-center">
+      {/* ── 最近追加されたメソドロジー + メソドロジー概要 ── */}
+      {methodologies.length > 0 && (() => {
+        const recentlyAdded = [...methodologies]
+          .filter((m) => m.syncedAt)
+          .sort((a, b) => (b.syncedAt ?? "").localeCompare(a.syncedAt ?? ""))
+          .slice(0, 6);
+
+        return (
+          <section>
+            <div className="mb-4 flex items-center justify-between">
+              <h2 className="text-lg font-semibold text-gray-900">
+                最近追加されたメソドロジー
+              </h2>
               <Link
                 href="/methodologies"
                 className="text-sm font-medium text-emerald-600 hover:text-emerald-700"
               >
-                すべてのメソドロジーを見る →
+                全{methodologies.length}件を見る →
               </Link>
             </div>
-          </div>
-        ) : (
-          <p className="rounded-xl border border-gray-200 bg-white py-12 text-center text-sm text-gray-400 shadow-sm">
-            メソドロジーが登録されていません
-          </p>
-        )}
-      </section>
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {recentlyAdded.map((m) => (
+                <Link
+                  key={m.id}
+                  href={`/methodologies/${m.id}`}
+                  className="group rounded-xl border border-gray-200 bg-white p-4 shadow-sm transition hover:border-emerald-200 hover:shadow-md"
+                >
+                  <div className="flex flex-wrap gap-1.5 mb-2">
+                    {m.registry && (
+                      <Badge variant={registryBadge(m.registry)}>{m.registry}</Badge>
+                    )}
+                    {m.creditType && (
+                      <Badge variant={m.creditType === "除去系" ? "indigo" : "blue"}>
+                        {m.creditType}
+                      </Badge>
+                    )}
+                  </div>
+                  <p className="text-sm font-semibold text-gray-900 group-hover:text-emerald-700 line-clamp-2">
+                    {m.titleJa ?? m.title}
+                  </p>
+                  {m.aiSummary && (
+                    <p className="mt-1.5 text-xs text-gray-400 line-clamp-2">
+                      {m.aiSummary}
+                    </p>
+                  )}
+                  <p className="mt-2 text-[10px] text-gray-300">
+                    {m.syncedAt ? new Date(m.syncedAt).toLocaleDateString("ja-JP") : ""}
+                  </p>
+                </Link>
+              ))}
+            </div>
+          </section>
+        );
+      })()}
 
       {/* ── 企業 / インサイト / 更新 3カラム ── */}
       <div className="grid grid-cols-1 gap-6 xl:grid-cols-3">

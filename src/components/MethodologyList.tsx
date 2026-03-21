@@ -1,7 +1,7 @@
 "use client";
 
-import { useMemo, useState, useRef, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useMemo, useState, useRef, useEffect, useCallback } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { SearchInput } from "@/components/ui/SearchInput";
 import { FilterSelect } from "@/components/ui/FilterSelect";
@@ -59,17 +59,73 @@ function baseTypeBadgeVariant(v: string) {
   return "amber" as const; // 再エネ
 }
 
+// ============================================================
+// CSVエクスポート
+// ============================================================
+
+function escapeCsv(value: string | null | undefined): string {
+  if (value == null) return "";
+  const s = String(value);
+  if (s.includes(",") || s.includes('"') || s.includes("\n")) {
+    return `"${s.replace(/"/g, '""')}"`;
+  }
+  return s;
+}
+
+function exportCsv(items: Methodology[]) {
+  const headers = [
+    "タイトル（日本語）", "タイトル（英語）", "レジストリ", "認証機関",
+    "クレジット種別", "基本分類", "詳細分類", "ステータス",
+    "バージョン", "AI要約", "外部更新日", "ソースURL",
+  ];
+  const rows = items.map((m) => [
+    escapeCsv(m.titleJa), escapeCsv(m.title), escapeCsv(m.registry),
+    escapeCsv(m.certificationBody), escapeCsv(m.creditType), escapeCsv(m.baseType),
+    escapeCsv(m.subCategory), escapeCsv(m.operationalStatus),
+    escapeCsv(m.version), escapeCsv(m.aiSummary),
+    escapeCsv(m.externalLastUpdated), escapeCsv(m.sourceUrl),
+  ]);
+
+  const bom = "\uFEFF"; // Excel で日本語文字化け防止
+  const csv = bom + [headers.join(","), ...rows.map((r) => r.join(","))].join("\n");
+  const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = `methodologies_${new Date().toISOString().slice(0, 10)}.csv`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
 type Props = {
   data: Methodology[];
 };
 
 export function MethodologyList({ data }: Props) {
   const router = useRouter();
-  const [keyword, setKeyword] = useState("");
-  const [registryFilter, setRegistryFilter] = useState("");
-  const [creditTypeFilter, setCreditTypeFilter] = useState("");
-  const [baseTypeFilter, setBaseTypeFilter] = useState("");
-  const [sortBy, setSortBy] = useState("date_desc");
+  const searchParams = useSearchParams();
+
+  // URLパラメータから初期値を読み込み
+  const [keyword, setKeyword] = useState(searchParams.get("q") ?? "");
+  const [registryFilter, setRegistryFilter] = useState(searchParams.get("registry") ?? "");
+  const [creditTypeFilter, setCreditTypeFilter] = useState(searchParams.get("creditType") ?? "");
+  const [baseTypeFilter, setBaseTypeFilter] = useState(searchParams.get("baseType") ?? "");
+  const [sortBy, setSortBy] = useState(searchParams.get("sort") ?? "date_desc");
+
+  // フィルタ変更時にURLを同期（ブックマーク・共有可能に）
+  const syncUrl = useCallback(() => {
+    const params = new URLSearchParams();
+    if (keyword) params.set("q", keyword);
+    if (registryFilter) params.set("registry", registryFilter);
+    if (creditTypeFilter) params.set("creditType", creditTypeFilter);
+    if (baseTypeFilter) params.set("baseType", baseTypeFilter);
+    if (sortBy && sortBy !== "date_desc") params.set("sort", sortBy);
+    const qs = params.toString();
+    const newUrl = qs ? `/methodologies?${qs}` : "/methodologies";
+    window.history.replaceState(null, "", newUrl);
+  }, [keyword, registryFilter, creditTypeFilter, baseTypeFilter, sortBy]);
+
+  useEffect(() => { syncUrl(); }, [syncUrl]);
 
   // フィルタバーの高さを動的計測（thead の sticky top に使用）
   const filterRef = useRef<HTMLDivElement>(null);
@@ -174,9 +230,21 @@ export function MethodologyList({ data }: Props) {
             options={sortOptions}
             placeholder="並べ替え"
           />
-          <span className="ml-auto text-sm text-gray-400">
-            {filtered.length} 件
-          </span>
+          <div className="ml-auto flex items-center gap-3">
+            <span className="text-sm text-gray-400">
+              {filtered.length} 件
+            </span>
+            <button
+              onClick={() => exportCsv(filtered)}
+              className="inline-flex items-center gap-1.5 rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-xs font-medium text-gray-600 transition hover:bg-gray-50 hover:text-gray-900"
+              title="表示中のデータをCSVでダウンロード"
+            >
+              <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
+              </svg>
+              CSV
+            </button>
+          </div>
         </div>
       </div>
 

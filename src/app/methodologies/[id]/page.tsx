@@ -1,8 +1,8 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { getMethodologyById } from "@/lib/wordpress";
+import { getMethodologyById, getMethodologies } from "@/lib/wordpress";
 import { Badge } from "@/components/ui/Badge";
-import type { RegistryName } from "@/types";
+import type { Methodology, RegistryName } from "@/types";
 
 type Props = {
   params: Promise<{ id: string }>;
@@ -235,6 +235,9 @@ export default async function MethodologyDetailPage({ params }: Props) {
         </div>
       </div>
 
+      {/* 類似メソドロジー */}
+      <SimilarMethodologies current={methodology} />
+
       {/* 戻るリンク */}
       <div>
         <Link
@@ -246,6 +249,60 @@ export default async function MethodologyDetailPage({ params }: Props) {
           </svg>
           メソドロジー一覧に戻る
         </Link>
+      </div>
+    </div>
+  );
+}
+
+/** 類似メソドロジー — 同じ creditType + baseType の上位5件 */
+async function SimilarMethodologies({ current }: { current: Methodology }) {
+  const all = await getMethodologies();
+
+  // スコアリング: creditType一致+2, baseType一致+2, registry一致+1, subCategory一致+3
+  const scored = all
+    .filter((m) => m.id !== current.id)
+    .map((m) => {
+      let score = 0;
+      if (m.creditType && m.creditType === current.creditType) score += 2;
+      if (m.baseType && m.baseType === current.baseType) score += 2;
+      if (m.registry && m.registry === current.registry) score += 1;
+      if (m.subCategory && m.subCategory === current.subCategory) score += 3;
+      return { ...m, score };
+    })
+    .filter((m) => m.score > 0)
+    .sort((a, b) => b.score - a.score)
+    .slice(0, 5);
+
+  if (scored.length === 0) return null;
+
+  return (
+    <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
+      <h3 className="mb-4 text-sm font-semibold text-gray-900">類似メソドロジー</h3>
+      <div className="space-y-3">
+        {scored.map((m) => (
+          <Link
+            key={m.id}
+            href={`/methodologies/${m.id}`}
+            className="flex items-center justify-between gap-3 rounded-lg border border-gray-100 p-3 transition hover:border-emerald-200 hover:bg-emerald-50/30"
+          >
+            <div className="min-w-0">
+              <p className="text-sm font-medium text-gray-900 truncate">
+                {m.titleJa ?? m.title}
+              </p>
+              <div className="mt-1 flex flex-wrap gap-1">
+                {m.registry && (
+                  <Badge variant={registryBadgeVariant(m.registry)}>{m.registry}</Badge>
+                )}
+                {m.creditType && (
+                  <Badge variant={m.creditType === "除去系" ? "indigo" : "blue"}>{m.creditType}</Badge>
+                )}
+              </div>
+            </div>
+            <svg className="h-4 w-4 flex-shrink-0 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+            </svg>
+          </Link>
+        ))}
       </div>
     </div>
   );
