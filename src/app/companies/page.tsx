@@ -1,6 +1,9 @@
 import { getCompanies } from "@/lib/wordpress";
 import { CompanyList } from "@/components/CompanyList";
 
+export const dynamic = "force-dynamic";
+export const maxDuration = 30;
+
 export default async function CompaniesPage() {
   const data = await getCompanies();
 

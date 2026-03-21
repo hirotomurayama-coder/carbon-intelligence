@@ -1,3 +1,6 @@
+export const dynamic = "force-dynamic";
+export const maxDuration = 30;
+
 import Link from "next/link";
 import { getMethodologies, getCompanies, getInsights, getRecentUpdates } from "@/lib/wordpress";
 import { Badge } from "@/components/ui/Badge";

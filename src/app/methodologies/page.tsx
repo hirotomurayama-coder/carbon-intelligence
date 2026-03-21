@@ -1,6 +1,9 @@
 import { getMethodologies } from "@/lib/wordpress";
 import { MethodologyList } from "@/components/MethodologyList";
 
+export const dynamic = "force-dynamic";
+export const maxDuration = 30;
+
 export default async function MethodologiesPage() {
   const data = await getMethodologies();
 
