@@ -11,8 +11,8 @@ import type { RoadmapEvent, RoadmapStatus } from "@/types";
 
 const MONTH_W = 80;
 const LABEL_W = 200;
-const BAR_H = 32;
-const LANE_H = 42;
+const BAR_H = 30;
+const LANE_H = 40;
 
 const CATEGORY_PRIORITY: string[] = [
   "SSBJ",
@@ -29,20 +29,6 @@ const CATEGORY_PRIORITY: string[] = [
   "適格カーボンクレジット",
   "カーボンプライシング",
 ];
-
-const CATEGORY_ICONS: Record<string, string> = {
-  "SSBJ": "\ud83d\udcca",
-  "GX-ETS": "\ud83c\udfe2",
-  "J-Credit": "\ud83c\uddf1\ud83c\uddf5",
-  "SBTi": "\ud83c\udfaf",
-  "GHG Protocol": "\ud83c\udf0d",
-  "CORSIA": "\u2708\ufe0f",
-  "EU CBAM": "\ud83c\uddea\ud83c\uddfa",
-  "COP": "\ud83c\udf0e",
-  "\u30d1\u30ea\u5354\u5b9a6\u6761": "\ud83e\udd1d",
-  "TNFD": "\ud83c\udf3f",
-  "ICVCM/VCMI": "\u2705",
-};
 
 const MONTH_LABELS = [
   "1月", "2月", "3月", "4月", "5月", "6月",
@@ -64,13 +50,13 @@ function daysInMonth(year: number, month: number): number {
 
 function statusBarClass(status: RoadmapStatus | null): string {
   switch (status) {
-    case "\u5b8c\u4e86":
+    case "完了":
       return "bg-emerald-100 text-emerald-800 border-emerald-300";
-    case "\u9032\u884c\u4e2d":
+    case "進行中":
       return "bg-blue-100 text-blue-800 border-blue-300";
-    case "\u6e96\u5099\u4e2d":
+    case "準備中":
       return "bg-amber-100 text-amber-800 border-amber-300";
-    case "\u4e88\u5b9a":
+    case "予定":
       return "bg-gray-100 text-gray-600 border-gray-300";
     default:
       return "bg-gray-50 text-gray-500 border-gray-200";
@@ -81,11 +67,11 @@ function statusBadgeVariant(
   status: RoadmapStatus | null,
 ): "emerald" | "blue" | "amber" | "gray" {
   switch (status) {
-    case "\u5b8c\u4e86":
+    case "完了":
       return "emerald";
-    case "\u9032\u884c\u4e2d":
+    case "進行中":
       return "blue";
-    case "\u6e96\u5099\u4e2d":
+    case "準備中":
       return "amber";
     default:
       return "gray";
@@ -93,9 +79,9 @@ function statusBadgeVariant(
 }
 
 function formatDate(dateStr: string | null): string {
-  if (!dateStr) return "\u2014";
+  if (!dateStr) return "—";
   const d = new Date(dateStr);
-  return `${d.getFullYear()}\u5e74${d.getMonth() + 1}\u6708`;
+  return `${d.getFullYear()}年${d.getMonth() + 1}月`;
 }
 
 function assignLanes(events: RoadmapEvent[]): Map<string, number> {
@@ -146,10 +132,9 @@ export function RoadmapTimeline({ data }: Props) {
         ? withDates.filter((e) => e.status === statusFilter)
         : withDates;
 
-      // 統計
       const statMap: Record<string, number> = {};
       for (const e of withDates) {
-        const s = e.status ?? "\u672a\u8a2d\u5b9a";
+        const s = e.status ?? "未設定";
         statMap[s] = (statMap[s] ?? 0) + 1;
       }
 
@@ -185,7 +170,7 @@ export function RoadmapTimeline({ data }: Props) {
         if (items.length > 0) map.set(cat, items);
       }
       const uncategorized = filtered.filter((e) => !e.category);
-      if (uncategorized.length > 0) map.set("\u305d\u306e\u4ed6", uncategorized);
+      if (uncategorized.length > 0) map.set("その他", uncategorized);
 
       return {
         grouped: map,
@@ -203,7 +188,7 @@ export function RoadmapTimeline({ data }: Props) {
   const todayDayFraction = (today.getDate() - 1) / daysInMonth(today.getFullYear(), today.getMonth());
   const todayLeft = LABEL_W + (todayMonthIdx + todayDayFraction) * MONTH_W;
 
-  // ページ読み込み時に「今日」の位置にスクロール
+  // ページ読み込み時に「今日」の位置が中央に来るようスクロール
   useEffect(() => {
     if (scrollRef.current && todayMonthIdx >= 0) {
       const scrollTarget = todayLeft - scrollRef.current.clientWidth / 2;
@@ -239,13 +224,9 @@ export function RoadmapTimeline({ data }: Props) {
         <ControlBar statusFilter={statusFilter} onFilterChange={setStatusFilter} stats={stats} />
         <div className="rounded-xl border border-gray-200 bg-white p-12 text-center shadow-sm">
           <p className="text-gray-500">
-            {skippedCount > 0 ? (
-              <>
-                {skippedCount}件のイベントが登録されていますが、日付が未設定のためチャートに表示できません。
-              </>
-            ) : (
-              "フィルタに一致するイベントはありません"
-            )}
+            {skippedCount > 0
+              ? `${skippedCount}件のイベントが登録されていますが、日付が未設定のためチャートに表示できません。`
+              : "フィルタに一致するイベントはありません"}
           </p>
         </div>
       </div>
@@ -254,7 +235,6 @@ export function RoadmapTimeline({ data }: Props) {
 
   return (
     <div className="space-y-4">
-      {/* コントロールバー + 統計 */}
       <ControlBar statusFilter={statusFilter} onFilterChange={setStatusFilter} stats={stats} />
 
       {/* ガントチャート */}
@@ -302,20 +282,16 @@ export function RoadmapTimeline({ data }: Props) {
             const laneMap = assignLanes(events);
             const maxLane = Math.max(...Array.from(laneMap.values()), 0);
             const rowH = (maxLane + 1) * LANE_H + 16;
-            const icon = CATEGORY_ICONS[category] ?? "\ud83d\udccc";
 
             return (
               <div key={category} className="flex border-b border-gray-100" style={{ height: rowH }}>
                 {/* カテゴリラベル (sticky left) */}
                 <div
-                  className="sticky left-0 z-20 flex shrink-0 items-start gap-2 border-r border-gray-200 bg-white px-3 pt-3"
+                  className="sticky left-0 z-20 flex shrink-0 items-start border-r border-gray-200 bg-white px-4 pt-3"
                   style={{ width: LABEL_W }}
                 >
-                  <span className="text-base">{icon}</span>
-                  <div>
-                    <span className="text-sm font-semibold text-gray-900">{category}</span>
-                    <span className="ml-1.5 text-[10px] text-gray-400">{events.length}</span>
-                  </div>
+                  <span className="text-sm font-semibold text-gray-900">{category}</span>
+                  <span className="ml-1.5 text-[10px] text-gray-400">{events.length}件</span>
                 </div>
 
                 {/* バー領域 */}
@@ -345,24 +321,26 @@ export function RoadmapTimeline({ data }: Props) {
                       <button
                         key={event.id}
                         type="button"
-                        className={`absolute flex items-center rounded-md border px-2 text-[11px] font-medium cursor-pointer transition-all hover:shadow-md hover:scale-[1.01] ${statusBarClass(event.status)}`}
+                        className={`absolute overflow-hidden rounded-md border text-[11px] font-medium cursor-pointer transition-shadow hover:shadow-md ${statusBarClass(event.status)}`}
                         style={{
                           left: barLeft,
                           width: barWidth,
                           top: 8 + lane * LANE_H,
                           height: BAR_H,
                         }}
-                        title={`${event.title} (${formatDate(event.startDate)} \u301c ${formatDate(event.endDate)})`}
+                        title={`${event.title} (${formatDate(event.startDate)} ~ ${formatDate(event.endDate)})`}
                         onClick={() => setSelectedEvent(event)}
                       >
-                        {/* テキストがバー内でsticky追従 */}
+                        {/* テキストをバー内左端に固定表示（overflow: visible + clip-path で実現） */}
                         <span
-                          className="sticky left-2 truncate whitespace-nowrap"
-                          style={{ maxWidth: barWidth - 16 }}
+                          className="sticky left-0 inline-flex items-center gap-1.5 whitespace-nowrap px-2"
+                          style={{ height: BAR_H }}
                         >
                           {event.title}
                           {event.status && (
-                            <span className="ml-1.5 opacity-60">{event.status}</span>
+                            <span className={`inline-flex items-center rounded px-1 py-0.5 text-[9px] font-semibold ${statusBarClass(event.status)}`}>
+                              {event.status}
+                            </span>
                           )}
                         </span>
                       </button>
@@ -380,7 +358,7 @@ export function RoadmapTimeline({ data }: Props) {
               style={{ left: todayLeft }}
             >
               <div className="absolute top-1 left-1 whitespace-nowrap rounded bg-red-500 px-1.5 py-0.5 text-[10px] font-bold text-white shadow">
-                \u4eca\u65e5
+                今日
               </div>
             </div>
           )}
@@ -389,7 +367,7 @@ export function RoadmapTimeline({ data }: Props) {
 
       {skippedCount > 0 && (
         <p className="text-xs text-gray-400">
-          \u203b \u65e5\u4ed8\u672a\u8a2d\u5b9a\u306e\u30a4\u30d9\u30f3\u30c8\u304c{skippedCount}\u4ef6\u3042\u308a\u307e\u3059\u3002
+          ※ 日付未設定のイベントが{skippedCount}件あります。
         </p>
       )}
 
@@ -407,11 +385,8 @@ export function RoadmapTimeline({ data }: Props) {
                 </Badge>
               )}
             </div>
-            <div className="flex items-center gap-2 text-sm text-gray-500">
-              <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" />
-              </svg>
-              {formatDate(selectedEvent.startDate)} \u301c {formatDate(selectedEvent.endDate)}
+            <div className="text-sm text-gray-500">
+              {formatDate(selectedEvent.startDate)} ~ {formatDate(selectedEvent.endDate)}
             </div>
             <article
               className="prose prose-sm prose-gray max-w-none"
@@ -443,11 +418,16 @@ function ControlBar({
     <div className="space-y-3">
       {/* 統計カード */}
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-5">
-        <div className="rounded-lg border border-gray-200 bg-white p-3 text-center">
+        <div
+          className={`rounded-lg border p-3 text-center cursor-pointer transition ${
+            statusFilter === "" ? "border-emerald-400 bg-emerald-50 ring-1 ring-emerald-400" : "border-gray-200 bg-white hover:border-gray-300"
+          }`}
+          onClick={() => onFilterChange("")}
+        >
           <div className="text-2xl font-bold text-gray-900">{total}</div>
-          <div className="text-[10px] text-gray-400">\u5168\u30a4\u30d9\u30f3\u30c8</div>
+          <div className="text-[10px] text-gray-400">全イベント</div>
         </div>
-        {(["\u5b8c\u4e86", "\u9032\u884c\u4e2d", "\u6e96\u5099\u4e2d", "\u4e88\u5b9a"] as const).map((s) => (
+        {(["完了", "進行中", "準備中", "予定"] as const).map((s) => (
           <div
             key={s}
             className={`rounded-lg border p-3 text-center cursor-pointer transition ${
@@ -464,20 +444,19 @@ function ControlBar({
         ))}
       </div>
 
-      {/* フィルタ + 凡例 */}
-      <div className="flex flex-wrap items-center gap-3">
-        <div className="flex items-center gap-1.5">
-          <span className="h-4 w-0.5 bg-red-500 rounded" />
-          <span className="text-xs text-gray-500">\u4eca\u65e5</span>
-        </div>
-        <span className="text-xs text-gray-300">|</span>
-        <span className="text-xs text-gray-400">\u30d0\u30fc\u3092\u30af\u30ea\u30c3\u30af\u3059\u308b\u3068\u8a73\u7d30\u304c\u8868\u793a\u3055\u308c\u307e\u3059</span>
+      <div className="flex items-center gap-3 text-xs text-gray-400">
+        <span className="flex items-center gap-1">
+          <span className="h-3 w-0.5 bg-red-500 rounded" />
+          今日
+        </span>
+        <span>|</span>
+        <span>バーをクリックすると詳細が表示されます</span>
         {statusFilter && (
           <button
             onClick={() => onFilterChange("")}
-            className="ml-auto rounded-full bg-gray-100 px-3 py-1 text-xs text-gray-600 hover:bg-gray-200"
+            className="ml-auto rounded-full bg-gray-100 px-3 py-1 text-gray-600 hover:bg-gray-200"
           >
-            \u00d7 \u30d5\u30a3\u30eb\u30bf\u89e3\u9664
+            × フィルタ解除
           </button>
         )}
       </div>
