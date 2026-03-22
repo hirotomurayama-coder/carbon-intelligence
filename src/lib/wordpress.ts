@@ -552,12 +552,14 @@ export async function getInsights(): Promise<Insight[]> {
   }
   try {
     const posts = await wpFetch<WPPost>("insights?per_page=100");
-    // 同期エンジンが過去に作成した通知投稿（タイトルに【】を含む）を除外し、
-    // 手動で作成された本来のインサイト記事のみを返す
+    // 同期エンジンが過去に作成した通知投稿を除外
+    // ※「【同期完了】」「【エラー】」等のシステム通知のみ除外し、
+    //   「【特別記事】」「【技術分析】」等のコンテンツ記事は残す
+    const SYSTEM_PREFIXES = ["【同期完了】", "【エラー】", "【通知】", "【自動】"];
     return posts
       .filter((p) => {
         const title = stripHtml(p.title.rendered);
-        return !(title.includes("【") && title.includes("】"));
+        return !SYSTEM_PREFIXES.some((prefix) => title.startsWith(prefix));
       })
       .map(mapInsight);
   } catch (e) {
