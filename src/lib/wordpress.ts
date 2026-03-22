@@ -599,7 +599,9 @@ function parseRoadmapContentJson(html: string): Record<string, unknown> | null {
 function mapRoadmapEvent(wp: WPPost): RoadmapEvent {
   const { data: acf, hasData } = getAcf(wp);
   const contentData = parseRoadmapContentJson(wp.content?.rendered ?? "");
-  const source = hasData ? acf : (contentData ?? {});
+  // ACFにフィールドがあっても値がfalseや空の場合はcontent JSONを優先
+  const acfHasValues = hasData && acf.event_category && acf.event_category !== false;
+  const source = acfHasValues ? acf : (contentData ?? acf);
   const hasSource = hasData || !!contentData;
 
   let category: string | null = null;
