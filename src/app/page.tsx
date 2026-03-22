@@ -46,7 +46,6 @@ export default async function Home() {
     getPriceTrends(),
   ]);
 
-  // KPI
   const scoredItems = methodologies.filter(
     (m): m is typeof m & { reliabilityScore: number } => m.reliabilityScore !== null
   );
@@ -55,178 +54,236 @@ export default async function Home() {
     : null;
   const articlesTotal = companies.reduce((sum, c) => sum + c.relatedArticles.length, 0);
 
-  // データ
-  const sortedInsights = [...insights].sort((a, b) => b.date.localeCompare(a.date)).slice(0, 5);
+  const sortedInsights = [...insights].sort((a, b) => b.date.localeCompare(a.date)).slice(0, 6);
   const featuredCompanies = [...companies]
     .filter((c) => c.relatedArticles.length > 0)
     .sort((a, b) => b.relatedArticles.length - a.relatedArticles.length)
-    .slice(0, 5);
+    .slice(0, 6);
   const recentMethodologies = [...methodologies]
     .filter((m) => m.syncedAt)
     .sort((a, b) => (b.syncedAt ?? "").localeCompare(a.syncedAt ?? ""))
     .slice(0, 4);
 
-  // 主要市場の価格
-  const keyMarkets = ["jcredit-energy-saving", "jcredit-forest", "eu-ets", "vol-biochar"];
+  // 主要市場
+  const keyMarkets = ["jcredit-energy-saving", "jcredit-forest", "jcredit-agri-biochar", "eu-ets", "vol-biochar", "vol-dac"];
   const marketPrices = keyMarkets
     .map((id) => priceTrends.find((t) => t.marketId === id))
     .filter(Boolean);
 
+  // レジストリ分布
+  const registryCounts: Record<string, number> = {};
+  for (const m of methodologies) {
+    const r = m.registry ?? "その他";
+    registryCounts[r] = (registryCounts[r] ?? 0) + 1;
+  }
+  const topRegistries = Object.entries(registryCounts).sort((a, b) => b[1] - a[1]).slice(0, 5);
+  const maxRegistryCount = topRegistries[0]?.[1] ?? 1;
+
+  // カテゴリ分布
+  const companyCats: Record<string, number> = {};
+  for (const c of companies) {
+    const cat = c.category ?? "未分類";
+    companyCats[cat] = (companyCats[cat] ?? 0) + 1;
+  }
+
   return (
-    <div className="space-y-8">
-      {/* ── KPI サマリーカード ── */}
-      <section className="grid grid-cols-2 gap-4 lg:grid-cols-5">
-        <KpiCard label="メソドロジー" value={methodologies.length} unit="件" href="/methodologies" />
-        <KpiCard label="登録企業" value={companies.length} unit="社" href="/companies" />
-        <KpiCard label="インサイト" value={insights.length} unit="件" href="/insights" />
-        <KpiCard label="関連記事" value={articlesTotal} unit="件" href="/companies" />
-        <KpiCard label="信頼性スコア" value={avgScore ?? "—"} unit={avgScore ? "点" : ""} href="/methodologies" />
+    <div className="space-y-6">
+      {/* ── KPI サマリー ── */}
+      <section className="grid grid-cols-2 gap-3 lg:grid-cols-5">
+        <KpiCard label="メソドロジー" value={methodologies.length} unit="件" href="/methodologies" color="emerald" />
+        <KpiCard label="登録企業" value={companies.length} unit="社" href="/companies" color="blue" />
+        <KpiCard label="インサイト" value={insights.length} unit="件" href="/insights" color="indigo" />
+        <KpiCard label="関連記事" value={articlesTotal} unit="件" href="/companies" color="amber" />
+        <KpiCard label="信頼性スコア" value={avgScore ?? "—"} unit={avgScore ? "/100" : ""} href="/methodologies" color="emerald" />
       </section>
 
-      {/* ── 主要市場の価格 ── */}
-      {marketPrices.length > 0 && (
-        <section>
-          <div className="mb-3 flex items-center justify-between">
-            <h2 className="text-base font-semibold text-gray-900">主要市場の価格</h2>
-            <Link href="/analysis" className="text-sm text-emerald-600 hover:text-emerald-700">
-              全市場を見る →
-            </Link>
-          </div>
-          <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
-            {marketPrices.map((t) => t && (
-              <Link
-                key={t.id}
-                href={`/analysis/${t.marketId}`}
-                className="rounded-xl border border-gray-200 bg-white p-4 shadow-sm transition hover:border-emerald-200"
-              >
-                <p className="text-xs text-gray-400 truncate">{t.title}</p>
-                <p className="mt-1 text-xl font-bold text-gray-900">{formatJpy(t.latestPriceJpy)}</p>
-                <p className="text-xs text-gray-400">/{t.priceUnit ?? "tCO2e"}</p>
+      {/* ── 市場価格パネル ── */}
+      <section className="rounded-xl border border-gray-200 bg-white shadow-sm">
+        <div className="flex items-center justify-between border-b border-gray-100 px-5 py-3">
+          <h2 className="text-sm font-semibold text-gray-900">市場価格モニター</h2>
+          <Link href="/analysis" className="text-xs text-emerald-600 hover:text-emerald-700">
+            全{priceTrends.length}市場を表示 →
+          </Link>
+        </div>
+        <div className="grid grid-cols-2 divide-x divide-gray-100 lg:grid-cols-6">
+          {marketPrices.map((t) => t && (
+            <Link
+              key={t.id}
+              href={`/analysis/${t.marketId}`}
+              className="p-4 transition hover:bg-gray-50"
+            >
+              <p className="text-[10px] font-medium text-gray-400 truncate uppercase tracking-wider">{t.title}</p>
+              <p className="mt-1 text-lg font-bold text-gray-900">{formatJpy(t.latestPriceJpy)}</p>
+              <div className="mt-0.5 flex items-center gap-1">
                 {t.trendPercentage !== null && (
-                  <span className={`mt-1 inline-block text-xs font-medium ${
-                    t.trendDirection === "up" ? "text-emerald-600" : t.trendDirection === "down" ? "text-red-500" : "text-gray-400"
-                  }`}>
-                    {t.trendDirection === "up" ? "+" : ""}{t.trendPercentage.toFixed(1)}%
-                  </span>
+                  <>
+                    <span className={`text-xs font-semibold ${
+                      t.trendDirection === "up" ? "text-emerald-600" : t.trendDirection === "down" ? "text-red-500" : "text-gray-400"
+                    }`}>
+                      {t.trendDirection === "up" ? "\u2191" : t.trendDirection === "down" ? "\u2193" : "\u2192"}
+                      {Math.abs(t.trendPercentage).toFixed(1)}%
+                    </span>
+                  </>
                 )}
-              </Link>
-            ))}
-          </div>
-        </section>
-      )}
-
-      {/* ── 2カラム: インサイト + 注目企業 ── */}
-      <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-        {/* 最新インサイト */}
-        <section>
-          <div className="mb-3 flex items-center justify-between">
-            <h2 className="text-base font-semibold text-gray-900">最新インサイト</h2>
-            <Link href="/insights" className="text-sm text-emerald-600 hover:text-emerald-700">
-              すべて見る →
+                <span className="text-[9px] text-gray-300">/{t.priceUnit ?? "tCO2e"}</span>
+              </div>
             </Link>
-          </div>
-          <div className="divide-y divide-gray-100 rounded-xl border border-gray-200 bg-white shadow-sm">
-            {sortedInsights.map((ins) => (
-              <Link
-                key={ins.id}
-                href={`/insights/${ins.id}`}
-                className="block p-4 transition hover:bg-gray-50"
-              >
-                <div className="mb-1 flex items-center gap-2">
-                  <Badge variant={insightBadge(ins.category)}>
-                    {ins.category ?? "未分類"}
-                  </Badge>
-                  <span className="text-[10px] text-gray-400">{ins.date}</span>
-                  {ins.readingTime && (
-                    <span className="text-[10px] text-gray-300">{ins.readingTime}分</span>
-                  )}
-                </div>
-                <p className="text-sm font-semibold text-gray-900 line-clamp-1">{ins.title}</p>
-              </Link>
-            ))}
-          </div>
-        </section>
+          ))}
+        </div>
+      </section>
 
-        {/* 注目企業 */}
-        <section>
-          <div className="mb-3 flex items-center justify-between">
-            <h2 className="text-base font-semibold text-gray-900">注目企業</h2>
-            <Link href="/companies" className="text-sm text-emerald-600 hover:text-emerald-700">
-              全{companies.length}社 →
-            </Link>
-          </div>
-          <div className="space-y-2">
-            {featuredCompanies.map((c) => (
-              <Link
-                key={c.id}
-                href={`/companies/${c.id}`}
-                className="flex items-center gap-3 rounded-xl border border-gray-200 bg-white p-3 shadow-sm transition hover:border-emerald-200"
-              >
-                <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-emerald-50 text-sm font-bold text-emerald-700">
-                  {c.name?.[0] ?? "?"}
-                </div>
-                <div className="min-w-0 flex-1">
-                  <p className="text-sm font-semibold text-gray-900 truncate">{c.name}</p>
-                  <div className="flex items-center gap-1.5">
-                    <span className="text-[10px] text-gray-400">{c.headquarters ?? "—"}</span>
-                    {c.relatedArticles.length > 0 && (
-                      <Badge variant="slate">{c.relatedArticles.length}記事</Badge>
-                    )}
+      {/* ── 2カラム: インサイト + 企業 ── */}
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-5">
+        {/* インサイト（3列幅） */}
+        <section className="lg:col-span-3">
+          <div className="rounded-xl border border-gray-200 bg-white shadow-sm">
+            <div className="flex items-center justify-between border-b border-gray-100 px-5 py-3">
+              <h2 className="text-sm font-semibold text-gray-900">最新インサイト</h2>
+              <Link href="/insights" className="text-xs text-emerald-600 hover:text-emerald-700">すべて →</Link>
+            </div>
+            <div className="divide-y divide-gray-50">
+              {sortedInsights.map((ins) => (
+                <Link
+                  key={ins.id}
+                  href={`/insights/${ins.id}`}
+                  className="flex items-start gap-3 px-5 py-3 transition hover:bg-gray-50"
+                >
+                  <div className="mt-0.5 shrink-0">
+                    <Badge variant={insightBadge(ins.category)}>
+                      {ins.category ?? "—"}
+                    </Badge>
                   </div>
-                </div>
-              </Link>
-            ))}
+                  <div className="min-w-0 flex-1">
+                    <p className="text-sm font-medium text-gray-900 line-clamp-1">{ins.title}</p>
+                    <div className="mt-0.5 flex items-center gap-2">
+                      <span className="text-[10px] text-gray-400">{ins.date}</span>
+                      {ins.readingTime && (
+                        <span className="text-[10px] text-gray-300">{ins.readingTime}分</span>
+                      )}
+                    </div>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* 注目企業（2列幅） */}
+        <section className="lg:col-span-2">
+          <div className="rounded-xl border border-gray-200 bg-white shadow-sm">
+            <div className="flex items-center justify-between border-b border-gray-100 px-5 py-3">
+              <h2 className="text-sm font-semibold text-gray-900">注目企業</h2>
+              <Link href="/companies" className="text-xs text-emerald-600 hover:text-emerald-700">{companies.length}社 →</Link>
+            </div>
+            <div className="divide-y divide-gray-50">
+              {featuredCompanies.map((c) => (
+                <Link
+                  key={c.id}
+                  href={`/companies/${c.id}`}
+                  className="flex items-center gap-3 px-5 py-2.5 transition hover:bg-gray-50"
+                >
+                  <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-emerald-50 text-xs font-bold text-emerald-700">
+                    {c.name?.[0] ?? "?"}
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <p className="text-sm font-medium text-gray-900 truncate">{c.name}</p>
+                    <p className="text-[10px] text-gray-400">{c.headquarters ?? "—"}</p>
+                  </div>
+                  <span className="shrink-0 text-xs font-medium text-gray-400">
+                    {c.relatedArticles.length}記事
+                  </span>
+                </Link>
+              ))}
+            </div>
           </div>
         </section>
       </div>
 
-      {/* ── 最近追加されたメソドロジー ── */}
-      {recentMethodologies.length > 0 && (
-        <section>
-          <div className="mb-3 flex items-center justify-between">
-            <h2 className="text-base font-semibold text-gray-900">最近追加されたメソドロジー</h2>
-            <Link href="/methodologies" className="text-sm text-emerald-600 hover:text-emerald-700">
-              全{methodologies.length}件 →
-            </Link>
+      {/* ── 3カラム: レジストリ分布 + 企業カテゴリ + メソドロジー ── */}
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
+        {/* レジストリ分布（横棒グラフ風） */}
+        <section className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm">
+          <h2 className="mb-4 text-sm font-semibold text-gray-900">レジストリ分布</h2>
+          <div className="space-y-3">
+            {topRegistries.map(([name, count]) => (
+              <div key={name}>
+                <div className="mb-1 flex items-center justify-between">
+                  <span className="text-xs font-medium text-gray-700">{name}</span>
+                  <span className="text-xs text-gray-400">{count}件</span>
+                </div>
+                <div className="h-2 w-full rounded-full bg-gray-100">
+                  <div
+                    className="h-2 rounded-full bg-emerald-500 transition-all"
+                    style={{ width: `${(count / maxRegistryCount) * 100}%` }}
+                  />
+                </div>
+              </div>
+            ))}
           </div>
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          <Link href="/methodologies" className="mt-4 block text-xs text-emerald-600 hover:text-emerald-700">
+            メソドロジー一覧 →
+          </Link>
+        </section>
+
+        {/* 企業カテゴリ分布 */}
+        <section className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm">
+          <h2 className="mb-4 text-sm font-semibold text-gray-900">企業カテゴリ</h2>
+          <div className="grid grid-cols-2 gap-3">
+            {Object.entries(companyCats).sort((a, b) => b[1] - a[1]).map(([cat, count]) => (
+              <div key={cat} className="rounded-lg border border-gray-100 bg-gray-50 p-3 text-center">
+                <p className="text-xl font-bold text-gray-900">{count}</p>
+                <p className="text-[10px] text-gray-500">{cat}</p>
+              </div>
+            ))}
+          </div>
+          <Link href="/companies" className="mt-4 block text-xs text-emerald-600 hover:text-emerald-700">
+            企業一覧 →
+          </Link>
+        </section>
+
+        {/* 最近のメソドロジー */}
+        <section className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm">
+          <h2 className="mb-4 text-sm font-semibold text-gray-900">最新メソドロジー</h2>
+          <div className="space-y-3">
             {recentMethodologies.map((m) => (
               <Link
                 key={m.id}
                 href={`/methodologies/${m.id}`}
-                className="group rounded-xl border border-gray-200 bg-white p-4 shadow-sm transition hover:border-emerald-200"
+                className="block rounded-lg border border-gray-100 p-3 transition hover:border-emerald-200 hover:bg-emerald-50/30"
               >
-                <div className="flex flex-wrap gap-1.5 mb-2">
+                <div className="flex gap-1.5 mb-1">
                   {m.registry && <Badge variant={registryBadge(m.registry)}>{m.registry}</Badge>}
-                  {m.creditType && (
-                    <Badge variant={m.creditType === "除去系" ? "indigo" : "blue"}>{m.creditType}</Badge>
-                  )}
                 </div>
-                <p className="text-sm font-semibold text-gray-900 group-hover:text-emerald-700 line-clamp-2">
+                <p className="text-xs font-medium text-gray-900 line-clamp-2">
                   {m.titleJa ?? m.title}
                 </p>
-                {m.aiSummary && (
-                  <p className="mt-1 text-xs text-gray-400 line-clamp-2">{m.aiSummary}</p>
-                )}
               </Link>
             ))}
           </div>
+          <Link href="/methodologies" className="mt-4 block text-xs text-emerald-600 hover:text-emerald-700">
+            全{methodologies.length}件 →
+          </Link>
         </section>
-      )}
+      </div>
     </div>
   );
 }
 
-function KpiCard({ label, value, unit, href }: { label: string; value: number | string; unit: string; href: string }) {
+function KpiCard({ label, value, unit, href, color }: {
+  label: string; value: number | string; unit: string; href: string; color: string;
+}) {
+  const borderHover = color === "blue" ? "hover:border-blue-300" : color === "indigo" ? "hover:border-indigo-300" : color === "amber" ? "hover:border-amber-300" : "hover:border-emerald-300";
+  const accent = color === "blue" ? "text-blue-600" : color === "indigo" ? "text-indigo-600" : color === "amber" ? "text-amber-600" : "text-emerald-600";
+
   return (
     <Link
       href={href}
-      className="rounded-xl border border-gray-200 bg-white p-4 shadow-sm transition hover:border-emerald-200 hover:shadow-md"
+      className={`rounded-xl border border-gray-200 bg-white p-4 shadow-sm transition hover:shadow-md ${borderHover}`}
     >
       <p className="text-[10px] font-medium text-gray-400 uppercase tracking-wider">{label}</p>
-      <p className="mt-1 text-2xl font-bold text-gray-900">
+      <p className={`mt-1 text-2xl font-bold ${accent}`}>
         {value}
-        {unit && <span className="ml-0.5 text-sm font-normal text-gray-400">{unit}</span>}
+        {unit && <span className="ml-0.5 text-xs font-normal text-gray-400">{unit}</span>}
       </p>
     </Link>
   );

@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { APP_NAME, NAV_ITEMS } from "@/lib/constants";
 import { NavIcon } from "./NavIcon";
+import { SubNavIcon } from "./SubNavIcon";
 import type { NavItem } from "@/types/navigation";
 
 function isItemActive(href: string, pathname: string, item: NavItem): boolean {
@@ -17,7 +18,6 @@ export function Sidebar() {
 
   return (
     <aside className="flex h-screen w-64 flex-col border-r border-gray-200 bg-white">
-      {/* ロゴ */}
       <div className="flex h-16 items-center gap-2 border-b border-gray-200 px-6">
         <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-600 text-sm font-bold text-white">
           C
@@ -25,14 +25,12 @@ export function Sidebar() {
         <span className="text-lg font-semibold text-gray-900">{APP_NAME}</span>
       </div>
 
-      {/* ナビゲーション — 子メニューは常に展開 */}
       <nav className="flex-1 space-y-1 overflow-y-auto px-3 py-4">
         {NAV_ITEMS.map((item) => {
           const active = isItemActive(item.href, pathname, item);
 
           return (
             <div key={item.href}>
-              {/* 親リンク */}
               <Link
                 href={item.children ? item.children[0].href : item.href}
                 className={`flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
@@ -45,21 +43,21 @@ export function Sidebar() {
                 {item.label}
               </Link>
 
-              {/* 子メニュー — 常に表示 */}
               {item.children && (
-                <div className="ml-8 mt-1 space-y-0.5">
+                <div className="ml-4 mt-1 space-y-0.5">
                   {item.children.map((child) => {
                     const childActive = pathname.startsWith(child.href);
                     return (
                       <Link
                         key={child.href}
                         href={child.href}
-                        className={`block rounded-md px-3 py-1.5 text-sm transition-colors ${
+                        className={`flex items-center gap-2.5 rounded-md px-3 py-1.5 text-sm transition-colors ${
                           childActive
-                            ? "font-medium text-emerald-700"
-                            : "text-gray-500 hover:text-gray-700"
+                            ? "font-medium text-emerald-700 bg-emerald-50/50"
+                            : "text-gray-500 hover:text-gray-700 hover:bg-gray-50"
                         }`}
                       >
+                        {child.icon && <SubNavIcon icon={child.icon} active={childActive} />}
                         {child.label}
                       </Link>
                     );
@@ -71,7 +69,6 @@ export function Sidebar() {
         })}
       </nav>
 
-      {/* フッター */}
       <div className="border-t border-gray-200 px-6 py-4">
         <p className="text-xs text-gray-400">v0.2.0</p>
       </div>

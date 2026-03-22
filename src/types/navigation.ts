@@ -10,6 +10,7 @@ export type NavItem = {
 export type SubNavItem = {
   label: string;
   href: string;
+  icon?: string;
 };
 
 /** ナビゲーションアイコンの種類 */
