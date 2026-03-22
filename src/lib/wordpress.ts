@@ -357,7 +357,11 @@ function mapCompany(wp: WPPost): Company {
     mainProjects: (hasData || contentData) ? acfStringArray(source, "main_projects") : [],
     homepageUrl,
     description,
-    relatedArticles: parseRelatedArticles(source),
+    // related_articles は ACF に登録されていない場合があるため、
+    // ACF → content JSON の順で探す
+    relatedArticles: parseRelatedArticles(source).length > 0
+      ? parseRelatedArticles(source)
+      : parseRelatedArticles(contentData ?? {}),
   };
 }
 
