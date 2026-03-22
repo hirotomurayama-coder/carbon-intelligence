@@ -308,7 +308,7 @@ export function RoadmapTimeline({ data }: Props) {
                     );
                   })}
 
-                  {/* バー */}
+                  {/* バー（背景） + ラベル（sticky追従） */}
                   {events.map((event) => {
                     if (!event.startDate) return null;
                     const colStart = monthIndex(event.startDate, originYear, originMonth);
@@ -316,34 +316,50 @@ export function RoadmapTimeline({ data }: Props) {
                     const lane = laneMap.get(event.id) ?? 0;
                     const barWidth = Math.max((colEnd - colStart + 1) * MONTH_W - 8, 60);
                     const barLeft = colStart * MONTH_W + 4;
+                    const barTop = 8 + lane * LANE_H;
 
                     return (
-                      <button
-                        key={event.id}
-                        type="button"
-                        className={`absolute overflow-hidden rounded-md border text-[11px] font-medium cursor-pointer transition-shadow hover:shadow-md ${statusBarClass(event.status)}`}
-                        style={{
-                          left: barLeft,
-                          width: barWidth,
-                          top: 8 + lane * LANE_H,
-                          height: BAR_H,
-                        }}
-                        title={`${event.title} (${formatDate(event.startDate)} ~ ${formatDate(event.endDate)})`}
-                        onClick={() => setSelectedEvent(event)}
-                      >
-                        {/* テキストをバー内左端に固定表示（overflow: visible + clip-path で実現） */}
-                        <span
-                          className="sticky left-0 inline-flex items-center gap-1.5 whitespace-nowrap px-2"
-                          style={{ height: BAR_H }}
+                      <div key={event.id}>
+                        {/* バー背景（クリック可能） */}
+                        <button
+                          type="button"
+                          className={`absolute rounded-md border cursor-pointer transition-shadow hover:shadow-md ${statusBarClass(event.status)}`}
+                          style={{
+                            left: barLeft,
+                            width: barWidth,
+                            top: barTop,
+                            height: BAR_H,
+                          }}
+                          title={`${event.title} (${formatDate(event.startDate)} ~ ${formatDate(event.endDate)})`}
+                          onClick={() => setSelectedEvent(event)}
+                        />
+                        {/* ラベル（sticky で追従） — clip-path でバー範囲外を隠す */}
+                        <div
+                          className="absolute pointer-events-none"
+                          style={{
+                            left: barLeft,
+                            width: barWidth,
+                            top: barTop,
+                            height: BAR_H,
+                            clipPath: `inset(0 0 0 0)`,
+                          }}
                         >
-                          {event.title}
-                          {event.status && (
-                            <span className={`inline-flex items-center rounded px-1 py-0.5 text-[9px] font-semibold ${statusBarClass(event.status)}`}>
-                              {event.status}
+                          <span
+                            className="sticky left-[204px] inline-flex items-center gap-1.5 whitespace-nowrap px-2 text-[11px] font-medium pointer-events-auto cursor-pointer"
+                            style={{ height: BAR_H }}
+                            onClick={() => setSelectedEvent(event)}
+                          >
+                            <span className={`${event.status === "完了" ? "text-emerald-800" : event.status === "進行中" ? "text-blue-800" : event.status === "準備中" ? "text-amber-800" : "text-gray-600"}`}>
+                              {event.title}
                             </span>
-                          )}
-                        </span>
-                      </button>
+                            {event.status && (
+                              <span className="text-[9px] opacity-60">
+                                {event.status}
+                              </span>
+                            )}
+                          </span>
+                        </div>
+                      </div>
                     );
                   })}
                 </div>
