@@ -6,24 +6,18 @@ import { APP_NAME, NAV_ITEMS } from "@/lib/constants";
 import { NavIcon } from "./NavIcon";
 import type { NavItem } from "@/types/navigation";
 
-/** パスがアクティブかどうかを判定 */
 function isItemActive(href: string, pathname: string, item: NavItem): boolean {
   if (href === "/") return pathname === "/";
-  // 子メニューのパスも含めて判定
   if (item.children?.some((c) => pathname.startsWith(c.href))) return true;
   return pathname.startsWith(href);
 }
 
-/**
- * サイドナビゲーション。
- * 子メニューがある項目は展開してサブリンクを表示する。
- */
 export function Sidebar() {
   const pathname = usePathname();
 
   return (
     <aside className="flex h-screen w-64 flex-col border-r border-gray-200 bg-white">
-      {/* ロゴ / アプリ名 */}
+      {/* ロゴ */}
       <div className="flex h-16 items-center gap-2 border-b border-gray-200 px-6">
         <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-600 text-sm font-bold text-white">
           C
@@ -31,7 +25,7 @@ export function Sidebar() {
         <span className="text-lg font-semibold text-gray-900">{APP_NAME}</span>
       </div>
 
-      {/* ナビゲーションリンク */}
+      {/* ナビゲーション — 子メニューは常に展開 */}
       <nav className="flex-1 space-y-1 overflow-y-auto px-3 py-4">
         {NAV_ITEMS.map((item) => {
           const active = isItemActive(item.href, pathname, item);
@@ -49,26 +43,10 @@ export function Sidebar() {
               >
                 <NavIcon icon={item.icon} />
                 {item.label}
-                {/* 子メニューがある場合はシェブロン表示 */}
-                {item.children && (
-                  <svg
-                    className={`ml-auto h-4 w-4 transition-transform ${active ? "rotate-90" : ""}`}
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                    strokeWidth={1.5}
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="m8.25 4.5 7.5 7.5-7.5 7.5"
-                    />
-                  </svg>
-                )}
               </Link>
 
-              {/* 子メニュー（アクティブ時に展開） */}
-              {item.children && active && (
+              {/* 子メニュー — 常に表示 */}
+              {item.children && (
                 <div className="ml-8 mt-1 space-y-0.5">
                   {item.children.map((child) => {
                     const childActive = pathname.startsWith(child.href);
@@ -95,7 +73,7 @@ export function Sidebar() {
 
       {/* フッター */}
       <div className="border-t border-gray-200 px-6 py-4">
-        <p className="text-xs text-gray-400">v0.1.0</p>
+        <p className="text-xs text-gray-400">v0.2.0</p>
       </div>
     </aside>
   );

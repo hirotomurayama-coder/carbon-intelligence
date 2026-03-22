@@ -1,9 +1,7 @@
 import type { NavItem } from "@/types/navigation";
 
-/** アプリケーション名 */
 export const APP_NAME = "Carbon Intelligence";
 
-/** サイドナビゲーションの項目一覧 */
 export const NAV_ITEMS: NavItem[] = [
   { label: "ダッシュボード", href: "/", icon: "dashboard" },
   {
@@ -18,7 +16,6 @@ export const NAV_ITEMS: NavItem[] = [
     ],
   },
   { label: "分析", href: "/analysis", icon: "analytics" },
-  { label: "ポートフォリオ", href: "/portfolio", icon: "portfolio" },
   { label: "ライブラリ", href: "/library", icon: "library" },
   { label: "設定", href: "/settings", icon: "settings" },
 ];
