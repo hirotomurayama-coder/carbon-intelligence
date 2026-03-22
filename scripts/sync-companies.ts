@@ -140,7 +140,6 @@ async function fetchAllCompanies(): Promise<WPCompany[]> {
   while (page <= 10) {
     try {
       const res = await fetch(`${API_BASE}/companies?per_page=100&page=${page}`, {
-        cache: "no-store",
         headers: { Accept: "application/json" },
       });
       if (!res.ok) break;
