@@ -365,18 +365,29 @@ function mapCompany(wp: WPPost): Company {
   };
 }
 
-const VALID_INSIGHT_CATEGORIES: InsightCategory[] = ["政策", "市場", "技術"];
+const VALID_INSIGHT_CATEGORIES: InsightCategory[] = [
+  "政策", "市場", "技術", "特別記事", "メルマガ", "週次ブリーフ",
+];
+
+/** コンテンツの文字数から推定読了時間（分）を計算。日本語は約500文字/分 */
+function estimateReadingTime(html: string): number | null {
+  const text = stripHtml(html);
+  if (text.length < 50) return null;
+  return Math.max(1, Math.round(text.length / 500));
+}
 
 function mapInsight(wp: WPPost): Insight {
   const { data: acf, hasData } = getAcf(wp);
 
   let category: InsightCategory | null = null;
+  let series: string | null = null;
 
   if (hasData) {
     const rawCat = acfString(acf, "insight_category", "");
     category = VALID_INSIGHT_CATEGORIES.includes(rawCat as InsightCategory)
       ? (rawCat as InsightCategory)
       : null;
+    series = acfString(acf, "insight_series", "") || null;
   }
 
   return {
@@ -385,6 +396,8 @@ function mapInsight(wp: WPPost): Insight {
     date: wp.date ? wp.date.slice(0, 10) : "",
     category,
     summary: stripHtml(wp.excerpt?.rendered ?? wp.content.rendered).slice(0, 200),
+    readingTime: estimateReadingTime(wp.content.rendered),
+    series,
   };
 }
 

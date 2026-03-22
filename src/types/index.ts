@@ -72,7 +72,13 @@ export type Company = {
 // ============================================================
 
 /** インサイトカテゴリー */
-export type InsightCategory = "政策" | "市場" | "技術";
+export type InsightCategory =
+  | "政策"
+  | "市場"
+  | "技術"
+  | "特別記事"
+  | "メルマガ"
+  | "週次ブリーフ";
 
 /** インサイト（一覧用） */
 export type Insight = {
@@ -81,6 +87,8 @@ export type Insight = {
   date: string;             // ISO 日付文字列 "YYYY-MM-DD"
   category: InsightCategory | null;     // ACF 未設定時は null
   summary: string;
+  readingTime: number | null;           // 推定読了時間（分）
+  series: string | null;                // ACF: insight_series — シリーズ名
 };
 
 /** インサイト詳細（記事ページ用） — Insight に本文・画像を追加 */

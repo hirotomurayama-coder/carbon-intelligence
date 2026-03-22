@@ -1,9 +1,14 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import type { Metadata } from "next";
-import { getInsightById, getInsights, getMethodologies } from "@/lib/wordpress";
+import {
+  getInsightById,
+  getInsights,
+  getMethodologies,
+  getCompanies,
+} from "@/lib/wordpress";
 import { Badge } from "@/components/ui/Badge";
-import type { InsightCategory } from "@/types";
+import type { InsightCategory, Company } from "@/types";
 
 type Props = {
   params: Promise<{ id: string }>;
@@ -29,7 +34,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       description: insight.summary || insight.title,
       type: "article",
       publishedTime: insight.date,
-      ...(insight.featuredImageUrl ? { images: [insight.featuredImageUrl] } : {}),
+      ...(insight.featuredImageUrl
+        ? { images: [insight.featuredImageUrl] }
+        : {}),
     },
   };
 }
@@ -46,6 +53,14 @@ function categoryBadgeVariant(cat: InsightCategory) {
       return "emerald" as const;
     case "技術":
       return "indigo" as const;
+    case "特別記事":
+      return "amber" as const;
+    case "メルマガ":
+      return "slate" as const;
+    case "週次ブリーフ":
+      return "emerald" as const;
+    default:
+      return "gray" as const;
   }
 }
 
@@ -59,6 +74,30 @@ function formatDate(dateStr: string): string {
   });
 }
 
+/**
+ * 記事本文中に登場する企業名を検出し、リンクカードとして挿入する。
+ * 3社以上マッチした企業名を返す（ノイズ防止）。
+ */
+function findMentionedCompanies(
+  htmlContent: string,
+  companies: Company[]
+): Company[] {
+  const plainText = htmlContent
+    .replace(/<[^>]*>/g, " ")
+    .replace(/&[^;]+;/g, " ");
+  const mentioned: Company[] = [];
+
+  for (const c of companies) {
+    if (c.name.length < 2) continue;
+    // 企業名が本文に含まれるか
+    if (plainText.includes(c.name)) {
+      mentioned.push(c);
+    }
+  }
+
+  return mentioned.slice(0, 8); // 最大8社
+}
+
 // ============================================================
 // ページコンポーネント
 // ============================================================
@@ -66,16 +105,24 @@ function formatDate(dateStr: string): string {
 export default async function InsightDetailPage({ params }: Props) {
   const { id } = await params;
 
-  // 記事データ、最新インサイト一覧、メソドロジー一覧を並行取得
-  const [insight, allInsights, allMethodologies] = await Promise.all([
-    getInsightById(id),
-    getInsights(),
-    getMethodologies(),
-  ]);
+  const [insight, allInsights, allMethodologies, allCompanies] =
+    await Promise.all([
+      getInsightById(id),
+      getInsights(),
+      getMethodologies(),
+      getCompanies(),
+    ]);
 
   if (!insight) {
     notFound();
   }
+
+  // シリーズ記事（同一シリーズの前後記事）
+  const seriesInsights = insight.series
+    ? allInsights
+        .filter((i) => i.series === insight.series && i.id !== insight.id)
+        .sort((a, b) => a.date.localeCompare(b.date))
+    : [];
 
   // 最新インサイト（自身を除く、最大5件）
   const latestInsights = allInsights
@@ -83,17 +130,24 @@ export default async function InsightDetailPage({ params }: Props) {
     .sort((a, b) => b.date.localeCompare(a.date))
     .slice(0, 5);
 
-  // 関連メソドロジー（タイトル・サマリーにキーワードマッチ、最大3件）
+  // 関連メソドロジー
   const titleWords = insight.title
     .replace(/[【】（）()[\]「」]/g, " ")
     .split(/\s+/)
     .filter((w) => w.length >= 2);
   const relatedMethodologies = allMethodologies
     .filter((m) => {
-      const text = `${m.title} ${m.titleJa ?? ""} ${m.aiSummary ?? ""} ${m.subCategory ?? ""}`.toLowerCase();
+      const text =
+        `${m.title} ${m.titleJa ?? ""} ${m.aiSummary ?? ""} ${m.subCategory ?? ""}`.toLowerCase();
       return titleWords.some((w) => text.includes(w.toLowerCase()));
     })
     .slice(0, 3);
+
+  // 記事内に登場する企業
+  const mentionedCompanies = findMentionedCompanies(
+    insight.content,
+    allCompanies
+  );
 
   return (
     <div className="mx-auto max-w-4xl space-y-8">
@@ -118,14 +172,58 @@ export default async function InsightDetailPage({ params }: Props) {
               {insight.category}
             </Badge>
           )}
+          {insight.series && (
+            <span className="rounded-full bg-amber-50 px-2.5 py-0.5 text-xs font-medium text-amber-700">
+              {insight.series}
+            </span>
+          )}
           <time className="text-sm text-gray-400" dateTime={insight.date}>
             {formatDate(insight.date)}
           </time>
+          {insight.readingTime && (
+            <span className="flex items-center gap-1 text-sm text-gray-400">
+              <svg
+                className="h-3.5 w-3.5"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                strokeWidth={2}
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z"
+                />
+              </svg>
+              {insight.readingTime}分で読めます
+            </span>
+          )}
         </div>
         <h1 className="text-2xl font-bold leading-tight text-gray-900 sm:text-3xl">
           {insight.title}
         </h1>
       </header>
+
+      {/* シリーズナビゲーション */}
+      {seriesInsights.length > 0 && (
+        <div className="rounded-lg border border-amber-200 bg-amber-50/50 p-4">
+          <h3 className="text-xs font-semibold text-amber-700 uppercase tracking-wider">
+            {insight.series} シリーズ
+          </h3>
+          <div className="mt-2 flex flex-wrap gap-2">
+            {seriesInsights.map((si) => (
+              <Link
+                key={si.id}
+                href={`/insights/${si.id}`}
+                className="rounded-lg border border-amber-200 bg-white px-3 py-1.5 text-xs text-amber-800 transition hover:bg-amber-100"
+              >
+                {si.title.slice(0, 40)}
+                {si.title.length > 40 ? "..." : ""}
+              </Link>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* アイキャッチ画像 */}
       {insight.featuredImageUrl && (
@@ -139,18 +237,39 @@ export default async function InsightDetailPage({ params }: Props) {
         </div>
       )}
 
-      {/* 記事本文 — Tailwind Typography で読みやすくレンダリング */}
+      {/* 記事本文 */}
       <article
         className="prose prose-gray max-w-none prose-headings:text-gray-900 prose-h2:mt-8 prose-h2:text-xl prose-h3:mt-6 prose-h3:text-lg prose-p:leading-relaxed prose-a:text-emerald-600 prose-a:no-underline hover:prose-a:underline prose-img:rounded-lg"
         dangerouslySetInnerHTML={{ __html: insight.content }}
       />
 
-      {/* 区切り線 */}
+      {/* 記事内に登場する企業 */}
+      {mentionedCompanies.length > 0 && (
+        <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
+          <h3 className="mb-4 text-sm font-semibold text-gray-900">
+            この記事に登場する企業
+          </h3>
+          <div className="flex flex-wrap gap-2">
+            {mentionedCompanies.map((c) => (
+              <Link
+                key={c.id}
+                href={`/companies/${c.id}`}
+                className="inline-flex items-center gap-1.5 rounded-lg border border-gray-200 bg-gray-50 px-3 py-1.5 text-sm text-gray-700 transition hover:border-emerald-300 hover:bg-emerald-50 hover:text-emerald-700"
+              >
+                <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded bg-emerald-100 text-[10px] font-bold text-emerald-700">
+                  {c.name[0]}
+                </span>
+                {c.name}
+              </Link>
+            ))}
+          </div>
+        </div>
+      )}
+
       <hr className="border-gray-200" />
 
       {/* 回遊性向上セクション */}
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-        {/* 最新インサイト */}
         {latestInsights.length > 0 && (
           <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
             <h3 className="mb-4 text-sm font-semibold text-gray-900">
@@ -170,29 +289,15 @@ export default async function InsightDetailPage({ params }: Props) {
                       </p>
                       <p className="text-xs text-gray-400">
                         {formatDate(i.date)}
-                        {i.category && (
-                          <span className="ml-2">
-                            <Badge variant={categoryBadgeVariant(i.category)}>
-                              {i.category}
-                            </Badge>
-                          </span>
-                        )}
                       </p>
                     </div>
                   </Link>
                 </li>
               ))}
             </ul>
-            <Link
-              href="/insights"
-              className="mt-4 inline-block text-sm text-emerald-600 hover:text-emerald-700 hover:underline"
-            >
-              すべてのインサイトを見る →
-            </Link>
           </div>
         )}
 
-        {/* 関連メソドロジー */}
         {relatedMethodologies.length > 0 && (
           <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
             <h3 className="mb-4 text-sm font-semibold text-gray-900">
@@ -214,21 +319,12 @@ export default async function InsightDetailPage({ params }: Props) {
                         {m.registry && (
                           <Badge variant="gray">{m.registry}</Badge>
                         )}
-                        {m.creditType && (
-                          <Badge variant="gray">{m.creditType}</Badge>
-                        )}
                       </div>
                     </div>
                   </Link>
                 </li>
               ))}
             </ul>
-            <Link
-              href="/methodologies"
-              className="mt-4 inline-block text-sm text-emerald-600 hover:text-emerald-700 hover:underline"
-            >
-              すべてのメソドロジーを見る →
-            </Link>
           </div>
         )}
       </div>

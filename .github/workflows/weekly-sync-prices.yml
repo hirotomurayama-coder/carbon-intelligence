@@ -102,3 +102,18 @@ jobs:
           fi
           echo "=== AI分析開始 ==="
           npm run analyze-market -- $ARGS
+
+      - name: Generate weekly brief
+        if: inputs.skip_analysis != true
+        env:
+          NEXT_PUBLIC_WORDPRESS_API_URL: ${{ secrets.NEXT_PUBLIC_WORDPRESS_API_URL }}
+          WP_APP_USER: ${{ secrets.WP_APP_USER }}
+          WP_APP_PASSWORD: ${{ secrets.WP_APP_PASSWORD }}
+          GOOGLE_GENERATIVE_AI_API_KEY: ${{ secrets.GOOGLE_GENERATIVE_AI_API_KEY }}
+        run: |
+          ARGS=""
+          if [ "${{ inputs.dry_run }}" = "true" ]; then
+            ARGS="$ARGS --dry-run"
+          fi
+          echo "=== 週次ブリーフ生成 ==="
+          npm run generate-weekly-brief -- $ARGS
