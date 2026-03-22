@@ -590,28 +590,34 @@ function normalizeDate(raw: string): string | null {
   return `${digits.slice(0, 4)}-${digits.slice(4, 6)}-${digits.slice(6, 8)}`;
 }
 
+function parseRoadmapContentJson(html: string): Record<string, unknown> | null {
+  const match = html.match(/<!-- ROADMAP_DATA_JSON:([\s\S]*?) -->/);
+  if (!match) return null;
+  try { return JSON.parse(match[1]); } catch { return null; }
+}
+
 function mapRoadmapEvent(wp: WPPost): RoadmapEvent {
   const { data: acf, hasData } = getAcf(wp);
+  const contentData = parseRoadmapContentJson(wp.content?.rendered ?? "");
+  const source = hasData ? acf : (contentData ?? {});
+  const hasSource = hasData || !!contentData;
 
   let category: string | null = null;
   let status: RoadmapStatus | null = null;
   let startDate: string | null = null;
   let endDate: string | null = null;
 
-  if (hasData) {
-    // ACF フィールド名: event_category (カテゴリ — 自由入力)
-    const rawCat = acfString(acf, "event_category", "");
+  if (hasSource) {
+    const rawCat = acfString(source, "event_category", "");
     category = rawCat || null;
 
-    // ACF フィールド名: event_status (ステータス)
-    const rawStatus = acfString(acf, "event_status", "");
+    const rawStatus = acfString(source, "event_status", "");
     status = VALID_ROADMAP_STATUSES.includes(rawStatus as RoadmapStatus)
       ? (rawStatus as RoadmapStatus)
       : null;
 
-    // ACF フィールド名: start_date, end_date (期間 — YYYYMMDD を YYYY-MM-DD に正規化)
-    startDate = normalizeDate(acfString(acf, "start_date", ""));
-    endDate = normalizeDate(acfString(acf, "end_date", ""));
+    startDate = normalizeDate(acfString(source, "start_date", ""));
+    endDate = normalizeDate(acfString(source, "end_date", ""));
   }
 
   const title = stripHtml(wp.title.rendered);
@@ -655,13 +661,17 @@ export async function getRoadmapEvents(): Promise<RoadmapEvent[]> {
   try {
     const allPosts: WPPost[] = [];
     let page = 1;
-    while (true) {
-      const posts = await wpFetch<WPPost>(
-        `roadmap?per_page=100&page=${page}`
-      );
-      allPosts.push(...posts);
-      if (posts.length < 100) break;
-      page++;
+    while (page <= 10) {
+      try {
+        const posts = await wpFetch<WPPost>(
+          `roadmap?per_page=100&page=${page}`
+        );
+        allPosts.push(...posts);
+        if (posts.length < 100) break;
+        page++;
+      } catch {
+        break;
+      }
     }
     return allPosts.map(mapRoadmapEvent);
   } catch (e) {
