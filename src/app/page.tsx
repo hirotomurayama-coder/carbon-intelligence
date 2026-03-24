@@ -268,6 +268,66 @@ export default async function Home() {
           </Link>
         </section>
       </div>
+
+      {/* ── グローバルプロジェクト統計 ── */}
+      <section className="rounded-xl border border-gray-200 bg-white shadow-sm">
+        <div className="flex items-center justify-between border-b border-gray-100 px-5 py-3">
+          <div className="flex items-center gap-2">
+            <h2 className="text-sm font-semibold text-gray-900">グローバルプロジェクト統計</h2>
+            <span className="rounded-full bg-cyan-100 px-2 py-0.5 text-[10px] font-semibold text-cyan-700">CAD Trust</span>
+          </div>
+          <Link href="/projects" className="text-xs text-emerald-600 hover:text-emerald-700">
+            プロジェクト検索 →
+          </Link>
+        </div>
+        <div className="p-5">
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+            {/* 総数 */}
+            <div className="text-center">
+              <p className="text-3xl font-bold text-cyan-600">
+                {projectStats.totalProjects > 0 ? `${(projectStats.totalProjects / 1000).toFixed(1)}K+` : "—"}
+              </p>
+              <p className="mt-1 text-xs text-gray-400">登録プロジェクト数</p>
+              <p className="mt-0.5 text-[10px] text-gray-300">Verra / Gold Standard / CDM / ACR</p>
+            </div>
+            {/* クイックリンク */}
+            <div className="space-y-2">
+              <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider">クイック検索</p>
+              {["REDD", "Biochar", "Japan", "Renewable Energy", "Methane"].map((q) => (
+                <Link
+                  key={q}
+                  href={`/projects?q=${encodeURIComponent(q)}`}
+                  className="block rounded-lg border border-gray-100 px-3 py-1.5 text-xs text-gray-600 transition hover:bg-emerald-50 hover:border-emerald-200 hover:text-emerald-700"
+                >
+                  {q}
+                </Link>
+              ))}
+            </div>
+            {/* データ特徴 */}
+            <div className="space-y-2">
+              <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider">データ概要</p>
+              <div className="space-y-1.5 text-xs text-gray-600">
+                <div className="flex items-center justify-between rounded-lg bg-gray-50 px-3 py-2">
+                  <span>対応レジストリ</span>
+                  <span className="font-semibold text-gray-900">Verra / GS / CDM / ACR</span>
+                </div>
+                <div className="flex items-center justify-between rounded-lg bg-gray-50 px-3 py-2">
+                  <span>カバー国数</span>
+                  <span className="font-semibold text-gray-900">190+</span>
+                </div>
+                <div className="flex items-center justify-between rounded-lg bg-gray-50 px-3 py-2">
+                  <span>データ基盤</span>
+                  <span className="font-semibold text-gray-900">Chia Blockchain</span>
+                </div>
+                <div className="flex items-center justify-between rounded-lg bg-gray-50 px-3 py-2">
+                  <span>更新頻度</span>
+                  <span className="font-semibold text-gray-900">リアルタイム</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
     </div>
   );
 }

@@ -25,6 +25,43 @@ function statusColor(s: string): "emerald" | "amber" | "gray" | "blue" {
   return "gray";
 }
 
+/** 英語ステータスを日本語に変換 */
+function statusJa(s: string): string {
+  const map: Record<string, string> = {
+    "Registered": "登録済み",
+    "Active": "運用中",
+    "Listed": "審査中",
+    "Validated": "検証済み",
+    "Under validation": "検証中",
+    "Under development": "開発中",
+    "Completed": "完了",
+    "Withdrawn": "取り下げ",
+    "De-registered": "登録抹消",
+  };
+  return map[s] ?? s;
+}
+
+/** 英語セクターを日本語に変換 */
+function sectorJa(s: string): string {
+  const map: Record<string, string> = {
+    "Agriculture; forestry and fishing": "農林水産業",
+    "Waste handling and disposal": "廃棄物処理",
+    "Energy Industries (renewable/non-renewable sources)": "エネルギー産業",
+    "Energy industries (renewable - / non-renewable sources)": "エネルギー産業",
+    "Transportation and storage": "運輸・物流",
+    "Afforestation and reforestation": "植林・再植林",
+    "Livestock, enteric fermentation, and manure management": "畜産・メタン管理",
+    "Energy Demand": "エネルギー需要",
+    "Fugitive emissions from fuel (solid, oil and gas)": "燃料からの漏出",
+    "Mining and quarrying": "鉱業・採石",
+    "Manufacturing industries": "製造業",
+    "Chemical industry": "化学産業",
+    "Metal production": "金属生産",
+    "Construction": "建設",
+  };
+  return map[s] ?? s;
+}
+
 function calcTotalUnits(p: CadProject): number {
   return p.estimations?.reduce((sum, e) => sum + (e.unitCount ?? 0), 0) ?? 0;
 }
@@ -130,7 +167,7 @@ export function ProjectSearchList({ initialData, initialQuery, currentPage, tota
                       {p.currentRegistry}
                     </Badge>
                     <Badge variant={statusColor(p.projectStatus)}>
-                      {p.projectStatus}
+                      {statusJa(p.projectStatus)}
                     </Badge>
                     {p.methodology && (
                       <Badge variant="gray">{p.methodology}</Badge>
@@ -148,7 +185,7 @@ export function ProjectSearchList({ initialData, initialQuery, currentPage, tota
                       {formatNumber(totalUnits)} tCO2e
                     </span>
                   )}
-                  <span className="text-xs text-gray-400">{p.sector}</span>
+                  <span className="text-xs text-gray-400">{sectorJa(p.sector)}</span>
                 </div>
               </div>
             </Link>

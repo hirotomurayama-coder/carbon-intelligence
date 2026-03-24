@@ -34,6 +34,15 @@ function statusColor(s: string) {
   return "gray" as const;
 }
 
+function statusJa(s: string): string {
+  const map: Record<string, string> = {
+    "Registered": "登録済み", "Active": "運用中", "Listed": "審査中",
+    "Validated": "検証済み", "Under validation": "検証中", "Under development": "開発中",
+    "Completed": "完了", "Withdrawn": "取り下げ", "De-registered": "登録抹消",
+  };
+  return map[s] ?? s;
+}
+
 function formatNumber(n: number): string {
   return n.toLocaleString();
 }
@@ -73,7 +82,7 @@ export default async function ProjectDetailPage({ params }: Props) {
       <div className="rounded-xl border border-gray-200 bg-white p-6 sm:p-8 shadow-sm">
         <div className="flex flex-wrap gap-2 mb-3">
           <Badge variant={registryColor(project.currentRegistry)}>{project.currentRegistry}</Badge>
-          <Badge variant={statusColor(project.projectStatus)}>{project.projectStatus}</Badge>
+          <Badge variant={statusColor(project.projectStatus)}>{statusJa(project.projectStatus)}</Badge>
           {project.methodology && <Badge variant="gray">{project.methodology}</Badge>}
         </div>
         <h1 className="text-xl font-bold text-gray-900">{project.projectName}</h1>

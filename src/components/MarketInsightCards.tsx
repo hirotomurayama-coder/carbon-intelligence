@@ -79,20 +79,20 @@ const MARKET_COLORS: Record<CreditMarketId, string> = {
 };
 
 const MARKET_BADGES: Record<CreditMarketId, string> = {
-  "jcredit-energy-saving": "J-Credit",
-  "jcredit-forest": "J-Credit",
-  "jcredit-agri-midseason": "J-Credit",
-  "jcredit-agri-biochar": "J-Credit",
+  "jcredit-energy-saving": "J-クレジット",
+  "jcredit-forest": "J-クレジット",
+  "jcredit-agri-midseason": "J-クレジット",
+  "jcredit-agri-biochar": "J-クレジット",
   "eu-ets": "EU ETS",
-  "vol-biochar": "CDR",
-  "vol-dac": "CDR",
-  "vol-erw": "CDR",
-  "vol-blue-carbon": "Blue Carbon",
-  "vol-soil-carbon": "Soil",
-  "vol-redd-plus": "REDD+",
-  "vol-cookstoves": "Avoidance",
-  "vol-methane": "Avoidance",
-  "vol-nature-removal": "Removal",
+  "vol-biochar": "炭素除去",
+  "vol-dac": "炭素除去",
+  "vol-erw": "炭素除去",
+  "vol-blue-carbon": "ブルーカーボン",
+  "vol-soil-carbon": "土壌炭素",
+  "vol-redd-plus": "森林保全",
+  "vol-cookstoves": "回避・削減",
+  "vol-methane": "回避・削減",
+  "vol-nature-removal": "自然除去",
 };
 
 // ============================================================

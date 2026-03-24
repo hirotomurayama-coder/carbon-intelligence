@@ -42,3 +42,10 @@ next-env.d.ts
 
 # claude code
 .claude/
+credentials.json
+ccj-publish.py
+ccj_post.py
+post_to_wp.py
+source_finder.py
+results.csv
+requirements.txt
