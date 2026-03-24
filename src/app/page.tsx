@@ -8,6 +8,7 @@ import {
   getInsights,
   getPriceTrends,
 } from "@/lib/wordpress";
+import { getProjectStats } from "@/lib/cad-trust";
 import { Badge } from "@/components/ui/Badge";
 import type { InsightCategory, RegistryName } from "@/types";
 
@@ -39,11 +40,12 @@ function formatJpy(v: number | null): string {
 }
 
 export default async function Home() {
-  const [methodologies, companies, insights, priceTrends] = await Promise.all([
+  const [methodologies, companies, insights, priceTrends, projectStats] = await Promise.all([
     getMethodologies(),
     getCompanies(),
     getInsights(),
     getPriceTrends(),
+    getProjectStats().catch(() => ({ totalProjects: 0 })),
   ]);
 
   const scoredItems = methodologies.filter(
@@ -89,9 +91,10 @@ export default async function Home() {
   return (
     <div className="space-y-6">
       {/* ── KPI サマリー ── */}
-      <section className="grid grid-cols-2 gap-3 lg:grid-cols-5">
+      <section className="grid grid-cols-2 gap-3 lg:grid-cols-6">
         <KpiCard label="メソドロジー" value={methodologies.length} unit="件" href="/methodologies" color="emerald" />
         <KpiCard label="登録企業" value={companies.length} unit="社" href="/companies" color="blue" />
+        <KpiCard label="グローバルPJ" value={projectStats.totalProjects > 0 ? `${(projectStats.totalProjects / 1000).toFixed(1)}K` : "—"} unit="" href="/projects" color="cyan" />
         <KpiCard label="インサイト" value={insights.length} unit="件" href="/insights" color="indigo" />
         <KpiCard label="関連記事" value={articlesTotal} unit="件" href="/companies" color="amber" />
         <KpiCard label="信頼性スコア" value={avgScore ?? "—"} unit={avgScore ? "/100" : ""} href="/methodologies" color="emerald" />
@@ -272,8 +275,8 @@ export default async function Home() {
 function KpiCard({ label, value, unit, href, color }: {
   label: string; value: number | string; unit: string; href: string; color: string;
 }) {
-  const borderHover = color === "blue" ? "hover:border-blue-300" : color === "indigo" ? "hover:border-indigo-300" : color === "amber" ? "hover:border-amber-300" : "hover:border-emerald-300";
-  const accent = color === "blue" ? "text-blue-600" : color === "indigo" ? "text-indigo-600" : color === "amber" ? "text-amber-600" : "text-emerald-600";
+  const borderHover = color === "blue" ? "hover:border-blue-300" : color === "indigo" ? "hover:border-indigo-300" : color === "amber" ? "hover:border-amber-300" : color === "cyan" ? "hover:border-cyan-300" : "hover:border-emerald-300";
+  const accent = color === "blue" ? "text-blue-600" : color === "indigo" ? "text-indigo-600" : color === "amber" ? "text-amber-600" : color === "cyan" ? "text-cyan-600" : "text-emerald-600";
 
   return (
     <Link
