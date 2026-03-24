@@ -139,12 +139,13 @@ export async function getProjects(params: {
 }
 
 /**
- * プロジェクト詳細を取得
+ * プロジェクト詳細を取得（warehouseProjectId で直接取得）
  */
 export async function getProjectById(warehouseProjectId: string): Promise<CadProject | null> {
   try {
-    const res = await getProjects({ search: warehouseProjectId, limit: 10 });
-    return res.data.find((p) => p.warehouseProjectId === warehouseProjectId) ?? null;
+    return await cadFetch<CadProject>(
+      `/projects?warehouseProjectId=${encodeURIComponent(warehouseProjectId)}`
+    );
   } catch {
     return null;
   }

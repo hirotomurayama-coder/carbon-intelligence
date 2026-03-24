@@ -1,8 +1,7 @@
-import { getProjects, calcTotalUnits, getCountries } from "@/lib/cad-trust";
+import { getProjectById, calcTotalUnits, getCountries } from "@/lib/cad-trust";
 import { Badge } from "@/components/ui/Badge";
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import type { CadProject } from "@/lib/cad-trust";
 import type { Metadata } from "next";
 
 export const dynamic = "force-dynamic";
@@ -12,19 +11,9 @@ type Props = {
   params: Promise<{ id: string }>;
 };
 
-async function findProject(id: string): Promise<CadProject | null> {
-  try {
-    // IDで検索してマッチを探す
-    const res = await getProjects({ search: id, limit: 20 });
-    return res.data.find((p) => p.warehouseProjectId === id) ?? null;
-  } catch {
-    return null;
-  }
-}
-
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { id } = await params;
-  const project = await findProject(id);
+  const project = await getProjectById(id);
   return {
     title: project
       ? `${project.projectName} | Carbon Intelligence`
@@ -60,7 +49,7 @@ function InfoRow({ label, value }: { label: string; value: React.ReactNode }) {
 
 export default async function ProjectDetailPage({ params }: Props) {
   const { id } = await params;
-  const project = await findProject(id);
+  const project = await getProjectById(id);
 
   if (!project) {
     notFound();
