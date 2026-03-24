@@ -1,4 +1,4 @@
-import { getProjectById, calcTotalUnits, getCountries, normalizeMethodologyCode } from "@/lib/cad-trust";
+import { getProjectById, calcTotalUnits, getCountries, normalizeMethodologyCode, translateToJa } from "@/lib/cad-trust";
 import { getMethodologies } from "@/lib/wordpress";
 import { Badge } from "@/components/ui/Badge";
 import { notFound } from "next/navigation";
@@ -49,21 +49,7 @@ function formatNumber(n: number): string {
   return n.toLocaleString();
 }
 
-function projectNameJa(name: string): string {
-  const replacements: [RegExp, string][] = [
-    [/\bReforestation\b/gi, "再植林"], [/\bAfforestation\b/gi, "新規植林"],
-    [/\bForest Management\b/gi, "森林管理"], [/\bAvoided Deforestation\b/gi, "森林減少回避"],
-    [/\bImproved Forest Management\b/gi, "改良森林管理"], [/\bWind Energy\b/gi, "風力エネルギー"],
-    [/\bSolar Energy\b/gi, "太陽光エネルギー"], [/\bRenewable Energy\b/gi, "再生可能エネルギー"],
-    [/\bCarbon Emission Reduction\b/gi, "炭素排出削減"], [/\bImproved Cookstoves?\b/gi, "改良かまど"],
-    [/\bBiochar\b/gi, "バイオ炭"], [/\bDirect Air Capture\b/gi, "直接空気回収"],
-    [/\bWaste Management\b/gi, "廃棄物管理"], [/\bProject\b/gi, "プロジェクト"],
-    [/\bReduction\b/gi, "削減"], [/\bGeneration\b/gi, "発電"], [/\bPower Plant\b/gi, "発電所"],
-  ];
-  let result = name;
-  for (const [pattern, replacement] of replacements) result = result.replace(pattern, replacement);
-  return result;
-}
+// projectNameJa は translateToJa に置き換え済み
 
 function InfoRow({ label, value }: { label: string; value: React.ReactNode }) {
   return (
@@ -85,6 +71,12 @@ export default async function ProjectDetailPage({ params }: Props) {
   const countries = getCountries(project);
   const totalUnits = calcTotalUnits(project);
 
+  // プロジェクト名・説明文をGoogle翻訳で日本語化
+  const [nameJa, descJa] = await Promise.all([
+    translateToJa(project.projectName),
+    project.description ? translateToJa(project.description) : Promise.resolve(null),
+  ]);
+
   // メソドロジーDBとの紐付け
   let linkedMethodology: Methodology | null = null;
   if (project.methodology) {
@@ -105,7 +97,7 @@ export default async function ProjectDetailPage({ params }: Props) {
           グローバルプロジェクト
         </Link>
         <span className="mx-2">/</span>
-        <span className="text-gray-700 line-clamp-1">{project.projectName.slice(0, 50)}</span>
+        <span className="text-gray-700 line-clamp-1">{nameJa.slice(0, 50)}</span>
       </nav>
 
       {/* ヘッダー */}
@@ -115,9 +107,12 @@ export default async function ProjectDetailPage({ params }: Props) {
           <Badge variant={statusColor(project.projectStatus)}>{statusJa(project.projectStatus)}</Badge>
           {project.methodology && <Badge variant="gray">{project.methodology}</Badge>}
         </div>
-        <h1 className="text-xl font-bold text-gray-900">{projectNameJa(project.projectName)}</h1>
-        {project.description && (
-          <p className="mt-2 text-sm text-gray-500 leading-relaxed">{project.description}</p>
+        <h1 className="text-xl font-bold text-gray-900">{nameJa}</h1>
+        {nameJa !== project.projectName && (
+          <p className="mt-0.5 text-xs text-gray-400">{project.projectName}</p>
+        )}
+        {descJa && (
+          <p className="mt-2 text-sm text-gray-500 leading-relaxed">{descJa}</p>
         )}
         <div className="mt-4 flex flex-wrap gap-6">
           {countries.length > 0 && (

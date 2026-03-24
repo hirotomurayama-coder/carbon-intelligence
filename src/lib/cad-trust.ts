@@ -197,6 +197,86 @@ export function normalizeMethodologyCode(cadMethodology: string): string {
     .trim();
 }
 
+// ============================================================
+// Google 翻訳（無料API）
+// ============================================================
+
+const translateCache = new Map<string, string>();
+
+/**
+ * Google翻訳（無料エンドポイント）で英語→日本語に翻訳。
+ * メモリキャッシュ付き。失敗時は原文をそのまま返す。
+ */
+export async function translateToJa(text: string): Promise<string> {
+  if (!text || text.trim().length === 0) return text;
+  // 既に日本語っぽい場合はそのまま返す
+  if (/[\u3040-\u309F\u30A0-\u30FF\u4E00-\u9FFF]/.test(text)) return text;
+
+  const cached = translateCache.get(text);
+  if (cached) return cached;
+
+  try {
+    const encoded = encodeURIComponent(text);
+    const res = await fetch(
+      `https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl=ja&dt=t&q=${encoded}`,
+      { signal: AbortSignal.timeout(5_000) }
+    );
+    if (!res.ok) return text;
+
+    const data = await res.json();
+    // レスポンス形式: [[["翻訳文","原文",null,null,10]],null,"en"]
+    const translated = Array.isArray(data?.[0])
+      ? (data[0] as unknown[][]).map((s) => (s as string[])[0]).join("")
+      : text;
+
+    translateCache.set(text, translated);
+    return translated;
+  } catch {
+    return text;
+  }
+}
+
+/**
+ * プロジェクトのテキストフィールドを一括翻訳。
+ * projectName と description を翻訳する。
+ */
+export async function translateProject(project: CadProject): Promise<CadProject & { projectNameJa: string; descriptionJa: string }> {
+  const [nameJa, descJa] = await Promise.all([
+    translateToJa(project.projectName),
+    project.description ? translateToJa(project.description) : Promise.resolve(null),
+  ]);
+
+  return {
+    ...project,
+    projectNameJa: nameJa,
+    descriptionJa: descJa ?? "",
+  };
+}
+
+/**
+ * 複数プロジェクトのプロジェクト名を一括翻訳（並列数制限付き）
+ */
+export async function translateProjects(
+  projects: CadProject[]
+): Promise<(CadProject & { projectNameJa: string })[]> {
+  // 5件ずつ並列で翻訳（レート制限対策）
+  const results: (CadProject & { projectNameJa: string })[] = [];
+  const batchSize = 5;
+
+  for (let i = 0; i < projects.length; i += batchSize) {
+    const batch = projects.slice(i, i + batchSize);
+    const translated = await Promise.all(
+      batch.map(async (p) => ({
+        ...p,
+        projectNameJa: await translateToJa(p.projectName),
+      }))
+    );
+    results.push(...translated);
+  }
+
+  return results;
+}
+
 /** 総発行量（ユニット数）を計算 */
 export function calcTotalUnits(project: CadProject): number {
   return project.estimations.reduce((sum, e) => sum + (e.unitCount ?? 0), 0);

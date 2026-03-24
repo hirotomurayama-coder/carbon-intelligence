@@ -48,22 +48,6 @@ function sectorJa(s: string): string {
   return map[s] ?? s;
 }
 
-function projectNameJa(name: string): string {
-  const reps: [RegExp, string][] = [
-    [/\bReforestation\b/gi, "再植林"], [/\bAfforestation\b/gi, "新規植林"],
-    [/\bForest Management\b/gi, "森林管理"], [/\bWind Energy\b/gi, "風力エネルギー"],
-    [/\bSolar Energy\b/gi, "太陽光エネルギー"], [/\bRenewable Energy\b/gi, "再生可能エネルギー"],
-    [/\bCarbon Emission Reduction\b/gi, "炭素排出削減"],
-    [/\bImproved Cookstoves?\b/gi, "改良かまど"],
-    [/\bBiochar\b/gi, "バイオ炭"], [/\bDirect Air Capture\b/gi, "直接空気回収"],
-    [/\bProject\b/gi, "プロジェクト"], [/\bReduction\b/gi, "削減"],
-    [/\bGeneration\b/gi, "発電"], [/\bPower Plant\b/gi, "発電所"],
-  ];
-  let result = name;
-  for (const [p, r] of reps) result = result.replace(p, r);
-  return result;
-}
-
 function getCountries(p: CadProject): string[] {
   return (p.projectLocations ?? [])
     .map((l) => l.country)
@@ -91,6 +75,7 @@ const PIE_COLORS = [
 
 type Props = {
   data: CadProject[];
+  nameTranslations?: Record<string, string>;
   query: string;
   currentPage: number;
   totalPages: number;
@@ -120,7 +105,7 @@ function findLinkedMethodology(cadMethodology: string, methodologies: Methodolog
   }) ?? null;
 }
 
-export function ProjectDashboard({ data, query, currentPage, totalPages, stats, methodologies = [] }: Props) {
+export function ProjectDashboard({ data, nameTranslations = {}, query, currentPage, totalPages, stats, methodologies = [] }: Props) {
   const router = useRouter();
   const [searchQuery, setSearchQuery] = useState(query);
   const showDashboard = !query && currentPage === 1;
@@ -315,7 +300,7 @@ export function ProjectDashboard({ data, query, currentPage, totalPages, stats, 
               <div className="flex items-start justify-between gap-4">
                 <div className="min-w-0 flex-1">
                   <h3 className="text-sm font-bold text-gray-900 group-hover:text-emerald-700 transition line-clamp-2">
-                    {projectNameJa(p.projectName)}
+                    {nameTranslations[p.warehouseProjectId] ?? p.projectName}
                   </h3>
                   {p.description && (
                     <p className="mt-1 text-xs text-gray-400 line-clamp-2">{p.description}</p>

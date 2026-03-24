@@ -1,4 +1,4 @@
-import { getProjects } from "@/lib/cad-trust";
+import { getProjects, translateProjects } from "@/lib/cad-trust";
 import type { CadProject } from "@/lib/cad-trust";
 import { getMethodologies } from "@/lib/wordpress";
 import { ProjectDashboard } from "@/components/ProjectDashboard";
@@ -119,6 +119,13 @@ export default async function ProjectsPage({ searchParams }: Props) {
     result = { page: 1, pageCount: 0, data: [] };
   }
 
+  // プロジェクト名を日本語翻訳（サーバーサイドで実行）
+  const translated = await translateProjects(result.data).catch(() => []);
+  const nameTranslations: Record<string, string> = {};
+  for (const t of translated) {
+    nameTranslations[t.warehouseProjectId] = t.projectNameJa;
+  }
+
   // 統計用に複数ページからサンプルデータ取得（初回表示時のみ）
   let stats = { registries: [] as [string, number][], sectors: [] as [string, number][], countries: [] as [string, number][], totalUnits: 0 };
   if (!query && page === 1) {
@@ -147,6 +154,7 @@ export default async function ProjectsPage({ searchParams }: Props) {
 
       <ProjectDashboard
         data={result.data}
+        nameTranslations={nameTranslations}
         query={query}
         currentPage={page}
         totalPages={result.pageCount}
