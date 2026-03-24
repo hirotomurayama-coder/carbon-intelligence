@@ -6,6 +6,7 @@ import Link from "next/link";
 import { SearchInput } from "@/components/ui/SearchInput";
 import { FilterSelect } from "@/components/ui/FilterSelect";
 import { Badge } from "@/components/ui/Badge";
+import { useCompare } from "@/components/CompareContext";
 import type { Methodology, RegistryName } from "@/types";
 
 const registryOptions: { label: string; value: RegistryName }[] = [
@@ -104,6 +105,7 @@ type Props = {
 export function MethodologyList({ data }: Props) {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const compare = useCompare();
 
   // URLパラメータから初期値を読み込み
   const [keyword, setKeyword] = useState(searchParams.get("q") ?? "");
@@ -271,6 +273,9 @@ export function MethodologyList({ data }: Props) {
               <th className="hidden px-5 py-3 font-medium text-gray-500 lg:table-cell">
                 ステータス
               </th>
+              <th className="w-12 px-3 py-3 font-medium text-gray-500">
+                <span className="sr-only">比較</span>
+              </th>
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-100">
@@ -366,12 +371,43 @@ export function MethodologyList({ data }: Props) {
                     <span className="text-xs text-gray-300">{"\u2014"}</span>
                   )}
                 </td>
+
+                {/* 比較ボタン */}
+                <td className="px-3 py-4">
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      if (compare.has(m.id)) {
+                        compare.remove(m.id);
+                      } else {
+                        compare.add(m);
+                      }
+                    }}
+                    disabled={compare.isFull && !compare.has(m.id)}
+                    className={`rounded-lg p-1.5 transition ${
+                      compare.has(m.id)
+                        ? "bg-emerald-100 text-emerald-700"
+                        : compare.isFull
+                          ? "text-gray-200 cursor-not-allowed"
+                          : "text-gray-300 hover:bg-emerald-50 hover:text-emerald-600"
+                    }`}
+                    title={compare.has(m.id) ? "比較から削除" : "比較に追加"}
+                  >
+                    <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                      {compare.has(m.id) ? (
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      ) : (
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                      )}
+                    </svg>
+                  </button>
+                </td>
               </tr>
             ))}
             {filtered.length === 0 && (
               <tr>
                 <td
-                  colSpan={5}
+                  colSpan={6}
                   className="px-5 py-12 text-center text-gray-400"
                 >
                   該当するメソドロジーが見つかりません
