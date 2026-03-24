@@ -94,7 +94,7 @@ export default async function Home() {
       <section className="grid grid-cols-2 gap-3 lg:grid-cols-6">
         <KpiCard label="メソドロジー" value={methodologies.length} unit="件" href="/methodologies" color="emerald" />
         <KpiCard label="登録企業" value={companies.length} unit="社" href="/companies" color="blue" />
-        <KpiCard label="グローバルPJ" value={projectStats.totalProjects > 0 ? `${(projectStats.totalProjects / 1000).toFixed(1)}K` : "—"} unit="" href="/projects" color="cyan" />
+        <KpiCard label="グローバルPJ" value={projectStats.totalProjects > 0 ? projectStats.totalProjects.toLocaleString() : "—"} unit="件" href="/projects" color="cyan" />
         <KpiCard label="インサイト" value={insights.length} unit="件" href="/insights" color="indigo" />
         <KpiCard label="関連記事" value={articlesTotal} unit="件" href="/companies" color="amber" />
         <KpiCard label="信頼性スコア" value={avgScore ?? "—"} unit={avgScore ? "/100" : ""} href="/methodologies" color="emerald" />
@@ -285,7 +285,7 @@ export default async function Home() {
             {/* 総数 */}
             <div className="text-center">
               <p className="text-3xl font-bold text-cyan-600">
-                {projectStats.totalProjects > 0 ? `${(projectStats.totalProjects / 1000).toFixed(1)}K+` : "—"}
+                {projectStats.totalProjects > 0 ? `${projectStats.totalProjects.toLocaleString()}+` : "—"}
               </p>
               <p className="mt-1 text-xs text-gray-400">登録プロジェクト数</p>
               <p className="mt-0.5 text-[10px] text-gray-300">Verra / Gold Standard / CDM / ACR</p>

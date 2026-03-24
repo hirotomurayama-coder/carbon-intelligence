@@ -73,9 +73,41 @@ function getCountries(p: CadProject): string[] {
 }
 
 function formatNumber(n: number): string {
-  if (n >= 1_000_000) return `${(n / 1_000_000).toFixed(1)}M`;
-  if (n >= 1_000) return `${(n / 1_000).toFixed(0)}K`;
-  return String(n);
+  return n.toLocaleString();
+}
+
+/** プロジェクト名の主要英語キーワードを日本語に変換 */
+function projectNameJa(name: string): string {
+  const replacements: [RegExp, string][] = [
+    [/\bReforestation\b/gi, "再植林"],
+    [/\bAfforestation\b/gi, "新規植林"],
+    [/\bForest Management\b/gi, "森林管理"],
+    [/\bAvoided Deforestation\b/gi, "森林減少回避"],
+    [/\bImproved Forest Management\b/gi, "改良森林管理"],
+    [/\bWind Energy\b/gi, "風力エネルギー"],
+    [/\bSolar Energy\b/gi, "太陽光エネルギー"],
+    [/\bRenewable Energy\b/gi, "再生可能エネルギー"],
+    [/\bCarbon Emission Reduction\b/gi, "炭素排出削減"],
+    [/\bImproved Cookstoves?\b/gi, "改良かまど"],
+    [/\bClean Cookstoves?\b/gi, "改良かまど"],
+    [/\bMethane\b/gi, "メタン"],
+    [/\bLandfill Gas\b/gi, "埋立地ガス"],
+    [/\bBiochar\b/gi, "バイオ炭"],
+    [/\bDirect Air Capture\b/gi, "直接空気回収"],
+    [/\bSoil Carbon\b/gi, "土壌炭素"],
+    [/\bWaste Management\b/gi, "廃棄物管理"],
+    [/\bWastewater\b/gi, "排水処理"],
+    [/\bProject\b/gi, "プロジェクト"],
+    [/\bReduction\b/gi, "削減"],
+    [/\bGeneration\b/gi, "発電"],
+    [/\bPower Plant\b/gi, "発電所"],
+    [/\bthrough\b/gi, "による"],
+  ];
+  let result = name;
+  for (const [pattern, replacement] of replacements) {
+    result = result.replace(pattern, replacement);
+  }
+  return result;
 }
 
 // ============================================================
@@ -157,7 +189,7 @@ export function ProjectSearchList({ initialData, initialQuery, currentPage, tota
               <div className="flex items-start justify-between gap-4">
                 <div className="min-w-0 flex-1">
                   <h3 className="text-sm font-bold text-gray-900 group-hover:text-emerald-700 transition line-clamp-2">
-                    {p.projectName}
+                    {projectNameJa(p.projectName)}
                   </h3>
                   {p.description && (
                     <p className="mt-1 text-xs text-gray-400 line-clamp-2">{p.description}</p>

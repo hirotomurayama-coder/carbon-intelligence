@@ -1,7 +1,9 @@
-import { getProjectById, calcTotalUnits, getCountries } from "@/lib/cad-trust";
+import { getProjectById, calcTotalUnits, getCountries, normalizeMethodologyCode } from "@/lib/cad-trust";
+import { getMethodologies } from "@/lib/wordpress";
 import { Badge } from "@/components/ui/Badge";
 import { notFound } from "next/navigation";
 import Link from "next/link";
+import type { Methodology } from "@/types";
 import type { Metadata } from "next";
 
 export const dynamic = "force-dynamic";
@@ -47,6 +49,22 @@ function formatNumber(n: number): string {
   return n.toLocaleString();
 }
 
+function projectNameJa(name: string): string {
+  const replacements: [RegExp, string][] = [
+    [/\bReforestation\b/gi, "再植林"], [/\bAfforestation\b/gi, "新規植林"],
+    [/\bForest Management\b/gi, "森林管理"], [/\bAvoided Deforestation\b/gi, "森林減少回避"],
+    [/\bImproved Forest Management\b/gi, "改良森林管理"], [/\bWind Energy\b/gi, "風力エネルギー"],
+    [/\bSolar Energy\b/gi, "太陽光エネルギー"], [/\bRenewable Energy\b/gi, "再生可能エネルギー"],
+    [/\bCarbon Emission Reduction\b/gi, "炭素排出削減"], [/\bImproved Cookstoves?\b/gi, "改良かまど"],
+    [/\bBiochar\b/gi, "バイオ炭"], [/\bDirect Air Capture\b/gi, "直接空気回収"],
+    [/\bWaste Management\b/gi, "廃棄物管理"], [/\bProject\b/gi, "プロジェクト"],
+    [/\bReduction\b/gi, "削減"], [/\bGeneration\b/gi, "発電"], [/\bPower Plant\b/gi, "発電所"],
+  ];
+  let result = name;
+  for (const [pattern, replacement] of replacements) result = result.replace(pattern, replacement);
+  return result;
+}
+
 function InfoRow({ label, value }: { label: string; value: React.ReactNode }) {
   return (
     <div className="flex items-start justify-between py-2.5 text-sm border-b border-gray-50 last:border-0">
@@ -67,6 +85,18 @@ export default async function ProjectDetailPage({ params }: Props) {
   const countries = getCountries(project);
   const totalUnits = calcTotalUnits(project);
 
+  // メソドロジーDBとの紐付け
+  let linkedMethodology: Methodology | null = null;
+  if (project.methodology) {
+    const allMethods = await getMethodologies();
+    const code = normalizeMethodologyCode(project.methodology);
+    linkedMethodology = allMethods.find((m) => {
+      const mTitle = m.title.toLowerCase();
+      const mCode = code.toLowerCase();
+      return mTitle.includes(mCode) || mTitle.includes(project.methodology!.toLowerCase());
+    }) ?? null;
+  }
+
   return (
     <div className="mx-auto max-w-4xl space-y-8">
       {/* パンくず */}
@@ -85,7 +115,7 @@ export default async function ProjectDetailPage({ params }: Props) {
           <Badge variant={statusColor(project.projectStatus)}>{statusJa(project.projectStatus)}</Badge>
           {project.methodology && <Badge variant="gray">{project.methodology}</Badge>}
         </div>
-        <h1 className="text-xl font-bold text-gray-900">{project.projectName}</h1>
+        <h1 className="text-xl font-bold text-gray-900">{projectNameJa(project.projectName)}</h1>
         {project.description && (
           <p className="mt-2 text-sm text-gray-500 leading-relaxed">{project.description}</p>
         )}
@@ -130,7 +160,18 @@ export default async function ProjectDetailPage({ params }: Props) {
           <InfoRow label="プロジェクトID" value={project.projectId} />
           <InfoRow label="レジストリ" value={project.currentRegistry} />
           <InfoRow label="開発者" value={project.projectDeveloper} />
-          <InfoRow label="メソドロジー" value={project.methodology} />
+          <InfoRow
+            label="メソドロジー"
+            value={
+              linkedMethodology ? (
+                <Link href={`/methodologies/${linkedMethodology.id}`} className="text-emerald-600 hover:underline">
+                  {project.methodology}
+                </Link>
+              ) : (
+                project.methodology
+              )
+            }
+          />
           <InfoRow label="検証機関" value={project.validationBody} />
           <InfoRow label="検証日" value={project.validationDate?.slice(0, 10)} />
           <InfoRow label="プロジェクト種別" value={project.projectType} />
@@ -175,6 +216,38 @@ export default async function ProjectDetailPage({ params }: Props) {
           )}
         </div>
       </div>
+
+      {/* メソドロジーDB連携 */}
+      {linkedMethodology && (
+        <div className="rounded-xl border border-emerald-200 bg-emerald-50/30 p-6 shadow-sm">
+          <h3 className="mb-3 text-sm font-semibold text-emerald-900">メソドロジーDB連携</h3>
+          <Link
+            href={`/methodologies/${linkedMethodology.id}`}
+            className="block rounded-lg border border-emerald-200 bg-white p-4 transition hover:shadow-md"
+          >
+            <p className="text-sm font-bold text-gray-900">
+              {linkedMethodology.titleJa ?? linkedMethodology.title}
+            </p>
+            {linkedMethodology.titleJa && (
+              <p className="mt-0.5 text-xs text-gray-400">{linkedMethodology.title}</p>
+            )}
+            <div className="mt-2 flex flex-wrap gap-1.5">
+              {linkedMethodology.registry && (
+                <Badge variant="emerald">{linkedMethodology.registry}</Badge>
+              )}
+              {linkedMethodology.creditType && (
+                <Badge variant="blue">{linkedMethodology.creditType}</Badge>
+              )}
+              {linkedMethodology.subCategory && (
+                <Badge variant="gray">{linkedMethodology.subCategory}</Badge>
+              )}
+            </div>
+            {linkedMethodology.aiSummary && (
+              <p className="mt-2 text-xs text-gray-500 line-clamp-2">{linkedMethodology.aiSummary}</p>
+            )}
+          </Link>
+        </div>
+      )}
 
       {/* ラベル・共便益 */}
       {(project.labels.length > 0 || project.coBenefits.length > 0) && (

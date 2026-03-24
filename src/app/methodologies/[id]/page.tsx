@@ -1,6 +1,8 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { getMethodologyById, getMethodologies } from "@/lib/wordpress";
+import { getProjects, getCountries, calcTotalUnits } from "@/lib/cad-trust";
+import type { CadProject } from "@/lib/cad-trust";
 import { Badge } from "@/components/ui/Badge";
 import type { Methodology, RegistryName } from "@/types";
 
@@ -235,6 +237,9 @@ export default async function MethodologyDetailPage({ params }: Props) {
         </div>
       </div>
 
+      {/* CAD Trust 関連プロジェクト */}
+      <CadTrustProjects methodology={methodology} />
+
       {/* 類似メソドロジー */}
       <SimilarMethodologies current={methodology} />
 
@@ -311,6 +316,83 @@ async function SimilarMethodologies({ current }: { current: Methodology }) {
           </Link>
         ))}
       </div>
+    </div>
+  );
+}
+
+/** CAD Trust のプロジェクトでこのメソドロジーを使用しているものを表示 */
+async function CadTrustProjects({ methodology }: { current?: never; methodology: Methodology }) {
+  // メソドロジー名の一部で検索（例: "VM0047", "AMS-I.D."）
+  const searchTerms: string[] = [];
+  const title = methodology.title;
+
+  // タイトルからメソドロジーコードを抽出
+  const codeMatch = title.match(/(VM\d{4}|VCS-\w+|ACM\d{4}|AMS-[\w.]+|AR-[\w.]+)/i);
+  if (codeMatch) searchTerms.push(codeMatch[1]);
+
+  // タイトルの最初の3単語で検索
+  const words = title.split(/\s+/).slice(0, 3).join(" ");
+  if (words.length >= 5) searchTerms.push(words);
+
+  if (searchTerms.length === 0) return null;
+
+  let projects: CadProject[] = [];
+  for (const term of searchTerms) {
+    try {
+      const res = await getProjects({ search: term, page: 1, limit: 5 });
+      for (const p of res.data) {
+        if (!projects.some((pp) => pp.warehouseProjectId === p.warehouseProjectId)) {
+          projects.push(p);
+        }
+      }
+    } catch {
+      // pass
+    }
+  }
+
+  // メソドロジー名でフィルタ
+  if (codeMatch) {
+    const code = codeMatch[1].toLowerCase();
+    projects = projects.filter((p) =>
+      p.methodology?.toLowerCase().includes(code)
+    );
+  }
+
+  if (projects.length === 0) return null;
+
+  return (
+    <div className="rounded-xl border border-cyan-200 bg-cyan-50/30 p-6 shadow-sm">
+      <div className="mb-4 flex items-center gap-2">
+        <h3 className="text-sm font-semibold text-cyan-900">関連プロジェクト</h3>
+        <span className="rounded-full bg-cyan-100 px-2 py-0.5 text-[10px] font-semibold text-cyan-700">CAD Trust</span>
+        <Badge variant="gray">{projects.length}件</Badge>
+      </div>
+      <div className="space-y-2">
+        {projects.slice(0, 5).map((p) => {
+          const countries = getCountries(p);
+          const units = calcTotalUnits(p);
+          return (
+            <Link
+              key={p.warehouseProjectId}
+              href={`/projects/${p.warehouseProjectId}`}
+              className="block rounded-lg border border-cyan-100 bg-white p-3 transition hover:shadow-md hover:border-cyan-300"
+            >
+              <p className="text-sm font-medium text-gray-900 line-clamp-1">{p.projectName}</p>
+              <div className="mt-1 flex items-center gap-2 text-xs text-gray-400">
+                <span>{p.currentRegistry}</span>
+                {countries.length > 0 && <span>{countries.join(", ")}</span>}
+                {units > 0 && <span className="font-semibold text-cyan-700">{units.toLocaleString()} tCO2e</span>}
+              </div>
+            </Link>
+          );
+        })}
+      </div>
+      <Link
+        href={`/projects?q=${encodeURIComponent(searchTerms[0])}`}
+        className="mt-3 block text-xs text-cyan-600 hover:text-cyan-700"
+      >
+        さらに検索 →
+      </Link>
     </div>
   );
 }

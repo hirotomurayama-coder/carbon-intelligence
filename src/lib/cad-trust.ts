@@ -184,6 +184,19 @@ export async function getProjectStats(): Promise<{ totalProjects: number }> {
 // ヘルパー
 // ============================================================
 
+/**
+ * CAD Trust メソドロジー名から、内部メソドロジーDB のマッチを探す。
+ * 例: "VM0047" → Verra VM0047 のメソドロジーID
+ */
+export function normalizeMethodologyCode(cadMethodology: string): string {
+  // "VCS-VM0042" → "VM0042", "CDM - AMS-I.D." → "AMS-I.D."
+  return cadMethodology
+    .replace(/^VCS-/i, "")
+    .replace(/^CDM\s*-\s*/i, "")
+    .replace(/^GS\s*-\s*/i, "")
+    .trim();
+}
+
 /** 総発行量（ユニット数）を計算 */
 export function calcTotalUnits(project: CadProject): number {
   return project.estimations.reduce((sum, e) => sum + (e.unitCount ?? 0), 0);

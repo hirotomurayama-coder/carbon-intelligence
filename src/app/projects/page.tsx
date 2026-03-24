@@ -60,6 +60,30 @@ export default async function ProjectsPage({ searchParams }: Props) {
         </div>
       )}
 
+      {/* 統計カード */}
+      {result.pageCount > 0 && (
+        <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+          <div className="rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
+            <p className="text-[10px] font-medium text-gray-400 uppercase tracking-wider">総プロジェクト</p>
+            <p className="mt-1 text-2xl font-bold text-cyan-600">{result.pageCount.toLocaleString()}</p>
+          </div>
+          <div className="rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
+            <p className="text-[10px] font-medium text-gray-400 uppercase tracking-wider">対応レジストリ</p>
+            <p className="mt-1 text-2xl font-bold text-emerald-600">4+</p>
+            <p className="text-[10px] text-gray-300">Verra / GS / CDM / ACR</p>
+          </div>
+          <div className="rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
+            <p className="text-[10px] font-medium text-gray-400 uppercase tracking-wider">カバー国数</p>
+            <p className="mt-1 text-2xl font-bold text-blue-600">190+</p>
+          </div>
+          <div className="rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
+            <p className="text-[10px] font-medium text-gray-400 uppercase tracking-wider">データ基盤</p>
+            <p className="mt-1 text-lg font-bold text-indigo-600">Chia Blockchain</p>
+            <p className="text-[10px] text-gray-300">リアルタイム更新</p>
+          </div>
+        </div>
+      )}
+
       <ProjectSearchList
         initialData={result.data}
         initialQuery={query}
