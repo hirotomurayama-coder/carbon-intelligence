@@ -221,7 +221,8 @@ async function publishBrief(title: string, content: string): Promise<void> {
     body: JSON.stringify({
       title,
       content,
-      status: "publish",
+      // 下書きとして投稿 → WordPress管理画面でレビュー後に公開
+      status: "draft",
       acf: acfData,
     }),
   });
@@ -232,7 +233,9 @@ async function publishBrief(title: string, content: string): Promise<void> {
   }
 
   const created = (await res.json()) as { id: number; link: string };
-  console.log(`✓ 投稿完了: ID ${created.id}`);
+  console.log(`✓ 下書き投稿完了: ID ${created.id}`);
+  console.log(`  レビューURL: https://carboncreditsjp.wpcomstaging.com/wp-admin/post.php?post=${created.id}&action=edit`);
+  console.log(`  → WordPress管理画面で内容を確認し「公開」に変更してください`);
 }
 
 // ============================================================

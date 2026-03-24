@@ -1,11 +1,56 @@
 import type { Metadata } from "next";
 
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   title: "設定 | Carbon Intelligence",
 };
 
-export default function SettingsPage() {
+type DraftPost = {
+  id: number;
+  title: string;
+  category: string | null;
+  date: string;
+  editUrl: string;
+};
+
+async function fetchDrafts(): Promise<DraftPost[]> {
+  const apiBase = (process.env.NEXT_PUBLIC_WORDPRESS_API_URL ?? "").replace(/\/+$/, "");
+  const user = process.env.WP_APP_USER ?? "";
+  const pass = process.env.WP_APP_PASSWORD ?? "";
+  if (!apiBase || !user || !pass) return [];
+
+  try {
+    const auth = `Basic ${Buffer.from(`${user}:${pass}`).toString("base64")}`;
+    const res = await fetch(
+      `${apiBase}/insights?status=draft&per_page=20&orderby=date&order=desc`,
+      { cache: "no-store", headers: { Accept: "application/json", Authorization: auth } }
+    );
+    if (!res.ok) return [];
+    const posts = (await res.json()) as {
+      id: number;
+      title: { rendered: string };
+      date: string;
+      acf?: Record<string, unknown> | unknown[];
+    }[];
+    return posts.map((p) => {
+      const acf = p.acf && !Array.isArray(p.acf) ? p.acf : {};
+      return {
+        id: p.id,
+        title: p.title.rendered.replace(/<[^>]*>/g, ""),
+        category: typeof acf.insight_category === "string" ? acf.insight_category : null,
+        date: p.date.slice(0, 10),
+        editUrl: `https://carboncreditsjp.wpcomstaging.com/wp-admin/post.php?post=${p.id}&action=edit`,
+      };
+    });
+  } catch {
+    return [];
+  }
+}
+
+export default async function SettingsPage() {
   const apiBase = process.env.NEXT_PUBLIC_WORDPRESS_API_URL ?? "未設定";
+  const drafts = await fetchDrafts();
   const hasDriveKey = !!process.env.GOOGLE_SERVICE_ACCOUNT_KEY;
   const hasDriveFolder = !!process.env.GOOGLE_DRIVE_FOLDER_ID;
   const hasGemini = !!process.env.GOOGLE_GENERATIVE_AI_API_KEY;
@@ -19,6 +64,42 @@ export default function SettingsPage() {
           システム接続状況と運用情報
         </p>
       </div>
+
+      {/* レビュー待ちコンテンツ */}
+      {drafts.length > 0 && (
+        <div className="rounded-xl border border-amber-200 bg-amber-50 p-6 shadow-sm">
+          <div className="mb-4 flex items-center gap-2">
+            <span className="flex h-6 w-6 items-center justify-center rounded-full bg-amber-100 text-xs font-bold text-amber-700">
+              {drafts.length}
+            </span>
+            <h2 className="text-sm font-semibold text-amber-900">レビュー待ちコンテンツ</h2>
+          </div>
+          <p className="mb-3 text-xs text-amber-700">
+            AI生成された下書きがWordPressに保存されています。内容を確認・編集して「公開」に変更してください。
+          </p>
+          <div className="space-y-2">
+            {drafts.map((d) => (
+              <div key={d.id} className="flex items-center justify-between rounded-lg bg-white/70 px-4 py-3">
+                <div className="min-w-0">
+                  <p className="text-sm font-medium text-gray-900 truncate">{d.title}</p>
+                  <div className="mt-0.5 flex items-center gap-2 text-xs text-gray-400">
+                    {d.category && <span className="rounded bg-amber-100 px-1.5 py-0.5 text-amber-700">{d.category}</span>}
+                    <span>{d.date}</span>
+                  </div>
+                </div>
+                <a
+                  href={d.editUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex-shrink-0 rounded-lg bg-amber-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-amber-700 transition"
+                >
+                  レビューする
+                </a>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* データソース接続状況 */}
       <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
