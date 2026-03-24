@@ -323,20 +323,7 @@ export function ProjectDashboard({ data, query, currentPage, totalPages, stats, 
                   <div className="mt-3 flex flex-wrap gap-1.5">
                     <Badge variant={registryColor(p.currentRegistry)}>{p.currentRegistry}</Badge>
                     <Badge variant={statusColor(p.projectStatus)}>{statusJa(p.projectStatus)}</Badge>
-                    {p.methodology && (() => {
-                      const linked = findLinkedMethodology(p.methodology, methodologies);
-                      return linked ? (
-                        <Link
-                          href={`/methodologies/${linked.id}`}
-                          onClick={(e) => e.stopPropagation()}
-                          className="inline-block"
-                        >
-                          <Badge variant="indigo">{p.methodology}</Badge>
-                        </Link>
-                      ) : (
-                        <Badge variant="gray">{p.methodology}</Badge>
-                      );
-                    })()}
+                    {p.methodology && <Badge variant="gray">{p.methodology}</Badge>}
                   </div>
                 </div>
                 <div className="flex flex-col items-end gap-1 text-right flex-shrink-0">

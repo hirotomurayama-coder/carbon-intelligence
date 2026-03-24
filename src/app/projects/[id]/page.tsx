@@ -164,8 +164,11 @@ export default async function ProjectDetailPage({ params }: Props) {
             label="メソドロジー"
             value={
               linkedMethodology ? (
-                <Link href={`/methodologies/${linkedMethodology.id}`} className="text-emerald-600 hover:underline">
+                <Link href={`/methodologies/${linkedMethodology.id}`} className="text-emerald-600 hover:underline flex items-center gap-1">
                   {project.methodology}
+                  <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
+                  </svg>
                 </Link>
               ) : (
                 project.methodology
@@ -217,10 +220,11 @@ export default async function ProjectDetailPage({ params }: Props) {
         </div>
       </div>
 
-      {/* メソドロジーDB連携 */}
+      {/* このプロジェクトのメソドロジー */}
       {linkedMethodology && (
         <div className="rounded-xl border border-emerald-200 bg-emerald-50/30 p-6 shadow-sm">
-          <h3 className="mb-3 text-sm font-semibold text-emerald-900">メソドロジーDB連携</h3>
+          <h3 className="mb-1 text-sm font-semibold text-emerald-900">このプロジェクトのメソドロジー</h3>
+          <p className="mb-3 text-xs text-emerald-700/70">このプロジェクトで使用されているメソドロジーの詳細を確認できます</p>
           <Link
             href={`/methodologies/${linkedMethodology.id}`}
             className="block rounded-lg border border-emerald-200 bg-white p-4 transition hover:shadow-md"
