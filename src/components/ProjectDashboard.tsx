@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Badge } from "@/components/ui/Badge";
 import type { CadProject } from "@/lib/cad-trust";
+import type { Methodology } from "@/types";
 
 // ============================================================
 // ヘルパー
@@ -99,9 +100,27 @@ type Props = {
     countries: [string, number][];
     totalUnits: number;
   };
+  methodologies?: Methodology[];
 };
 
-export function ProjectDashboard({ data, query, currentPage, totalPages, stats }: Props) {
+/** CAD Trustメソドロジー名 → 内部DBのメソドロジーIDを検索 */
+function findLinkedMethodology(cadMethodology: string, methodologies: Methodology[]): Methodology | null {
+  if (!cadMethodology || methodologies.length === 0) return null;
+  // コード部分を抽出（VCS-VM0042 → VM0042, CDM - AMS-I.D. → AMS-I.D.）
+  const code = cadMethodology
+    .replace(/^VCS-/i, "")
+    .replace(/^CDM\s*-\s*/i, "")
+    .replace(/^GS\s*-\s*/i, "")
+    .trim()
+    .toLowerCase();
+
+  return methodologies.find((m) => {
+    const t = m.title.toLowerCase();
+    return t.includes(code) || t.includes(cadMethodology.toLowerCase());
+  }) ?? null;
+}
+
+export function ProjectDashboard({ data, query, currentPage, totalPages, stats, methodologies = [] }: Props) {
   const router = useRouter();
   const [searchQuery, setSearchQuery] = useState(query);
   const showDashboard = !query && currentPage === 1;
@@ -304,7 +323,20 @@ export function ProjectDashboard({ data, query, currentPage, totalPages, stats }
                   <div className="mt-3 flex flex-wrap gap-1.5">
                     <Badge variant={registryColor(p.currentRegistry)}>{p.currentRegistry}</Badge>
                     <Badge variant={statusColor(p.projectStatus)}>{statusJa(p.projectStatus)}</Badge>
-                    {p.methodology && <Badge variant="gray">{p.methodology}</Badge>}
+                    {p.methodology && (() => {
+                      const linked = findLinkedMethodology(p.methodology, methodologies);
+                      return linked ? (
+                        <Link
+                          href={`/methodologies/${linked.id}`}
+                          onClick={(e) => e.stopPropagation()}
+                          className="inline-block"
+                        >
+                          <Badge variant="indigo">{p.methodology}</Badge>
+                        </Link>
+                      ) : (
+                        <Badge variant="gray">{p.methodology}</Badge>
+                      );
+                    })()}
                   </div>
                 </div>
                 <div className="flex flex-col items-end gap-1 text-right flex-shrink-0">

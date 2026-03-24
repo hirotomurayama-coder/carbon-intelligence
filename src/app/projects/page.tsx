@@ -1,5 +1,6 @@
 import { getProjects } from "@/lib/cad-trust";
 import type { CadProject } from "@/lib/cad-trust";
+import { getMethodologies } from "@/lib/wordpress";
 import { ProjectDashboard } from "@/components/ProjectDashboard";
 import type { Metadata } from "next";
 
@@ -101,6 +102,9 @@ export default async function ProjectsPage({ searchParams }: Props) {
   const query = params.q ?? "";
   const page = parseInt(params.page ?? "1", 10) || 1;
 
+  // メソドロジーDBを取得（メソドロジータグのリンク化に使用）
+  const allMethodologies = await getMethodologies().catch(() => []);
+
   let result;
   let fetchError: string | null = null;
 
@@ -115,12 +119,18 @@ export default async function ProjectsPage({ searchParams }: Props) {
     result = { page: 1, pageCount: 0, data: [] };
   }
 
-  // 統計用にサンプルデータ取得（初回表示時のみ）
+  // 統計用に複数ページからサンプルデータ取得（初回表示時のみ）
   let stats = { registries: [] as [string, number][], sectors: [] as [string, number][], countries: [] as [string, number][], totalUnits: 0 };
   if (!query && page === 1) {
     try {
-      const sample = await getProjects({ page: 1, limit: 100 });
-      stats = computeStats(sample.data);
+      // 複数ページからサンプリングしてレジストリ分布を正確に
+      const pages = await Promise.all([
+        getProjects({ page: 1, limit: 100 }),
+        getProjects({ page: 10, limit: 100 }).catch(() => ({ data: [] })),
+        getProjects({ page: 50, limit: 100 }).catch(() => ({ data: [] })),
+      ]);
+      const allSample = pages.flatMap((p) => "data" in p ? p.data : []);
+      stats = computeStats(allSample as CadProject[]);
     } catch {
       // stats は空のまま
     }
@@ -141,6 +151,7 @@ export default async function ProjectsPage({ searchParams }: Props) {
         currentPage={page}
         totalPages={result.pageCount}
         stats={stats}
+        methodologies={allMethodologies}
       />
     </div>
   );
