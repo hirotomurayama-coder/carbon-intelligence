@@ -1,9 +1,12 @@
 {
   "dataSource": "UC Berkeley Voluntary Registry Offsets Database (VROD)",
   "dataDate": "2025-12",
+  "dataVersion": "v2-complete",
   "totalProjects": 10975,
-  "totalIssued": 1094580641,
-  "totalRetired": 1017893792,
+  "totalIssued": 1441620538,
+  "totalRetired": 1057058199,
+  "totalCancelled": 304197810,
+  "totalBuffer": 108969254,
   "registryProjects": {
     "ACR": 954,
     "ART": 27,
@@ -13,431 +16,675 @@
   },
   "registryIssuances": {
     "ACR": 365574109,
+    "ART": 58533813,
     "CAR": 249969511,
+    "ARB": 288506084,
     "Verra": 479037021
   },
   "registryRetirements": {
     "ACR": 51517644,
+    "ART": 201408,
     "CAR": 79524998,
+    "ARB": 38962999,
     "Verra": 886851150
+  },
+  "registryCancellations": {
+    "ACR": 182128437,
+    "ART": 1100,
+    "CAR": 122068273
+  },
+  "registryBuffer": {
+    "ACR": 11108517,
+    "ART": 3569215,
+    "CAR": 7603548,
+    "Gold Standard": 0,
+    "Verra": 86687974
   },
   "yearlyData": [
     {
-      "year": 1999,
-      "issued": 74895,
-      "retired": 0,
-      "issued_by_registry": {
-        "ACR": 74895,
-        "CAR": 0,
-        "Verra": 0
-      },
-      "retired_by_registry": {
-        "ACR": 0,
-        "CAR": 0,
-        "Verra": 0
-      }
-    },
-    {
-      "year": 2000,
-      "issued": 1106025,
-      "retired": 0,
-      "issued_by_registry": {
-        "ACR": 1106025,
-        "CAR": 0,
-        "Verra": 0
-      },
-      "retired_by_registry": {
-        "ACR": 0,
-        "CAR": 0,
-        "Verra": 0
-      }
-    },
-    {
-      "year": 2001,
-      "issued": 832820,
-      "retired": 0,
-      "issued_by_registry": {
-        "ACR": 832820,
-        "CAR": 0,
-        "Verra": 0
-      },
-      "retired_by_registry": {
-        "ACR": 0,
-        "CAR": 0,
-        "Verra": 0
-      }
-    },
-    {
       "year": 2002,
-      "issued": 972612,
+      "issued": 125000,
       "retired": 0,
+      "cancelled": 0,
       "issued_by_registry": {
-        "ACR": 972612,
+        "ACR": 125000,
+        "ARB": 0,
+        "ART": 0,
         "CAR": 0,
         "Verra": 0
       },
       "retired_by_registry": {
         "ACR": 0,
-        "CAR": 0,
-        "Verra": 0
-      }
-    },
-    {
-      "year": 2003,
-      "issued": 3466067,
-      "retired": 0,
-      "issued_by_registry": {
-        "ACR": 3466067,
+        "ARB": 0,
+        "ART": 0,
         "CAR": 0,
         "Verra": 0
       },
-      "retired_by_registry": {
+      "cancelled_by_registry": {
         "ACR": 0,
+        "ARB": 0,
+        "ART": 0,
         "CAR": 0,
         "Verra": 0
       }
     },
     {
       "year": 2004,
-      "issued": 1533048,
-      "retired": 0,
+      "issued": 500,
+      "retired": 407,
+      "cancelled": 0,
       "issued_by_registry": {
-        "ACR": 1533048,
+        "ACR": 500,
+        "ARB": 0,
+        "ART": 0,
         "CAR": 0,
         "Verra": 0
       },
       "retired_by_registry": {
+        "ACR": 407,
+        "ARB": 0,
+        "ART": 0,
+        "CAR": 0,
+        "Verra": 0
+      },
+      "cancelled_by_registry": {
         "ACR": 0,
+        "ARB": 0,
+        "ART": 0,
         "CAR": 0,
         "Verra": 0
       }
     },
     {
       "year": 2005,
-      "issued": 1880381,
-      "retired": 66,
+      "issued": 2880358,
+      "retired": 369,
+      "cancelled": 0,
       "issued_by_registry": {
-        "ACR": 1880381,
+        "ACR": 2880358,
+        "ARB": 0,
+        "ART": 0,
         "CAR": 0,
         "Verra": 0
       },
       "retired_by_registry": {
-        "ACR": 66,
+        "ACR": 369,
+        "ARB": 0,
+        "ART": 0,
+        "CAR": 0,
+        "Verra": 0
+      },
+      "cancelled_by_registry": {
+        "ACR": 0,
+        "ARB": 0,
+        "ART": 0,
         "CAR": 0,
         "Verra": 0
       }
     },
     {
       "year": 2006,
-      "issued": 9237690,
-      "retired": 1630,
+      "issued": 11027146,
+      "retired": 7705,
+      "cancelled": 0,
       "issued_by_registry": {
-        "ACR": 9237690,
+        "ACR": 11027146,
+        "ARB": 0,
+        "ART": 0,
         "CAR": 0,
         "Verra": 0
       },
       "retired_by_registry": {
-        "ACR": 1630,
+        "ACR": 7705,
+        "ARB": 0,
+        "ART": 0,
+        "CAR": 0,
+        "Verra": 0
+      },
+      "cancelled_by_registry": {
+        "ACR": 0,
+        "ARB": 0,
+        "ART": 0,
         "CAR": 0,
         "Verra": 0
       }
     },
     {
       "year": 2007,
-      "issued": 3580885,
-      "retired": 6731,
+      "issued": 5847510,
+      "retired": 423432,
+      "cancelled": 0,
       "issued_by_registry": {
-        "ACR": 3580885,
+        "ACR": 5847510,
+        "ARB": 0,
+        "ART": 0,
         "CAR": 0,
         "Verra": 0
       },
       "retired_by_registry": {
-        "ACR": 6731,
+        "ACR": 423432,
+        "ARB": 0,
+        "ART": 0,
+        "CAR": 0,
+        "Verra": 0
+      },
+      "cancelled_by_registry": {
+        "ACR": 0,
+        "ARB": 0,
+        "ART": 0,
         "CAR": 0,
         "Verra": 0
       }
     },
     {
       "year": 2008,
-      "issued": 8366615,
-      "retired": 534275,
+      "issued": 8365674,
+      "retired": 1680548,
+      "cancelled": 0,
       "issued_by_registry": {
-        "ACR": 7939753,
+        "ACR": 7938812,
+        "ARB": 0,
+        "ART": 0,
         "CAR": 426862,
         "Verra": 0
       },
       "retired_by_registry": {
-        "ACR": 534275,
+        "ACR": 1680387,
+        "ARB": 0,
+        "ART": 0,
+        "CAR": 161,
+        "Verra": 0
+      },
+      "cancelled_by_registry": {
+        "ACR": 0,
+        "ARB": 0,
+        "ART": 0,
         "CAR": 0,
         "Verra": 0
       }
     },
     {
       "year": 2009,
-      "issued": 6722598,
-      "retired": 1994166,
+      "issued": 9242928,
+      "retired": 2512325,
+      "cancelled": 0,
       "issued_by_registry": {
-        "ACR": 3724951,
+        "ACR": 6245281,
+        "ARB": 0,
+        "ART": 0,
         "CAR": 1895410,
         "Verra": 1102237
       },
       "retired_by_registry": {
-        "ACR": 43809,
-        "CAR": 118346,
+        "ACR": 396187,
+        "ARB": 0,
+        "ART": 0,
+        "CAR": 284127,
         "Verra": 1832011
+      },
+      "cancelled_by_registry": {
+        "ACR": 0,
+        "ARB": 0,
+        "ART": 0,
+        "CAR": 0,
+        "Verra": 0
       }
     },
     {
       "year": 2010,
-      "issued": 12069502,
-      "retired": 4818496,
+      "issued": 11556585,
+      "retired": 5320960,
+      "cancelled": 0,
       "issued_by_registry": {
-        "ACR": 683986,
+        "ACR": 171069,
+        "ARB": 0,
+        "ART": 0,
         "CAR": 7890136,
         "Verra": 3495380
       },
       "retired_by_registry": {
-        "ACR": 140,
-        "CAR": 465578,
+        "ACR": 245230,
+        "ARB": 0,
+        "ART": 0,
+        "CAR": 722952,
         "Verra": 4352778
+      },
+      "cancelled_by_registry": {
+        "ACR": 0,
+        "ARB": 0,
+        "ART": 0,
+        "CAR": 0,
+        "Verra": 0
       }
     },
     {
       "year": 2011,
-      "issued": 16558658,
-      "retired": 9124292,
+      "issued": 12818567,
+      "retired": 10236782,
+      "cancelled": 0,
       "issued_by_registry": {
-        "ACR": 4259845,
+        "ACR": 519754,
+        "ARB": 0,
+        "ART": 0,
         "CAR": 9765382,
         "Verra": 2533431
       },
       "retired_by_registry": {
-        "ACR": 52883,
-        "CAR": 983249,
+        "ACR": 112158,
+        "ARB": 0,
+        "ART": 0,
+        "CAR": 2036464,
         "Verra": 8088160
+      },
+      "cancelled_by_registry": {
+        "ACR": 0,
+        "ARB": 0,
+        "ART": 0,
+        "CAR": 0,
+        "Verra": 0
       }
     },
     {
       "year": 2012,
-      "issued": 19663463,
-      "retired": 15402894,
+      "issued": 18202962,
+      "retired": 17074034,
+      "cancelled": 0,
       "issued_by_registry": {
-        "ACR": 5576416,
+        "ACR": 4115915,
+        "ARB": 0,
+        "ART": 0,
         "CAR": 10734499,
         "Verra": 3352548
       },
       "retired_by_registry": {
-        "ACR": 34714,
-        "CAR": 854560,
+        "ACR": 51949,
+        "ARB": 0,
+        "ART": 0,
+        "CAR": 2508465,
         "Verra": 14513620
+      },
+      "cancelled_by_registry": {
+        "ACR": 0,
+        "ARB": 0,
+        "ART": 0,
+        "CAR": 0,
+        "Verra": 0
       }
     },
     {
       "year": 2013,
-      "issued": 17183173,
-      "retired": 25087010,
+      "issued": 21487202,
+      "retired": 28034144,
+      "cancelled": 4266819,
       "issued_by_registry": {
-        "ACR": 1640893,
+        "ACR": 1676242,
+        "ARB": 4268680,
+        "ART": 0,
         "CAR": 12875064,
         "Verra": 2667216
       },
       "retired_by_registry": {
-        "ACR": 41828,
-        "CAR": 1049817,
+        "ACR": 338286,
+        "ARB": 0,
+        "ART": 0,
+        "CAR": 3700493,
         "Verra": 23995365
+      },
+      "cancelled_by_registry": {
+        "ACR": 414325,
+        "ARB": 0,
+        "ART": 0,
+        "CAR": 3852494,
+        "Verra": 0
       }
     },
     {
       "year": 2014,
-      "issued": 19119439,
-      "retired": 22928778,
+      "issued": 29816225,
+      "retired": 27003388,
+      "cancelled": 11078897,
       "issued_by_registry": {
-        "ACR": 4574079,
+        "ACR": 4287042,
+        "ARB": 10983823,
+        "ART": 0,
         "CAR": 13101763,
         "Verra": 1443597
       },
       "retired_by_registry": {
-        "ACR": 46605,
-        "CAR": 791933,
+        "ACR": 447998,
+        "ARB": 0,
+        "ART": 0,
+        "CAR": 4465150,
         "Verra": 22090240
+      },
+      "cancelled_by_registry": {
+        "ACR": 2822487,
+        "ARB": 0,
+        "ART": 0,
+        "CAR": 8256410,
+        "Verra": 0
       }
     },
     {
       "year": 2015,
-      "issued": 29920819,
-      "retired": 31389973,
+      "issued": 45384272,
+      "retired": 33777105,
+      "cancelled": 18964091,
       "issued_by_registry": {
-        "ACR": 12830554,
+        "ACR": 8732794,
+        "ARB": 19561213,
+        "ART": 0,
         "CAR": 16461305,
         "Verra": 628960
       },
       "retired_by_registry": {
-        "ACR": 572356,
-        "CAR": 4355798,
+        "ACR": 815822,
+        "ARB": 0,
+        "ART": 0,
+        "CAR": 6499464,
         "Verra": 26461819
+      },
+      "cancelled_by_registry": {
+        "ACR": 7360653,
+        "ARB": 0,
+        "ART": 0,
+        "CAR": 11603438,
+        "Verra": 0
       }
     },
     {
       "year": 2016,
-      "issued": 53361282,
-      "retired": 21987456,
+      "issued": 61139003,
+      "retired": 26150865,
+      "cancelled": 18267083,
       "issued_by_registry": {
-        "ACR": 39094003,
+        "ACR": 27095713,
+        "ARB": 19776011,
+        "ART": 0,
         "CAR": 13591251,
         "Verra": 676028
       },
       "retired_by_registry": {
-        "ACR": 32734,
-        "CAR": 1234706,
+        "ACR": 562570,
+        "ARB": 0,
+        "ART": 0,
+        "CAR": 4868279,
         "Verra": 20720016
+      },
+      "cancelled_by_registry": {
+        "ACR": 6336145,
+        "ARB": 0,
+        "ART": 0,
+        "CAR": 11930938,
+        "Verra": 0
       }
     },
     {
       "year": 2017,
-      "issued": 56265023,
-      "retired": 33034736,
+      "issued": 103453117,
+      "retired": 35708313,
+      "cancelled": 37410864,
       "issued_by_registry": {
-        "ACR": 33528626,
+        "ACR": 47983817,
+        "ARB": 32732903,
+        "ART": 0,
         "CAR": 16026345,
         "Verra": 6710052
       },
       "retired_by_registry": {
-        "ACR": 113320,
-        "CAR": 3236868,
+        "ACR": 693593,
+        "ARB": 0,
+        "ART": 0,
+        "CAR": 5330172,
         "Verra": 29684548
+      },
+      "cancelled_by_registry": {
+        "ACR": 26805973,
+        "ARB": 0,
+        "ART": 0,
+        "CAR": 10604891,
+        "Verra": 0
       }
     },
     {
       "year": 2018,
-      "issued": 34473881,
-      "retired": 38461796,
+      "issued": 88196561,
+      "retired": 43208008,
+      "cancelled": 54567962,
       "issued_by_registry": {
-        "ACR": 13058657,
+        "ACR": 12048989,
+        "ARB": 54732348,
+        "ART": 0,
         "CAR": 18886550,
         "Verra": 2528674
       },
       "retired_by_registry": {
-        "ACR": 487144,
-        "CAR": 1273614,
+        "ACR": 1167623,
+        "ARB": 0,
+        "ART": 0,
+        "CAR": 5339347,
         "Verra": 36701038
+      },
+      "cancelled_by_registry": {
+        "ACR": 44026701,
+        "ARB": 0,
+        "ART": 0,
+        "CAR": 10541261,
+        "Verra": 0
       }
     },
     {
       "year": 2019,
-      "issued": 62630849,
-      "retired": 53202706,
+      "issued": 73443043,
+      "retired": 57792501,
+      "cancelled": 27673239,
       "issued_by_registry": {
-        "ACR": 29958499,
+        "ACR": 14229468,
+        "ARB": 26541225,
+        "ART": 0,
         "CAR": 18887796,
         "Verra": 13784554
       },
       "retired_by_registry": {
-        "ACR": 662848,
-        "CAR": 1277160,
+        "ACR": 1541861,
+        "ARB": 0,
+        "ART": 0,
+        "CAR": 4987942,
         "Verra": 51262698
+      },
+      "cancelled_by_registry": {
+        "ACR": 14500099,
+        "ARB": 0,
+        "ART": 0,
+        "CAR": 13173140,
+        "Verra": 0
       }
     },
     {
       "year": 2020,
-      "issued": 76072614,
-      "retired": 72624105,
+      "issued": 120571502,
+      "retired": 79142791,
+      "cancelled": 50061273,
       "issued_by_registry": {
-        "ACR": 29737611,
+        "ACR": 28693311,
+        "ARB": 45543188,
+        "ART": 0,
         "CAR": 19209838,
         "Verra": 27125165
       },
       "retired_by_registry": {
-        "ACR": 970969,
-        "CAR": 1189335,
+        "ACR": 3179519,
+        "ARB": 0,
+        "ART": 0,
+        "CAR": 5499471,
         "Verra": 70463801
+      },
+      "cancelled_by_registry": {
+        "ACR": 32517129,
+        "ARB": 0,
+        "ART": 0,
+        "CAR": 17544144,
+        "Verra": 0
       }
     },
     {
       "year": 2021,
-      "issued": 132197604,
-      "retired": 132322283,
+      "issued": 143335498,
+      "retired": 136022358,
+      "cancelled": 20003496,
       "issued_by_registry": {
-        "ACR": 23835149,
+        "ACR": 17563259,
+        "ARB": 17409784,
+        "ART": 0,
         "CAR": 9928909,
         "Verra": 98433546
       },
       "retired_by_registry": {
-        "ACR": 1221986,
-        "CAR": 1477482,
+        "ACR": 2483684,
+        "ARB": 0,
+        "ART": 0,
+        "CAR": 3915859,
         "Verra": 129622815
+      },
+      "cancelled_by_registry": {
+        "ACR": 8588916,
+        "ARB": 0,
+        "ART": 0,
+        "CAR": 11414580,
+        "Verra": 0
       }
     },
     {
       "year": 2022,
-      "issued": 145755633,
-      "retired": 119789981,
+      "issued": 182617737,
+      "retired": 126606575,
+      "cancelled": 12434354,
       "issued_by_registry": {
-        "ACR": 37495783,
+        "ACR": 29322192,
+        "ARB": 11565096,
+        "ART": 33470599,
         "CAR": 15335659,
         "Verra": 92924191
       },
       "retired_by_registry": {
-        "ACR": 2948138,
-        "CAR": 1293392,
+        "ACR": 6406290,
+        "ARB": 0,
+        "ART": 0,
+        "CAR": 4651834,
         "Verra": 115548451
+      },
+      "cancelled_by_registry": {
+        "ACR": 6206970,
+        "ARB": 0,
+        "ART": 0,
+        "CAR": 6227384,
+        "Verra": 0
       }
     },
     {
       "year": 2023,
-      "issued": 146959187,
-      "retired": 121951402,
+      "issued": 157567288,
+      "retired": 134641019,
+      "cancelled": 14521314,
       "issued_by_registry": {
-        "ACR": 40544962,
+        "ACR": 37355459,
+        "ARB": 13797604,
+        "ART": 0,
         "CAR": 13470477,
         "Verra": 92943748
       },
       "retired_by_registry": {
-        "ACR": 1961099,
-        "CAR": 4823081,
+        "ACR": 11401058,
+        "ARB": 0,
+        "ART": 1408,
+        "CAR": 8071331,
         "Verra": 115167222
+      },
+      "cancelled_by_registry": {
+        "ACR": 9353857,
+        "ARB": 0,
+        "ART": 0,
+        "CAR": 5167457,
+        "Verra": 0
       }
     },
     {
       "year": 2024,
-      "issued": 125628300,
-      "retired": 120693684,
+      "issued": 157496854,
+      "retired": 132873918,
+      "cancelled": 10957202,
       "issued_by_registry": {
-        "ACR": 30869328,
+        "ACR": 44657782,
+        "ARB": 10835738,
+        "ART": 7244362,
         "CAR": 23834810,
         "Verra": 70924162
       },
       "retired_by_registry": {
-        "ACR": 2093259,
-        "CAR": 2907206,
+        "ACR": 9831237,
+        "ARB": 0,
+        "ART": 100000,
+        "CAR": 7249462,
         "Verra": 115693219
+      },
+      "cancelled_by_registry": {
+        "ACR": 7093908,
+        "ARB": 0,
+        "ART": 0,
+        "CAR": 3863294,
+        "Verra": 0
       }
     },
     {
       "year": 2025,
-      "issued": 107496970,
-      "retired": 107475387,
+      "issued": 175594398,
+      "retired": 119877080,
+      "cancelled": 23971540,
       "issued_by_registry": {
-        "ACR": 22085983,
+        "ACR": 51606088,
+        "ARB": 20758471,
+        "ART": 17818852,
         "CAR": 27647455,
         "Verra": 57763532
       },
       "retired_by_registry": {
-        "ACR": 3960342,
-        "CAR": 2861696,
+        "ACR": 9729706,
+        "ARB": 0,
+        "ART": 100000,
+        "CAR": 9394025,
         "Verra": 100653349
+      },
+      "cancelled_by_registry": {
+        "ACR": 16101274,
+        "ARB": 0,
+        "ART": 1100,
+        "CAR": 7869166,
+        "Verra": 0
       }
     },
     {
       "year": 2026,
       "issued": 1450608,
       "retired": 573,
+      "cancelled": 0,
       "issued_by_registry": {
         "ACR": 1450608,
+        "ARB": 0,
+        "ART": 0,
         "CAR": 0,
         "Verra": 0
       },
       "retired_by_registry": {
         "ACR": 573,
+        "ARB": 0,
+        "ART": 0,
+        "CAR": 0,
+        "Verra": 0
+      },
+      "cancelled_by_registry": {
+        "ACR": 0,
+        "ARB": 0,
+        "ART": 0,
         "CAR": 0,
         "Verra": 0
       }
@@ -523,185 +770,270 @@
     {
       "name": "Ozone Depleting Substances - U.S. - ARB Compliance",
       "count": 96
+    },
+    {
+      "name": "Livestock - ARB Compliance",
+      "count": 95
+    },
+    {
+      "name": "Coal Mine Methane",
+      "count": 89
+    },
+    {
+      "name": "Energy industries (renewable/non-renewable sources); Livestock, enteric fermentation, and manure management; Waste handling and disposal",
+      "count": 79
+    },
+    {
+      "name": "Livestock Gas Capture/Combustion",
+      "count": 72
+    },
+    {
+      "name": "PV",
+      "count": 62
+    },
+    {
+      "name": "Livestock, enteric fermentation, and manure management; Waste handling and disposal",
+      "count": 62
+    },
+    {
+      "name": "Transport",
+      "count": 58
+    },
+    {
+      "name": "Livestock, enteric fermentation, and manure management",
+      "count": 49
+    },
+    {
+      "name": "Biomass, or Liquid Biofuel - Heat",
+      "count": 38
+    },
+    {
+      "name": "Biomass, or Liquid Biofuel - Electricity",
+      "count": 38
     }
   ],
   "topCountries": [
     {
+      "name": "India",
+      "count": 1855
+    },
+    {
       "name": "US",
       "count": 1634
+    },
+    {
+      "name": "China",
+      "count": 1550
+    },
+    {
+      "name": "Turkey",
+      "count": 556
     },
     {
       "name": "MX",
       "count": 438
     },
     {
-      "name": "CA",
-      "count": 31
+      "name": "Brazil",
+      "count": 359
     },
     {
-      "name": "FR",
-      "count": 8
+      "name": "Kenya",
+      "count": 335
     },
     {
-      "name": "TH",
-      "count": 7
+      "name": "Uganda",
+      "count": 290
     },
     {
-      "name": "BRAZIL",
-      "count": 6
+      "name": "Rwanda",
+      "count": 219
     },
     {
-      "name": "BR",
-      "count": 5
+      "name": "United States",
+      "count": 199
     },
     {
-      "name": "DE",
-      "count": 3
+      "name": "Bangladesh",
+      "count": 166
     },
     {
-      "name": "MEXICO",
-      "count": 3
+      "name": "South Africa",
+      "count": 156
     },
     {
-      "name": "CN",
-      "count": 3
+      "name": "Malawi",
+      "count": 152
     },
     {
-      "name": "COSTA RICA",
-      "count": 2
+      "name": "Nepal",
+      "count": 144
     },
     {
-      "name": "PERU",
-      "count": 2
+      "name": "Viet Nam",
+      "count": 140
     },
     {
-      "name": "AR",
-      "count": 2
+      "name": "Madagascar",
+      "count": 135
     },
     {
-      "name": "ZA",
-      "count": 1
+      "name": "Nigeria",
+      "count": 122
     },
     {
-      "name": "BO",
-      "count": 1
+      "name": "Colombia",
+      "count": 119
     },
     {
-      "name": "IL",
-      "count": 1
+      "name": "Burkina Faso",
+      "count": 103
     },
     {
-      "name": "SV",
-      "count": 1
+      "name": "Mozambique",
+      "count": 94
     },
     {
-      "name": "NI",
-      "count": 1
+      "name": "Thailand",
+      "count": 94
     },
     {
-      "name": "COLOMBIA",
-      "count": 1
+      "name": "Ethiopia",
+      "count": 88
     },
     {
-      "name": "BHUTAN",
-      "count": 1
+      "name": "Zambia",
+      "count": 86
     },
     {
-      "name": "BOLIVIA",
-      "count": 1
+      "name": "Indonesia",
+      "count": 86
     },
     {
-      "name": "BURKINA FASO",
-      "count": 1
+      "name": "Peru",
+      "count": 69
     },
     {
-      "name": "CONGO, THE DEMOCRATIC REPUBLIC OF THE",
-      "count": 1
+      "name": "Ghana",
+      "count": 62
     },
     {
-      "name": "ECUADOR",
-      "count": 1
+      "name": "Tanzania United Republic of",
+      "count": 59
     },
     {
-      "name": "ETHIOPIA",
-      "count": 1
+      "name": "Mexico",
+      "count": 53
     },
     {
-      "name": "GABON",
-      "count": 1
+      "name": "Germany",
+      "count": 49
     },
     {
-      "name": "GHANA",
-      "count": 1
+      "name": "Myanmar",
+      "count": 48
     },
     {
-      "name": "GUYANA",
-      "count": 1
+      "name": "Honduras",
+      "count": 47
     },
     {
-      "name": "NEPAL",
-      "count": 1
+      "name": "Argentina",
+      "count": 47
     },
     {
-      "name": "PAPUA NEW GUINEA",
-      "count": 1
+      "name": "Eritrea",
+      "count": 46
+    },
+    {
+      "name": "Cambodia",
+      "count": 42
+    },
+    {
+      "name": "Chile",
+      "count": 40
+    },
+    {
+      "name": "Canada",
+      "count": 37
+    },
+    {
+      "name": "Togo",
+      "count": 36
+    },
+    {
+      "name": "Congo the Democratic Republic of the",
+      "count": 34
+    },
+    {
+      "name": "Guatemala",
+      "count": 34
+    },
+    {
+      "name": "Pakistan",
+      "count": 33
     }
   ],
   "topMethodologies": [
     {
       "name": "ACM0002",
-      "projects": 795,
-      "credits": 0
-    },
-    {
-      "name": "ACM0002 Grid-connected electricity generation from renewable sources",
-      "projects": 438,
-      "credits": 0
+      "projects": 1590,
+      "credits": 161614696
     },
     {
       "name": "AMS-I.D.",
-      "projects": 399,
-      "credits": 0
-    },
-    {
-      "name": "GS TPDDTEC v 1.",
-      "projects": 322,
-      "credits": 0
+      "projects": 798,
+      "credits": 8418395
     },
     {
       "name": "AMS-III.AU",
-      "projects": 290,
-      "credits": 0
+      "projects": 580,
+      "credits": 16864008
     },
     {
       "name": "AR-ACM0003",
-      "projects": 274,
-      "credits": 0
-    },
-    {
-      "name": "GS TPDDTEC v3.1",
-      "projects": 266,
-      "credits": 0
-    },
-    {
-      "name": "AMS-I.D. Grid connected renewable electricity generation",
-      "projects": 230,
-      "credits": 0
+      "projects": 548,
+      "credits": 70481601
     },
     {
       "name": "VMR0006",
-      "projects": 229,
-      "credits": 0
-    },
-    {
-      "name": "AMS-II.G. Energy Efficiency Measures in Thermal Applications of Non-Renewable Biomass",
-      "projects": 222,
-      "credits": 0
+      "projects": 458,
+      "credits": 246143924
     },
     {
       "name": "VM0042",
-      "projects": 216,
-      "credits": 0
+      "projects": 432,
+      "credits": 126340411
+    },
+    {
+      "name": "ACM0001",
+      "projects": 304,
+      "credits": 26002024
+    },
+    {
+      "name": "AMS-II.G.",
+      "projects": 292,
+      "credits": 7974458
+    },
+    {
+      "name": "VM0047",
+      "projects": 286,
+      "credits": 53425468
+    },
+    {
+      "name": "VM0007",
+      "projects": 232,
+      "credits": 92648003
+    },
+    {
+      "name": "VM0015",
+      "projects": 232,
+      "credits": 1111980140
+    },
+    {
+      "name": "VM0010",
+      "projects": 202,
+      "credits": 19887598
     },
     {
       "name": "Improved Forest Management (IFM) on Non-Federal U.S. Forestlands",
@@ -709,24 +1041,14 @@
       "credits": 49812497
     },
     {
-      "name": "GS MS Simplified Methodology for Efficient Cookstoves v1.1",
-      "projects": 169,
-      "credits": 0
+      "name": "ACM0010",
+      "projects": 180,
+      "credits": 17980180
     },
     {
-      "name": "ACM0001",
-      "projects": 152,
-      "credits": 0
-    },
-    {
-      "name": "AMS-II.G.",
-      "projects": 146,
-      "credits": 0
-    },
-    {
-      "name": "VM0047",
-      "projects": 143,
-      "credits": 0
+      "name": "AMS-I.C.",
+      "projects": 170,
+      "credits": 3526597
     },
     {
       "name": "ARB Compliance Offset Protocol: Destruction of U.S. Ozone Depleting Substances Banks",
@@ -734,24 +1056,9 @@
       "credits": 11937636
     },
     {
-      "name": "GS Methodology for emission reductions from safe drinking water supply",
-      "projects": 121,
-      "credits": 0
-    },
-    {
-      "name": "AMS-I.C. Thermal energy production with or without electricity",
-      "projects": 119,
-      "credits": 0
-    },
-    {
-      "name": "VM0007",
-      "projects": 116,
-      "credits": 0
-    },
-    {
-      "name": "VM0015",
-      "projects": 116,
-      "credits": 0
+      "name": "AMS-III.D.",
+      "projects": 130,
+      "credits": 3535060
     },
     {
       "name": "ARB Compliance Offset Protocol: U.S. Forest Projects",
@@ -759,34 +1066,24 @@
       "credits": 143211246
     },
     {
-      "name": "GS MS Simplified Methodology for Efficient Cookstoves v1.",
-      "projects": 103,
-      "credits": 0
+      "name": "ACM0008",
+      "projects": 102,
+      "credits": 14200050
     },
     {
-      "name": "VM0010",
-      "projects": 101,
-      "credits": 0
-    },
-    {
-      "name": "GS TPDDTEC V4.0: REDUCED EMISSIONS FROM COOKING AND HEATING ‚Äì TECHNOLOGIES AND PRACTICES TO DISPLACE DECENTRALIZED THERMAL ENERGY CONSUMPTION",
+      "name": "ACM0022",
       "projects": 96,
-      "credits": 0
+      "credits": 15092744
     },
     {
-      "name": "AMS-I.E. Switch from Non-Renewable Biomass for Thermal Applications by the User",
-      "projects": 90,
-      "credits": 0
+      "name": "VM0026",
+      "projects": 94,
+      "credits": 16402434
     },
     {
-      "name": "ACM0010",
-      "projects": 90,
-      "credits": 0
-    },
-    {
-      "name": "AMS-I.C.",
-      "projects": 85,
-      "credits": 0
+      "name": "AMS-I.F.",
+      "projects": 86,
+      "credits": 942505
     },
     {
       "name": "ARB Compliance Offset Protocol: Mine Methane Capture Projects",
@@ -794,9 +1091,34 @@
       "credits": 15381886
     },
     {
+      "name": "VM0033",
+      "projects": 84,
+      "credits": 9383820
+    },
+    {
+      "name": "AR-AMS0007",
+      "projects": 84,
+      "credits": 2753243
+    },
+    {
       "name": "Transition to Advanced Formulation Blowing Agents in Foam Manufacturing and Use",
       "projects": 82,
       "credits": 45479139
+    },
+    {
+      "name": "AMS-I.E.",
+      "projects": 82,
+      "credits": 1720405
+    },
+    {
+      "name": "AM0073",
+      "projects": 82,
+      "credits": 9371877
+    },
+    {
+      "name": "AMS-I.D.; AMS-III.G.",
+      "projects": 76,
+      "credits": 1430660
     },
     {
       "name": "Certified Reclaimed HFC Refrigerants, Propellants, and Fire Suppressants",
@@ -804,9 +1126,19 @@
       "credits": 28587022
     },
     {
-      "name": "AMS-III.D.",
-      "projects": 65,
-      "credits": 0
+      "name": "AMS-III.D.; AMS-III.F.",
+      "projects": 68,
+      "credits": 1579991
+    },
+    {
+      "name": "VM0017",
+      "projects": 66,
+      "credits": 12442614
+    },
+    {
+      "name": "ACM0006",
+      "projects": 66,
+      "credits": 2892705
     },
     {
       "name": "Advanced Refrigeration Systems",
@@ -814,96 +1146,254 @@
       "credits": 4827526
     },
     {
-      "name": "Other",
-      "projects": 56,
-      "credits": 0
+      "name": "AMS-II.C.",
+      "projects": 58,
+      "credits": 11620689
     },
     {
-      "name": "Not provided",
-      "projects": 53,
-      "credits": 0
+      "name": "VM0009",
+      "projects": 58,
+      "credits": 60095687
     },
     {
-      "name": "AMS-I.A. Electricity generation by the user",
-      "projects": 51,
-      "credits": 0
+      "name": "ACM0012",
+      "projects": 58,
+      "credits": 4925820
     },
     {
-      "name": "ACM0008",
-      "projects": 51,
-      "credits": 0
+      "name": "VM0041",
+      "projects": 54,
+      "credits": 16710648
     },
     {
-      "name": "ACM0022",
+      "name": "AMS-II.J.",
+      "projects": 54,
+      "credits": 5787714
+    },
+    {
+      "name": "VM0038",
+      "projects": 52,
+      "credits": 3097567
+    },
+    {
+      "name": "VM0048",
+      "projects": 50,
+      "credits": 16331006
+    },
+    {
+      "name": "AMS-III.C.",
       "projects": 48,
-      "credits": 0
+      "credits": 2932006
     },
     {
-      "name": "VM0026",
-      "projects": 47,
-      "credits": 0
-    },
-    {
-      "name": "Methodology for Metered & Measured Energy Cooking Devices",
-      "projects": 46,
-      "credits": 0
-    },
-    {
-      "name": "AMS-I.F.",
-      "projects": 43,
-      "credits": 0
-    },
-    {
-      "name": "VM0033",
-      "projects": 42,
-      "credits": 0
-    },
-    {
-      "name": "AR-AMS0007",
-      "projects": 42,
-      "credits": 0
-    },
-    {
-      "name": "AMS-I.E.",
-      "projects": 41,
-      "credits": 0
-    },
-    {
-      "name": "AM0073",
-      "projects": 41,
-      "credits": 0
-    },
-    {
-      "name": "GS TPDDTEC v 2.",
+      "name": "AMS-III.F.",
       "projects": 40,
-      "credits": 0
+      "credits": 987226
     },
     {
-      "name": "AMS-I.D.; AMS-III.G.",
+      "name": "VM0050",
       "projects": 38,
-      "credits": 0
+      "credits": 22826950
     },
     {
-      "name": "AMS-III.D.; AMS-III.F.",
+      "name": "AR-ACM0001",
+      "projects": 38,
+      "credits": 764839
+    },
+    {
+      "name": "VM0003",
+      "projects": 36,
+      "credits": 3058718
+    },
+    {
+      "name": "VM0006",
+      "projects": 36,
+      "credits": 11140810
+    },
+    {
+      "name": "VM0012",
       "projects": 34,
-      "credits": 0
+      "credits": 1255207
     },
     {
-      "name": "VM0017",
-      "projects": 33,
-      "credits": 0
+      "name": "AMS-III.H.",
+      "projects": 34,
+      "credits": 668801
     },
     {
-      "name": "ACM0006",
-      "projects": 33,
-      "credits": 0
+      "name": "AMS-III.AV.",
+      "projects": 34,
+      "credits": 7351902
+    },
+    {
+      "name": "Methodology Under Development",
+      "projects": 34,
+      "credits": 5476342
+    },
+    {
+      "name": "AM0029",
+      "projects": 34,
+      "credits": 10968852
+    },
+    {
+      "name": "AMS-I.D.; AMS-III.D.",
+      "projects": 32,
+      "credits": 640879
+    },
+    {
+      "name": "AR-AM0014",
+      "projects": 32,
+      "credits": 1487461
+    },
+    {
+      "name": "Emissions Reductions through Anti-Idling Technologies",
+      "projects": 31,
+      "credits": 435118
+    },
+    {
+      "name": "VM0032",
+      "projects": 30,
+      "credits": 7167446
+    },
+    {
+      "name": "AMS-III.Z",
+      "projects": 30,
+      "credits": 440747
+    },
+    {
+      "name": "Destruction of Ozone Depleting Substances (ODS) from International Sources",
+      "projects": 29,
+      "credits": 2492102
+    },
+    {
+      "name": "AMS-III.AJ.",
+      "projects": 28,
+      "credits": 614134
+    },
+    {
+      "name": "AR-AMS0001",
+      "projects": 28,
+      "credits": 530694
+    },
+    {
+      "name": "AMS-I.D.; AMS-III.H.",
+      "projects": 26,
+      "credits": 493225
+    },
+    {
+      "name": "ACM0014",
+      "projects": 26,
+      "credits": 1368880
+    },
+    {
+      "name": "VM0043",
+      "projects": 24,
+      "credits": 1483800
+    },
+    {
+      "name": "VM0034",
+      "projects": 24,
+      "credits": 771107
+    },
+    {
+      "name": "ACM0002; AMS-I.D.",
+      "projects": 24,
+      "credits": 3331160
+    },
+    {
+      "name": "Plugging Orphan Oil and Gas Wells in the U.S. and Canada",
+      "projects": 23,
+      "credits": 4898183
+    },
+    {
+      "name": "VM0044",
+      "projects": 22,
+      "credits": 390017
+    },
+    {
+      "name": "AM0023",
+      "projects": 22,
+      "credits": 20965522
+    },
+    {
+      "name": "AMS-III.Y",
+      "projects": 22,
+      "credits": 174377
+    },
+    {
+      "name": "VM0025",
+      "projects": 22,
+      "credits": 57036
+    },
+    {
+      "name": "Destruction of Ozone Depleting Substances (ODS) and High-Global Warming Potential (GWP) Foam",
+      "projects": 20,
+      "credits": 1073620
+    },
+    {
+      "name": "ARB Compliance Offset Protocol: Capturing and Destroying Methane from Manure Management Systems",
+      "projects": 20,
+      "credits": 1852103
+    },
+    {
+      "name": "VM0008",
+      "projects": 18,
+      "credits": 1294467
+    },
+    {
+      "name": "AMS-III.Q",
+      "projects": 18,
+      "credits": 204509
+    },
+    {
+      "name": "VMR0007",
+      "projects": 16,
+      "credits": 341601
+    },
+    {
+      "name": "ACM0003",
+      "projects": 16,
+      "credits": 888831
+    },
+    {
+      "name": "AMS-II.D.",
+      "projects": 16,
+      "credits": 127285
+    },
+    {
+      "name": "VM0007; VM0048",
+      "projects": 14,
+      "credits": 12433339
+    },
+    {
+      "name": "VM0016",
+      "projects": 14,
+      "credits": 425315
+    },
+    {
+      "name": "AMS-I.L.",
+      "projects": 14,
+      "credits": 183828
     }
   ],
   "retirementReasons": {
     "第三者のため": 83065884,
     "自主的オフセット": 514558262,
-    "その他": 20946019,
+    "その他": 21147427,
     "コンプライアンス": 23372004
+  },
+  "cancellationReasons": {
+    "Convert to ARB offset credits": 166888011,
+    "ARB": 119031954,
+    "Removal of credits from the registry": 13970829,
+    "Canceled": 2483686,
+    "Convert to Ecology offset credits": 1049379,
+    "WA ECO": 505017,
+    "Compensation for Early Project Termination": 169126,
+    "Compensation for Intentional Reversal": 51092,
+    "Canceled for ARB": 31275,
+    "Canceled for Regulatory Compliance": 16341,
+    "CORSIA Compliance": 1100
   },
   "topRetirees": [
     {
@@ -1025,6 +1515,86 @@
     {
       "name": "Element Markets, LLC",
       "credits": 2809691
+    },
+    {
+      "name": "Bonneville Environmental Foundation",
+      "credits": 2753863
+    },
+    {
+      "name": "ALT Holdings, LLC",
+      "credits": 2749060
+    },
+    {
+      "name": "PDI Technologies",
+      "credits": 2732519
+    },
+    {
+      "name": "Norwegian Cruise Line Holdings Ltd.",
+      "credits": 2713593
+    },
+    {
+      "name": "Volkswagen Marke Pkw",
+      "credits": 2603322
+    },
+    {
+      "name": "Just Energy Limited",
+      "credits": 2569111
+    },
+    {
+      "name": "3Degrees Group, Inc.",
+      "credits": 2350422
+    },
+    {
+      "name": "East Dubuque Nitrogen Fertilizers, LLC",
+      "credits": 2290288
+    },
+    {
+      "name": "Brisbane City Council",
+      "credits": 2281943
+    },
+    {
+      "name": "The Walt Disney Company",
+      "credits": 2269623
+    },
+    {
+      "name": "Cool Effect",
+      "credits": 2213901
+    },
+    {
+      "name": "CHEVRON PETROLEUM COMPANY",
+      "credits": 2196030
+    },
+    {
+      "name": "Pangolin",
+      "credits": 2059549
+    },
+    {
+      "name": "DPDgroup",
+      "credits": 2043753
+    },
+    {
+      "name": "Guccio Gucci Spa",
+      "credits": 2035000
+    },
+    {
+      "name": "Just Energy (U.S.) Corp.",
+      "credits": 2021130
+    },
+    {
+      "name": "0xAf529400FF068AFbdc907c699B9184a4381481B0",
+      "credits": 2002340
+    },
+    {
+      "name": "VW PKW",
+      "credits": 1965190
+    },
+    {
+      "name": "Woodside Burrup Pty Ltd",
+      "credits": 1845186
+    },
+    {
+      "name": "Eni Plenitude SpA Societ√† Benefit",
+      "credits": 1796238
     }
   ],
   "statusDistribution": {
@@ -1053,1358 +1623,6 @@
     "Crediting Period Renewal Requested": 7,
     "Crediting Period Renewal and Verification Approval Requested": 4
   },
-  "projectTypeYearly": {
-    "Energy demand": {
-      "2009": 19036,
-      "2011": 30032,
-      "2012": 40855,
-      "2013": 12546,
-      "2014": 18444,
-      "2016": 7329,
-      "2017": 42113,
-      "2018": 1205,
-      "2019": 308081,
-      "2020": 42473,
-      "2021": 206345,
-      "2022": 3003562,
-      "2023": 13491585,
-      "2024": 17312983,
-      "2025": 14993918
-    },
-    "Energy distribution": {
-      "2009": 182,
-      "2012": 97,
-      "2014": 966,
-      "2018": 325
-    },
-    "Energy industries (renewable/non-renewable sources)": {
-      "2009": 653812,
-      "2010": 906887,
-      "2011": 1691215,
-      "2012": 2765910,
-      "2013": 784708,
-      "2014": 747870,
-      "2015": 104740,
-      "2016": 184563,
-      "2017": 142444,
-      "2018": 227441,
-      "2019": 2613586,
-      "2020": 17955657,
-      "2021": 34089104,
-      "2022": 42549052,
-      "2023": 33887658,
-      "2024": 30866366,
-      "2025": 15384756
-    },
-    "Energy industries (renewable/non-renewable sources); Fugitive emissions from fuels (solid, oil and gas)": {
-      "2009": 1
-    },
-    "Fugitive emissions from fuels (solid, oil and gas)": {
-      "2009": 106335,
-      "2010": 800,
-      "2011": 1250,
-      "2019": 3500,
-      "2021": 870046,
-      "2022": 9985945,
-      "2023": 1294222,
-      "2024": 5776310,
-      "2025": 5121422
-    },
-    "Fugitive emissions from fuels (solid, oil and gas); Mining/mineral production": {
-      "2009": 6313,
-      "2017": 5599,
-      "2021": 1420086,
-      "2022": 2597841,
-      "2023": 273951
-    },
-    "Manufacturing industries": {
-      "2009": 19502,
-      "2011": 114992,
-      "2012": 8,
-      "2013": 1100,
-      "2015": 26,
-      "2016": 32,
-      "2018": 784,
-      "2020": 127708,
-      "2021": 273538,
-      "2022": 23198,
-      "2023": 48175,
-      "2024": 49291,
-      "2025": 4500
-    },
-    "Mining/mineral production": {
-      "2009": 127366,
-      "2010": 69555,
-      "2015": 59821
-    },
-    "Waste handling and disposal": {
-      "2009": 169690,
-      "2010": 8801,
-      "2011": 130062,
-      "2012": 289653,
-      "2013": 16737,
-      "2014": 4424,
-      "2015": 240669,
-      "2016": 23885,
-      "2017": 6778,
-      "2018": 840,
-      "2019": 23787,
-      "2020": 242785,
-      "2021": 879138,
-      "2022": 95236,
-      "2023": 331531,
-      "2024": 587180,
-      "2025": 503071
-    },
-    "Energy industries (renewable/non-renewable sources); Manufacturing industries": {
-      "2010": 30797,
-      "2012": 7300,
-      "2013": 3155,
-      "2015": 54976,
-      "2020": 612781,
-      "2022": 36824,
-      "2023": 2086242,
-      "2024": 216116
-    },
-    "Energy industries (renewable/non-renewable sources); Waste handling and disposal": {
-      "2010": 22729,
-      "2011": 24789,
-      "2012": 122312,
-      "2013": 39645,
-      "2014": 831,
-      "2016": 16,
-      "2017": 12466,
-      "2018": 33593,
-      "2019": 5332,
-      "2020": 184778,
-      "2021": 1342418,
-      "2022": 1378151,
-      "2023": 4698881,
-      "2024": 3113759,
-      "2025": 2270629
-    },
-    "Fugitive emissions from production and consumption of halocarbons and sulphur hexafluoride": {
-      "2010": 2330043,
-      "2015": 10000,
-      "2021": 20657,
-      "2024": 96042,
-      "2025": 163156
-    },
-    "Metal production": {
-      "2010": 125768,
-      "2018": 15811
-    },
-    "Agriculture Forestry and Other Land Use": {
-      "2011": 10017,
-      "2012": 101413,
-      "2013": 1230428,
-      "2014": 671062,
-      "2015": 151112,
-      "2016": 460203,
-      "2017": 6449132,
-      "2018": 2230590,
-      "2019": 10647779,
-      "2020": 7917164,
-      "2021": 59304950,
-      "2022": 31884567,
-      "2023": 32944810,
-      "2024": 11652737,
-      "2025": 18076428
-    },
-    "Chemical industry": {
-      "2011": 59109,
-      "2012": 25000,
-      "2013": 578897,
-      "2019": 10343,
-      "2025": 774
-    },
-    "Chemical industry; Energy industries (renewable/non-renewable sources)": {
-      "2011": 102958
-    },
-    "Energy industries (renewable/non-renewable sources); Livestock, enteric fermentation, and manure management": {
-      "2011": 350392,
-      "2025": 3
-    },
-    "Livestock, enteric fermentation, and manure management": {
-      "2011": 18615,
-      "2020": 200,
-      "2023": 15403,
-      "2024": 4121
-    },
-    "Agriculture Forestry and Other Land Use; Energy industries (renewable/non-renewable sources); Waste handling and disposal": {
-      "2015": 7616
-    },
-    "Energy demand; Waste handling and disposal": {
-      "2017": 32,
-      "2018": 10000,
-      "2019": 10000,
-      "2020": 12500,
-      "2021": 25142,
-      "2022": 50050,
-      "2023": 251622,
-      "2024": 9688,
-      "2025": 42548
-    },
-    "Manufacturing industries; Metal production": {
-      "2017": 1,
-      "2022": 24541
-    },
-    "Transport": {
-      "2017": 51487,
-      "2018": 8085,
-      "2019": 7155,
-      "2020": 6446,
-      "2021": 2122,
-      "2022": 321,
-      "2023": 65,
-      "2024": 27512,
-      "2025": 55874
-    },
-    "Construction; Energy industries (renewable/non-renewable sources)": {
-      "2019": 154991,
-      "2020": 22673,
-      "2022": 7519,
-      "2023": 80625
-    },
-    "Energy demand; Energy industries (renewable/non-renewable sources)": {
-      "2022": 64745,
-      "2023": 1194757,
-      "2024": 134125,
-      "2025": 244594
-    },
-    "Energy industries (renewable/non-renewable sources); Livestock, enteric fermentation, and manure management; Waste handling and disposal": {
-      "2022": 324819,
-      "2023": 1853481,
-      "2024": 617740,
-      "2025": 2542
-    },
-    "Energy industries (renewable/non-renewable sources); Mining/mineral production": {
-      "2022": 816692,
-      "2023": 205000,
-      "2024": 106423,
-      "2025": 37658
-    },
-    "Energy industries (renewable/non-renewable sources); Transport": {
-      "2022": 114,
-      "2023": 167,
-      "2024": 35209,
-      "2025": 242076
-    },
-    "Livestock, enteric fermentation, and manure management; Waste handling and disposal": {
-      "2022": 81014,
-      "2023": 280243,
-      "2024": 221851,
-      "2025": 245844
-    },
-    "Construction; Manufacturing industries": {
-      "2023": 5330,
-      "2024": 23796,
-      "2025": 112631
-    },
-    "Chemical industry; Energy demand; Energy industries (renewable/non-renewable sources)": {
-      "2024": 3444
-    },
-    "Chemical industry; Transport": {
-      "2024": 4841
-    },
-    "Construction": {
-      "2024": 26460,
-      "2025": 261106
-    },
-    "Transport; Waste handling and disposal": {
-      "2024": 38168,
-      "2025": 2
-    }
-  },
-  "countryYearly": {
-    "Brazil": {
-      "2009": 475885,
-      "2010": 150410,
-      "2011": 4505,
-      "2012": 381977,
-      "2013": 47414,
-      "2014": 103075,
-      "2015": 84156,
-      "2016": 6032,
-      "2017": 1072,
-      "2018": 31439,
-      "2019": 266965,
-      "2020": 1974821,
-      "2021": 16771834,
-      "2022": 4572714,
-      "2023": 2356788,
-      "2024": 2343834,
-      "2025": 2911003
-    },
-    "China": {
-      "2009": 219667,
-      "2010": 2649942,
-      "2011": 698421,
-      "2012": 1097287,
-      "2013": 923661,
-      "2014": 279713,
-      "2015": 6276,
-      "2016": 104341,
-      "2017": 35600,
-      "2018": 4812,
-      "2019": 325269,
-      "2020": 5993678,
-      "2021": 9275645,
-      "2022": 19444867,
-      "2023": 15352395,
-      "2024": 3753992,
-      "2025": 2622319
-    },
-    "Germany": {
-      "2009": 157247,
-      "2010": 69555,
-      "2024": 9384
-    },
-    "India": {
-      "2009": 54674,
-      "2010": 589175,
-      "2011": 1258809,
-      "2012": 1297105,
-      "2013": 280075,
-      "2014": 11168,
-      "2015": 18688,
-      "2016": 35960,
-      "2017": 29776,
-      "2018": 178012,
-      "2019": 2394083,
-      "2020": 10942391,
-      "2021": 13367200,
-      "2022": 19632533,
-      "2023": 14844321,
-      "2024": 22358937,
-      "2025": 11085718
-    },
-    "Israel": {
-      "2009": 3461
-    },
-    "New Zealand": {
-      "2009": 19036,
-      "2010": 646
-    },
-    "Thailand": {
-      "2009": 177,
-      "2010": 7329,
-      "2011": 37004,
-      "2012": 122648,
-      "2013": 7837,
-      "2014": 1152,
-      "2015": 890,
-      "2016": 935,
-      "2017": 3266,
-      "2018": 1557,
-      "2019": 9317,
-      "2020": 223141,
-      "2021": 813744,
-      "2022": 423433,
-      "2023": 642023,
-      "2024": 104768,
-      "2025": 182673
-    },
-    "Turkey": {
-      "2009": 133,
-      "2011": 1495,
-      "2012": 86193,
-      "2013": 7093,
-      "2014": 289748,
-      "2015": 16969,
-      "2016": 12794,
-      "2017": 7092,
-      "2019": 72484,
-      "2020": 861386,
-      "2021": 7474903,
-      "2022": 6322142,
-      "2023": 8531578,
-      "2024": 5423111,
-      "2025": 1633087
-    },
-    "United Kingdom": {
-      "2009": 32132,
-      "2020": 200,
-      "2023": 1997,
-      "2025": 10755
-    },
-    "United States": {
-      "2009": 139825,
-      "2010": 22183,
-      "2011": 44312,
-      "2012": 114732,
-      "2013": 49645,
-      "2014": 1310,
-      "2015": 92549,
-      "2016": 2210,
-      "2017": 1021,
-      "2018": 109044,
-      "2019": 249732,
-      "2020": 386074,
-      "2021": 472555,
-      "2022": 260787,
-      "2023": 822642,
-      "2024": 1858897,
-      "2025": 1910568
-    },
-    "Chile": {
-      "2010": 2308,
-      "2011": 62951,
-      "2013": 19,
-      "2014": 82036,
-      "2015": 1065,
-      "2017": 12789,
-      "2018": 20223,
-      "2019": 1492,
-      "2020": 56616,
-      "2021": 94463,
-      "2022": 185926,
-      "2023": 277447,
-      "2024": 74078,
-      "2025": 135104
-    },
-    "Guatemala": {
-      "2010": 500,
-      "2016": 8671,
-      "2017": 59500,
-      "2019": 238454,
-      "2020": 89074,
-      "2021": 163476,
-      "2022": 436377,
-      "2023": 1919627,
-      "2024": 333280,
-      "2025": 119072
-    },
-    "Indonesia": {
-      "2010": 2065,
-      "2011": 1250,
-      "2012": 1839,
-      "2013": 1212521,
-      "2014": 211810,
-      "2015": 18842,
-      "2016": 289292,
-      "2017": 275726,
-      "2018": 676780,
-      "2019": 1928407,
-      "2020": 410970,
-      "2021": 4720181,
-      "2022": 1958198,
-      "2023": 101624,
-      "2024": 99468,
-      "2025": 34052
-    },
-    "Russian Federation": {
-      "2010": 674,
-      "2011": 48200
-    },
-    "Taiwan": {
-      "2010": 593,
-      "2015": 77
-    },
-    "Australia": {
-      "2011": 3821,
-      "2013": 2271,
-      "2014": 743,
-      "2015": 57,
-      "2022": 13,
-      "2025": 17305
-    },
-    "Belize": {
-      "2011": 3344,
-      "2016": 7500,
-      "2020": 18471,
-      "2021": 23927,
-      "2022": 51529,
-      "2023": 126480
-    },
-    "Colombia": {
-      "2011": 4,
-      "2013": 1565,
-      "2015": 118,
-      "2016": 4,
-      "2017": 1503,
-      "2018": 790,
-      "2019": 587061,
-      "2020": 134421,
-      "2021": 3851549,
-      "2022": 2291925,
-      "2023": 2287947,
-      "2024": 123808,
-      "2025": 322050
-    },
-    "Honduras": {
-      "2011": 1603,
-      "2014": 2651,
-      "2015": 4042
-    },
-    "Kenya": {
-      "2011": 2703,
-      "2012": 1506,
-      "2013": 198,
-      "2014": 316093,
-      "2017": 584602,
-      "2018": 877376,
-      "2019": 1189846,
-      "2020": 2356902,
-      "2021": 2500997,
-      "2022": 2414434,
-      "2023": 2559064,
-      "2024": 3013766,
-      "2025": 661748
-    },
-    "Peru": {
-      "2011": 350392,
-      "2013": 33547,
-      "2014": 113161,
-      "2015": 28500,
-      "2016": 147921,
-      "2017": 498715,
-      "2018": 430074,
-      "2019": 2102161,
-      "2020": 299245,
-      "2021": 12024015,
-      "2022": 7226478,
-      "2023": 12013802,
-      "2024": 3101092,
-      "2025": 1019290
-    },
-    "South Korea": {
-      "2011": 2977,
-      "2012": 7293,
-      "2013": 3155,
-      "2015": 44357,
-      "2020": 612781,
-      "2021": 556361,
-      "2022": 36824,
-      "2023": 3377626,
-      "2024": 24918
-    },
-    "Sri Lanka": {
-      "2011": 100,
-      "2019": 14
-    },
-    "Uganda": {
-      "2011": 85,
-      "2013": 21,
-      "2015": 8692,
-      "2017": 11,
-      "2018": 74,
-      "2020": 67252,
-      "2021": 114302,
-      "2022": 164708,
-      "2023": 105374,
-      "2024": 276359,
-      "2025": 419223
-    },
-    "Uruguay": {
-      "2011": 989,
-      "2013": 23673,
-      "2017": 80637,
-      "2018": 167,
-      "2019": 1319,
-      "2020": 80342,
-      "2021": 1879852,
-      "2022": 97989,
-      "2023": 4302456,
-      "2024": 150159,
-      "2025": 883713
-    },
-    "Viet Nam": {
-      "2011": 10466,
-      "2012": 22478,
-      "2013": 3879,
-      "2014": 879,
-      "2015": 21,
-      "2017": 4170,
-      "2020": 83066,
-      "2021": 40979,
-      "2022": 166065,
-      "2023": 1723137,
-      "2024": 7908219,
-      "2025": 3786114
-    },
-    "Argentina": {
-      "2012": 173716,
-      "2016": 700,
-      "2021": 438216,
-      "2022": 128542,
-      "2023": 435432,
-      "2024": 244689,
-      "2025": 357032
-    },
-    "Cambodia": {
-      "2012": 40674,
-      "2014": 282,
-      "2015": 3083,
-      "2018": 2250,
-      "2019": 3734758,
-      "2020": 2028099,
-      "2021": 14209381,
-      "2023": 5702026,
-      "2024": 743875,
-      "2025": 580402
-    },
-    "Nicaragua": {
-      "2012": 100,
-      "2021": 2336,
-      "2023": 1000,
-      "2025": 80455
-    },
-    "Philippines": {
-      "2012": 5000,
-      "2013": 20359,
-      "2020": 29800,
-      "2023": 2732,
-      "2025": 475768
-    },
-    "Bolivia": {
-      "2013": 1574,
-      "2020": 1250,
-      "2025": 7796
-    },
-    "Mexico": {
-      "2013": 32639,
-      "2014": 8553,
-      "2015": 27207,
-      "2019": 4220,
-      "2020": 36834,
-      "2021": 2650,
-      "2022": 391093,
-      "2023": 254672,
-      "2025": 150033
-    },
-    "Paraguay": {
-      "2013": 7601,
-      "2016": 13532,
-      "2022": 357176,
-      "2023": 193339,
-      "2024": 186458,
-      "2025": 579028
-    },
-    "Singapore": {
-      "2013": 8469,
-      "2018": 1205,
-      "2020": 2288,
-      "2021": 446934,
-      "2022": 560685,
-      "2024": 91035,
-      "2025": 59600
-    },
-    "Madagascar": {
-      "2014": 2397,
-      "2015": 316,
-      "2016": 5221,
-      "2017": 400552,
-      "2018": 20031,
-      "2021": 20774,
-      "2022": 443,
-      "2023": 30628,
-      "2024": 980969,
-      "2025": 2490769
-    },
-    "Senegal": {
-      "2014": 7860,
-      "2017": 2649,
-      "2021": 98403,
-      "2022": 179003,
-      "2023": 226249,
-      "2024": 249374,
-      "2025": 485295
-    },
-    "Zambia": {
-      "2014": 10966,
-      "2018": 155178,
-      "2019": 389630,
-      "2020": 581,
-      "2021": 575658,
-      "2022": 324377,
-      "2023": 1074363,
-      "2024": 2914986,
-      "2025": 2777338
-    },
-    "Congo, The Democratic Republic of The": {
-      "2015": 20054,
-      "2016": 12532,
-      "2017": 4661940,
-      "2018": 51,
-      "2019": 12947,
-      "2020": 6548,
-      "2021": 78805,
-      "2022": 9030394,
-      "2023": 282808,
-      "2024": 888031,
-      "2025": 2992856
-    },
-    "El Salvador": {
-      "2015": 238399,
-      "2023": 357,
-      "2024": 8695,
-      "2025": 48742
-    },
-    "Malawi": {
-      "2015": 1,
-      "2019": 1088,
-      "2020": 79268,
-      "2021": 219767,
-      "2022": 796278,
-      "2023": 4667217,
-      "2024": 61204,
-      "2025": 2
-    },
-    "Pakistan": {
-      "2015": 11508,
-      "2022": 461447,
-      "2024": 1189175
-    },
-    "Tajikistan": {
-      "2015": 2709,
-      "2021": 45141
-    },
-    "Zimbabwe": {
-      "2015": 384,
-      "2017": 300,
-      "2019": 182778,
-      "2020": 34217,
-      "2021": 841922,
-      "2022": 1155264,
-      "2023": 523339
-    },
-    "Ghana": {
-      "2016": 7329,
-      "2017": 41613,
-      "2019": 64580,
-      "2020": 196,
-      "2022": 48202,
-      "2024": 280188,
-      "2025": 132112
-    },
-    "Mauritius": {
-      "2016": 262,
-      "2017": 74,
-      "2019": 9600,
-      "2020": 9559,
-      "2022": 34737,
-      "2023": 83611,
-      "2024": 62055,
-      "2025": 21847
-    },
-    "Tanzania": {
-      "2016": 20792,
-      "2020": 49535,
-      "2021": 107154,
-      "2022": 138554,
-      "2023": 699178,
-      "2024": 348569,
-      "2025": 560935
-    },
-    "Canada": {
-      "2017": 32,
-      "2018": 10000,
-      "2019": 10009,
-      "2020": 22351,
-      "2021": 25858,
-      "2022": 50058,
-      "2023": 503666,
-      "2024": 403708,
-      "2025": 42548
-    },
-    "Papua New Guinea": {
-      "2017": 3554,
-      "2018": 1436,
-      "2020": 30120,
-      "2021": 765887,
-      "2023": 33755,
-      "2024": 17607,
-      "2025": 153262
-    },
-    "South Africa": {
-      "2017": 3858,
-      "2021": 826024,
-      "2022": 604031,
-      "2023": 502981,
-      "2024": 331683,
-      "2025": 1355718
-    },
-    "Myanmar": {
-      "2018": 214,
-      "2019": 1413,
-      "2020": 2189,
-      "2021": 3715,
-      "2023": 2800,
-      "2025": 66578
-    },
-    "Netherlands": {
-      "2018": 3152,
-      "2020": 9555,
-      "2021": 156064,
-      "2023": 75377,
-      "2024": 105721,
-      "2025": 50940
-    },
-    "Sierra Leone": {
-      "2018": 4809,
-      "2019": 418,
-      "2020": 1032,
-      "2021": 6342,
-      "2022": 1140,
-      "2023": 33325,
-      "2024": 417705,
-      "2025": 142383
-    },
-    "Bulgaria": {
-      "2019": 1064,
-      "2020": 394,
-      "2021": 130445,
-      "2025": 10363
-    },
-    "Costa Rica": {
-      "2019": 98,
-      "2022": 195062
-    },
-    "Ecuador": {
-      "2019": 5332,
-      "2021": 30755,
-      "2025": 27040
-    },
-    "Namibia": {
-      "2019": 15,
-      "2020": 4158,
-      "2021": 5957,
-      "2022": 35876,
-      "2023": 441,
-      "2024": 51211,
-      "2025": 55979
-    },
-    "Dominican Republic": {
-      "2020": 15600,
-      "2021": 245714,
-      "2022": 1156060,
-      "2025": 109975
-    },
-    "Ethiopia": {
-      "2020": 7416,
-      "2021": 1030296,
-      "2023": 48026,
-      "2025": 9776
-    },
-    "Lao": {
-      "2020": 17184,
-      "2023": 141465,
-      "2024": 46860,
-      "2025": 700340
-    },
-    "Mauritania": {
-      "2020": 5351,
-      "2021": 49383,
-      "2022": 106,
-      "2023": 24483,
-      "2024": 84726,
-      "2025": 82927
-    },
-    "Mongolia": {
-      "2020": 126873,
-      "2021": 141002,
-      "2023": 148874,
-      "2025": 152550
-    },
-    "Nepal": {
-      "2020": 13936,
-      "2021": 34797,
-      "2022": 80614,
-      "2023": 44685,
-      "2025": 14226
-    },
-    "Bangladesh": {
-      "2021": 811997,
-      "2022": 10401096,
-      "2023": 685918,
-      "2024": 5171046,
-      "2025": 3870382
-    },
-    "Burkina Faso": {
-      "2021": 28777,
-      "2023": 28066,
-      "2024": 27179,
-      "2025": 27097
-    },
-    "Congo": {
-      "2021": 13,
-      "2023": 5770,
-      "2025": 570990
-    },
-    "Cote D'Ivoire": {
-      "2021": 2774552,
-      "2022": 223544,
-      "2023": 704667,
-      "2024": 912224,
-      "2025": 62487
-    },
-    "Guinea-Bissau": {
-      "2021": 59790,
-      "2022": 102687
-    },
-    "Kazakhstan": {
-      "2021": 64728,
-      "2024": 232137,
-      "2025": 287345
-    },
-    "Mozambique": {
-      "2021": 3449,
-      "2022": 8265,
-      "2023": 219622
-    },
-    "Romania": {
-      "2021": 879,
-      "2024": 54040
-    },
-    "Rwanda": {
-      "2021": 3998,
-      "2022": 150000,
-      "2023": 1909138,
-      "2024": 1785431,
-      "2025": 4279749
-    },
-    "Burundi": {
-      "2022": 248739,
-      "2023": 203321,
-      "2024": 887848,
-      "2025": 202999
-    },
-    "Egypt": {
-      "2022": 171259,
-      "2023": 251099
-    },
-    "Georgia": {
-      "2022": 70617
-    },
-    "Morocco": {
-      "2022": 98501,
-      "2023": 415554,
-      "2024": 347,
-      "2025": 24128
-    },
-    "Niger": {
-      "2022": 4600
-    },
-    "Oman": {
-      "2022": 28799,
-      "2023": 741514,
-      "2024": 644493,
-      "2025": 28670
-    },
-    "Angola": {
-      "2023": 66703
-    },
-    "Benin": {
-      "2023": 290700
-    },
-    "Central African Republic": {
-      "2023": 250000,
-      "2025": 1044618
-    },
-    "Comoros": {
-      "2023": 4702,
-      "2024": 5678,
-      "2025": 7074
-    },
-    "Liberia": {
-      "2023": 9680
-    },
-    "Panama": {
-      "2023": 6540,
-      "2024": 18006
-    },
-    "Togo": {
-      "2023": 67597,
-      "2024": 2680,
-      "2025": 143087
-    },
-    "Estonia": {
-      "2024": 167
-    },
-    "Iceland": {
-      "2024": 10291
-    },
-    "Malaysia": {
-      "2024": 504542,
-      "2025": 903545
-    },
-    "Nigeria": {
-      "2024": 1459,
-      "2025": 14191
-    },
-    "Cameroon": {
-      "2025": 6000
-    },
-    "Denmark": {
-      "2025": 2276015
-    },
-    "Fiji": {
-      "2025": 28036
-    },
-    "Gambia": {
-      "2025": 196652
-    },
-    "United Arab Emirates": {
-      "2025": 11016
-    },
-    "Uzbekistan": {
-      "2025": 1251042
-    }
-  },
-  "retireeDetails": [
-    {
-      "name": "Shell",
-      "credits": 38519915,
-      "topTypes": [
-        {
-          "type": "Agriculture Forestry and Other Land Use",
-          "credits": 34886592
-        },
-        {
-          "type": "Energy demand",
-          "credits": 1289571
-        },
-        {
-          "type": "Energy industries (renewable/non-renewable sources)",
-          "credits": 1094009
-        }
-      ]
-    },
-    {
-      "name": "Eni Upstream",
-      "credits": 15885945,
-      "topTypes": [
-        {
-          "type": "Agriculture Forestry and Other Land Use",
-          "credits": 15885945
-        }
-      ]
-    },
-    {
-      "name": "DL",
-      "credits": 13118083,
-      "topTypes": [
-        {
-          "type": "Agriculture Forestry and Other Land Use",
-          "credits": 5455810
-        },
-        {
-          "type": "Energy industries (renewable/non-renewable sources)",
-          "credits": 5282845
-        },
-        {
-          "type": "Energy industries (renewable/non-renewable sources); Manufacturing industries",
-          "credits": 1898603
-        }
-      ]
-    },
-    {
-      "name": "Delta Air Lines",
-      "credits": 11040979,
-      "topTypes": [
-        {
-          "type": "Energy industries (renewable/non-renewable sources)",
-          "credits": 6442460
-        },
-        {
-          "type": "Agriculture Forestry and Other Land Use",
-          "credits": 2646446
-        },
-        {
-          "type": "Energy industries (renewable/non-renewable sources); Manufacturing industries",
-          "credits": 1786000
-        }
-      ]
-    },
-    {
-      "name": "LSB Industries, Inc.",
-      "credits": 0,
-      "topTypes": []
-    },
-    {
-      "name": "Climate Impact Partners, LLC",
-      "credits": 0,
-      "topTypes": []
-    },
-    {
-      "name": "Anew Carbon Development, LLC",
-      "credits": 0,
-      "topTypes": []
-    },
-    {
-      "name": "TASC SA Pty Ltd (COAS account 101046)",
-      "credits": 7313937,
-      "topTypes": [
-        {
-          "type": "Energy demand",
-          "credits": 7313937
-        }
-      ]
-    },
-    {
-      "name": "AUDI AG",
-      "credits": 7003182,
-      "topTypes": [
-        {
-          "type": "Agriculture Forestry and Other Land Use",
-          "credits": 4063225
-        },
-        {
-          "type": "Energy industries (renewable/non-renewable sources)",
-          "credits": 2939957
-        }
-      ]
-    },
-    {
-      "name": "Yamato Transport Co., Ltd.",
-      "credits": 6886359,
-      "topTypes": [
-        {
-          "type": "Energy industries (renewable/non-renewable sources)",
-          "credits": 6388020
-        },
-        {
-          "type": "Fugitive emissions from fuels (solid, oil and gas); Mining/mineral production",
-          "credits": 324339
-        },
-        {
-          "type": "Energy industries (renewable/non-renewable sources); Waste handling and disposal",
-          "credits": 174000
-        }
-      ]
-    },
-    {
-      "name": "ClimeCo LLC",
-      "credits": 0,
-      "topTypes": []
-    },
-    {
-      "name": "Telstra Corporation Limited",
-      "credits": 5874959,
-      "topTypes": [
-        {
-          "type": "Energy industries (renewable/non-renewable sources)",
-          "credits": 5526062
-        },
-        {
-          "type": "Manufacturing industries",
-          "credits": 348897
-        }
-      ]
-    },
-    {
-      "name": "PRIMAX COLOMBIA S.A identificada con Nit: 860.002.554-8",
-      "credits": 5250000,
-      "topTypes": [
-        {
-          "type": "Agriculture Forestry and Other Land Use",
-          "credits": 5250000
-        }
-      ]
-    },
-    {
-      "name": "PetroChina International Company Limited (‚ÄúPCI‚Äù)",
-      "credits": 4999814,
-      "topTypes": [
-        {
-          "type": "Agriculture Forestry and Other Land Use",
-          "credits": 4999814
-        }
-      ]
-    },
-    {
-      "name": "_",
-      "credits": 4843615,
-      "topTypes": [
-        {
-          "type": "Energy industries (renewable/non-renewable sources)",
-          "credits": 2294829
-        },
-        {
-          "type": "Agriculture Forestry and Other Land Use",
-          "credits": 2230183
-        },
-        {
-          "type": "Energy industries (renewable/non-renewable sources); Waste handling and disposal",
-          "credits": 113811
-        }
-      ]
-    },
-    {
-      "name": "Anew Environmental, LLC",
-      "credits": 0,
-      "topTypes": []
-    },
-    {
-      "name": "Greenchoice",
-      "credits": 4717315,
-      "topTypes": [
-        {
-          "type": "Agriculture Forestry and Other Land Use",
-          "credits": 4714878
-        },
-        {
-          "type": "Energy industries (renewable/non-renewable sources)",
-          "credits": 2437
-        }
-      ]
-    },
-    {
-      "name": "3Degrees Group, Inc",
-      "credits": 0,
-      "topTypes": []
-    },
-    {
-      "name": "Shell Energy North America (US), L.P.",
-      "credits": 0,
-      "topTypes": []
-    },
-    {
-      "name": "The Boeing Company",
-      "credits": 4066129,
-      "topTypes": [
-        {
-          "type": "Energy industries (renewable/non-renewable sources)",
-          "credits": 1985499
-        },
-        {
-          "type": "Agriculture Forestry and Other Land Use",
-          "credits": 920850
-        },
-        {
-          "type": "Fugitive emissions from fuels (solid, oil and gas); Mining/mineral production",
-          "credits": 407507
-        }
-      ]
-    },
-    {
-      "name": "GP-2",
-      "credits": 3893245,
-      "topTypes": [
-        {
-          "type": "Energy industries (renewable/non-renewable sources)",
-          "credits": 3580868
-        },
-        {
-          "type": "Energy industries (renewable/non-renewable sources); Manufacturing industries",
-          "credits": 301664
-        },
-        {
-          "type": "Agriculture Forestry and Other Land Use",
-          "credits": 10713
-        }
-      ]
-    },
-    {
-      "name": "The Climate Trust",
-      "credits": 40,
-      "topTypes": [
-        {
-          "type": "Energy industries (renewable/non-renewable sources); Waste handling and disposal",
-          "credits": 40
-        }
-      ]
-    },
-    {
-      "name": "4AIR Client",
-      "credits": 3335937,
-      "topTypes": [
-        {
-          "type": "Energy industries (renewable/non-renewable sources)",
-          "credits": 3142839
-        },
-        {
-          "type": "Agriculture Forestry and Other Land Use",
-          "credits": 171010
-        },
-        {
-          "type": "Energy demand",
-          "credits": 22088
-        }
-      ]
-    },
-    {
-      "name": "Takeda Pharmaceutical Company",
-      "credits": 3231968,
-      "topTypes": [
-        {
-          "type": "Agriculture Forestry and Other Land Use",
-          "credits": 1650000
-        },
-        {
-          "type": "Energy industries (renewable/non-renewable sources)",
-          "credits": 1573137
-        },
-        {
-          "type": "Energy demand",
-          "credits": 8831
-        }
-      ]
-    },
-    {
-      "name": "Geopost",
-      "credits": 3221430,
-      "topTypes": [
-        {
-          "type": "Agriculture Forestry and Other Land Use",
-          "credits": 3221430
-        }
-      ]
-    },
-    {
-      "name": "Marke VW Pkw",
-      "credits": 3102847,
-      "topTypes": [
-        {
-          "type": "Energy industries (renewable/non-renewable sources)",
-          "credits": 2501654
-        },
-        {
-          "type": "Agriculture Forestry and Other Land Use",
-          "credits": 601193
-        }
-      ]
-    },
-    {
-      "name": "487",
-      "credits": 0,
-      "topTypes": []
-    },
-    {
-      "name": "Interface, Inc.",
-      "credits": 2178252,
-      "topTypes": [
-        {
-          "type": "Energy industries (renewable/non-renewable sources)",
-          "credits": 1657807
-        },
-        {
-          "type": "Agriculture Forestry and Other Land Use",
-          "credits": 509034
-        },
-        {
-          "type": "Energy demand",
-          "credits": 6411
-        }
-      ]
-    },
-    {
-      "name": "Schneider Electric",
-      "credits": 11769,
-      "topTypes": [
-        {
-          "type": "Agriculture Forestry and Other Land Use",
-          "credits": 11769
-        }
-      ]
-    },
-    {
-      "name": "Element Markets, LLC",
-      "credits": 0,
-      "topTypes": []
-    }
-  ],
   "allProjectTypes": [
     "Agriculture Forestry and Other Land Use",
     "Agriculture Forestry and Other Land Use; Energy industries (renewable/non-renewable sources); Waste handling and disposal",
@@ -2539,6 +1757,788 @@
     "Zambia",
     "Zimbabwe"
   ],
+  "bufferPool": {
+    "ACR": 11108517,
+    "ART": 3569215,
+    "CAR": 7603548,
+    "Gold Standard": 0,
+    "Verra": 86687974
+  },
+  "scopesAndTypes": {
+    "scopes": {
+      "Agriculture": [
+        "we add as new projects are implemented.",
+        "Bundled Compost Production and Soil Application",
+        "Addition to Rangelands’ or ‘Sustainable Agriculture.’",
+        "Carbon Mineralization",
+        "Activities that draw carbon out of the atmosphere by mineralization in soil.",
+        "Compost Addition to Rangelands",
+        "organic carbon through enhanced plant growth.",
+        "Feed Additives",
+        "through the use of 100% natural feed supplement",
+        "from enteric fermentation in dairy cows through application of feed supplements",
+        "Improved Irrigation Management",
+        "powered by fossil fuel sources.",
+        "activities",
+        "Manure Methane Digester",
+        "livestock waste.",
+        "GHG emission reduction from manure, AM0073 GHG emission reductions through",
+        "multi-site manure collection and treatment in a central plant",
+        "methodologies",
+        "Nitrogen Management",
+        "fertilizer application and revising the application timing.",
+        "use of nitrogen fertilizer on agricultural crop",
+        "seeds that require less fertilizer application",
+        "Nitrogen Fertilizer Rate Reduction methodology",
+        "Rice Emission Reductions",
+        "from rice cultivation.",
+        "methodologies",
+        "Solid Waste Separation",
+        "farm manure slurries for processing, recycling, and selling off-site.",
+        "manure treatment systems methodology",
+        "Sustainable Agriculture",
+        "trees to landscapes."
+      ],
+      "Carbon Capture & Storage": [
+        "storage underground or in manufactured products.",
+        "Carbon Capture & Enhanced Oil Recovery",
+        "injection for permanent storage underground while also enhancing oil recovery.",
+        "Carbon Capture in Concrete",
+        "considered Carbon-Absorbing Concrete in the Industrial & Commercial scope.",
+        "Carbon Capture in Plastic",
+        "plastics."
+      ],
+      "Chemical Processes": [
+        "and chemical and fuel production.",
+        "N2O Destruction in Adipic Acid Production",
+        "manufacturing nylon) are diverted into this destruction technology.",
+        "N2O Destruction in Nitric Acid Production",
+        "components of fertilizer and synthetic fiber production, respectively.",
+        "N2O inside the ammonia burner of nitric acid plants",
+        "Propylene Oxide Production",
+        "reagents involved and reduced process energy requirements.",
+        "SF6 Replacement",
+        "recaptured SF6.",
+        "Recovery of SF6 from gas insulated electrical equipment in testing facilities",
+        "Advanced Refrigerants",
+        "HFC Refrigerants Reclamation",
+        "reused.",
+        "HFC Replacement in Foam Production",
+        "lower impact foam manufacturing processes.",
+        "protocol",
+        "HFC23 Destruction",
+        "Ozone Depleting Substances Recovery & Destruction",
+        "protocol",
+        "products methodology",
+        "Refrigerant Leak Detection",
+        "from commercial refrigeration systems in the United States."
+      ],
+      "Engineered Removals": [
+        "processes.",
+        "BECCS (Bioenergy with Carbon Capture and Storage)",
+        "removals instead of reductions.",
+        "Direct Air Capture",
+        "air would also be considered Engineered Removals."
+      ],
+      "Forestry & Land Use": [
+        "Afforestation/Reforestation",
+        "than wetlands",
+        "sequestration methodology",
+        "Avoided Forest Conversion",
+        "Avoided Grassland Conversion",
+        "production.",
+        "Improved Forest Management",
+        "enrichment planting, and stand irrigation or fertilization.",
+        "age,",
+        "to high productive forest",
+        "protected forest",
+        "Baselines from National Forest Inventories",
+        "REDD+ (Reducing Emissions from Deforestation and Forest Degradation)",
+        "biodiversity protection and livelihood betterment.",
+        "deforestation and degradation",
+        "REDD+ Jurisdictional",
+        "deforestation and protect forests.",
+        "Sustainable Grassland Management",
+        "through replanting, and reducing fire frequency through prescribed burns.",
+        "of fire and grazing",
+        "Wetland Restoration"
+      ],
+      "Household & Community": [
+        "Biodigesters",
+        "Bundled Energy Efficiency",
+        "Projects may use the same protocols as lighting and weatherization including:",
+        "Clean Water",
+        "GS Water access and WASH methodology",
+        "GS TPDDTEC Technologies and practices to displace decentralized thermal energy",
+        "consumption",
+        "consumption methodologies",
+        "Community Boreholes",
+        "drinking water.",
+        "GS TPDDTEC Technologies and practices to displace decentralized thermal energy",
+        "consumption methodology",
+        "Cookstoves",
+        "systems, which are not grid-connected.",
+        "GS Methodology for Metered & Measured Energy Cooking Devices",
+        "GS TPDDTEC Technologies and practices to displace decentralized thermal energy",
+        "consumption",
+        "GS Simplified methodology for efficiency cookstoves",
+        "GS Methodology for improved cook stoves and kitchen regimes",
+        "biomass",
+        "Lighting",
+        "Weatherization"
+      ],
+      "Industrial & Commercial": [
+        "Aluminum Smelters Emission Reductions",
+        "smelting facilities",
+        "methodologies",
+        "Brick Manufacturing Emission Reductions",
+        "typically replace clay bricks instead of more intensive concrete.",
+        "manufacture methodology",
+        "Carbon-Absorbing Concrete",
+        "Storage scope.",
+        "Energy Efficiency",
+        "series.",
+        "production methodologies",
+        "Fuel Switching",
+        "Grid Expansion & Mini-Grids",
+        "new mini-grids",
+        "Leak Detection & Repair in Gas Systems",
+        "storage and distribution systems and in refinery facilities methodology.",
+        "Lower Carbon Cement & Concrete",
+        "lower-GHG materials.",
+        "Mine Methane Capture",
+        "(CBM) Seeps",
+        "open cast mine as a methane emission reduction activity methodology",
+        "abandoned coal mines methodology",
+        "Natural Gas Electricity Generation",
+        "power plants for electricity generation",
+        "Oil Recycling",
+        "incineration.",
+        "Plugging Oil & Gas Wells",
+        "Plugging oil and gas wells to prevent methane release.",
+        "Pneumatic Retrofit",
+        "methane leakage.",
+        "high-bleed pneumatic controllers in oil and natural gas systems protocol",
+        "Road Construction Emission Reductions",
+        "Mixtures in Pavement Application",
+        "University Campus Emission Reductions",
+        "campuses in the United States.",
+        "Waste Gas Recovery",
+        "for electricity generation.",
+        "electricity",
+        "or vented",
+        "Waste Heat Recovery",
+        "commercial and institutional buildings.",
+        "recovery and utilization for power generation at cement plants"
+      ],
+      "Renewable Energy": [
+        "Biomass",
+        "digestion to produce biogas.",
+        "controlled combustion, gasification or mechanical/thermal treatment",
+        "non-energy applications",
+        "GS Ecologically sound fuel switch to biomass with reduced energy requirement",
+        "Energy Storage",
+        "time-shifting.",
+        "Geothermal",
+        "cogeneration plants, which may be natural gas fired.",
+        "Hydropower",
+        "methodologies",
+        "RE Bundled (Bundled Renewables)",
+        "combination of wind & solar.",
+        "for these projects",
+        "Solar - Centralized",
+        "renewable sources",
+        "Solar - Distributed",
+        "lighting, cooking).",
+        "Solar Lighting",
+        "efficient lighting systems like LEDs.",
+        "Solar Water Heaters",
+        "Disseminating solar water heaters.",
+        "Wind",
+        "natural gas combustion for electricity production.",
+        "methodology",
+        "to a grid"
+      ],
+      "Transportation": [
+        "charging.",
+        "Bicycles",
+        "over fossil-fuel based vehicles.",
+        "methodology",
+        "projects",
+        "Electric Vehicles & Charging",
+        "fleets methodologies",
+        "Fleet Efficiency",
+        "etc.",
+        "fleets",
+        "rail transportation",
+        "methodology",
+        "Fuel Transport",
+        "Mass Transit",
+        "alternatives like automobiles.",
+        "(applicable to infrastructure upgrades)",
+        "Shipping",
+        "consumption for ship propulsion.",
+        "GS Retrofit energy efficiency measures in shipping",
+        "GS Reducing vessel emissions through the use of advanced hull coatings",
+        "GS Installation of flow improvement equipment on ships",
+        "Truck Stop Electrification",
+        "use grid-connected electrical power."
+      ],
+      "Waste Management": [
+        "Biochar",
+        "The production of biochar and application on soils or other uses.",
+        "Composting",
+        "Landfill Methane",
+        "fuel.",
+        "Methane Recovery in Wastewater",
+        "Biomass.",
+        "aerobic wastewater treatment plants",
+        "replacement of anaerobic systems by aerobic systems methodologies",
+        "Waste Diversion",
+        "of biomass",
+        "Waste Incineration",
+        "non-organic material.",
+        "pyrolysis",
+        "processes",
+        "Waste Recycling",
+        "Currently includes process recycling of glass, PET, etc.",
+        "Waste Reduction",
+        "reduce food waste.",
+        "Index of Methane-related Project Types",
+        "Agriculture > Manure Methane Digesters",
+        "Agriculture > Rice Emission Reductions",
+        "Agriculture > Solid Waste Separation",
+        "Household & Community > Biodigesters",
+        "Industrial & Commercial > Leak Detection & Repair in Gas Systems",
+        "Industrial & Commercial > Mine Methane Capture",
+        "Industrial & Commercial > Plugging Oil & Gas Wells",
+        "Industrial & Commercial > Pneumatic Retrofit",
+        "Renewable Energy > Biomass (including biomass combustion and biogas)",
+        "Waste Management > Composting",
+        "Waste Management > Landfill Methane",
+        "Waste Management > Methane Recovery in Wastewater",
+        "Waste Management > Waste Incineration"
+      ]
+    },
+    "typeMethodologies": {
+      "Activities that draw carbon out of the atmosphere by mineralization in soil.": [
+        "VM0021 Soil Carbon Quantification Methodology"
+      ],
+      "organic carbon through enhanced plant growth.": [
+        "ACR Compost additions to grazed lands protocol"
+      ],
+      "Feed Additives": [
+        "VCS VM0041 Methodology for the reduction of enteric methane emissions from ruminants"
+      ],
+      "through the use of 100% natural feed supplement": [
+        "Methodology under development by Gold Standard called Reducing methane emissions"
+      ],
+      "powered by fossil fuel sources.": [
+        "CDM’s AMS-I.B. Mechanical energy for use with or without electrical energy methodology",
+        "AMS-II.F. Energy efficiency and fuel switching measures for agricultural facilities and"
+      ],
+      "activities": [
+        "Gold Standard’s Drip irrigation methodology"
+      ],
+      "livestock waste.": [
+        "ARB Livestock protocol",
+        "CDM protocols, including AMS-III.D. Methane recovery in animal manure, ACM0010"
+      ],
+      "multi-site manure collection and treatment in a central plant": [
+        "Gold Standard’s Revised methodology for manure management systems and MSW"
+      ],
+      "methodologies": [
+        "ACR Methane recovery in animal manure management systems",
+        "CAR U.S. Livestock protocol",
+        "CAR Argentina Livestock protocol",
+        "CAR Organic waste digestion protocol",
+        "ARB’s Rice Cultivation protocol"
+      ],
+      "fertilizer application and revising the application timing.": [
+        "CAR Nitrogen management protocol",
+        "ACR Methodology for quantifying nitrous oxide (N2O) emissions reductions from reduced"
+      ],
+      "use of nitrogen fertilizer on agricultural crop": [
+        "CDM’s AMS-III.BF. Reduction of N2O emissions from use of Nitrogen use efficient (NUE)"
+      ],
+      "seeds that require less fertilizer application": [
+        "VCS VM0022 Quantifying N2O Emissions Reductions in Agricultural Crops through"
+      ],
+      "from rice cultivation.": [
+        "ACR Emission reductions in rice management systems protocol",
+        "CDM’s AMS-III.AU. Methane emission reduction by adjusted water management practice in",
+        "rice cultivation, and AMS-III.AO. Methane recovery through controlled anaerobic digestion"
+      ],
+      "farm manure slurries for processing, recycling, and selling off-site.": [
+        "CDM’s AMS-III.Y. Methane avoidance through separation of solids from wastewater or"
+      ],
+      "manure treatment systems methodology": [
+        "VCS’s VMR0003 Included use of organic bedding material in AMS-III.Y. methodology"
+      ],
+      "trees to landscapes.": [
+        "VCS VM0017 Adoption of sustainable agricultural land management",
+        "VCS VMD0021 Estimation of Stocks in the Soil Carbon Pool",
+        "VCS VM0042 Methodology for improved agricultural land management",
+        "CAR Soil enrichment protocol",
+        "Gold Standard’s Soil organic carbon framework methodology"
+      ],
+      "injection for permanent storage underground while also enhancing oil recovery.": [
+        "ACR Carbon capture and storage protocol"
+      ],
+      "considered Carbon-Absorbing Concrete in the Industrial & Commercial scope.": [
+        "VCS VM0043 Methodology for CO2 utilization in concrete production"
+      ],
+      "plastics.": [
+        "VCS VM0040 Methodology for greenhouse gas capture and utilization in plastic materials"
+      ],
+      "manufacturing nylon) are diverted into this destruction technology.": [
+        "ACR Destruction of ozone depleting substances and high-GWP foam",
+        "CAR Adipic acid production"
+      ],
+      "components of fertilizer and synthetic fiber production, respectively.": [
+        "CDM methodologies: ACM0019 N2O abatement from nitric acid production, AM0028 N2O"
+      ],
+      "N2O inside the ammonia burner of nitric acid plants": [
+        "CAR Nitric acid production protocol"
+      ],
+      "reagents involved and reduced process energy requirements.": [
+        "VCS’s VM0023 Reduction of GHG emissions in propylene oxide production protocol"
+      ],
+      "recaptured SF6.": [
+        "CDM methodologies: AM0035 SF6 Emission reductions in electrical grids, AM0065"
+      ],
+      "Advanced Refrigerants": [
+        "ACR Advanced refrigerator systems protocol"
+      ],
+      "reused.": [
+        "ACR Certified reclaimed HFC refrigerants protocol"
+      ],
+      "lower impact foam manufacturing processes.": [
+        "ACR Transition to advanced formulation blowing agents in foam manufacturing and use"
+      ],
+      "HFC23 Destruction": [
+        "CDM AM0001 Decomposition of fluoroform (HFC-23) waste streams methodology"
+      ],
+      "Ozone Depleting Substances Recovery & Destruction": [
+        "ARB Ozone Depleting Substances (ODS) protocol",
+        "CAR Mexico halocarbon protocol",
+        "CAR Ozone depleting substances protocol",
+        "ACR Destruction of ozone depleting substances and high-global warming potential foam"
+      ],
+      "protocol": [
+        "VCS VM0016 Recovery and destruction of ozone-depleting substances (ODS) from"
+      ],
+      "from commercial refrigeration systems in the United States.": [
+        "VCS VM0001 Infrared automatic refrigerant leak detection efficiency project methodology"
+      ],
+      "removals instead of reductions.": [
+        "VM0049 Carbon Capture and Storage"
+      ],
+      "Direct Air Capture": [
+        "VM0049 Carbon Capture and Storage"
+      ],
+      "Afforestation/Reforestation": [
+        "Large and small-scale CDM afforestation and reforestation methodologies, including",
+        "AR-AMS0007 Afforestation and reforestation project activities implemented on lands other"
+      ],
+      "than wetlands": [
+        "Gold Standard’s Afforestation/reforestation (A/R) GHG emissions reduction &"
+      ],
+      "sequestration methodology": [
+        "ACR Afforestation and reforestation of degraded land protocol",
+        "CAR Forest Projects protocol (version 4.0 and earlier)",
+        "CAR Urban tree planting protocol",
+        "ARB Forest Projects offset protocol"
+      ],
+      "Avoided Forest Conversion": [
+        "ARB Forest protocol",
+        "CAR Forest protocol",
+        "ACR Active Conservation and Sustainable Management on U.S. Forestlands"
+      ],
+      "production.": [
+        "CAR Canada and US Grassland protocol",
+        "ACR Avoided conversion of grasslands and shrublands to crop production protocol"
+      ],
+      "enrichment planting, and stand irrigation or fertilization.": [
+        "ARB Forest protocol",
+        "ACR Improved forest management on non-federal U.S. land protocol",
+        "CAR Improved forest management protocol",
+        "CAR Mexico forest protocol",
+        "VCS VM0003 Methodology for improved forest management through extension of rotation"
+      ],
+      "age,": [
+        "VCS VM0005 Methodology for improved forest management: conversion of low productive"
+      ],
+      "to high productive forest": [
+        "VCS VM0010 Methodology for improved forest management: conversion from logged to"
+      ],
+      "protected forest": [
+        "VCS VM0012 Improved forest management in temperate and boreal forests",
+        "VCS VM0045 Methodology for Improved Forest Management Using Dynamic Matched"
+      ],
+      "biodiversity protection and livelihood betterment.": [
+        "VCS VM0006 Carbon accounting for mosaic and landscape-scale REDD projects",
+        "VCS VM0007 REDD+ methodology framework",
+        "VCS VM0009 Avoided ecosystem conversion",
+        "VCS VM0015 Avoided unplanned deforestation",
+        "VCS VM0037 Implementation of REDD+ activities in landscapes affected by mosaic"
+      ],
+      "through replanting, and reducing fire frequency through prescribed burns.": [
+        "VCS VM0026 Methodology for sustainable grassland management (SGM)",
+        "VCS VM0032 Methodology for the adoption of sustainable grasslands through adjustment"
+      ],
+      "of fire and grazing": [
+        "VCS VM0042 Methodology for improved agricultural land management"
+      ],
+      "Wetland Restoration": [
+        "CDM AR-AM0014 Afforestation and reforestation of mangrove habitats protocol",
+        "VCS VM0007 REDD+ Methodology Framework",
+        "VCS VM0033 Methodology for tidal wetland and seagrass restoration",
+        "VCS VM0036 Methodology for Rewetting Drained Temperate Peatlands",
+        "ACR Restoration of California Deltaic and Coastal Wetlands",
+        "ACR Restoration of Degraded Deltaic Wetlands of the Mississippi Delta",
+        "ACR Restoration of Pocosin Wetlands"
+      ],
+      "Biodigesters": [
+        "CDM AMS-I.E. Switch from non renewable biomass for thermal applications",
+        "CDM AMS-I.F. Renewable electricity generation for captive use",
+        "CDM AMS-I.C. Thermal energy production with or without electricity",
+        "CDM AMS-III.AO. Methane recovery through controlled anaerobic digestion",
+        "CDM AMS-III.R. Methane recovery in agricultural activities at household/small farm level"
+      ],
+      "Projects may use the same protocols as lighting and weatherization including:": [
+        "CDM AMS-II.J. Demand side activities for efficient lighting",
+        "CDM AMS-II.E. Energy efficiency and fuel switching for buildings",
+        "VCS VM0008 Weatherization of single family and multi-family buildings"
+      ],
+      "consumption": [
+        "CDM AMS-III.AV. Low greenhouse emitting safe drinking water production systems",
+        "CDM AMS-III.BG. Emission reduction through sustainable charcoal production and"
+      ],
+      "GS Methodology for improved cook stoves and kitchen regimes": [
+        "CDM AMS-II.G. Energy efficiency measures in thermal applications of non-renewable"
+      ],
+      "biomass": [
+        "CDM AMS-I.E. Switch from non-renewable biomass for thermal applications by the user",
+        "CDM AMS-I.C. Thermal energy production with or without electricity",
+        "VCS VMR0006 Methodology for installation of high efficiency firewood cookstoves"
+      ],
+      "Lighting": [
+        "CDM AMS-II.C. Demand-side energy efficiency activities for specific technologies",
+        "AMS-II.J. Demand side activities for efficient lighting methodologies"
+      ],
+      "Weatherization": [
+        "CDM AMS-II.E. Energy efficiency and fuel switching measures for buildings",
+        "VCS VM0008 Weatherization of single family and multi-family buildings"
+      ],
+      "Aluminum Smelters Emission Reductions": [
+        "CDM AM0030 PFC emission reductions from anode effect mitigation at primary aluminum"
+      ],
+      "smelting facilities": [
+        "CDM AM0059 Reduction in GHGs emission from primary aluminum smelters"
+      ],
+      "typically replace clay bricks instead of more intensive concrete.": [
+        "CDM AMS-III.Z. Fuel Switch, process improvement, and energy efficiency in brick"
+      ],
+      "Storage scope.": [
+        "VCS VM0043 Methodology for CO2 utilization in concrete production"
+      ],
+      "series.": [
+        "CDM AMS-II.B. Supply side energy efficiency improvements",
+        "CDM AMS-II.D. Energy efficiency and fuel switching measures for industrial facilities",
+        "CDM AMS-II.E. Energy efficiency and fuel switching measures for buildings",
+        "CDM AMS-III.M. Reduction of energy consumption by recovering soda from paper"
+      ],
+      "Fuel Switching": [
+        "CDM AMS-III.B. Switching fossil fuels",
+        "CDM ACM0009 Fuel switching from coal or petroleum fuel to natural gas",
+        "CDM ACM0003 Partial substitution of fossil fuels in cement or quicklime manufacture"
+      ],
+      "Grid Expansion & Mini-Grids": [
+        "CDM AMS-III.BB. Electrification of communities through grid extension or construction of"
+      ],
+      "new mini-grids": [
+        "CDM AMS-III.AW. Electrification of rural communities by grid extension",
+        "CDM AMS-I.F. Renewable electricity generation for captive use and mini-grid"
+      ],
+      "Leak Detection & Repair in Gas Systems": [
+        "CDM’s AM0023 Leak detection and repair in gas production, processing, transmission,"
+      ],
+      "lower-GHG materials.": [
+        "CAR’s Low-Carbon Cement protocol",
+        "VCS VMR0012 Production of Geopolymer Cement"
+      ],
+      "Mine Methane Capture": [
+        "CDM ACM0008 Abatement of methane from coal mines",
+        "CDM AM0064 Capture and utilization or destruction of mine methane",
+        "VCS VM0014 Interception and destruction of fugitive methane from coal bed methane"
+      ],
+      "(CBM) Seeps": [
+        "VCS VMR0001 Revisions to ACM0008 to include pre-drainage of methane from an active"
+      ],
+      "open cast mine as a methane emission reduction activity methodology": [
+        "VCS VMR0002 Revisions to ACM0008 to include methane capture and destruction from"
+      ],
+      "abandoned coal mines methodology": [
+        "ACR Capturing and destroying methane from coal and trona mines in North America",
+        "ARB Mine Methane Capture protocol"
+      ],
+      "Natural Gas Electricity Generation": [
+        "CDM AM0029 Methodology for grid connected electricity generation plants using natural",
+        "CDM ACM0011 Fuel switching from coal and/or petroleum fuels to natural gas in existing"
+      ],
+      "incineration.": [
+        "ACR Re-refining used lubricating oils protocol",
+        "ACR Recycling of transformer oil protocol"
+      ],
+      "Plugging oil and gas wells to prevent methane release.": [
+        "ACR Plugging Orphan Oil and Gas Wells in the U.S. and Canada"
+      ],
+      "methane leakage.": [
+        "ACR Emission reduction measurement and monitoring methodology for the conversion of"
+      ],
+      "Road Construction Emission Reductions": [
+        "VCS VM0039 Methodology for Use of Foam Stabilized Base and Emulsion Asphalt"
+      ],
+      "campuses in the United States.": [
+        "VCS VM0025 Campus clean energy and energy efficiency protocol"
+      ],
+      "for electricity generation.": [
+        "CDM ACM0012 Waste energy recovery and due to repurposing of energy recaptured into"
+      ],
+      "electricity": [
+        "CDM AM0009 Recovery and utilization of gas from oil fields that would otherwise be flared"
+      ],
+      "or vented": [
+        "CDM ACM0002 Grid-connected electricity generation from renewable sources"
+      ],
+      "commercial and institutional buildings.": [
+        "CDM ACM0012 Waste energy recovery",
+        "CDM AMS-III.Q. Waste energy recovery (gas/heat/pressure) projects",
+        "CDM AM0024 Baseline methodology for greenhouse gas reductions through waste heat"
+      ],
+      "recovery and utilization for power generation at cement plants": [
+        "CDM AM0058 Introduction of a new primary district heating system"
+      ],
+      "digestion to produce biogas.": [
+        "CDM AM0036 Fuel switch to renewable biomass for thermal applications",
+        "CDM ACM0002 Grid-connected electricity generation from renewable sources",
+        "CDM ​ACM0006 Electricity and heat generation from biomass",
+        "CDM ACM0018 Electricity generation from biomass in power-only plants",
+        "CDM ACM0022 Alternative waste treatment processes",
+        "CDM AMS-I.A. Electricity generated by the user",
+        "CDM AMS-I.C. Thermal energy production with or without electricity",
+        "CDM AMS-I.D. Grid connected renewable electricity generation",
+        "CDM AMS-I.E. Switch from non-renewable biomass for thermal applications by user",
+        "CDM AMS-III.E. Avoidance of methane production from decay of biomass through"
+      ],
+      "controlled combustion, gasification or mechanical/thermal treatment": [
+        "CDM AMS-III.AQ. Introduction of Bio-CNG in transportation applications",
+        "CDM AMS-III.AS. Switch from fossil fuel to biomass in existing manufacturing facilities for"
+      ],
+      "time-shifting.": [
+        "CDM ACM0002 Grid-connected electricity generation from renewable sources"
+      ],
+      "cogeneration plants, which may be natural gas fired.": [
+        "CDM AMS-I.D. Grid connected renewable electricity generation",
+        "CDM ACM0002 Grid-connected electricity generation from renewable sources",
+        "CDM AM0072 Fossil fuel displacement by geothermal resources for space heating"
+      ],
+      "Hydropower": [
+        "CDM AMS-I.D. Grid connected renewable electricity generation",
+        "CDM ACM0002 Grid-connected electricity generation from renewable sources"
+      ],
+      "combination of wind & solar.": [
+        "CDM AMS-I.D. Grid connected renewable electricity generation",
+        "CDM ACM0002 Grid-connected electricity generation from renewable sources",
+        "CDM ACM0006 Electricity and heat generation from biomass",
+        "CDM ACM0012 Waste energy recovery/Consolidated baseline methodology for GHG",
+        "CDM AMS-I.L. Electrification of rural communities using renewable energy",
+        "CDM AMS-I.F. Renewable electricity generation for captive use and mini-grid."
+      ],
+      "Solar - Centralized": [
+        "CDM ACM0002 Grid-connected electricity generation from renewable sources",
+        "CDM AM0026 Methodology for zero-emissions grid-connected electricity generation from"
+      ],
+      "renewable sources": [
+        "CDM AMS-I.F. Renewable electricity generation for captive use and mini-grid",
+        "CDM AMS-I.D. Grid-connected renewable electricity generation"
+      ],
+      "lighting, cooking).": [
+        "CDM AMS-I.A. Electricity generation by the user",
+        "CDM AMS-I.F. Renewable electricity generation for captive use and mini-grid"
+      ],
+      "efficient lighting systems like LEDs.": [
+        "CDM AMS-III.AR. Substituting fossil fuel based lighting with LED/CFL lighting systems",
+        "CDM AMS-I.A. Electricity generation by the user",
+        "CDM AMS-I.L. Electrification of rural communities using renewable energy",
+        "VCS ACM0002 Grid connected renewable energy methodologies"
+      ],
+      "Disseminating solar water heaters.": [
+        "CDM AMS-I.J. Solar water heaters protocol",
+        "CDM AMS-I.C. Thermal energy production with or without electricity"
+      ],
+      "natural gas combustion for electricity production.": [
+        "CDM AMS-I.D. Grid connected renewable electricity generation",
+        "CDM ACM0002 Grid-connected electricity generation from renewable sources"
+      ],
+      "methodology": [
+        "CDM AM0019 Renewable energy project activities replacing part of the electricity",
+        "AMS-III.C. Emission reductions by electric and hybrid vehicles methodology",
+        "VCS Methodology for determining GHG emission reductions through bicycle sharing",
+        "ACR Transport & fleet efficiency protocol"
+      ],
+      "over fossil-fuel based vehicles.": [
+        "CDM AMS-III.BM. Lightweight two and three wheeled personal transportation"
+      ],
+      "Electric Vehicles & Charging": [
+        "VCS VM0038 Electric vehicle charging systems methodology",
+        "CDM AMS-III.C. Emission reductions by electric and hybrid vehicles",
+        "CDM AMS-III.S. Introduction of low-emission vehicles/technologies to commercial vehicle"
+      ],
+      "etc.": [
+        "CDM AMS-III.C. Emission reductions by electric and hybrid vehicles",
+        "CDM AMS-III.S. Introduction of low-emission vehicles/technologies to commercial vehicle"
+      ],
+      "fleets": [
+        "CDM AM0090 Modal shift in transportation of cargo from road transportation to water or"
+      ],
+      "rail transportation": [
+        "VCS VM0019 Fuel Switch from Gasoline to Ethanol in Flex-Fuel Vehicle Fleets"
+      ],
+      "Fuel Transport": [
+        "CDM AM0110 Modal shift in transportation of liquid fuels methodology"
+      ],
+      "alternatives like automobiles.": [
+        "CDM ACM0016 Mass rapid transit projects methodology",
+        "CDM AM0031 Bus rapid transit projects",
+        "CDM AMS-III.C. Emission reductions by electric and hybrid vehicles",
+        "CDM AMS-II.E. Energy efficiency and fuel switching measures for buildings methodology"
+      ],
+      "use grid-connected electrical power.": [
+        "ACR Truck Stop Electrification protocol"
+      ],
+      "The production of biochar and application on soils or other uses.": [
+        "CAR U.S. and Canada Biochar Protocol",
+        "VCS VM0044 Methodology for Biochar Utilization in Soil and Non-Soil Applications"
+      ],
+      "Composting": [
+        "CDM AMS-III.F. Avoidance of methane through composting",
+        "CDM ACM0022 Alternative waste treatment processes methodologies",
+        "CAR Composting protocol"
+      ],
+      "fuel.": [
+        "CDM ACM0001 Flaring or use of landfill gas",
+        "CDM AMS-III.G. Landfill methane recovery methodologies",
+        "CAR US and Mexico Landfill protocols",
+        "ACR Landfill gas destruction & beneficial use projects protocol"
+      ],
+      "Biomass.": [
+        "CDM ACM0014 Treatment of wastewater",
+        "CDM AM0080 Mitigation of greenhouse gasses emissions with treatment of wastewater in"
+      ],
+      "aerobic wastewater treatment plants": [
+        "CDM AMS-III.I. Avoidance of methane production in wastewater treatment through"
+      ],
+      "replacement of anaerobic systems by aerobic systems methodologies": [
+        "CDM AMS-III.H. Methane recovery in wastewater treatment",
+        "CAR Organic waste digestion protocol"
+      ],
+      "Waste Diversion": [
+        "CDM ACM0022 Alternative waste treatment processes",
+        "CDM AMS-I.F. Renewable electricity generation for captive use and mini-grid",
+        "CDM AMS-I.I. Biogas/biomass thermal applications for households/small users",
+        "CDM AMS-III.F. Avoidance of methane emissions through controlled biological treatment"
+      ],
+      "of biomass": [
+        "CDM AMS-III.AO. Methane recovery through controlled anaerobic digestion"
+      ],
+      "non-organic material.": [
+        "CDM AMS-III.L. Avoidance of methane production from biomass decay through controlled"
+      ],
+      "pyrolysis": [
+        "CDM AM0025 Avoided emissions from organic waste through alternative waste treatment"
+      ],
+      "processes": [
+        "CDM ACM0022 Alternative waste treatment processes"
+      ],
+      "Currently includes process recycling of glass, PET, etc.": [
+        "CDM AMS-III.AJ. Recovery and recycling of materials from solid wastes",
+        "CDM AMS-III.BA. Recovery and recycling of materials from E-waste",
+        "CDM ACM0022 Alternative waste treatment processes",
+        "VMR0008 Revision to AMS-III.BA.: Recovery and Recycling of Materials from E-waste"
+      ],
+      "reduce food waste.": [
+        "VCS VM0046 Methodology for Reducing Food Loss and Waste"
+      ]
+    }
+  },
+  "designCalculations": {
+    "columnDescriptions": [
+      "Methodology of Qualitative Columns in the Voluntary Registry Offset Database (VROD)",
+      "Column Name | Data Source",
+      "Project ID | \"ACR\", \"ART\", \"CAR\", \"GS\", VCS\" concatenated with the project ID number from the registry Projects tables",
+      "Project Name | Registry Projects tables",
+      "Voluntary Registry | The registry the project is listed under",
+      "ARB / WA Project | Indicates if project is listed in the ARB or WA Issuance & Retirement files",
+      "Voluntary Status | Registry Projects tables",
+      "Scope | Mapped from types; see our Scopes & Types document for mapping of types to scope",
+      "Type | BCTP classifies every project by type; see our Scopes & Types document for a description of each type | .",
+      "Reduction / Removal | Each project type is classified as reductions, impermanent removals, long-duration removals, or mixed",
+      "Methodology / Protocol | We harmonize the methodologies according to their official name by the registry**",
+      "Methodology Version | Methodology column, when the version is present",
+      "Region | Mapped using the United Nations Geoscheme",
+      "Country | Registry Project tables with harmonized country name spellings; projects covering more than one country and international waters are included as \"international\"**",
+      "State | Registry Projects tables",
+      "Project Site Location | Registry Projects tables",
+      "Project Developer | Registry project tables; any changes between versions are noted in 'BCTP notes' column*",
+      "Project Owner | Registry project tables; any changes between versions are noted in 'BCTP notes' column*",
+      "Offset Project Operator | Registry Projects tables*",
+      "Authorized Project Designee | Registry Projects tables*",
+      "Verifier | Registry Projects tables*",
+      "Estimated Annual Emission Reductions | Registry Projects tables",
+      "ARB ID | Registry project tables, and if blank from ARB Issuance & Retirement table",
+      "ARB Project Type | ARB Issuance & Retirement table",
+      "ARB Project Status | 'Compliance Program Status (ARB or Ecology)' column of ACR Projects table, for projects with an ARB methodology; 'ARB Project Status' column of CAR Projects table; 'Status' column of VCS-ARB Projects table",
+      "WA ID | Registry project tables for projects with a WA methodology or from WA Issuance & Retirement table.",
+      "WA Project Type | WA Issuance & Retirement table",
+      "WA Project Status | 'Compliance Program Status (ARB or Ecology)' column of ACR Projects table, for projects with a WA methodology.",
+      "ARB / WA Status | ARB Project Status or WA Project Status***",
+      "ARB / WA ID | ARB ID or WA ID***"
+    ],
+    "transactionTypes": [
+      "Method for Tallying of Transaction Data Columns in the Voluntary Registry Offset Database (VROD)",
+      "Equations for constructing Projects tab:",
+      "- Issuances = sum all when Transaction type = Issuance, by vintage year and by issuance year",
+      "- Retirements/cancellations = sum of all Transaction type = Retirement/Cancellation (including ARB and WA)",
+      "- Buffer pool deposits = sum of all Transaction type = Buffer Contribution",
+      "- Reversals not covered by the buffer pool =  sum of all Transaction type = Intentional reversal",
+      "- Reversals covered by the buffer pool =  sum of all Transaction type = Buffer Pool Subtraction >> Unintentional reversal",
+      "- Credit remaining = for each vintage: total Issuances minus total retirements",
+      "- First year of project = first vintage year that there is an issuance",
+      "- PERs = Sum of all PER transaction type",
+      "Note: The '+/-' column specifies whether each transaction sub-type is treated as positive or negative when summed",
+      "Methodology and Source of Data for Transaction Types",
+      "Registry | Transaction type | Transaction sub-type | Project ID | +/- | Quantity | Transaction Date | Data Table Name",
+      "ACR | Issuance | Issuance | Project ID | + | [Credits issued to project] | [Date issued (GMT)] | ACR Issuances",
+      "ACR | Issuance | Transfer to ARB | Project ID | - | [Quantity of Credits] for ARB projects (projects listed in ARB Issuances and Retirements) for credits not held in the buffer pool (when the ‘Account Holder’ does not equal “ACR”) and when Cancellation Type = \"Convert to ARB Offset Credits\" | [Status effective (GMT)] | ACR Cancellations",
+      "ACR | Issuance | Cancelled during transfer to ARB | Project ID | - | [Quantity of Credits] for ARB projects (projects listed in ARB Issuances and Retirements) for credits not held in the buffer pool (when the ‘Account Holder’ does not equal “ACR”) and when Cancellation Type = \"Removal of credits from the registry\" | [Status effective (GMT)] | ACR Cancellations",
+      "ACR | Issuance | Transfer to WA | Project ID | - | [Quantity of Credits] for WA projects (projects listed in WA Issuances and Retirements) when the cancellation type is 'Convert to Ecology offset credits'. | [Status effective (GMT)] | ACR Cancellations",
+      "ACR | Issuance | Cancelled during transfer to WA | Project ID | - | [Quantity of Credits] for WA projects (projects listed in WA Issuances and Retirements) for credits not held in the buffer pool (when the ‘Account Holder’ does not equal “ACR”) and when Cancellation Type = \"Removal of credits from the registry\" | [Status effective (GMT)] | ACR Cancellations",
+      "ACR | Buffer Contribution | Buffer Contribution | Project ID | + | [Credits Issued to Buffer Pool]+[Credits transferred to the buffer pool] | [Date issued (GMT)] | ACR Issuances",
+      "ACR | Buffer Contribution | Buffer pool transfer to ARB | Project ID | - | [Quantity of Credits] for ARB projects (projects listed in ARB Issuances and Retirements) for buffer pool credits (when the ‘Account Holder’ column equals “ACR”) when Cancellation Type = \"Convert to ARB Offset Credits\" | [Status effective (GMT)] | ACR Cancellations",
+      "ACR | Buffer Contribution | Cancelled during transfer to ARB | Project ID | - | [Quantity of Credits] for ARB projects (projects listed in ARB Issuances and Retirements) for buffer pool credits (when the ‘Account Holder’ column equals “ACR”) when Cancellation Type = \"Removal of credits from the registry\" | [Status effective (GMT)] | ACR Cancellations",
+      "ACR | Buffer Contribution | Buffer pool transfer to WA | Project ID | - | [Quantity of Credits] for WA projects (projects listed in WA Issuances and Retirements) for buffer pool credits (when the ‘Account Holder’ column equals “ACR”) when Cancellation Type = \"Convert to Ecology Offset Credits\" | [Status effective (GMT)] | ACR Cancellations",
+      "ACR | Buffer Contribution | Cancelled during transfer to WA | Project ID | - | [Quantity of Credits] for WA projects (projects listed in WA Issuances and Retirements) for buffer pool credits (when the ‘Account Holder’ column equals “ACR”) when Cancellation Type = \"Removal of credits from the registry\" | [Status effective (GMT)] | ACR Cancellations",
+      "ACR | Buffer Subtraction | Buffer Subtraction | Project ID | + | For non-ARB non-Ecology projects, that are from the buffer pool account (when the ‘Account Holder’ column equals “ACR”) and Cancellation Reason <> \"Compensation for Intentional Reversal\": \nif [Quantity of Credits] <= (total buffer contributions minus total buffer subtractions) \nthen [Quantity of Credits], else 0.\notherwise if  [Quantity of Credits] > total credits issued minus total credits retired/cancelled then the remainder is a buffer subtraction, then [Quantity of Credits] - (total credit issued - total retired/cancelled) else 0 | [Status effective (GMT)] | ACR Cancellations",
+      "ACR | Buffer Subtraction | Buffer Subtraction | Project ID | + | [Quantity of credits] when the ‘Cancellation Type’ equals “Compensation for Intentional Reversal” for buffer pool credits (when the ‘Account Holder’ column = “ACR”) | [Status effective (GMT)] | ACR Cancellations",
+      "ACR | Buffer Subtraction | Buffer Subtraction | Project ID | + | [Quantity of Credits] for ARB or WA projects for buffer pool credits (when the ‘Account Holder’ column = “ACR”) for cancellation types we haven't already captured: Cancellation type = “Compensation for Early Project Termination\" | [Status effective (GMT)] | ACR Cancellations",
+      "ACR | Buffer Subtraction | Unintentional reversal | Project ID | + | We have not identified transactions to date",
+      "ACR | Retirement/Cancellation | Retirement | Project ID | + | [Quantity of Credits] | [Status effective (GMT)] | ACR Retirements",
+      "ACR | Retirement/Cancellation | Cancellation | Project ID | + | [Quantity of Credits] non-ARB non-Ecology projects, that are not in the buffer pool (when ‘Account Holder’ column does not equal “ACR”) and when 'Cancelation Type' <> \"Compensation for Intentional Reversal\" (All cancellations not involved in the transition of credits from ACR to ARB or Ecology (since these are accounted for as adjustments to issuances) and not in the buffer pool) | [Status effective (GMT)] | ACR Cancellations",
+      "ACR | Retirement/Cancellation | Cancellation | Project ID | + | For non-ARB non-Ecology projects, that are from the buffer pool account (when the ‘Account Holder’ column equals “ACR”) and Cancellation Reason <> \"Compensation for Intentional Reversal'\nIf [Quantity of Credits] > (total buffer contributions minus total buffer subtractions) \nthen [Quantity of Credits] for the portion of ‘Quantity of Credits’ that <= total issuances minus total retirements/cancellations | [Status effective (GMT)] | ACR Cancellations"
+    ]
+  },
   "japanCompanyRetirements": [
     {
       "name": "Tokyo Gas",
