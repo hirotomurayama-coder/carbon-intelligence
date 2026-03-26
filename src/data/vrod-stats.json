@@ -1052,5 +1052,1491 @@
     "Late to verify": 845,
     "Crediting Period Renewal Requested": 7,
     "Crediting Period Renewal and Verification Approval Requested": 4
-  }
+  },
+  "projectTypeYearly": {
+    "Energy demand": {
+      "2009": 19036,
+      "2011": 30032,
+      "2012": 40855,
+      "2013": 12546,
+      "2014": 18444,
+      "2016": 7329,
+      "2017": 42113,
+      "2018": 1205,
+      "2019": 308081,
+      "2020": 42473,
+      "2021": 206345,
+      "2022": 3003562,
+      "2023": 13491585,
+      "2024": 17312983,
+      "2025": 14993918
+    },
+    "Energy distribution": {
+      "2009": 182,
+      "2012": 97,
+      "2014": 966,
+      "2018": 325
+    },
+    "Energy industries (renewable/non-renewable sources)": {
+      "2009": 653812,
+      "2010": 906887,
+      "2011": 1691215,
+      "2012": 2765910,
+      "2013": 784708,
+      "2014": 747870,
+      "2015": 104740,
+      "2016": 184563,
+      "2017": 142444,
+      "2018": 227441,
+      "2019": 2613586,
+      "2020": 17955657,
+      "2021": 34089104,
+      "2022": 42549052,
+      "2023": 33887658,
+      "2024": 30866366,
+      "2025": 15384756
+    },
+    "Energy industries (renewable/non-renewable sources); Fugitive emissions from fuels (solid, oil and gas)": {
+      "2009": 1
+    },
+    "Fugitive emissions from fuels (solid, oil and gas)": {
+      "2009": 106335,
+      "2010": 800,
+      "2011": 1250,
+      "2019": 3500,
+      "2021": 870046,
+      "2022": 9985945,
+      "2023": 1294222,
+      "2024": 5776310,
+      "2025": 5121422
+    },
+    "Fugitive emissions from fuels (solid, oil and gas); Mining/mineral production": {
+      "2009": 6313,
+      "2017": 5599,
+      "2021": 1420086,
+      "2022": 2597841,
+      "2023": 273951
+    },
+    "Manufacturing industries": {
+      "2009": 19502,
+      "2011": 114992,
+      "2012": 8,
+      "2013": 1100,
+      "2015": 26,
+      "2016": 32,
+      "2018": 784,
+      "2020": 127708,
+      "2021": 273538,
+      "2022": 23198,
+      "2023": 48175,
+      "2024": 49291,
+      "2025": 4500
+    },
+    "Mining/mineral production": {
+      "2009": 127366,
+      "2010": 69555,
+      "2015": 59821
+    },
+    "Waste handling and disposal": {
+      "2009": 169690,
+      "2010": 8801,
+      "2011": 130062,
+      "2012": 289653,
+      "2013": 16737,
+      "2014": 4424,
+      "2015": 240669,
+      "2016": 23885,
+      "2017": 6778,
+      "2018": 840,
+      "2019": 23787,
+      "2020": 242785,
+      "2021": 879138,
+      "2022": 95236,
+      "2023": 331531,
+      "2024": 587180,
+      "2025": 503071
+    },
+    "Energy industries (renewable/non-renewable sources); Manufacturing industries": {
+      "2010": 30797,
+      "2012": 7300,
+      "2013": 3155,
+      "2015": 54976,
+      "2020": 612781,
+      "2022": 36824,
+      "2023": 2086242,
+      "2024": 216116
+    },
+    "Energy industries (renewable/non-renewable sources); Waste handling and disposal": {
+      "2010": 22729,
+      "2011": 24789,
+      "2012": 122312,
+      "2013": 39645,
+      "2014": 831,
+      "2016": 16,
+      "2017": 12466,
+      "2018": 33593,
+      "2019": 5332,
+      "2020": 184778,
+      "2021": 1342418,
+      "2022": 1378151,
+      "2023": 4698881,
+      "2024": 3113759,
+      "2025": 2270629
+    },
+    "Fugitive emissions from production and consumption of halocarbons and sulphur hexafluoride": {
+      "2010": 2330043,
+      "2015": 10000,
+      "2021": 20657,
+      "2024": 96042,
+      "2025": 163156
+    },
+    "Metal production": {
+      "2010": 125768,
+      "2018": 15811
+    },
+    "Agriculture Forestry and Other Land Use": {
+      "2011": 10017,
+      "2012": 101413,
+      "2013": 1230428,
+      "2014": 671062,
+      "2015": 151112,
+      "2016": 460203,
+      "2017": 6449132,
+      "2018": 2230590,
+      "2019": 10647779,
+      "2020": 7917164,
+      "2021": 59304950,
+      "2022": 31884567,
+      "2023": 32944810,
+      "2024": 11652737,
+      "2025": 18076428
+    },
+    "Chemical industry": {
+      "2011": 59109,
+      "2012": 25000,
+      "2013": 578897,
+      "2019": 10343,
+      "2025": 774
+    },
+    "Chemical industry; Energy industries (renewable/non-renewable sources)": {
+      "2011": 102958
+    },
+    "Energy industries (renewable/non-renewable sources); Livestock, enteric fermentation, and manure management": {
+      "2011": 350392,
+      "2025": 3
+    },
+    "Livestock, enteric fermentation, and manure management": {
+      "2011": 18615,
+      "2020": 200,
+      "2023": 15403,
+      "2024": 4121
+    },
+    "Agriculture Forestry and Other Land Use; Energy industries (renewable/non-renewable sources); Waste handling and disposal": {
+      "2015": 7616
+    },
+    "Energy demand; Waste handling and disposal": {
+      "2017": 32,
+      "2018": 10000,
+      "2019": 10000,
+      "2020": 12500,
+      "2021": 25142,
+      "2022": 50050,
+      "2023": 251622,
+      "2024": 9688,
+      "2025": 42548
+    },
+    "Manufacturing industries; Metal production": {
+      "2017": 1,
+      "2022": 24541
+    },
+    "Transport": {
+      "2017": 51487,
+      "2018": 8085,
+      "2019": 7155,
+      "2020": 6446,
+      "2021": 2122,
+      "2022": 321,
+      "2023": 65,
+      "2024": 27512,
+      "2025": 55874
+    },
+    "Construction; Energy industries (renewable/non-renewable sources)": {
+      "2019": 154991,
+      "2020": 22673,
+      "2022": 7519,
+      "2023": 80625
+    },
+    "Energy demand; Energy industries (renewable/non-renewable sources)": {
+      "2022": 64745,
+      "2023": 1194757,
+      "2024": 134125,
+      "2025": 244594
+    },
+    "Energy industries (renewable/non-renewable sources); Livestock, enteric fermentation, and manure management; Waste handling and disposal": {
+      "2022": 324819,
+      "2023": 1853481,
+      "2024": 617740,
+      "2025": 2542
+    },
+    "Energy industries (renewable/non-renewable sources); Mining/mineral production": {
+      "2022": 816692,
+      "2023": 205000,
+      "2024": 106423,
+      "2025": 37658
+    },
+    "Energy industries (renewable/non-renewable sources); Transport": {
+      "2022": 114,
+      "2023": 167,
+      "2024": 35209,
+      "2025": 242076
+    },
+    "Livestock, enteric fermentation, and manure management; Waste handling and disposal": {
+      "2022": 81014,
+      "2023": 280243,
+      "2024": 221851,
+      "2025": 245844
+    },
+    "Construction; Manufacturing industries": {
+      "2023": 5330,
+      "2024": 23796,
+      "2025": 112631
+    },
+    "Chemical industry; Energy demand; Energy industries (renewable/non-renewable sources)": {
+      "2024": 3444
+    },
+    "Chemical industry; Transport": {
+      "2024": 4841
+    },
+    "Construction": {
+      "2024": 26460,
+      "2025": 261106
+    },
+    "Transport; Waste handling and disposal": {
+      "2024": 38168,
+      "2025": 2
+    }
+  },
+  "countryYearly": {
+    "Brazil": {
+      "2009": 475885,
+      "2010": 150410,
+      "2011": 4505,
+      "2012": 381977,
+      "2013": 47414,
+      "2014": 103075,
+      "2015": 84156,
+      "2016": 6032,
+      "2017": 1072,
+      "2018": 31439,
+      "2019": 266965,
+      "2020": 1974821,
+      "2021": 16771834,
+      "2022": 4572714,
+      "2023": 2356788,
+      "2024": 2343834,
+      "2025": 2911003
+    },
+    "China": {
+      "2009": 219667,
+      "2010": 2649942,
+      "2011": 698421,
+      "2012": 1097287,
+      "2013": 923661,
+      "2014": 279713,
+      "2015": 6276,
+      "2016": 104341,
+      "2017": 35600,
+      "2018": 4812,
+      "2019": 325269,
+      "2020": 5993678,
+      "2021": 9275645,
+      "2022": 19444867,
+      "2023": 15352395,
+      "2024": 3753992,
+      "2025": 2622319
+    },
+    "Germany": {
+      "2009": 157247,
+      "2010": 69555,
+      "2024": 9384
+    },
+    "India": {
+      "2009": 54674,
+      "2010": 589175,
+      "2011": 1258809,
+      "2012": 1297105,
+      "2013": 280075,
+      "2014": 11168,
+      "2015": 18688,
+      "2016": 35960,
+      "2017": 29776,
+      "2018": 178012,
+      "2019": 2394083,
+      "2020": 10942391,
+      "2021": 13367200,
+      "2022": 19632533,
+      "2023": 14844321,
+      "2024": 22358937,
+      "2025": 11085718
+    },
+    "Israel": {
+      "2009": 3461
+    },
+    "New Zealand": {
+      "2009": 19036,
+      "2010": 646
+    },
+    "Thailand": {
+      "2009": 177,
+      "2010": 7329,
+      "2011": 37004,
+      "2012": 122648,
+      "2013": 7837,
+      "2014": 1152,
+      "2015": 890,
+      "2016": 935,
+      "2017": 3266,
+      "2018": 1557,
+      "2019": 9317,
+      "2020": 223141,
+      "2021": 813744,
+      "2022": 423433,
+      "2023": 642023,
+      "2024": 104768,
+      "2025": 182673
+    },
+    "Turkey": {
+      "2009": 133,
+      "2011": 1495,
+      "2012": 86193,
+      "2013": 7093,
+      "2014": 289748,
+      "2015": 16969,
+      "2016": 12794,
+      "2017": 7092,
+      "2019": 72484,
+      "2020": 861386,
+      "2021": 7474903,
+      "2022": 6322142,
+      "2023": 8531578,
+      "2024": 5423111,
+      "2025": 1633087
+    },
+    "United Kingdom": {
+      "2009": 32132,
+      "2020": 200,
+      "2023": 1997,
+      "2025": 10755
+    },
+    "United States": {
+      "2009": 139825,
+      "2010": 22183,
+      "2011": 44312,
+      "2012": 114732,
+      "2013": 49645,
+      "2014": 1310,
+      "2015": 92549,
+      "2016": 2210,
+      "2017": 1021,
+      "2018": 109044,
+      "2019": 249732,
+      "2020": 386074,
+      "2021": 472555,
+      "2022": 260787,
+      "2023": 822642,
+      "2024": 1858897,
+      "2025": 1910568
+    },
+    "Chile": {
+      "2010": 2308,
+      "2011": 62951,
+      "2013": 19,
+      "2014": 82036,
+      "2015": 1065,
+      "2017": 12789,
+      "2018": 20223,
+      "2019": 1492,
+      "2020": 56616,
+      "2021": 94463,
+      "2022": 185926,
+      "2023": 277447,
+      "2024": 74078,
+      "2025": 135104
+    },
+    "Guatemala": {
+      "2010": 500,
+      "2016": 8671,
+      "2017": 59500,
+      "2019": 238454,
+      "2020": 89074,
+      "2021": 163476,
+      "2022": 436377,
+      "2023": 1919627,
+      "2024": 333280,
+      "2025": 119072
+    },
+    "Indonesia": {
+      "2010": 2065,
+      "2011": 1250,
+      "2012": 1839,
+      "2013": 1212521,
+      "2014": 211810,
+      "2015": 18842,
+      "2016": 289292,
+      "2017": 275726,
+      "2018": 676780,
+      "2019": 1928407,
+      "2020": 410970,
+      "2021": 4720181,
+      "2022": 1958198,
+      "2023": 101624,
+      "2024": 99468,
+      "2025": 34052
+    },
+    "Russian Federation": {
+      "2010": 674,
+      "2011": 48200
+    },
+    "Taiwan": {
+      "2010": 593,
+      "2015": 77
+    },
+    "Australia": {
+      "2011": 3821,
+      "2013": 2271,
+      "2014": 743,
+      "2015": 57,
+      "2022": 13,
+      "2025": 17305
+    },
+    "Belize": {
+      "2011": 3344,
+      "2016": 7500,
+      "2020": 18471,
+      "2021": 23927,
+      "2022": 51529,
+      "2023": 126480
+    },
+    "Colombia": {
+      "2011": 4,
+      "2013": 1565,
+      "2015": 118,
+      "2016": 4,
+      "2017": 1503,
+      "2018": 790,
+      "2019": 587061,
+      "2020": 134421,
+      "2021": 3851549,
+      "2022": 2291925,
+      "2023": 2287947,
+      "2024": 123808,
+      "2025": 322050
+    },
+    "Honduras": {
+      "2011": 1603,
+      "2014": 2651,
+      "2015": 4042
+    },
+    "Kenya": {
+      "2011": 2703,
+      "2012": 1506,
+      "2013": 198,
+      "2014": 316093,
+      "2017": 584602,
+      "2018": 877376,
+      "2019": 1189846,
+      "2020": 2356902,
+      "2021": 2500997,
+      "2022": 2414434,
+      "2023": 2559064,
+      "2024": 3013766,
+      "2025": 661748
+    },
+    "Peru": {
+      "2011": 350392,
+      "2013": 33547,
+      "2014": 113161,
+      "2015": 28500,
+      "2016": 147921,
+      "2017": 498715,
+      "2018": 430074,
+      "2019": 2102161,
+      "2020": 299245,
+      "2021": 12024015,
+      "2022": 7226478,
+      "2023": 12013802,
+      "2024": 3101092,
+      "2025": 1019290
+    },
+    "South Korea": {
+      "2011": 2977,
+      "2012": 7293,
+      "2013": 3155,
+      "2015": 44357,
+      "2020": 612781,
+      "2021": 556361,
+      "2022": 36824,
+      "2023": 3377626,
+      "2024": 24918
+    },
+    "Sri Lanka": {
+      "2011": 100,
+      "2019": 14
+    },
+    "Uganda": {
+      "2011": 85,
+      "2013": 21,
+      "2015": 8692,
+      "2017": 11,
+      "2018": 74,
+      "2020": 67252,
+      "2021": 114302,
+      "2022": 164708,
+      "2023": 105374,
+      "2024": 276359,
+      "2025": 419223
+    },
+    "Uruguay": {
+      "2011": 989,
+      "2013": 23673,
+      "2017": 80637,
+      "2018": 167,
+      "2019": 1319,
+      "2020": 80342,
+      "2021": 1879852,
+      "2022": 97989,
+      "2023": 4302456,
+      "2024": 150159,
+      "2025": 883713
+    },
+    "Viet Nam": {
+      "2011": 10466,
+      "2012": 22478,
+      "2013": 3879,
+      "2014": 879,
+      "2015": 21,
+      "2017": 4170,
+      "2020": 83066,
+      "2021": 40979,
+      "2022": 166065,
+      "2023": 1723137,
+      "2024": 7908219,
+      "2025": 3786114
+    },
+    "Argentina": {
+      "2012": 173716,
+      "2016": 700,
+      "2021": 438216,
+      "2022": 128542,
+      "2023": 435432,
+      "2024": 244689,
+      "2025": 357032
+    },
+    "Cambodia": {
+      "2012": 40674,
+      "2014": 282,
+      "2015": 3083,
+      "2018": 2250,
+      "2019": 3734758,
+      "2020": 2028099,
+      "2021": 14209381,
+      "2023": 5702026,
+      "2024": 743875,
+      "2025": 580402
+    },
+    "Nicaragua": {
+      "2012": 100,
+      "2021": 2336,
+      "2023": 1000,
+      "2025": 80455
+    },
+    "Philippines": {
+      "2012": 5000,
+      "2013": 20359,
+      "2020": 29800,
+      "2023": 2732,
+      "2025": 475768
+    },
+    "Bolivia": {
+      "2013": 1574,
+      "2020": 1250,
+      "2025": 7796
+    },
+    "Mexico": {
+      "2013": 32639,
+      "2014": 8553,
+      "2015": 27207,
+      "2019": 4220,
+      "2020": 36834,
+      "2021": 2650,
+      "2022": 391093,
+      "2023": 254672,
+      "2025": 150033
+    },
+    "Paraguay": {
+      "2013": 7601,
+      "2016": 13532,
+      "2022": 357176,
+      "2023": 193339,
+      "2024": 186458,
+      "2025": 579028
+    },
+    "Singapore": {
+      "2013": 8469,
+      "2018": 1205,
+      "2020": 2288,
+      "2021": 446934,
+      "2022": 560685,
+      "2024": 91035,
+      "2025": 59600
+    },
+    "Madagascar": {
+      "2014": 2397,
+      "2015": 316,
+      "2016": 5221,
+      "2017": 400552,
+      "2018": 20031,
+      "2021": 20774,
+      "2022": 443,
+      "2023": 30628,
+      "2024": 980969,
+      "2025": 2490769
+    },
+    "Senegal": {
+      "2014": 7860,
+      "2017": 2649,
+      "2021": 98403,
+      "2022": 179003,
+      "2023": 226249,
+      "2024": 249374,
+      "2025": 485295
+    },
+    "Zambia": {
+      "2014": 10966,
+      "2018": 155178,
+      "2019": 389630,
+      "2020": 581,
+      "2021": 575658,
+      "2022": 324377,
+      "2023": 1074363,
+      "2024": 2914986,
+      "2025": 2777338
+    },
+    "Congo, The Democratic Republic of The": {
+      "2015": 20054,
+      "2016": 12532,
+      "2017": 4661940,
+      "2018": 51,
+      "2019": 12947,
+      "2020": 6548,
+      "2021": 78805,
+      "2022": 9030394,
+      "2023": 282808,
+      "2024": 888031,
+      "2025": 2992856
+    },
+    "El Salvador": {
+      "2015": 238399,
+      "2023": 357,
+      "2024": 8695,
+      "2025": 48742
+    },
+    "Malawi": {
+      "2015": 1,
+      "2019": 1088,
+      "2020": 79268,
+      "2021": 219767,
+      "2022": 796278,
+      "2023": 4667217,
+      "2024": 61204,
+      "2025": 2
+    },
+    "Pakistan": {
+      "2015": 11508,
+      "2022": 461447,
+      "2024": 1189175
+    },
+    "Tajikistan": {
+      "2015": 2709,
+      "2021": 45141
+    },
+    "Zimbabwe": {
+      "2015": 384,
+      "2017": 300,
+      "2019": 182778,
+      "2020": 34217,
+      "2021": 841922,
+      "2022": 1155264,
+      "2023": 523339
+    },
+    "Ghana": {
+      "2016": 7329,
+      "2017": 41613,
+      "2019": 64580,
+      "2020": 196,
+      "2022": 48202,
+      "2024": 280188,
+      "2025": 132112
+    },
+    "Mauritius": {
+      "2016": 262,
+      "2017": 74,
+      "2019": 9600,
+      "2020": 9559,
+      "2022": 34737,
+      "2023": 83611,
+      "2024": 62055,
+      "2025": 21847
+    },
+    "Tanzania": {
+      "2016": 20792,
+      "2020": 49535,
+      "2021": 107154,
+      "2022": 138554,
+      "2023": 699178,
+      "2024": 348569,
+      "2025": 560935
+    },
+    "Canada": {
+      "2017": 32,
+      "2018": 10000,
+      "2019": 10009,
+      "2020": 22351,
+      "2021": 25858,
+      "2022": 50058,
+      "2023": 503666,
+      "2024": 403708,
+      "2025": 42548
+    },
+    "Papua New Guinea": {
+      "2017": 3554,
+      "2018": 1436,
+      "2020": 30120,
+      "2021": 765887,
+      "2023": 33755,
+      "2024": 17607,
+      "2025": 153262
+    },
+    "South Africa": {
+      "2017": 3858,
+      "2021": 826024,
+      "2022": 604031,
+      "2023": 502981,
+      "2024": 331683,
+      "2025": 1355718
+    },
+    "Myanmar": {
+      "2018": 214,
+      "2019": 1413,
+      "2020": 2189,
+      "2021": 3715,
+      "2023": 2800,
+      "2025": 66578
+    },
+    "Netherlands": {
+      "2018": 3152,
+      "2020": 9555,
+      "2021": 156064,
+      "2023": 75377,
+      "2024": 105721,
+      "2025": 50940
+    },
+    "Sierra Leone": {
+      "2018": 4809,
+      "2019": 418,
+      "2020": 1032,
+      "2021": 6342,
+      "2022": 1140,
+      "2023": 33325,
+      "2024": 417705,
+      "2025": 142383
+    },
+    "Bulgaria": {
+      "2019": 1064,
+      "2020": 394,
+      "2021": 130445,
+      "2025": 10363
+    },
+    "Costa Rica": {
+      "2019": 98,
+      "2022": 195062
+    },
+    "Ecuador": {
+      "2019": 5332,
+      "2021": 30755,
+      "2025": 27040
+    },
+    "Namibia": {
+      "2019": 15,
+      "2020": 4158,
+      "2021": 5957,
+      "2022": 35876,
+      "2023": 441,
+      "2024": 51211,
+      "2025": 55979
+    },
+    "Dominican Republic": {
+      "2020": 15600,
+      "2021": 245714,
+      "2022": 1156060,
+      "2025": 109975
+    },
+    "Ethiopia": {
+      "2020": 7416,
+      "2021": 1030296,
+      "2023": 48026,
+      "2025": 9776
+    },
+    "Lao": {
+      "2020": 17184,
+      "2023": 141465,
+      "2024": 46860,
+      "2025": 700340
+    },
+    "Mauritania": {
+      "2020": 5351,
+      "2021": 49383,
+      "2022": 106,
+      "2023": 24483,
+      "2024": 84726,
+      "2025": 82927
+    },
+    "Mongolia": {
+      "2020": 126873,
+      "2021": 141002,
+      "2023": 148874,
+      "2025": 152550
+    },
+    "Nepal": {
+      "2020": 13936,
+      "2021": 34797,
+      "2022": 80614,
+      "2023": 44685,
+      "2025": 14226
+    },
+    "Bangladesh": {
+      "2021": 811997,
+      "2022": 10401096,
+      "2023": 685918,
+      "2024": 5171046,
+      "2025": 3870382
+    },
+    "Burkina Faso": {
+      "2021": 28777,
+      "2023": 28066,
+      "2024": 27179,
+      "2025": 27097
+    },
+    "Congo": {
+      "2021": 13,
+      "2023": 5770,
+      "2025": 570990
+    },
+    "Cote D'Ivoire": {
+      "2021": 2774552,
+      "2022": 223544,
+      "2023": 704667,
+      "2024": 912224,
+      "2025": 62487
+    },
+    "Guinea-Bissau": {
+      "2021": 59790,
+      "2022": 102687
+    },
+    "Kazakhstan": {
+      "2021": 64728,
+      "2024": 232137,
+      "2025": 287345
+    },
+    "Mozambique": {
+      "2021": 3449,
+      "2022": 8265,
+      "2023": 219622
+    },
+    "Romania": {
+      "2021": 879,
+      "2024": 54040
+    },
+    "Rwanda": {
+      "2021": 3998,
+      "2022": 150000,
+      "2023": 1909138,
+      "2024": 1785431,
+      "2025": 4279749
+    },
+    "Burundi": {
+      "2022": 248739,
+      "2023": 203321,
+      "2024": 887848,
+      "2025": 202999
+    },
+    "Egypt": {
+      "2022": 171259,
+      "2023": 251099
+    },
+    "Georgia": {
+      "2022": 70617
+    },
+    "Morocco": {
+      "2022": 98501,
+      "2023": 415554,
+      "2024": 347,
+      "2025": 24128
+    },
+    "Niger": {
+      "2022": 4600
+    },
+    "Oman": {
+      "2022": 28799,
+      "2023": 741514,
+      "2024": 644493,
+      "2025": 28670
+    },
+    "Angola": {
+      "2023": 66703
+    },
+    "Benin": {
+      "2023": 290700
+    },
+    "Central African Republic": {
+      "2023": 250000,
+      "2025": 1044618
+    },
+    "Comoros": {
+      "2023": 4702,
+      "2024": 5678,
+      "2025": 7074
+    },
+    "Liberia": {
+      "2023": 9680
+    },
+    "Panama": {
+      "2023": 6540,
+      "2024": 18006
+    },
+    "Togo": {
+      "2023": 67597,
+      "2024": 2680,
+      "2025": 143087
+    },
+    "Estonia": {
+      "2024": 167
+    },
+    "Iceland": {
+      "2024": 10291
+    },
+    "Malaysia": {
+      "2024": 504542,
+      "2025": 903545
+    },
+    "Nigeria": {
+      "2024": 1459,
+      "2025": 14191
+    },
+    "Cameroon": {
+      "2025": 6000
+    },
+    "Denmark": {
+      "2025": 2276015
+    },
+    "Fiji": {
+      "2025": 28036
+    },
+    "Gambia": {
+      "2025": 196652
+    },
+    "United Arab Emirates": {
+      "2025": 11016
+    },
+    "Uzbekistan": {
+      "2025": 1251042
+    }
+  },
+  "retireeDetails": [
+    {
+      "name": "Shell",
+      "credits": 38519915,
+      "topTypes": [
+        {
+          "type": "Agriculture Forestry and Other Land Use",
+          "credits": 34886592
+        },
+        {
+          "type": "Energy demand",
+          "credits": 1289571
+        },
+        {
+          "type": "Energy industries (renewable/non-renewable sources)",
+          "credits": 1094009
+        }
+      ]
+    },
+    {
+      "name": "Eni Upstream",
+      "credits": 15885945,
+      "topTypes": [
+        {
+          "type": "Agriculture Forestry and Other Land Use",
+          "credits": 15885945
+        }
+      ]
+    },
+    {
+      "name": "DL",
+      "credits": 13118083,
+      "topTypes": [
+        {
+          "type": "Agriculture Forestry and Other Land Use",
+          "credits": 5455810
+        },
+        {
+          "type": "Energy industries (renewable/non-renewable sources)",
+          "credits": 5282845
+        },
+        {
+          "type": "Energy industries (renewable/non-renewable sources); Manufacturing industries",
+          "credits": 1898603
+        }
+      ]
+    },
+    {
+      "name": "Delta Air Lines",
+      "credits": 11040979,
+      "topTypes": [
+        {
+          "type": "Energy industries (renewable/non-renewable sources)",
+          "credits": 6442460
+        },
+        {
+          "type": "Agriculture Forestry and Other Land Use",
+          "credits": 2646446
+        },
+        {
+          "type": "Energy industries (renewable/non-renewable sources); Manufacturing industries",
+          "credits": 1786000
+        }
+      ]
+    },
+    {
+      "name": "LSB Industries, Inc.",
+      "credits": 0,
+      "topTypes": []
+    },
+    {
+      "name": "Climate Impact Partners, LLC",
+      "credits": 0,
+      "topTypes": []
+    },
+    {
+      "name": "Anew Carbon Development, LLC",
+      "credits": 0,
+      "topTypes": []
+    },
+    {
+      "name": "TASC SA Pty Ltd (COAS account 101046)",
+      "credits": 7313937,
+      "topTypes": [
+        {
+          "type": "Energy demand",
+          "credits": 7313937
+        }
+      ]
+    },
+    {
+      "name": "AUDI AG",
+      "credits": 7003182,
+      "topTypes": [
+        {
+          "type": "Agriculture Forestry and Other Land Use",
+          "credits": 4063225
+        },
+        {
+          "type": "Energy industries (renewable/non-renewable sources)",
+          "credits": 2939957
+        }
+      ]
+    },
+    {
+      "name": "Yamato Transport Co., Ltd.",
+      "credits": 6886359,
+      "topTypes": [
+        {
+          "type": "Energy industries (renewable/non-renewable sources)",
+          "credits": 6388020
+        },
+        {
+          "type": "Fugitive emissions from fuels (solid, oil and gas); Mining/mineral production",
+          "credits": 324339
+        },
+        {
+          "type": "Energy industries (renewable/non-renewable sources); Waste handling and disposal",
+          "credits": 174000
+        }
+      ]
+    },
+    {
+      "name": "ClimeCo LLC",
+      "credits": 0,
+      "topTypes": []
+    },
+    {
+      "name": "Telstra Corporation Limited",
+      "credits": 5874959,
+      "topTypes": [
+        {
+          "type": "Energy industries (renewable/non-renewable sources)",
+          "credits": 5526062
+        },
+        {
+          "type": "Manufacturing industries",
+          "credits": 348897
+        }
+      ]
+    },
+    {
+      "name": "PRIMAX COLOMBIA S.A identificada con Nit: 860.002.554-8",
+      "credits": 5250000,
+      "topTypes": [
+        {
+          "type": "Agriculture Forestry and Other Land Use",
+          "credits": 5250000
+        }
+      ]
+    },
+    {
+      "name": "PetroChina International Company Limited (‚ÄúPCI‚Äù)",
+      "credits": 4999814,
+      "topTypes": [
+        {
+          "type": "Agriculture Forestry and Other Land Use",
+          "credits": 4999814
+        }
+      ]
+    },
+    {
+      "name": "_",
+      "credits": 4843615,
+      "topTypes": [
+        {
+          "type": "Energy industries (renewable/non-renewable sources)",
+          "credits": 2294829
+        },
+        {
+          "type": "Agriculture Forestry and Other Land Use",
+          "credits": 2230183
+        },
+        {
+          "type": "Energy industries (renewable/non-renewable sources); Waste handling and disposal",
+          "credits": 113811
+        }
+      ]
+    },
+    {
+      "name": "Anew Environmental, LLC",
+      "credits": 0,
+      "topTypes": []
+    },
+    {
+      "name": "Greenchoice",
+      "credits": 4717315,
+      "topTypes": [
+        {
+          "type": "Agriculture Forestry and Other Land Use",
+          "credits": 4714878
+        },
+        {
+          "type": "Energy industries (renewable/non-renewable sources)",
+          "credits": 2437
+        }
+      ]
+    },
+    {
+      "name": "3Degrees Group, Inc",
+      "credits": 0,
+      "topTypes": []
+    },
+    {
+      "name": "Shell Energy North America (US), L.P.",
+      "credits": 0,
+      "topTypes": []
+    },
+    {
+      "name": "The Boeing Company",
+      "credits": 4066129,
+      "topTypes": [
+        {
+          "type": "Energy industries (renewable/non-renewable sources)",
+          "credits": 1985499
+        },
+        {
+          "type": "Agriculture Forestry and Other Land Use",
+          "credits": 920850
+        },
+        {
+          "type": "Fugitive emissions from fuels (solid, oil and gas); Mining/mineral production",
+          "credits": 407507
+        }
+      ]
+    },
+    {
+      "name": "GP-2",
+      "credits": 3893245,
+      "topTypes": [
+        {
+          "type": "Energy industries (renewable/non-renewable sources)",
+          "credits": 3580868
+        },
+        {
+          "type": "Energy industries (renewable/non-renewable sources); Manufacturing industries",
+          "credits": 301664
+        },
+        {
+          "type": "Agriculture Forestry and Other Land Use",
+          "credits": 10713
+        }
+      ]
+    },
+    {
+      "name": "The Climate Trust",
+      "credits": 40,
+      "topTypes": [
+        {
+          "type": "Energy industries (renewable/non-renewable sources); Waste handling and disposal",
+          "credits": 40
+        }
+      ]
+    },
+    {
+      "name": "4AIR Client",
+      "credits": 3335937,
+      "topTypes": [
+        {
+          "type": "Energy industries (renewable/non-renewable sources)",
+          "credits": 3142839
+        },
+        {
+          "type": "Agriculture Forestry and Other Land Use",
+          "credits": 171010
+        },
+        {
+          "type": "Energy demand",
+          "credits": 22088
+        }
+      ]
+    },
+    {
+      "name": "Takeda Pharmaceutical Company",
+      "credits": 3231968,
+      "topTypes": [
+        {
+          "type": "Agriculture Forestry and Other Land Use",
+          "credits": 1650000
+        },
+        {
+          "type": "Energy industries (renewable/non-renewable sources)",
+          "credits": 1573137
+        },
+        {
+          "type": "Energy demand",
+          "credits": 8831
+        }
+      ]
+    },
+    {
+      "name": "Geopost",
+      "credits": 3221430,
+      "topTypes": [
+        {
+          "type": "Agriculture Forestry and Other Land Use",
+          "credits": 3221430
+        }
+      ]
+    },
+    {
+      "name": "Marke VW Pkw",
+      "credits": 3102847,
+      "topTypes": [
+        {
+          "type": "Energy industries (renewable/non-renewable sources)",
+          "credits": 2501654
+        },
+        {
+          "type": "Agriculture Forestry and Other Land Use",
+          "credits": 601193
+        }
+      ]
+    },
+    {
+      "name": "487",
+      "credits": 0,
+      "topTypes": []
+    },
+    {
+      "name": "Interface, Inc.",
+      "credits": 2178252,
+      "topTypes": [
+        {
+          "type": "Energy industries (renewable/non-renewable sources)",
+          "credits": 1657807
+        },
+        {
+          "type": "Agriculture Forestry and Other Land Use",
+          "credits": 509034
+        },
+        {
+          "type": "Energy demand",
+          "credits": 6411
+        }
+      ]
+    },
+    {
+      "name": "Schneider Electric",
+      "credits": 11769,
+      "topTypes": [
+        {
+          "type": "Agriculture Forestry and Other Land Use",
+          "credits": 11769
+        }
+      ]
+    },
+    {
+      "name": "Element Markets, LLC",
+      "credits": 0,
+      "topTypes": []
+    }
+  ],
+  "allProjectTypes": [
+    "Agriculture Forestry and Other Land Use",
+    "Agriculture Forestry and Other Land Use; Energy industries (renewable/non-renewable sources); Waste handling and disposal",
+    "Chemical industry",
+    "Chemical industry; Energy demand; Energy industries (renewable/non-renewable sources)",
+    "Chemical industry; Energy industries (renewable/non-renewable sources)",
+    "Chemical industry; Transport",
+    "Construction",
+    "Construction; Energy industries (renewable/non-renewable sources)",
+    "Construction; Manufacturing industries",
+    "Energy demand",
+    "Energy demand; Energy industries (renewable/non-renewable sources)",
+    "Energy demand; Waste handling and disposal",
+    "Energy distribution",
+    "Energy industries (renewable/non-renewable sources)",
+    "Energy industries (renewable/non-renewable sources); Fugitive emissions from fuels (solid, oil and gas)",
+    "Energy industries (renewable/non-renewable sources); Livestock, enteric fermentation, and manure management",
+    "Energy industries (renewable/non-renewable sources); Livestock, enteric fermentation, and manure management; Waste handling and disposal",
+    "Energy industries (renewable/non-renewable sources); Manufacturing industries",
+    "Energy industries (renewable/non-renewable sources); Mining/mineral production",
+    "Energy industries (renewable/non-renewable sources); Transport",
+    "Energy industries (renewable/non-renewable sources); Waste handling and disposal",
+    "Fugitive emissions from fuels (solid, oil and gas)",
+    "Fugitive emissions from fuels (solid, oil and gas); Mining/mineral production",
+    "Fugitive emissions from production and consumption of halocarbons and sulphur hexafluoride",
+    "Livestock, enteric fermentation, and manure management",
+    "Livestock, enteric fermentation, and manure management; Waste handling and disposal",
+    "Manufacturing industries",
+    "Manufacturing industries; Metal production",
+    "Metal production",
+    "Mining/mineral production",
+    "Transport",
+    "Transport; Waste handling and disposal",
+    "Waste handling and disposal"
+  ],
+  "allCountries": [
+    "Angola",
+    "Argentina",
+    "Australia",
+    "Austria",
+    "Bangladesh",
+    "Belize",
+    "Benin",
+    "Bolivia",
+    "Brazil",
+    "Bulgaria",
+    "Burkina Faso",
+    "Burundi",
+    "Cambodia",
+    "Cameroon",
+    "Canada",
+    "Central African Republic",
+    "Chile",
+    "China",
+    "Colombia",
+    "Comoros",
+    "Congo",
+    "Congo, The Democratic Republic of The",
+    "Costa Rica",
+    "Cote D'Ivoire",
+    "Cyprus",
+    "Denmark",
+    "Dominican Republic",
+    "Ecuador",
+    "Egypt",
+    "El Salvador",
+    "Estonia",
+    "Ethiopia",
+    "Fiji",
+    "Gambia",
+    "Georgia",
+    "Germany",
+    "Ghana",
+    "Guatemala",
+    "Guinea-Bissau",
+    "Honduras",
+    "Iceland",
+    "India",
+    "Indonesia",
+    "Israel",
+    "Kazakhstan",
+    "Kenya",
+    "Lao",
+    "Liberia",
+    "Madagascar",
+    "Malawi",
+    "Malaysia",
+    "Mauritania",
+    "Mauritius",
+    "Mexico",
+    "Mongolia",
+    "Morocco",
+    "Mozambique",
+    "Myanmar",
+    "Namibia",
+    "Nepal",
+    "Netherlands",
+    "New Zealand",
+    "Nicaragua",
+    "Niger",
+    "Nigeria",
+    "Oman",
+    "Pakistan",
+    "Panama",
+    "Papua New Guinea",
+    "Paraguay",
+    "Peru",
+    "Philippines",
+    "Romania",
+    "Russian Federation",
+    "Rwanda",
+    "Senegal",
+    "Sierra Leone",
+    "Singapore",
+    "South Africa",
+    "South Korea",
+    "Sri Lanka",
+    "Switzerland",
+    "Taiwan",
+    "Tajikistan",
+    "Tanzania",
+    "Thailand",
+    "Togo",
+    "Turkey",
+    "Uganda",
+    "United Arab Emirates",
+    "United Kingdom",
+    "United States",
+    "Uruguay",
+    "Uzbekistan",
+    "Viet Nam",
+    "Zambia",
+    "Zimbabwe"
+  ]
 }

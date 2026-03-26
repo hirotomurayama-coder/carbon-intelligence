@@ -61,20 +61,55 @@ function KpiCard({ label, value, sub, color }: {
 
 type Tab = "overview" | "issuance" | "retirement" | "methodology";
 
+const ALL_REGISTRIES = Object.keys(statsData.registryProjects);
+const YEAR_RANGE = { min: 2005, max: 2025 };
+
+// 国名の日本語マッピング
+const COUNTRY_JA: Record<string, string> = {
+  "US": "アメリカ", "MX": "メキシコ", "CA": "カナダ", "India": "インド", "China": "中国",
+  "Brazil": "ブラジル", "Indonesia": "インドネシア", "Peru": "ペルー", "Colombia": "コロンビア",
+  "Vietnam": "ベトナム", "Thailand": "タイ", "Kenya": "ケニア", "Turkey": "トルコ",
+  "Chile": "チリ", "Argentina": "アルゼンチン", "Bangladesh": "バングラデシュ",
+  "Cambodia": "カンボジア", "Philippines": "フィリピン", "Myanmar": "ミャンマー",
+  "South Africa": "南アフリカ", "Japan": "日本", "FR": "フランス", "TH": "タイ",
+};
+
 export function StatisticsDashboard() {
   const [activeTab, setActiveTab] = useState<Tab>("overview");
+  const [selectedRegistries, setSelectedRegistries] = useState<Set<string>>(new Set(ALL_REGISTRIES));
+  const [yearFrom, setYearFrom] = useState(YEAR_RANGE.min);
+  const [yearTo, setYearTo] = useState(YEAR_RANGE.max);
+  const [searchQuery, setSearchQuery] = useState("");
+
   const data = statsData;
 
-  // 年別データ（2005年以降）
+  // 年別データ（フィルタ適用）
   const yearlyFiltered = useMemo(
-    () => data.yearlyData.filter((y) => y.year >= 2005 && y.year <= 2025),
-    [data]
+    () => data.yearlyData.filter((y) => y.year >= yearFrom && y.year <= yearTo),
+    [data, yearFrom, yearTo]
   );
 
-  // レジストリ別プロジェクト（円グラフ用）
+  // レジストリフィルタ適用のKPI
+  const filteredKpi = useMemo(() => {
+    let issued = 0;
+    let retired = 0;
+    for (const y of yearlyFiltered) {
+      const ibr = y.issued_by_registry as Record<string, number>;
+      const rbr = y.retired_by_registry as Record<string, number>;
+      for (const r of selectedRegistries) {
+        issued += ibr[r] ?? 0;
+        retired += rbr[r] ?? 0;
+      }
+    }
+    return { issued, retired };
+  }, [yearlyFiltered, selectedRegistries]);
+
+  // レジストリ別プロジェクト（フィルタ適用）
   const registryPieData = useMemo(
-    () => Object.entries(data.registryProjects).map(([name, value]) => ({ name, value })),
-    [data]
+    () => Object.entries(data.registryProjects)
+      .filter(([name]) => selectedRegistries.has(name))
+      .map(([name, value]) => ({ name, value })),
+    [data, selectedRegistries]
   );
 
   // リタイア理由（円グラフ用）
@@ -82,6 +117,41 @@ export function StatisticsDashboard() {
     () => Object.entries(data.retirementReasons).map(([name, value]) => ({ name, value: value as number })),
     [data]
   );
+
+  // メソドロジー検索
+  const filteredMethodologies = useMemo(() => {
+    if (!searchQuery) return data.topMethodologies;
+    const q = searchQuery.toLowerCase();
+    return data.topMethodologies.filter(
+      (m) => m.name.toLowerCase().includes(q)
+    );
+  }, [data, searchQuery]);
+
+  // リタイアー検索
+  const filteredRetirees = useMemo(() => {
+    if (!searchQuery) return data.topRetirees;
+    const q = searchQuery.toLowerCase();
+    return data.topRetirees.filter(
+      (r) => r.name.toLowerCase().includes(q)
+    );
+  }, [data, searchQuery]);
+
+  // レジストリトグル
+  const toggleRegistry = (r: string) => {
+    setSelectedRegistries((prev) => {
+      const next = new Set(prev);
+      if (next.has(r)) { if (next.size > 1) next.delete(r); }
+      else next.add(r);
+      return next;
+    });
+  };
+
+  const resetFilters = () => {
+    setSelectedRegistries(new Set(ALL_REGISTRIES));
+    setYearFrom(YEAR_RANGE.min);
+    setYearTo(YEAR_RANGE.max);
+    setSearchQuery("");
+  };
 
   const tabs: { key: Tab; label: string }[] = [
     { key: "overview", label: "概要" },
@@ -100,7 +170,74 @@ export function StatisticsDashboard() {
         </p>
       </div>
 
-      {/* KPI */}
+      {/* フィルタバー */}
+      <div className="rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
+        <div className="flex flex-wrap items-center gap-4">
+          {/* レジストリフィルタ */}
+          <div className="flex flex-wrap items-center gap-1.5">
+            <span className="text-xs font-medium text-gray-400 mr-1">レジストリ:</span>
+            {ALL_REGISTRIES.map((r) => (
+              <button
+                key={r}
+                onClick={() => toggleRegistry(r)}
+                className={`rounded-full px-2.5 py-1 text-xs font-medium transition ${
+                  selectedRegistries.has(r)
+                    ? "text-white"
+                    : "bg-gray-100 text-gray-400"
+                }`}
+                style={selectedRegistries.has(r) ? { backgroundColor: REGISTRY_COLORS[r] ?? "#6b7280" } : {}}
+              >
+                {r}
+              </button>
+            ))}
+          </div>
+
+          {/* 期間フィルタ */}
+          <div className="flex items-center gap-2">
+            <span className="text-xs font-medium text-gray-400">期間:</span>
+            <select
+              value={yearFrom}
+              onChange={(e) => setYearFrom(Number(e.target.value))}
+              className="rounded-md border border-gray-200 px-2 py-1 text-xs text-gray-700"
+            >
+              {Array.from({ length: 21 }, (_, i) => 2005 + i).map((y) => (
+                <option key={y} value={y}>{y}</option>
+              ))}
+            </select>
+            <span className="text-xs text-gray-400">〜</span>
+            <select
+              value={yearTo}
+              onChange={(e) => setYearTo(Number(e.target.value))}
+              className="rounded-md border border-gray-200 px-2 py-1 text-xs text-gray-700"
+            >
+              {Array.from({ length: 21 }, (_, i) => 2005 + i).map((y) => (
+                <option key={y} value={y}>{y}</option>
+              ))}
+            </select>
+          </div>
+
+          {/* 検索 */}
+          <div className="flex-1 min-w-[200px]">
+            <input
+              type="text"
+              placeholder="メソドロジー・企業名を検索..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full rounded-md border border-gray-200 px-3 py-1.5 text-xs text-gray-700 placeholder:text-gray-300 focus:border-emerald-300 focus:outline-none focus:ring-1 focus:ring-emerald-300"
+            />
+          </div>
+
+          {/* リセット */}
+          <button
+            onClick={resetFilters}
+            className="rounded-md border border-gray-200 px-3 py-1.5 text-xs text-gray-500 hover:bg-gray-50 transition"
+          >
+            リセット
+          </button>
+        </div>
+      </div>
+
+      {/* KPI（フィルタ反映） */}
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
         <KpiCard
           label="プロジェクト総数"
@@ -108,21 +245,21 @@ export function StatisticsDashboard() {
           color="text-emerald-700"
         />
         <KpiCard
-          label="累計発行量"
-          value={formatNum(data.totalIssued)}
+          label={`発行量 (${yearFrom}-${yearTo})`}
+          value={formatNum(filteredKpi.issued)}
           sub="tCO2e"
           color="text-blue-700"
         />
         <KpiCard
-          label="累計リタイア"
-          value={formatNum(data.totalRetired)}
+          label={`リタイア (${yearFrom}-${yearTo})`}
+          value={formatNum(filteredKpi.retired)}
           sub="tCO2e"
           color="text-amber-700"
         />
         <KpiCard
           label="メソドロジー数"
-          value={formatFull(data.topMethodologies.length)}
-          sub={`全${410}種類`}
+          value={formatFull(filteredMethodologies.length)}
+          sub={searchQuery ? `"${searchQuery}" で絞込` : `全410種類`}
           color="text-purple-700"
         />
       </div>
@@ -147,8 +284,8 @@ export function StatisticsDashboard() {
       {/* タブコンテンツ */}
       {activeTab === "overview" && <OverviewTab data={data} yearlyData={yearlyFiltered} registryPie={registryPieData} />}
       {activeTab === "issuance" && <IssuanceTab data={data} yearlyData={yearlyFiltered} />}
-      {activeTab === "retirement" && <RetirementTab data={data} yearlyData={yearlyFiltered} retirementPie={retirementPieData} />}
-      {activeTab === "methodology" && <MethodologyTab data={data} />}
+      {activeTab === "retirement" && <RetirementTab data={data} yearlyData={yearlyFiltered} retirementPie={retirementPieData} filteredRetirees={filteredRetirees} searchQuery={searchQuery} />}
+      {activeTab === "methodology" && <MethodologyTab data={data} filteredMethodologies={filteredMethodologies} searchQuery={searchQuery} />}
 
       {/* データソース */}
       <div className="border-t border-gray-100 pt-4">
@@ -322,10 +459,12 @@ function IssuanceTab({ data, yearlyData }: {
 // リタイア分析タブ
 // ============================================================
 
-function RetirementTab({ data, yearlyData, retirementPie }: {
+function RetirementTab({ data, yearlyData, retirementPie, filteredRetirees, searchQuery }: {
   data: typeof statsData;
   yearlyData: typeof statsData.yearlyData;
   retirementPie: { name: string; value: number }[];
+  filteredRetirees: typeof statsData.topRetirees;
+  searchQuery: string;
 }) {
   return (
     <div className="space-y-6">
@@ -379,7 +518,13 @@ function RetirementTab({ data, yearlyData, retirementPie }: {
 
       {/* トップリタイアー（企業ランキング） */}
       <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
-        <h3 className="mb-4 text-sm font-semibold text-gray-900">クレジット無効化（リタイア）企業ランキング TOP20</h3>
+        <div className="mb-4 flex items-center justify-between">
+          <h3 className="text-sm font-semibold text-gray-900">
+            クレジット無効化（リタイア）企業ランキング
+            {searchQuery && <span className="ml-2 text-xs font-normal text-gray-400">「{searchQuery}」で絞込中</span>}
+          </h3>
+          <span className="text-xs text-gray-400">{filteredRetirees.length} 件</span>
+        </div>
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
@@ -391,7 +536,7 @@ function RetirementTab({ data, yearlyData, retirementPie }: {
               </tr>
             </thead>
             <tbody>
-              {data.topRetirees.slice(0, 20).map((r, i) => (
+              {filteredRetirees.slice(0, 20).map((r, i) => (
                 <tr key={r.name} className="border-b border-gray-50">
                   <td className="py-2 text-gray-400">{i + 1}</td>
                   <td className="py-2 font-medium text-gray-900">{r.name}</td>
@@ -413,15 +558,25 @@ function RetirementTab({ data, yearlyData, retirementPie }: {
 // メソドロジータブ
 // ============================================================
 
-function MethodologyTab({ data }: { data: typeof statsData }) {
+function MethodologyTab({ data, filteredMethodologies, searchQuery }: {
+  data: typeof statsData;
+  filteredMethodologies: typeof statsData.topMethodologies;
+  searchQuery: string;
+}) {
   return (
     <div className="space-y-6">
       {/* メソドロジー TOP20 */}
       <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
-        <h3 className="mb-4 text-sm font-semibold text-gray-900">メソドロジー別プロジェクト数 TOP20</h3>
+        <div className="mb-4 flex items-center justify-between">
+          <h3 className="text-sm font-semibold text-gray-900">
+            メソドロジー別プロジェクト数
+            {searchQuery && <span className="ml-2 text-xs font-normal text-gray-400">「{searchQuery}」で絞込中</span>}
+          </h3>
+          <span className="text-xs text-gray-400">{filteredMethodologies.length} 件</span>
+        </div>
         <div className="h-96">
           <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={data.topMethodologies.slice(0, 20)} layout="vertical" margin={{ left: 200 }}>
+            <BarChart data={filteredMethodologies.slice(0, 20)} layout="vertical" margin={{ left: 200 }}>
               <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
               <XAxis type="number" tick={{ fontSize: 10 }} />
               <YAxis type="category" dataKey="name" tick={{ fontSize: 10 }} width={195} />
@@ -446,7 +601,7 @@ function MethodologyTab({ data }: { data: typeof statsData }) {
               </tr>
             </thead>
             <tbody>
-              {data.topMethodologies.map((m, i) => (
+              {filteredMethodologies.map((m, i) => (
                 <tr key={m.name} className="border-b border-gray-50 hover:bg-gray-50">
                   <td className="py-2 text-gray-400">{i + 1}</td>
                   <td className="py-2 font-medium text-gray-900">{m.name}</td>
