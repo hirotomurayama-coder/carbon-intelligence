@@ -17,6 +17,7 @@ export const NAV_ITEMS: NavItem[] = [
     ],
   },
   { label: "分析", href: "/analysis", icon: "analytics" },
+  { label: "統計", href: "/statistics", icon: "statistics" },
   { label: "ライブラリ", href: "/library", icon: "library" },
   { label: "設定", href: "/settings", icon: "settings" },
 ];

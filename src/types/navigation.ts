@@ -18,5 +18,6 @@ export type NavIcon =
   | "dashboard"
   | "market"
   | "analytics"
+  | "statistics"
   | "library"
   | "settings";

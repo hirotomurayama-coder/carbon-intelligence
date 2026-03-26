@@ -1,0 +1,1056 @@
+{
+  "dataSource": "UC Berkeley Voluntary Registry Offsets Database (VROD)",
+  "dataDate": "2025-12",
+  "totalProjects": 10975,
+  "totalIssued": 1094580641,
+  "totalRetired": 1017893792,
+  "registryProjects": {
+    "ACR": 954,
+    "ART": 27,
+    "CAR": 1182,
+    "Gold Standard": 3982,
+    "Verra": 4830
+  },
+  "registryIssuances": {
+    "ACR": 365574109,
+    "CAR": 249969511,
+    "Verra": 479037021
+  },
+  "registryRetirements": {
+    "ACR": 51517644,
+    "CAR": 79524998,
+    "Verra": 886851150
+  },
+  "yearlyData": [
+    {
+      "year": 1999,
+      "issued": 74895,
+      "retired": 0,
+      "issued_by_registry": {
+        "ACR": 74895,
+        "CAR": 0,
+        "Verra": 0
+      },
+      "retired_by_registry": {
+        "ACR": 0,
+        "CAR": 0,
+        "Verra": 0
+      }
+    },
+    {
+      "year": 2000,
+      "issued": 1106025,
+      "retired": 0,
+      "issued_by_registry": {
+        "ACR": 1106025,
+        "CAR": 0,
+        "Verra": 0
+      },
+      "retired_by_registry": {
+        "ACR": 0,
+        "CAR": 0,
+        "Verra": 0
+      }
+    },
+    {
+      "year": 2001,
+      "issued": 832820,
+      "retired": 0,
+      "issued_by_registry": {
+        "ACR": 832820,
+        "CAR": 0,
+        "Verra": 0
+      },
+      "retired_by_registry": {
+        "ACR": 0,
+        "CAR": 0,
+        "Verra": 0
+      }
+    },
+    {
+      "year": 2002,
+      "issued": 972612,
+      "retired": 0,
+      "issued_by_registry": {
+        "ACR": 972612,
+        "CAR": 0,
+        "Verra": 0
+      },
+      "retired_by_registry": {
+        "ACR": 0,
+        "CAR": 0,
+        "Verra": 0
+      }
+    },
+    {
+      "year": 2003,
+      "issued": 3466067,
+      "retired": 0,
+      "issued_by_registry": {
+        "ACR": 3466067,
+        "CAR": 0,
+        "Verra": 0
+      },
+      "retired_by_registry": {
+        "ACR": 0,
+        "CAR": 0,
+        "Verra": 0
+      }
+    },
+    {
+      "year": 2004,
+      "issued": 1533048,
+      "retired": 0,
+      "issued_by_registry": {
+        "ACR": 1533048,
+        "CAR": 0,
+        "Verra": 0
+      },
+      "retired_by_registry": {
+        "ACR": 0,
+        "CAR": 0,
+        "Verra": 0
+      }
+    },
+    {
+      "year": 2005,
+      "issued": 1880381,
+      "retired": 66,
+      "issued_by_registry": {
+        "ACR": 1880381,
+        "CAR": 0,
+        "Verra": 0
+      },
+      "retired_by_registry": {
+        "ACR": 66,
+        "CAR": 0,
+        "Verra": 0
+      }
+    },
+    {
+      "year": 2006,
+      "issued": 9237690,
+      "retired": 1630,
+      "issued_by_registry": {
+        "ACR": 9237690,
+        "CAR": 0,
+        "Verra": 0
+      },
+      "retired_by_registry": {
+        "ACR": 1630,
+        "CAR": 0,
+        "Verra": 0
+      }
+    },
+    {
+      "year": 2007,
+      "issued": 3580885,
+      "retired": 6731,
+      "issued_by_registry": {
+        "ACR": 3580885,
+        "CAR": 0,
+        "Verra": 0
+      },
+      "retired_by_registry": {
+        "ACR": 6731,
+        "CAR": 0,
+        "Verra": 0
+      }
+    },
+    {
+      "year": 2008,
+      "issued": 8366615,
+      "retired": 534275,
+      "issued_by_registry": {
+        "ACR": 7939753,
+        "CAR": 426862,
+        "Verra": 0
+      },
+      "retired_by_registry": {
+        "ACR": 534275,
+        "CAR": 0,
+        "Verra": 0
+      }
+    },
+    {
+      "year": 2009,
+      "issued": 6722598,
+      "retired": 1994166,
+      "issued_by_registry": {
+        "ACR": 3724951,
+        "CAR": 1895410,
+        "Verra": 1102237
+      },
+      "retired_by_registry": {
+        "ACR": 43809,
+        "CAR": 118346,
+        "Verra": 1832011
+      }
+    },
+    {
+      "year": 2010,
+      "issued": 12069502,
+      "retired": 4818496,
+      "issued_by_registry": {
+        "ACR": 683986,
+        "CAR": 7890136,
+        "Verra": 3495380
+      },
+      "retired_by_registry": {
+        "ACR": 140,
+        "CAR": 465578,
+        "Verra": 4352778
+      }
+    },
+    {
+      "year": 2011,
+      "issued": 16558658,
+      "retired": 9124292,
+      "issued_by_registry": {
+        "ACR": 4259845,
+        "CAR": 9765382,
+        "Verra": 2533431
+      },
+      "retired_by_registry": {
+        "ACR": 52883,
+        "CAR": 983249,
+        "Verra": 8088160
+      }
+    },
+    {
+      "year": 2012,
+      "issued": 19663463,
+      "retired": 15402894,
+      "issued_by_registry": {
+        "ACR": 5576416,
+        "CAR": 10734499,
+        "Verra": 3352548
+      },
+      "retired_by_registry": {
+        "ACR": 34714,
+        "CAR": 854560,
+        "Verra": 14513620
+      }
+    },
+    {
+      "year": 2013,
+      "issued": 17183173,
+      "retired": 25087010,
+      "issued_by_registry": {
+        "ACR": 1640893,
+        "CAR": 12875064,
+        "Verra": 2667216
+      },
+      "retired_by_registry": {
+        "ACR": 41828,
+        "CAR": 1049817,
+        "Verra": 23995365
+      }
+    },
+    {
+      "year": 2014,
+      "issued": 19119439,
+      "retired": 22928778,
+      "issued_by_registry": {
+        "ACR": 4574079,
+        "CAR": 13101763,
+        "Verra": 1443597
+      },
+      "retired_by_registry": {
+        "ACR": 46605,
+        "CAR": 791933,
+        "Verra": 22090240
+      }
+    },
+    {
+      "year": 2015,
+      "issued": 29920819,
+      "retired": 31389973,
+      "issued_by_registry": {
+        "ACR": 12830554,
+        "CAR": 16461305,
+        "Verra": 628960
+      },
+      "retired_by_registry": {
+        "ACR": 572356,
+        "CAR": 4355798,
+        "Verra": 26461819
+      }
+    },
+    {
+      "year": 2016,
+      "issued": 53361282,
+      "retired": 21987456,
+      "issued_by_registry": {
+        "ACR": 39094003,
+        "CAR": 13591251,
+        "Verra": 676028
+      },
+      "retired_by_registry": {
+        "ACR": 32734,
+        "CAR": 1234706,
+        "Verra": 20720016
+      }
+    },
+    {
+      "year": 2017,
+      "issued": 56265023,
+      "retired": 33034736,
+      "issued_by_registry": {
+        "ACR": 33528626,
+        "CAR": 16026345,
+        "Verra": 6710052
+      },
+      "retired_by_registry": {
+        "ACR": 113320,
+        "CAR": 3236868,
+        "Verra": 29684548
+      }
+    },
+    {
+      "year": 2018,
+      "issued": 34473881,
+      "retired": 38461796,
+      "issued_by_registry": {
+        "ACR": 13058657,
+        "CAR": 18886550,
+        "Verra": 2528674
+      },
+      "retired_by_registry": {
+        "ACR": 487144,
+        "CAR": 1273614,
+        "Verra": 36701038
+      }
+    },
+    {
+      "year": 2019,
+      "issued": 62630849,
+      "retired": 53202706,
+      "issued_by_registry": {
+        "ACR": 29958499,
+        "CAR": 18887796,
+        "Verra": 13784554
+      },
+      "retired_by_registry": {
+        "ACR": 662848,
+        "CAR": 1277160,
+        "Verra": 51262698
+      }
+    },
+    {
+      "year": 2020,
+      "issued": 76072614,
+      "retired": 72624105,
+      "issued_by_registry": {
+        "ACR": 29737611,
+        "CAR": 19209838,
+        "Verra": 27125165
+      },
+      "retired_by_registry": {
+        "ACR": 970969,
+        "CAR": 1189335,
+        "Verra": 70463801
+      }
+    },
+    {
+      "year": 2021,
+      "issued": 132197604,
+      "retired": 132322283,
+      "issued_by_registry": {
+        "ACR": 23835149,
+        "CAR": 9928909,
+        "Verra": 98433546
+      },
+      "retired_by_registry": {
+        "ACR": 1221986,
+        "CAR": 1477482,
+        "Verra": 129622815
+      }
+    },
+    {
+      "year": 2022,
+      "issued": 145755633,
+      "retired": 119789981,
+      "issued_by_registry": {
+        "ACR": 37495783,
+        "CAR": 15335659,
+        "Verra": 92924191
+      },
+      "retired_by_registry": {
+        "ACR": 2948138,
+        "CAR": 1293392,
+        "Verra": 115548451
+      }
+    },
+    {
+      "year": 2023,
+      "issued": 146959187,
+      "retired": 121951402,
+      "issued_by_registry": {
+        "ACR": 40544962,
+        "CAR": 13470477,
+        "Verra": 92943748
+      },
+      "retired_by_registry": {
+        "ACR": 1961099,
+        "CAR": 4823081,
+        "Verra": 115167222
+      }
+    },
+    {
+      "year": 2024,
+      "issued": 125628300,
+      "retired": 120693684,
+      "issued_by_registry": {
+        "ACR": 30869328,
+        "CAR": 23834810,
+        "Verra": 70924162
+      },
+      "retired_by_registry": {
+        "ACR": 2093259,
+        "CAR": 2907206,
+        "Verra": 115693219
+      }
+    },
+    {
+      "year": 2025,
+      "issued": 107496970,
+      "retired": 107475387,
+      "issued_by_registry": {
+        "ACR": 22085983,
+        "CAR": 27647455,
+        "Verra": 57763532
+      },
+      "retired_by_registry": {
+        "ACR": 3960342,
+        "CAR": 2861696,
+        "Verra": 100653349
+      }
+    },
+    {
+      "year": 2026,
+      "issued": 1450608,
+      "retired": 573,
+      "issued_by_registry": {
+        "ACR": 1450608,
+        "CAR": 0,
+        "Verra": 0
+      },
+      "retired_by_registry": {
+        "ACR": 573,
+        "CAR": 0,
+        "Verra": 0
+      }
+    }
+  ],
+  "topProjectTypes": [
+    {
+      "name": "Energy Efficiency - Domestic",
+      "count": 2166
+    },
+    {
+      "name": "Agriculture Forestry and Other Land Use",
+      "count": 1706
+    },
+    {
+      "name": "Energy industries (renewable/non-renewable sources)",
+      "count": 1550
+    },
+    {
+      "name": "Energy demand",
+      "count": 495
+    },
+    {
+      "name": "Forestry - MX",
+      "count": 423
+    },
+    {
+      "name": "Wind",
+      "count": 374
+    },
+    {
+      "name": "Forest Carbon",
+      "count": 352
+    },
+    {
+      "name": "Other",
+      "count": 324
+    },
+    {
+      "name": "Energy industries (renewable/non-renewable sources); Waste handling and disposal",
+      "count": 271
+    },
+    {
+      "name": "Waste handling and disposal",
+      "count": 251
+    },
+    {
+      "name": "Biogas - Heat",
+      "count": 247
+    },
+    {
+      "name": "Industrial Process Emissions",
+      "count": 237
+    },
+    {
+      "name": "Ozone Depleting Substances",
+      "count": 197
+    },
+    {
+      "name": "Solar Thermal - Electricity",
+      "count": 159
+    },
+    {
+      "name": "Small, Low - Impact Hydro",
+      "count": 156
+    },
+    {
+      "name": "A/R",
+      "count": 148
+    },
+    {
+      "name": "Improved Forest Management - ARB Compliance",
+      "count": 140
+    },
+    {
+      "name": "Landfill Gas Capture/Combustion",
+      "count": 125
+    },
+    {
+      "name": "Biogas - Electricity",
+      "count": 114
+    },
+    {
+      "name": "Ozone Depleting Substances - U.S. - ARB Compliance",
+      "count": 96
+    }
+  ],
+  "topCountries": [
+    {
+      "name": "US",
+      "count": 1634
+    },
+    {
+      "name": "MX",
+      "count": 438
+    },
+    {
+      "name": "CA",
+      "count": 31
+    },
+    {
+      "name": "FR",
+      "count": 8
+    },
+    {
+      "name": "TH",
+      "count": 7
+    },
+    {
+      "name": "BRAZIL",
+      "count": 6
+    },
+    {
+      "name": "BR",
+      "count": 5
+    },
+    {
+      "name": "DE",
+      "count": 3
+    },
+    {
+      "name": "MEXICO",
+      "count": 3
+    },
+    {
+      "name": "CN",
+      "count": 3
+    },
+    {
+      "name": "COSTA RICA",
+      "count": 2
+    },
+    {
+      "name": "PERU",
+      "count": 2
+    },
+    {
+      "name": "AR",
+      "count": 2
+    },
+    {
+      "name": "ZA",
+      "count": 1
+    },
+    {
+      "name": "BO",
+      "count": 1
+    },
+    {
+      "name": "IL",
+      "count": 1
+    },
+    {
+      "name": "SV",
+      "count": 1
+    },
+    {
+      "name": "NI",
+      "count": 1
+    },
+    {
+      "name": "COLOMBIA",
+      "count": 1
+    },
+    {
+      "name": "BHUTAN",
+      "count": 1
+    },
+    {
+      "name": "BOLIVIA",
+      "count": 1
+    },
+    {
+      "name": "BURKINA FASO",
+      "count": 1
+    },
+    {
+      "name": "CONGO, THE DEMOCRATIC REPUBLIC OF THE",
+      "count": 1
+    },
+    {
+      "name": "ECUADOR",
+      "count": 1
+    },
+    {
+      "name": "ETHIOPIA",
+      "count": 1
+    },
+    {
+      "name": "GABON",
+      "count": 1
+    },
+    {
+      "name": "GHANA",
+      "count": 1
+    },
+    {
+      "name": "GUYANA",
+      "count": 1
+    },
+    {
+      "name": "NEPAL",
+      "count": 1
+    },
+    {
+      "name": "PAPUA NEW GUINEA",
+      "count": 1
+    }
+  ],
+  "topMethodologies": [
+    {
+      "name": "ACM0002",
+      "projects": 795,
+      "credits": 0
+    },
+    {
+      "name": "ACM0002 Grid-connected electricity generation from renewable sources",
+      "projects": 438,
+      "credits": 0
+    },
+    {
+      "name": "AMS-I.D.",
+      "projects": 399,
+      "credits": 0
+    },
+    {
+      "name": "GS TPDDTEC v 1.",
+      "projects": 322,
+      "credits": 0
+    },
+    {
+      "name": "AMS-III.AU",
+      "projects": 290,
+      "credits": 0
+    },
+    {
+      "name": "AR-ACM0003",
+      "projects": 274,
+      "credits": 0
+    },
+    {
+      "name": "GS TPDDTEC v3.1",
+      "projects": 266,
+      "credits": 0
+    },
+    {
+      "name": "AMS-I.D. Grid connected renewable electricity generation",
+      "projects": 230,
+      "credits": 0
+    },
+    {
+      "name": "VMR0006",
+      "projects": 229,
+      "credits": 0
+    },
+    {
+      "name": "AMS-II.G. Energy Efficiency Measures in Thermal Applications of Non-Renewable Biomass",
+      "projects": 222,
+      "credits": 0
+    },
+    {
+      "name": "VM0042",
+      "projects": 216,
+      "credits": 0
+    },
+    {
+      "name": "Improved Forest Management (IFM) on Non-Federal U.S. Forestlands",
+      "projects": 184,
+      "credits": 49812497
+    },
+    {
+      "name": "GS MS Simplified Methodology for Efficient Cookstoves v1.1",
+      "projects": 169,
+      "credits": 0
+    },
+    {
+      "name": "ACM0001",
+      "projects": 152,
+      "credits": 0
+    },
+    {
+      "name": "AMS-II.G.",
+      "projects": 146,
+      "credits": 0
+    },
+    {
+      "name": "VM0047",
+      "projects": 143,
+      "credits": 0
+    },
+    {
+      "name": "ARB Compliance Offset Protocol: Destruction of U.S. Ozone Depleting Substances Banks",
+      "projects": 132,
+      "credits": 11937636
+    },
+    {
+      "name": "GS Methodology for emission reductions from safe drinking water supply",
+      "projects": 121,
+      "credits": 0
+    },
+    {
+      "name": "AMS-I.C. Thermal energy production with or without electricity",
+      "projects": 119,
+      "credits": 0
+    },
+    {
+      "name": "VM0007",
+      "projects": 116,
+      "credits": 0
+    },
+    {
+      "name": "VM0015",
+      "projects": 116,
+      "credits": 0
+    },
+    {
+      "name": "ARB Compliance Offset Protocol: U.S. Forest Projects",
+      "projects": 113,
+      "credits": 143211246
+    },
+    {
+      "name": "GS MS Simplified Methodology for Efficient Cookstoves v1.",
+      "projects": 103,
+      "credits": 0
+    },
+    {
+      "name": "VM0010",
+      "projects": 101,
+      "credits": 0
+    },
+    {
+      "name": "GS TPDDTEC V4.0: REDUCED EMISSIONS FROM COOKING AND HEATING ‚Äì TECHNOLOGIES AND PRACTICES TO DISPLACE DECENTRALIZED THERMAL ENERGY CONSUMPTION",
+      "projects": 96,
+      "credits": 0
+    },
+    {
+      "name": "AMS-I.E. Switch from Non-Renewable Biomass for Thermal Applications by the User",
+      "projects": 90,
+      "credits": 0
+    },
+    {
+      "name": "ACM0010",
+      "projects": 90,
+      "credits": 0
+    },
+    {
+      "name": "AMS-I.C.",
+      "projects": 85,
+      "credits": 0
+    },
+    {
+      "name": "ARB Compliance Offset Protocol: Mine Methane Capture Projects",
+      "projects": 84,
+      "credits": 15381886
+    },
+    {
+      "name": "Transition to Advanced Formulation Blowing Agents in Foam Manufacturing and Use",
+      "projects": 82,
+      "credits": 45479139
+    },
+    {
+      "name": "Certified Reclaimed HFC Refrigerants, Propellants, and Fire Suppressants",
+      "projects": 68,
+      "credits": 28587022
+    },
+    {
+      "name": "AMS-III.D.",
+      "projects": 65,
+      "credits": 0
+    },
+    {
+      "name": "Advanced Refrigeration Systems",
+      "projects": 58,
+      "credits": 4827526
+    },
+    {
+      "name": "Other",
+      "projects": 56,
+      "credits": 0
+    },
+    {
+      "name": "Not provided",
+      "projects": 53,
+      "credits": 0
+    },
+    {
+      "name": "AMS-I.A. Electricity generation by the user",
+      "projects": 51,
+      "credits": 0
+    },
+    {
+      "name": "ACM0008",
+      "projects": 51,
+      "credits": 0
+    },
+    {
+      "name": "ACM0022",
+      "projects": 48,
+      "credits": 0
+    },
+    {
+      "name": "VM0026",
+      "projects": 47,
+      "credits": 0
+    },
+    {
+      "name": "Methodology for Metered & Measured Energy Cooking Devices",
+      "projects": 46,
+      "credits": 0
+    },
+    {
+      "name": "AMS-I.F.",
+      "projects": 43,
+      "credits": 0
+    },
+    {
+      "name": "VM0033",
+      "projects": 42,
+      "credits": 0
+    },
+    {
+      "name": "AR-AMS0007",
+      "projects": 42,
+      "credits": 0
+    },
+    {
+      "name": "AMS-I.E.",
+      "projects": 41,
+      "credits": 0
+    },
+    {
+      "name": "AM0073",
+      "projects": 41,
+      "credits": 0
+    },
+    {
+      "name": "GS TPDDTEC v 2.",
+      "projects": 40,
+      "credits": 0
+    },
+    {
+      "name": "AMS-I.D.; AMS-III.G.",
+      "projects": 38,
+      "credits": 0
+    },
+    {
+      "name": "AMS-III.D.; AMS-III.F.",
+      "projects": 34,
+      "credits": 0
+    },
+    {
+      "name": "VM0017",
+      "projects": 33,
+      "credits": 0
+    },
+    {
+      "name": "ACM0006",
+      "projects": 33,
+      "credits": 0
+    }
+  ],
+  "retirementReasons": {
+    "第三者のため": 83065884,
+    "自主的オフセット": 514558262,
+    "その他": 20946019,
+    "コンプライアンス": 23372004
+  },
+  "topRetirees": [
+    {
+      "name": "Shell",
+      "credits": 38519915
+    },
+    {
+      "name": "Eni Upstream",
+      "credits": 15885945
+    },
+    {
+      "name": "DL",
+      "credits": 13118083
+    },
+    {
+      "name": "Delta Air Lines",
+      "credits": 11040979
+    },
+    {
+      "name": "LSB Industries, Inc.",
+      "credits": 8830794
+    },
+    {
+      "name": "Climate Impact Partners, LLC",
+      "credits": 7938503
+    },
+    {
+      "name": "Anew Carbon Development, LLC",
+      "credits": 7654414
+    },
+    {
+      "name": "TASC SA Pty Ltd (COAS account 101046)",
+      "credits": 7313937
+    },
+    {
+      "name": "AUDI AG",
+      "credits": 7003182
+    },
+    {
+      "name": "Yamato Transport Co., Ltd.",
+      "credits": 6886359
+    },
+    {
+      "name": "ClimeCo LLC",
+      "credits": 5899869
+    },
+    {
+      "name": "Telstra Corporation Limited",
+      "credits": 5874959
+    },
+    {
+      "name": "PRIMAX COLOMBIA S.A identificada con Nit: 860.002.554-8",
+      "credits": 5250000
+    },
+    {
+      "name": "PetroChina International Company Limited (‚ÄúPCI‚Äù)",
+      "credits": 4999814
+    },
+    {
+      "name": "_",
+      "credits": 4843615
+    },
+    {
+      "name": "Anew Environmental, LLC",
+      "credits": 4790453
+    },
+    {
+      "name": "Greenchoice",
+      "credits": 4717315
+    },
+    {
+      "name": "3Degrees Group, Inc",
+      "credits": 4393680
+    },
+    {
+      "name": "Shell Energy North America (US), L.P.",
+      "credits": 4077082
+    },
+    {
+      "name": "The Boeing Company",
+      "credits": 4066129
+    },
+    {
+      "name": "GP-2",
+      "credits": 3893245
+    },
+    {
+      "name": "The Climate Trust",
+      "credits": 3882419
+    },
+    {
+      "name": "4AIR Client",
+      "credits": 3335937
+    },
+    {
+      "name": "Takeda Pharmaceutical Company",
+      "credits": 3231968
+    },
+    {
+      "name": "Geopost",
+      "credits": 3221430
+    },
+    {
+      "name": "Marke VW Pkw",
+      "credits": 3102847
+    },
+    {
+      "name": "487",
+      "credits": 3000000
+    },
+    {
+      "name": "Interface, Inc.",
+      "credits": 2897004
+    },
+    {
+      "name": "Schneider Electric",
+      "credits": 2837467
+    },
+    {
+      "name": "Element Markets, LLC",
+      "credits": 2809691
+    }
+  ],
+  "statusDistribution": {
+    "Registered": 2131,
+    "Listed": 1397,
+    "Completed": 766,
+    "Canceled": 5,
+    "Inactive": 240,
+    "Transitioned": 8,
+    "Gold Standard Certified Design": 833,
+    "Gold Standard Certified Project": 2157,
+    "Under validation": 476,
+    "Under development": 589,
+    "Registration and verification approval requested": 104,
+    "Registration requested": 204,
+    "Rejected by Administrator": 243,
+    "Withdrawn": 277,
+    "Verification approval requested": 168,
+    "Registration and verification approval request denied": 6,
+    "Units Transferred from Approved GHG Program": 80,
+    "Registration request denied": 10,
+    "Requantification Requested": 4,
+    "On Hold - see notification letter": 50,
+    "Verification approval request denied": 5,
+    "Late to verify": 845,
+    "Crediting Period Renewal Requested": 7,
+    "Crediting Period Renewal and Verification Approval Requested": 4
+  }
+}
