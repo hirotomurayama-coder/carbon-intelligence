@@ -59,7 +59,7 @@ function KpiCard({ label, value, sub, color }: {
 // メインコンポーネント
 // ============================================================
 
-type Tab = "overview" | "issuance" | "retirement" | "methodology";
+type Tab = "overview" | "issuance" | "retirement" | "methodology" | "japan";
 
 const ALL_REGISTRIES = Object.keys(statsData.registryProjects);
 const YEAR_RANGE = { min: 2005, max: 2025 };
@@ -158,6 +158,7 @@ export function StatisticsDashboard() {
     { key: "issuance", label: "発行分析" },
     { key: "retirement", label: "リタイア分析" },
     { key: "methodology", label: "メソドロジー" },
+    { key: "japan", label: "日本市場" },
   ];
 
   return (
@@ -286,6 +287,7 @@ export function StatisticsDashboard() {
       {activeTab === "issuance" && <IssuanceTab data={data} yearlyData={yearlyFiltered} />}
       {activeTab === "retirement" && <RetirementTab data={data} yearlyData={yearlyFiltered} retirementPie={retirementPieData} filteredRetirees={filteredRetirees} searchQuery={searchQuery} />}
       {activeTab === "methodology" && <MethodologyTab data={data} filteredMethodologies={filteredMethodologies} searchQuery={searchQuery} />}
+      {activeTab === "japan" && <JapanTab data={data} searchQuery={searchQuery} />}
 
       {/* データソース */}
       <div className="border-t border-gray-100 pt-4">
@@ -612,6 +614,138 @@ function MethodologyTab({ data, filteredMethodologies, searchQuery }: {
             </tbody>
           </table>
         </div>
+      </div>
+    </div>
+  );
+}
+
+// ============================================================
+// 日本市場タブ
+// ============================================================
+
+function JapanTab({ data, searchQuery }: { data: typeof statsData; searchQuery: string }) {
+  const japanCompanies = useMemo(() => {
+    const companies = (data as Record<string, unknown>).japanCompanyRetirements as {
+      name: string; totalCredits: number; records: number;
+      yearly: Record<string, number>; topTypes: { type: string; credits: number }[];
+    }[] ?? [];
+    if (!searchQuery) return companies;
+    const q = searchQuery.toLowerCase();
+    return companies.filter((c) => c.name.toLowerCase().includes(q));
+  }, [data, searchQuery]);
+
+  const japanProjects = ((data as Record<string, unknown>).japanProjects ?? []) as {
+    id: string; name: string; type: string; methodology: string; status: string; proponent: string;
+  }[];
+
+  const japanYearly = ((data as Record<string, unknown>).japanYearlyRetirements ?? []) as {
+    year: number; credits: number;
+  }[];
+
+  const totalRetired = (data as Record<string, unknown>).totalJapanRetired as number ?? 0;
+
+  return (
+    <div className="space-y-6">
+      <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
+        <KpiCard label="日本企業数" value={String(japanCompanies.length)} sub="VRODデータ内" color="text-red-700" />
+        <KpiCard label="累計リタイア" value={formatNum(totalRetired)} sub="tCO2e" color="text-red-700" />
+        <KpiCard label="日本所在プロジェクト" value={String(japanProjects.length)} sub="Verra登録" color="text-red-700" />
+        <KpiCard label="最大リタイアー" value={japanCompanies[0]?.name ?? "-"} sub={japanCompanies[0] ? formatNum(japanCompanies[0].totalCredits) + " tCO2e" : ""} color="text-red-700" />
+      </div>
+
+      {japanYearly.length > 0 && (
+        <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
+          <h3 className="mb-4 text-sm font-semibold text-gray-900">日本企業のクレジットリタイア推移（年別）</h3>
+          <div className="h-64">
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={japanYearly}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+                <XAxis dataKey="year" tick={{ fontSize: 11 }} />
+                <YAxis tick={{ fontSize: 11 }} tickFormatter={(v: unknown) => formatNum(Number(v))} />
+                <Tooltip formatter={(v: unknown) => [formatFull(Number(v)) + " tCO2e"]} />
+                <Bar dataKey="credits" name="リタイア量" fill="#ef4444" radius={[4, 4, 0, 0]} />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+      )}
+
+      <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
+        <div className="mb-4 flex items-center justify-between">
+          <h3 className="text-sm font-semibold text-gray-900">
+            日本企業クレジットリタイアランキング
+            {searchQuery && <span className="ml-2 text-xs font-normal text-gray-400">「{searchQuery}」で絞込中</span>}
+          </h3>
+          <span className="text-xs text-gray-400">{japanCompanies.length} 社</span>
+        </div>
+        <div className="overflow-x-auto">
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="border-b border-gray-200">
+                <th className="py-2 text-left text-xs font-medium text-gray-400">#</th>
+                <th className="py-2 text-left text-xs font-medium text-gray-400">企業</th>
+                <th className="py-2 text-right text-xs font-medium text-gray-400">リタイア量</th>
+                <th className="py-2 text-right text-xs font-medium text-gray-400">取引件数</th>
+                <th className="py-2 text-left text-xs font-medium text-gray-400">主要プロジェクトタイプ</th>
+              </tr>
+            </thead>
+            <tbody>
+              {japanCompanies.map((c, i) => (
+                <tr key={c.name} className="border-b border-gray-50 hover:bg-red-50/30">
+                  <td className="py-2.5 text-gray-400">{i + 1}</td>
+                  <td className="py-2.5 font-medium text-gray-900">{c.name}</td>
+                  <td className="py-2.5 text-right font-medium text-red-700">{formatFull(c.totalCredits)} tCO2e</td>
+                  <td className="py-2.5 text-right text-gray-500">{c.records}</td>
+                  <td className="py-2.5">
+                    <div className="flex flex-wrap gap-1">
+                      {c.topTypes.slice(0, 2).map((t) => (
+                        <span key={t.type} className="rounded bg-red-50 px-1.5 py-0.5 text-[10px] text-red-700">
+                          {t.type.length > 30 ? t.type.slice(0, 28) + "..." : t.type}
+                        </span>
+                      ))}
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      {japanProjects.length > 0 && (
+        <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
+          <h3 className="mb-4 text-sm font-semibold text-gray-900">日本所在のカーボンクレジットプロジェクト</h3>
+          <div className="space-y-3">
+            {japanProjects.map((p) => (
+              <div key={p.id} className="rounded-lg border border-gray-100 p-4 hover:border-red-200 transition">
+                <div className="flex items-start justify-between">
+                  <div>
+                    <p className="text-sm font-medium text-gray-900">{p.name}</p>
+                    <p className="mt-0.5 text-xs text-gray-400">{p.proponent}</p>
+                  </div>
+                  <span className={`rounded-full px-2 py-0.5 text-xs font-medium ${
+                    p.status === "Registered" ? "bg-emerald-50 text-emerald-700" :
+                    p.status.includes("development") ? "bg-blue-50 text-blue-700" :
+                    "bg-gray-50 text-gray-600"
+                  }`}>
+                    {p.status}
+                  </span>
+                </div>
+                <div className="mt-2 flex flex-wrap gap-2 text-xs">
+                  <span className="text-gray-500">{p.type}</span>
+                  {p.methodology !== "nan" && <span className="text-gray-400">| {p.methodology}</span>}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      <div className="rounded-lg bg-red-50 border border-red-100 p-4">
+        <p className="text-xs text-red-700">
+          本データはUC Berkeley VRODのボランタリー市場データに基づいています。J-クレジット等の国内制度は含まれません。
+          J-クレジットの情報は「分析」ページをご参照ください。
+        </p>
       </div>
     </div>
   );

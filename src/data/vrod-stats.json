@@ -2538,5 +2538,636 @@
     "Viet Nam",
     "Zambia",
     "Zimbabwe"
-  ]
+  ],
+  "japanCompanyRetirements": [
+    {
+      "name": "Tokyo Gas",
+      "totalCredits": 2776646,
+      "records": 35,
+      "yearly": {
+        "2020": 224965,
+        "2021": 224287,
+        "2022": 1091822,
+        "2023": 478708,
+        "2024": 256970,
+        "2025": 499894
+      },
+      "topTypes": [
+        {
+          "type": "Agriculture Forestry and Other Land Use",
+          "credits": 2754942
+        },
+        {
+          "type": "Energy industries (renewable/non-renewable sources)",
+          "credits": 17919
+        },
+        {
+          "type": "Energy industries (renewable/non-renewable sources); Manufacturing industries",
+          "credits": 3785
+        }
+      ]
+    },
+    {
+      "name": "Marubeni",
+      "totalCredits": 261875,
+      "records": 18,
+      "yearly": {
+        "2021": 20435,
+        "2023": 241440
+      },
+      "topTypes": [
+        {
+          "type": "Energy industries (renewable/non-renewable sources)",
+          "credits": 205298
+        },
+        {
+          "type": "Agriculture Forestry and Other Land Use",
+          "credits": 56577
+        }
+      ]
+    },
+    {
+      "name": "ENEOS",
+      "totalCredits": 226220,
+      "records": 5,
+      "yearly": {
+        "2020": 211220,
+        "2022": 15000
+      },
+      "topTypes": [
+        {
+          "type": "Agriculture Forestry and Other Land Use",
+          "credits": 211220
+        },
+        {
+          "type": "Energy industries (renewable/non-renewable sources)",
+          "credits": 15000
+        }
+      ]
+    },
+    {
+      "name": "ANA",
+      "totalCredits": 74252,
+      "records": 813,
+      "yearly": {
+        "2013": 386,
+        "2014": 71,
+        "2018": 2870,
+        "2019": 3079,
+        "2020": 3038,
+        "2021": 18716,
+        "2022": 8085,
+        "2023": 16686,
+        "2024": 15200,
+        "2025": 6121
+      },
+      "topTypes": [
+        {
+          "type": "Energy industries (renewable/non-renewable sources)",
+          "credits": 47739
+        },
+        {
+          "type": "Agriculture Forestry and Other Land Use",
+          "credits": 16533
+        },
+        {
+          "type": "Fugitive emissions from production and consumption of halocarbons and sulphur hexafluoride",
+          "credits": 3000
+        },
+        {
+          "type": "Transport",
+          "credits": 2700
+        },
+        {
+          "type": "Energy demand; Waste handling and disposal",
+          "credits": 2400
+        }
+      ]
+    },
+    {
+      "name": "Hitachi",
+      "totalCredits": 62723,
+      "records": 72,
+      "yearly": {
+        "2014": 1209,
+        "2015": 3965,
+        "2017": 4209,
+        "2019": 5891,
+        "2020": 7437,
+        "2021": 6708,
+        "2023": 332,
+        "2024": 11805,
+        "2025": 21167
+      },
+      "topTypes": [
+        {
+          "type": "Energy industries (renewable/non-renewable sources)",
+          "credits": 33192
+        },
+        {
+          "type": "Agriculture Forestry and Other Land Use",
+          "credits": 29531
+        }
+      ]
+    },
+    {
+      "name": "Toshiba",
+      "totalCredits": 43975,
+      "records": 21,
+      "yearly": {
+        "2018": 339,
+        "2019": 4134,
+        "2020": 4269,
+        "2021": 3252,
+        "2022": 7204,
+        "2023": 6688,
+        "2024": 3927,
+        "2025": 14162
+      },
+      "topTypes": [
+        {
+          "type": "Agriculture Forestry and Other Land Use",
+          "credits": 19111
+        },
+        {
+          "type": "Energy industries (renewable/non-renewable sources)",
+          "credits": 16552
+        },
+        {
+          "type": "Energy demand",
+          "credits": 6775
+        },
+        {
+          "type": "Energy distribution",
+          "credits": 1537
+        }
+      ]
+    },
+    {
+      "name": "Toyota",
+      "totalCredits": 42811,
+      "records": 41,
+      "yearly": {
+        "2015": 1800,
+        "2016": 4492,
+        "2017": 2062,
+        "2018": 14981,
+        "2019": 15271,
+        "2020": 900,
+        "2023": 14,
+        "2024": 442,
+        "2025": 2849
+      },
+      "topTypes": [
+        {
+          "type": "Energy industries (renewable/non-renewable sources)",
+          "credits": 38606
+        },
+        {
+          "type": "Fugitive emissions from fuels (solid, oil and gas)",
+          "credits": 2204
+        },
+        {
+          "type": "Agriculture Forestry and Other Land Use",
+          "credits": 2001
+        }
+      ]
+    },
+    {
+      "name": "Panasonic",
+      "totalCredits": 26981,
+      "records": 10,
+      "yearly": {
+        "2023": 41,
+        "2024": 22,
+        "2025": 26918
+      },
+      "topTypes": [
+        {
+          "type": "Energy industries (renewable/non-renewable sources)",
+          "credits": 25481
+        },
+        {
+          "type": "Energy industries (renewable/non-renewable sources); Waste handling and disposal",
+          "credits": 1500
+        }
+      ]
+    },
+    {
+      "name": "Ricoh",
+      "totalCredits": 23022,
+      "records": 19,
+      "yearly": {
+        "2016": 4081,
+        "2017": 5168,
+        "2018": 13773
+      },
+      "topTypes": [
+        {
+          "type": "Energy industries (renewable/non-renewable sources)",
+          "credits": 19704
+        },
+        {
+          "type": "Manufacturing industries",
+          "credits": 3318
+        }
+      ]
+    },
+    {
+      "name": "Sony",
+      "totalCredits": 20275,
+      "records": 9,
+      "yearly": {
+        "2017": 6250,
+        "2019": 12500,
+        "2021": 25,
+        "2022": 1500
+      },
+      "topTypes": [
+        {
+          "type": "Energy industries (renewable/non-renewable sources)",
+          "credits": 18775
+        },
+        {
+          "type": "Agriculture Forestry and Other Land Use",
+          "credits": 1500
+        }
+      ]
+    },
+    {
+      "name": "Canon",
+      "totalCredits": 15099,
+      "records": 11,
+      "yearly": {
+        "2019": 12,
+        "2021": 3302,
+        "2022": 3457,
+        "2023": 130,
+        "2024": 5280,
+        "2025": 2918
+      },
+      "topTypes": [
+        {
+          "type": "Energy industries (renewable/non-renewable sources)",
+          "credits": 15085
+        },
+        {
+          "type": "Agriculture Forestry and Other Land Use",
+          "credits": 14
+        }
+      ]
+    },
+    {
+      "name": "Mitsubishi",
+      "totalCredits": 10672,
+      "records": 9,
+      "yearly": {
+        "2021": 11,
+        "2023": 10660,
+        "2024": 1
+      },
+      "topTypes": [
+        {
+          "type": "Energy industries (renewable/non-renewable sources)",
+          "credits": 6651
+        },
+        {
+          "type": "Agriculture Forestry and Other Land Use",
+          "credits": 4020
+        },
+        {
+          "type": "Construction; Manufacturing industries",
+          "credits": 1
+        }
+      ]
+    },
+    {
+      "name": "Fujitsu",
+      "totalCredits": 5908,
+      "records": 39,
+      "yearly": {
+        "2020": 1000,
+        "2022": 564,
+        "2023": 1100,
+        "2024": 1956,
+        "2025": 1288
+      },
+      "topTypes": [
+        {
+          "type": "Agriculture Forestry and Other Land Use",
+          "credits": 4187
+        },
+        {
+          "type": "Energy industries (renewable/non-renewable sources)",
+          "credits": 1675
+        },
+        {
+          "type": "Waste handling and disposal",
+          "credits": 24
+        },
+        {
+          "type": "Energy demand",
+          "credits": 22
+        }
+      ]
+    },
+    {
+      "name": "Daikin",
+      "totalCredits": 4680,
+      "records": 7,
+      "yearly": {
+        "2023": 2051,
+        "2025": 2629
+      },
+      "topTypes": [
+        {
+          "type": "Energy industries (renewable/non-renewable sources)",
+          "credits": 4677
+        },
+        {
+          "type": "Agriculture Forestry and Other Land Use",
+          "credits": 3
+        }
+      ]
+    },
+    {
+      "name": "ITOCHU",
+      "totalCredits": 3501,
+      "records": 8,
+      "yearly": {
+        "2021": 6,
+        "2022": 330,
+        "2023": 1650,
+        "2025": 1515
+      },
+      "topTypes": [
+        {
+          "type": "Agriculture Forestry and Other Land Use",
+          "credits": 1980
+        },
+        {
+          "type": "Energy industries (renewable/non-renewable sources)",
+          "credits": 1521
+        }
+      ]
+    },
+    {
+      "name": "SoftBank",
+      "totalCredits": 2774,
+      "records": 1,
+      "yearly": {
+        "2020": 2774
+      },
+      "topTypes": [
+        {
+          "type": "Agriculture Forestry and Other Land Use",
+          "credits": 2774
+        }
+      ]
+    },
+    {
+      "name": "Suntory",
+      "totalCredits": 2180,
+      "records": 12,
+      "yearly": {
+        "2024": 306,
+        "2025": 1874
+      },
+      "topTypes": [
+        {
+          "type": "Energy industries (renewable/non-renewable sources)",
+          "credits": 2163
+        },
+        {
+          "type": "Agriculture Forestry and Other Land Use",
+          "credits": 17
+        }
+      ]
+    },
+    {
+      "name": "Honda",
+      "totalCredits": 1521,
+      "records": 4,
+      "yearly": {
+        "2024": 1515,
+        "2025": 6
+      },
+      "topTypes": [
+        {
+          "type": "Energy industries (renewable/non-renewable sources)",
+          "credits": 1515
+        },
+        {
+          "type": "Agriculture Forestry and Other Land Use",
+          "credits": 6
+        }
+      ]
+    },
+    {
+      "name": "Mitsui",
+      "totalCredits": 1300,
+      "records": 5,
+      "yearly": {
+        "2021": 1125,
+        "2023": 22,
+        "2024": 132,
+        "2025": 21
+      },
+      "topTypes": [
+        {
+          "type": "Agriculture Forestry and Other Land Use",
+          "credits": 1300
+        }
+      ]
+    },
+    {
+      "name": "JAL",
+      "totalCredits": 350,
+      "records": 30,
+      "yearly": {
+        "2013": 15,
+        "2019": 29,
+        "2021": 161,
+        "2022": 141,
+        "2023": 2,
+        "2024": 2
+      },
+      "topTypes": [
+        {
+          "type": "Agriculture Forestry and Other Land Use",
+          "credits": 293
+        },
+        {
+          "type": "Energy industries (renewable/non-renewable sources)",
+          "credits": 57
+        }
+      ]
+    },
+    {
+      "name": "JERA",
+      "totalCredits": 194,
+      "records": 50,
+      "yearly": {
+        "2021": 27,
+        "2022": 43,
+        "2023": 45,
+        "2024": 50,
+        "2025": 29
+      },
+      "topTypes": [
+        {
+          "type": "Agriculture Forestry and Other Land Use",
+          "credits": 186
+        },
+        {
+          "type": "Energy industries (renewable/non-renewable sources)",
+          "credits": 8
+        }
+      ]
+    },
+    {
+      "name": "NTT",
+      "totalCredits": 46,
+      "records": 11,
+      "yearly": {
+        "2021": 17,
+        "2022": 10,
+        "2023": 3,
+        "2024": 16
+      },
+      "topTypes": [
+        {
+          "type": "Agriculture Forestry and Other Land Use",
+          "credits": 35
+        },
+        {
+          "type": "Energy industries (renewable/non-renewable sources)",
+          "credits": 11
+        }
+      ]
+    },
+    {
+      "name": "NEC",
+      "totalCredits": 42,
+      "records": 2,
+      "yearly": {
+        "2021": 21,
+        "2025": 21
+      },
+      "topTypes": [
+        {
+          "type": "Agriculture Forestry and Other Land Use",
+          "credits": 21
+        },
+        {
+          "type": "Energy industries (renewable/non-renewable sources)",
+          "credits": 21
+        }
+      ]
+    },
+    {
+      "name": "Nippon Steel",
+      "totalCredits": 2,
+      "records": 1,
+      "yearly": {
+        "2021": 2
+      },
+      "topTypes": [
+        {
+          "type": "Energy industries (renewable/non-renewable sources)",
+          "credits": 2
+        }
+      ]
+    }
+  ],
+  "japanProjects": [
+    {
+      "id": "5484",
+      "name": "Hachijojima IFM Project",
+      "type": "Agriculture Forestry and Other Land Use",
+      "methodology": "VM0045",
+      "status": "Under development",
+      "proponent": "Creattura Co., Ltd."
+    },
+    {
+      "id": "4895",
+      "name": "Ishinomaki Improved Forest Management Project",
+      "type": "Agriculture Forestry and Other Land Use",
+      "methodology": "VM0045",
+      "status": "Registration and verification approval request denied",
+      "proponent": "Hitachi Systems, Ltd."
+    },
+    {
+      "id": "4596",
+      "name": "Carbon Emission Reduction Project through Improved Water Management in Bio-farming",
+      "type": "Agriculture Forestry and Other Land Use",
+      "methodology": "VM0042",
+      "status": "Under validation",
+      "proponent": "AGBIOTECH Co., Ltd."
+    },
+    {
+      "id": "4560",
+      "name": "AJINOMOTO GROUPED PROJECT:  REDUCTION OF METHANE EMISSIONS IN  THE DAIRY SECTOR",
+      "type": "Livestock, enteric fermentation, and manure management",
+      "methodology": "VM0041",
+      "status": "Under development",
+      "proponent": "Ajinomoto Co., Inc."
+    },
+    {
+      "id": "3911",
+      "name": "NEC AND SAKYU IFM -THE 1ST PILOT FOR FSC FOREST IN JAPAN-",
+      "type": "Agriculture Forestry and Other Land Use",
+      "methodology": "VM0010",
+      "status": "Rejected by Administrator",
+      "proponent": "Multiple Proponents"
+    }
+  ],
+  "japanYearlyRetirements": [
+    {
+      "year": 2015,
+      "credits": 5765
+    },
+    {
+      "year": 2016,
+      "credits": 8573
+    },
+    {
+      "year": 2017,
+      "credits": 17689
+    },
+    {
+      "year": 2018,
+      "credits": 31963
+    },
+    {
+      "year": 2019,
+      "credits": 40916
+    },
+    {
+      "year": 2020,
+      "credits": 455603
+    },
+    {
+      "year": 2021,
+      "credits": 278095
+    },
+    {
+      "year": 2022,
+      "credits": 1128156
+    },
+    {
+      "year": 2023,
+      "credits": 759572
+    },
+    {
+      "year": 2024,
+      "credits": 297624
+    },
+    {
+      "year": 2025,
+      "credits": 581412
+    }
+  ],
+  "totalJapanRetired": 3607049,
+  "japanCompanyCount": 24
 }
