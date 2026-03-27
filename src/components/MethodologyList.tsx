@@ -344,7 +344,7 @@ export function MethodologyList({ data }: Props) {
 
                 {/* 分類 */}
                 <td className="hidden px-5 py-4 lg:table-cell">
-                  <div className="flex flex-col gap-1">
+                  <div className="flex flex-wrap gap-1">
                     {m.creditType && (
                       <Badge variant={creditTypeBadgeVariant(m.creditType)}>
                         {m.creditType}
