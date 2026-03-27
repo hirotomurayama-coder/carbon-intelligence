@@ -1,0 +1,7330 @@
+{
+  "generatedAt": "2026-03-27T08:50:00.141Z",
+  "summary": {
+    "total": 634,
+    "vrodOnly": 175,
+    "cadOnly": 303,
+    "both": 156,
+    "byRegistry": {
+      "CDM": 392,
+      "ARB": 4,
+      "Gold Standard": 52,
+      "Verra": 84,
+      "CAR": 32,
+      "ACR": 40,
+      "Riverse": 8,
+      "BCR": 4,
+      "CCB": 7,
+      "CATS": 2,
+      "Unknown": 4,
+      "Terrasos": 2,
+      "BCR0007": 1,
+      "T-VER": 1,
+      "NTC 6208": 1
+    }
+  },
+  "methodologies": [
+    {
+      "name": "ACM0002",
+      "registry": "CDM",
+      "projectsVrod": 825,
+      "creditsVrod": 171231943,
+      "projectsCad": 4608,
+      "totalProjects": 5433,
+      "source": [
+        "vrod",
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "AMS-I.D.",
+      "registry": "CDM",
+      "projectsVrod": 502,
+      "creditsVrod": 15615368,
+      "projectsCad": 2728,
+      "totalProjects": 3230,
+      "source": [
+        "vrod",
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "Forest",
+      "registry": "ARB",
+      "projectsVrod": 900,
+      "creditsVrod": 229211032,
+      "projectsCad": 0,
+      "totalProjects": 900,
+      "source": [
+        "vrod"
+      ]
+    },
+    {
+      "name": "REDUCED EMISSIONS FROM COOKING AND HEATING – TECHNOLOGIES AND PRACTICES TO DISPLACE DECENTRALIZED THERMAL ENERGY CONSUMPTION (TPDDTEC)",
+      "registry": "Gold Standard",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 877,
+      "totalProjects": 877,
+      "source": [
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "Livestock",
+      "registry": "ARB",
+      "projectsVrod": 639,
+      "creditsVrod": 9665830,
+      "projectsCad": 0,
+      "totalProjects": 639,
+      "source": [
+        "vrod"
+      ]
+    },
+    {
+      "name": "AMS-II.G.",
+      "registry": "CDM",
+      "projectsVrod": 155,
+      "creditsVrod": 8663578,
+      "projectsCad": 472,
+      "totalProjects": 627,
+      "source": [
+        "vrod",
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "AMS-I.C.",
+      "registry": "CDM",
+      "projectsVrod": 124,
+      "creditsVrod": 4844120,
+      "projectsCad": 452,
+      "totalProjects": 576,
+      "source": [
+        "vrod",
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "AMS-III.AU",
+      "registry": "CDM",
+      "projectsVrod": 292,
+      "creditsVrod": 17033132,
+      "projectsCad": 281,
+      "totalProjects": 573,
+      "source": [
+        "vrod",
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "AR-ACM0003",
+      "registry": "CDM",
+      "projectsVrod": 284,
+      "creditsVrod": 71431729,
+      "projectsCad": 278,
+      "totalProjects": 562,
+      "source": [
+        "vrod",
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "ACM0001",
+      "registry": "CDM",
+      "projectsVrod": 164,
+      "creditsVrod": 29471390,
+      "projectsCad": 370,
+      "totalProjects": 534,
+      "source": [
+        "vrod",
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "VMR0006",
+      "registry": "Verra",
+      "projectsVrod": 242,
+      "creditsVrod": 256348694,
+      "projectsCad": 236,
+      "totalProjects": 478,
+      "source": [
+        "vrod",
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "ACM0002 Grid-connected electricity generation from renewable sources",
+      "registry": "CDM",
+      "projectsVrod": 438,
+      "creditsVrod": 63368113,
+      "projectsCad": 0,
+      "totalProjects": 438,
+      "source": [
+        "vrod"
+      ]
+    },
+    {
+      "name": "Forestry - MX",
+      "registry": "CAR",
+      "projectsVrod": 423,
+      "creditsVrod": 18182250,
+      "projectsCad": 0,
+      "totalProjects": 423,
+      "source": [
+        "vrod"
+      ]
+    },
+    {
+      "name": "AMS-III.D.",
+      "registry": "CDM",
+      "projectsVrod": 150,
+      "creditsVrod": 6791758,
+      "projectsCad": 234,
+      "totalProjects": 384,
+      "source": [
+        "vrod",
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "VM0042",
+      "registry": "Verra",
+      "projectsVrod": 231,
+      "creditsVrod": 130888437,
+      "projectsCad": 130,
+      "totalProjects": 361,
+      "source": [
+        "vrod",
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "GS TPDDTEC v 1.",
+      "registry": "Gold Standard",
+      "projectsVrod": 322,
+      "creditsVrod": 33059411,
+      "projectsCad": 0,
+      "totalProjects": 322,
+      "source": [
+        "vrod"
+      ]
+    },
+    {
+      "name": "ODS",
+      "registry": "ARB",
+      "projectsVrod": 302,
+      "creditsVrod": 26877896,
+      "projectsCad": 0,
+      "totalProjects": 302,
+      "source": [
+        "vrod"
+      ]
+    },
+    {
+      "name": "MMC",
+      "registry": "ARB",
+      "projectsVrod": 285,
+      "creditsVrod": 22751326,
+      "projectsCad": 0,
+      "totalProjects": 285,
+      "source": [
+        "vrod"
+      ]
+    },
+    {
+      "name": "MS SIMPLIFIED METHODOLOGY FOR EFFICIENT COOKSTOVES",
+      "registry": "Gold Standard",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 276,
+      "totalProjects": 276,
+      "source": [
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "VM0047",
+      "registry": "Verra",
+      "projectsVrod": 157,
+      "creditsVrod": 59851057,
+      "projectsCad": 116,
+      "totalProjects": 273,
+      "source": [
+        "vrod",
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "GS TPDDTEC v3.1",
+      "registry": "Gold Standard",
+      "projectsVrod": 266,
+      "creditsVrod": 14307315,
+      "projectsCad": 0,
+      "totalProjects": 266,
+      "source": [
+        "vrod"
+      ]
+    },
+    {
+      "name": "ACM0012",
+      "registry": "CDM",
+      "projectsVrod": 33,
+      "creditsVrod": 5290824,
+      "projectsCad": 214,
+      "totalProjects": 247,
+      "source": [
+        "vrod",
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "Other",
+      "registry": "Gold Standard",
+      "projectsVrod": 56,
+      "creditsVrod": 4064903,
+      "projectsCad": 190,
+      "totalProjects": 246,
+      "source": [
+        "vrod",
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "VM0007",
+      "registry": "Verra",
+      "projectsVrod": 141,
+      "creditsVrod": 115503917,
+      "projectsCad": 96,
+      "totalProjects": 237,
+      "source": [
+        "vrod",
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "VM0015",
+      "registry": "Verra",
+      "projectsVrod": 126,
+      "creditsVrod": 1113935277,
+      "projectsCad": 111,
+      "totalProjects": 237,
+      "source": [
+        "vrod",
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "AMS-I.D. Grid connected renewable electricity generation",
+      "registry": "CDM",
+      "projectsVrod": 230,
+      "creditsVrod": 7111418,
+      "projectsCad": 0,
+      "totalProjects": 230,
+      "source": [
+        "vrod"
+      ]
+    },
+    {
+      "name": "AMS-II.G. Energy Efficiency Measures in Thermal Applications of Non-Renewable Biomass",
+      "registry": "CDM",
+      "projectsVrod": 222,
+      "creditsVrod": 20148239,
+      "projectsCad": 0,
+      "totalProjects": 222,
+      "source": [
+        "vrod"
+      ]
+    },
+    {
+      "name": "ACM0010",
+      "registry": "CDM",
+      "projectsVrod": 90,
+      "creditsVrod": 17980180,
+      "projectsCad": 119,
+      "totalProjects": 209,
+      "source": [
+        "vrod",
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "ACM0006",
+      "registry": "CDM",
+      "projectsVrod": 39,
+      "creditsVrod": 3500883,
+      "projectsCad": 166,
+      "totalProjects": 205,
+      "source": [
+        "vrod",
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "AMS-I.E.",
+      "registry": "CDM",
+      "projectsVrod": 50,
+      "creditsVrod": 4495468,
+      "projectsCad": 154,
+      "totalProjects": 204,
+      "source": [
+        "vrod",
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "METHODOLOGY FOR EMISSION REDUCTIONS FROM SAFE DRINKING WATER SUPPLY",
+      "registry": "Gold Standard",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 192,
+      "totalProjects": 192,
+      "source": [
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "VM0010",
+      "registry": "Verra",
+      "projectsVrod": 102,
+      "creditsVrod": 21516410,
+      "projectsCad": 85,
+      "totalProjects": 187,
+      "source": [
+        "vrod",
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "Improved Forest Management (IFM) on Non-Federal U.S. Forestlands",
+      "registry": "ACR",
+      "projectsVrod": 184,
+      "creditsVrod": 49812497,
+      "projectsCad": 0,
+      "totalProjects": 184,
+      "source": [
+        "vrod"
+      ]
+    },
+    {
+      "name": "AMS-III.F.",
+      "registry": "CDM",
+      "projectsVrod": 61,
+      "creditsVrod": 2871061,
+      "projectsCad": 114,
+      "totalProjects": 175,
+      "source": [
+        "vrod",
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "AMS-III.H.",
+      "registry": "CDM",
+      "projectsVrod": 50,
+      "creditsVrod": 1879344,
+      "projectsCad": 120,
+      "totalProjects": 170,
+      "source": [
+        "vrod",
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "GS MS Simplified Methodology for Efficient Cookstoves v1.1",
+      "registry": "Gold Standard",
+      "projectsVrod": 169,
+      "creditsVrod": 1598978,
+      "projectsCad": 0,
+      "totalProjects": 169,
+      "source": [
+        "vrod"
+      ]
+    },
+    {
+      "name": "ACM0008",
+      "registry": "CDM",
+      "projectsVrod": 52,
+      "creditsVrod": 14289047,
+      "projectsCad": 111,
+      "totalProjects": 163,
+      "source": [
+        "vrod",
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "AMS-I.F.",
+      "registry": "CDM",
+      "projectsVrod": 71,
+      "creditsVrod": 3245011,
+      "projectsCad": 77,
+      "totalProjects": 148,
+      "source": [
+        "vrod",
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "Improved Forest Management - ARB Compliance",
+      "registry": "CAR",
+      "projectsVrod": 140,
+      "creditsVrod": 83781555,
+      "projectsCad": 0,
+      "totalProjects": 140,
+      "source": [
+        "vrod"
+      ]
+    },
+    {
+      "name": "ARB Compliance Offset Protocol: Destruction of U.S. Ozone Depleting Substances Banks",
+      "registry": "ACR",
+      "projectsVrod": 132,
+      "creditsVrod": 11937636,
+      "projectsCad": 0,
+      "totalProjects": 132,
+      "source": [
+        "vrod"
+      ]
+    },
+    {
+      "name": "Landfill Gas Capture/Combustion",
+      "registry": "CAR",
+      "projectsVrod": 125,
+      "creditsVrod": 46442517,
+      "projectsCad": 0,
+      "totalProjects": 125,
+      "source": [
+        "vrod"
+      ]
+    },
+    {
+      "name": "GS Methodology for emission reductions from safe drinking water supply",
+      "registry": "Gold Standard",
+      "projectsVrod": 121,
+      "creditsVrod": 8858552,
+      "projectsCad": 0,
+      "totalProjects": 121,
+      "source": [
+        "vrod"
+      ]
+    },
+    {
+      "name": "AMS-I.C. Thermal energy production with or without electricity",
+      "registry": "CDM",
+      "projectsVrod": 119,
+      "creditsVrod": 4529745,
+      "projectsCad": 0,
+      "totalProjects": 119,
+      "source": [
+        "vrod"
+      ]
+    },
+    {
+      "name": "ARB Compliance Offset Protocol: U.S. Forest Projects",
+      "registry": "ACR",
+      "projectsVrod": 113,
+      "creditsVrod": 143211246,
+      "projectsCad": 0,
+      "totalProjects": 113,
+      "source": [
+        "vrod"
+      ]
+    },
+    {
+      "name": "ACM0022",
+      "registry": "CDM",
+      "projectsVrod": 56,
+      "creditsVrod": 16986604,
+      "projectsCad": 53,
+      "totalProjects": 109,
+      "source": [
+        "vrod",
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "GS MS Simplified Methodology for Efficient Cookstoves v1.",
+      "registry": "Gold Standard",
+      "projectsVrod": 103,
+      "creditsVrod": 868157,
+      "projectsCad": 0,
+      "totalProjects": 103,
+      "source": [
+        "vrod"
+      ]
+    },
+    {
+      "name": "AMS-III.G.",
+      "registry": "CDM",
+      "projectsVrod": 44,
+      "creditsVrod": 1598583,
+      "projectsCad": 55,
+      "totalProjects": 99,
+      "source": [
+        "vrod",
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "AR-AMS0007",
+      "registry": "CDM",
+      "projectsVrod": 45,
+      "creditsVrod": 3231668,
+      "projectsCad": 54,
+      "totalProjects": 99,
+      "source": [
+        "vrod",
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "AM0029",
+      "registry": "CDM",
+      "projectsVrod": 20,
+      "creditsVrod": 13135336,
+      "projectsCad": 77,
+      "totalProjects": 97,
+      "source": [
+        "vrod",
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "Ozone Depleting Substances - U.S. - ARB Compliance",
+      "registry": "CAR",
+      "projectsVrod": 96,
+      "creditsVrod": 8604786,
+      "projectsCad": 0,
+      "totalProjects": 96,
+      "source": [
+        "vrod"
+      ]
+    },
+    {
+      "name": "GS TPDDTEC V4.0: REDUCED EMISSIONS FROM COOKING AND HEATING ‚Äì TECHNOLOGIES AND PRACTICES TO DISPLACE DECENTRALIZED THERMAL ENERGY CONSUMPTION",
+      "registry": "Gold Standard",
+      "projectsVrod": 96,
+      "creditsVrod": 17010684,
+      "projectsCad": 0,
+      "totalProjects": 96,
+      "source": [
+        "vrod"
+      ]
+    },
+    {
+      "name": "Livestock - ARB Compliance",
+      "registry": "CAR",
+      "projectsVrod": 95,
+      "creditsVrod": 6621736,
+      "projectsCad": 0,
+      "totalProjects": 95,
+      "source": [
+        "vrod"
+      ]
+    },
+    {
+      "name": "AMS-II.J.",
+      "registry": "CDM",
+      "projectsVrod": 27,
+      "creditsVrod": 5787714,
+      "projectsCad": 68,
+      "totalProjects": 95,
+      "source": [
+        "vrod",
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "ACM0004",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 95,
+      "totalProjects": 95,
+      "source": [
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "AMS-I.E. Switch from Non-Renewable Biomass for Thermal Applications by the User",
+      "registry": "CDM",
+      "projectsVrod": 90,
+      "creditsVrod": 5219916,
+      "projectsCad": 0,
+      "totalProjects": 90,
+      "source": [
+        "vrod"
+      ]
+    },
+    {
+      "name": "AM0073",
+      "registry": "CDM",
+      "projectsVrod": 42,
+      "creditsVrod": 9523726,
+      "projectsCad": 48,
+      "totalProjects": 90,
+      "source": [
+        "vrod",
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "VM0026",
+      "registry": "Verra",
+      "projectsVrod": 48,
+      "creditsVrod": 16496642,
+      "projectsCad": 40,
+      "totalProjects": 88,
+      "source": [
+        "vrod",
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "Methodology for Metered & Measured Energy Cooking Devices",
+      "registry": "Gold Standard",
+      "projectsVrod": 46,
+      "creditsVrod": 3434544,
+      "projectsCad": 40,
+      "totalProjects": 86,
+      "source": [
+        "vrod",
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "ARB Compliance Offset Protocol: Mine Methane Capture Projects",
+      "registry": "ACR",
+      "projectsVrod": 84,
+      "creditsVrod": 15381886,
+      "projectsCad": 0,
+      "totalProjects": 84,
+      "source": [
+        "vrod"
+      ]
+    },
+    {
+      "name": "Afforestation/Reforestation GHG Emissions Reduction & Sequestration Methodology",
+      "registry": "Gold Standard",
+      "projectsVrod": 26,
+      "creditsVrod": 9938952,
+      "projectsCad": 57,
+      "totalProjects": 83,
+      "source": [
+        "vrod",
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "Transition to Advanced Formulation Blowing Agents in Foam Manufacturing and Use",
+      "registry": "ACR",
+      "projectsVrod": 82,
+      "creditsVrod": 45479139,
+      "projectsCad": 0,
+      "totalProjects": 82,
+      "source": [
+        "vrod"
+      ]
+    },
+    {
+      "name": "AMS-II.C.",
+      "registry": "CDM",
+      "projectsVrod": 31,
+      "creditsVrod": 11840654,
+      "projectsCad": 47,
+      "totalProjects": 78,
+      "source": [
+        "vrod",
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "AMS-II.D.",
+      "registry": "CDM",
+      "projectsVrod": 9,
+      "creditsVrod": 135450,
+      "projectsCad": 69,
+      "totalProjects": 78,
+      "source": [
+        "vrod",
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "VM0042",
+      "registry": "Verra",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 78,
+      "totalProjects": 78,
+      "source": [
+        "cad-trust"
+      ],
+      "code": "VCS-VM0042"
+    },
+    {
+      "name": "VM0017",
+      "registry": "Verra",
+      "projectsVrod": 38,
+      "creditsVrod": 12976719,
+      "projectsCad": 36,
+      "totalProjects": 74,
+      "source": [
+        "vrod",
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "AM0025",
+      "registry": "CDM",
+      "projectsVrod": 4,
+      "creditsVrod": 382679,
+      "projectsCad": 70,
+      "totalProjects": 74,
+      "source": [
+        "vrod",
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "ACM0018",
+      "registry": "CDM",
+      "projectsVrod": 7,
+      "creditsVrod": 965690,
+      "projectsCad": 67,
+      "totalProjects": 74,
+      "source": [
+        "vrod",
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "Livestock Gas Capture/Combustion",
+      "registry": "CAR",
+      "projectsVrod": 72,
+      "creditsVrod": 3355971,
+      "projectsCad": 0,
+      "totalProjects": 72,
+      "source": [
+        "vrod"
+      ]
+    },
+    {
+      "name": "AMS-I.A.",
+      "registry": "CDM",
+      "projectsVrod": 3,
+      "creditsVrod": 34785,
+      "projectsCad": 66,
+      "totalProjects": 69,
+      "source": [
+        "vrod",
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "Certified Reclaimed HFC Refrigerants, Propellants, and Fire Suppressants",
+      "registry": "ACR",
+      "projectsVrod": 68,
+      "creditsVrod": 28587022,
+      "projectsCad": 0,
+      "totalProjects": 68,
+      "source": [
+        "vrod"
+      ]
+    },
+    {
+      "name": "AM0034",
+      "registry": "CDM",
+      "projectsVrod": 7,
+      "creditsVrod": 3104380,
+      "projectsCad": 58,
+      "totalProjects": 65,
+      "source": [
+        "vrod",
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "AMS-I.D.",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 65,
+      "totalProjects": 65,
+      "source": [
+        "cad-trust"
+      ],
+      "code": "AMS-I.D.; AMS-III.D."
+    },
+    {
+      "name": "ACM0003",
+      "registry": "CDM",
+      "projectsVrod": 8,
+      "creditsVrod": 888831,
+      "projectsCad": 56,
+      "totalProjects": 64,
+      "source": [
+        "vrod",
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "VM0033",
+      "registry": "Verra",
+      "projectsVrod": 45,
+      "creditsVrod": 11687485,
+      "projectsCad": 18,
+      "totalProjects": 63,
+      "source": [
+        "vrod",
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "VM0048",
+      "registry": "Verra",
+      "projectsVrod": 37,
+      "creditsVrod": 29960900,
+      "projectsCad": 26,
+      "totalProjects": 63,
+      "source": [
+        "vrod",
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "AMS-I.D.",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 61,
+      "totalProjects": 61,
+      "source": [
+        "cad-trust"
+      ],
+      "code": "AMS-I.D.; AMS-III.H."
+    },
+    {
+      "name": "AMS-III.C.",
+      "registry": "CDM",
+      "projectsVrod": 33,
+      "creditsVrod": 3524682,
+      "projectsCad": 26,
+      "totalProjects": 59,
+      "source": [
+        "vrod",
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "ACM0014",
+      "registry": "CDM",
+      "projectsVrod": 13,
+      "creditsVrod": 1368880,
+      "projectsCad": 46,
+      "totalProjects": 59,
+      "source": [
+        "vrod",
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "Advanced Refrigeration Systems",
+      "registry": "ACR",
+      "projectsVrod": 58,
+      "creditsVrod": 4827526,
+      "projectsCad": 0,
+      "totalProjects": 58,
+      "source": [
+        "vrod"
+      ]
+    },
+    {
+      "name": "VM0009",
+      "registry": "Verra",
+      "projectsVrod": 29,
+      "creditsVrod": 60095687,
+      "projectsCad": 26,
+      "totalProjects": 55,
+      "source": [
+        "vrod",
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "AMS-III.Q.",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 54,
+      "totalProjects": 54,
+      "source": [
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "Not provided",
+      "registry": "Gold Standard",
+      "projectsVrod": 53,
+      "creditsVrod": 2321875,
+      "projectsCad": 0,
+      "totalProjects": 53,
+      "source": [
+        "vrod"
+      ]
+    },
+    {
+      "name": "AMS-III.B.",
+      "registry": "CDM",
+      "projectsVrod": 6,
+      "creditsVrod": 92977,
+      "projectsCad": 47,
+      "totalProjects": 53,
+      "source": [
+        "vrod",
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "AMS-I.C.",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 53,
+      "totalProjects": 53,
+      "source": [
+        "cad-trust"
+      ],
+      "code": "AMS-I.C.; AMS-III.H."
+    },
+    {
+      "name": "VM0038",
+      "registry": "Verra",
+      "projectsVrod": 36,
+      "creditsVrod": 4569056,
+      "projectsCad": 16,
+      "totalProjects": 52,
+      "source": [
+        "vrod",
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "RIV-BICRS-GEN",
+      "registry": "Riverse",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 52,
+      "totalProjects": 52,
+      "source": [
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "AMS-I.A. Electricity generation by the user",
+      "registry": "CDM",
+      "projectsVrod": 51,
+      "creditsVrod": 9775467,
+      "projectsCad": 0,
+      "totalProjects": 51,
+      "source": [
+        "vrod"
+      ]
+    },
+    {
+      "name": "AMS-III.A.",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 51,
+      "totalProjects": 51,
+      "source": [
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "Methodology Under Development",
+      "registry": "Verra",
+      "projectsVrod": 21,
+      "creditsVrod": 6114587,
+      "projectsCad": 27,
+      "totalProjects": 48,
+      "source": [
+        "vrod",
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "AR-ACM0001",
+      "registry": "CDM",
+      "projectsVrod": 19,
+      "creditsVrod": 764839,
+      "projectsCad": 26,
+      "totalProjects": 45,
+      "source": [
+        "vrod",
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "AR-AMS0001",
+      "registry": "CDM",
+      "projectsVrod": 14,
+      "creditsVrod": 530694,
+      "projectsCad": 31,
+      "totalProjects": 45,
+      "source": [
+        "vrod",
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "AM0016",
+      "registry": "CDM",
+      "projectsVrod": 3,
+      "creditsVrod": 1319604,
+      "projectsCad": 40,
+      "totalProjects": 43,
+      "source": [
+        "vrod",
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "AMS-III.AO.",
+      "registry": "CDM",
+      "projectsVrod": 30,
+      "creditsVrod": 962872,
+      "projectsCad": 12,
+      "totalProjects": 42,
+      "source": [
+        "vrod",
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "ACM0002",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 42,
+      "totalProjects": 42,
+      "source": [
+        "cad-trust"
+      ],
+      "code": "ACM0002; ACM0006"
+    },
+    {
+      "name": "AMS-II.E.",
+      "registry": "CDM",
+      "projectsVrod": 5,
+      "creditsVrod": 43504,
+      "projectsCad": 36,
+      "totalProjects": 41,
+      "source": [
+        "vrod",
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "GS TPDDTEC v 2.",
+      "registry": "Gold Standard",
+      "projectsVrod": 40,
+      "creditsVrod": 2893032,
+      "projectsCad": 0,
+      "totalProjects": 40,
+      "source": [
+        "vrod"
+      ]
+    },
+    {
+      "name": "VM0041",
+      "registry": "Verra",
+      "projectsVrod": 28,
+      "creditsVrod": 16840853,
+      "projectsCad": 12,
+      "totalProjects": 40,
+      "source": [
+        "vrod",
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "VM0007",
+      "registry": "Verra",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 40,
+      "totalProjects": 40,
+      "source": [
+        "cad-trust"
+      ],
+      "code": "VCS-VM0007"
+    },
+    {
+      "name": "AMS-III.AV.",
+      "registry": "CDM",
+      "projectsVrod": 25,
+      "creditsVrod": 10684669,
+      "projectsCad": 14,
+      "totalProjects": 39,
+      "source": [
+        "vrod",
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "VM0006",
+      "registry": "Verra",
+      "projectsVrod": 19,
+      "creditsVrod": 11577638,
+      "projectsCad": 20,
+      "totalProjects": 39,
+      "source": [
+        "vrod",
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "AM0023",
+      "registry": "CDM",
+      "projectsVrod": 11,
+      "creditsVrod": 20965522,
+      "projectsCad": 27,
+      "totalProjects": 38,
+      "source": [
+        "vrod",
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "AM0009",
+      "registry": "CDM",
+      "projectsVrod": 5,
+      "creditsVrod": 1990981,
+      "projectsCad": 32,
+      "totalProjects": 37,
+      "source": [
+        "vrod",
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "BCR0002_Quantification of GHG Emission Reductions. REDD+ Projects",
+      "registry": "BCR",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 36,
+      "totalProjects": 36,
+      "source": [
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "AMS-I.I.",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 36,
+      "totalProjects": 36,
+      "source": [
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "ACM0002",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 36,
+      "totalProjects": 36,
+      "source": [
+        "cad-trust"
+      ],
+      "code": "ACM0002: Grid-connected electricity generation from renewable sources"
+    },
+    {
+      "name": "Avoided Grassland Conversion",
+      "registry": "CAR",
+      "projectsVrod": 35,
+      "creditsVrod": 449095,
+      "projectsCad": 0,
+      "totalProjects": 35,
+      "source": [
+        "vrod"
+      ]
+    },
+    {
+      "name": "AR-AM0014",
+      "registry": "CDM",
+      "projectsVrod": 17,
+      "creditsVrod": 1523461,
+      "projectsCad": 18,
+      "totalProjects": 35,
+      "source": [
+        "vrod",
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "ACM0002",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 34,
+      "totalProjects": 34,
+      "source": [
+        "cad-trust"
+      ],
+      "code": "ACM0002; ACM0004"
+    },
+    {
+      "name": "VM0003",
+      "registry": "Verra",
+      "projectsVrod": 19,
+      "creditsVrod": 3133046,
+      "projectsCad": 14,
+      "totalProjects": 33,
+      "source": [
+        "vrod",
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "RIV-ENGY-01-ADGAS",
+      "registry": "Riverse",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 33,
+      "totalProjects": 33,
+      "source": [
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "M/LU-REDD+: Methodology for the Implementation of REDD+ Projects Consistent with National Reference Levels",
+      "registry": "CCB",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 33,
+      "totalProjects": 33,
+      "source": [
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "Emissions Reductions through Anti-Idling Technologies",
+      "registry": "ACR",
+      "projectsVrod": 31,
+      "creditsVrod": 435118,
+      "projectsCad": 0,
+      "totalProjects": 31,
+      "source": [
+        "vrod"
+      ]
+    },
+    {
+      "name": "ACM0001 Flaring or use of landfill gas",
+      "registry": "CDM",
+      "projectsVrod": 31,
+      "creditsVrod": 5756714,
+      "projectsCad": 0,
+      "totalProjects": 31,
+      "source": [
+        "vrod"
+      ]
+    },
+    {
+      "name": "ACM0005",
+      "registry": "CDM",
+      "projectsVrod": 1,
+      "creditsVrod": 1328020,
+      "projectsCad": 30,
+      "totalProjects": 31,
+      "source": [
+        "vrod",
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "Mine Methane Capture - ARB Compliance",
+      "registry": "CAR",
+      "projectsVrod": 30,
+      "creditsVrod": 4918505,
+      "projectsCad": 0,
+      "totalProjects": 30,
+      "source": [
+        "vrod"
+      ]
+    },
+    {
+      "name": "Ozone Depleting Substances - U.S.",
+      "registry": "CAR",
+      "projectsVrod": 30,
+      "creditsVrod": 6465385,
+      "projectsCad": 0,
+      "totalProjects": 30,
+      "source": [
+        "vrod"
+      ]
+    },
+    {
+      "name": "AR-ACM0003",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 30,
+      "totalProjects": 30,
+      "source": [
+        "cad-trust"
+      ],
+      "code": "AR-ACM0003: Afforestation and reforestation of lands except wetlands"
+    },
+    {
+      "name": "AMS-I.C.",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 30,
+      "totalProjects": 30,
+      "source": [
+        "cad-trust"
+      ],
+      "code": "AMS-I.C.; AMS-III.R."
+    },
+    {
+      "name": "Destruction of Ozone Depleting Substances (ODS) from International Sources",
+      "registry": "ACR",
+      "projectsVrod": 29,
+      "creditsVrod": 2492102,
+      "projectsCad": 0,
+      "totalProjects": 29,
+      "source": [
+        "vrod"
+      ]
+    },
+    {
+      "name": "AMS-III.Y",
+      "registry": "CDM",
+      "projectsVrod": 16,
+      "creditsVrod": 317426,
+      "projectsCad": 13,
+      "totalProjects": 29,
+      "source": [
+        "vrod",
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "VM0012",
+      "registry": "Verra",
+      "projectsVrod": 17,
+      "creditsVrod": 1255207,
+      "projectsCad": 11,
+      "totalProjects": 28,
+      "source": [
+        "vrod",
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "AMS-III.Z",
+      "registry": "CDM",
+      "projectsVrod": 15,
+      "creditsVrod": 440747,
+      "projectsCad": 13,
+      "totalProjects": 28,
+      "source": [
+        "vrod",
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "ACM0019",
+      "registry": "CDM",
+      "projectsVrod": 2,
+      "creditsVrod": 362820,
+      "projectsCad": 26,
+      "totalProjects": 28,
+      "source": [
+        "vrod",
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "AMS-I.D.",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 28,
+      "totalProjects": 28,
+      "source": [
+        "cad-trust"
+      ],
+      "code": "AMS-I.D.; AMS-III.G."
+    },
+    {
+      "name": "AM0015",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 28,
+      "totalProjects": 28,
+      "source": [
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "ACM0016",
+      "registry": "CDM",
+      "projectsVrod": 6,
+      "creditsVrod": 314243,
+      "projectsCad": 21,
+      "totalProjects": 27,
+      "source": [
+        "vrod",
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "METHODOLOGY FOR IMPROVED COOK STOVES AND KITCHEN REGIMES",
+      "registry": "Gold Standard",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 27,
+      "totalProjects": 27,
+      "source": [
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "ACM0010 GHG emission reductions from manure management systems",
+      "registry": "CDM",
+      "projectsVrod": 26,
+      "creditsVrod": 7501272,
+      "projectsCad": 0,
+      "totalProjects": 26,
+      "source": [
+        "vrod"
+      ]
+    },
+    {
+      "name": "AMS-III.E.",
+      "registry": "CDM",
+      "projectsVrod": 13,
+      "creditsVrod": 561017,
+      "projectsCad": 13,
+      "totalProjects": 26,
+      "source": [
+        "vrod",
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "VM0050",
+      "registry": "Verra",
+      "projectsVrod": 24,
+      "creditsVrod": 28082014,
+      "projectsCad": 2,
+      "totalProjects": 26,
+      "source": [
+        "vrod",
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "ACM0001",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 26,
+      "totalProjects": 26,
+      "source": [
+        "cad-trust"
+      ],
+      "code": "VCS-ACM0001"
+    },
+    {
+      "name": "Improved Forest Management",
+      "registry": "CAR",
+      "projectsVrod": 25,
+      "creditsVrod": 11186609,
+      "projectsCad": 0,
+      "totalProjects": 25,
+      "source": [
+        "vrod"
+      ]
+    },
+    {
+      "name": "AMS-I.F. Renewable electricity generation for captive use and mini-grid",
+      "registry": "CDM",
+      "projectsVrod": 25,
+      "creditsVrod": 461263,
+      "projectsCad": 0,
+      "totalProjects": 25,
+      "source": [
+        "vrod"
+      ]
+    },
+    {
+      "name": "AMS-I.B.",
+      "registry": "CDM",
+      "projectsVrod": 7,
+      "creditsVrod": 535222,
+      "projectsCad": 18,
+      "totalProjects": 25,
+      "source": [
+        "vrod",
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "AM0028",
+      "registry": "CDM",
+      "projectsVrod": 4,
+      "creditsVrod": 2125164,
+      "projectsCad": 21,
+      "totalProjects": 25,
+      "source": [
+        "vrod",
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "AM0001",
+      "registry": "CDM",
+      "projectsVrod": 2,
+      "creditsVrod": 10334763,
+      "projectsCad": 22,
+      "totalProjects": 24,
+      "source": [
+        "vrod",
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "ACM0001",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 24,
+      "totalProjects": 24,
+      "source": [
+        "cad-trust"
+      ],
+      "code": "ACM0001; AMS-I.D."
+    },
+    {
+      "name": "Plugging Orphan Oil and Gas Wells in the U.S. and Canada",
+      "registry": "ACR",
+      "projectsVrod": 23,
+      "creditsVrod": 4898183,
+      "projectsCad": 0,
+      "totalProjects": 23,
+      "source": [
+        "vrod"
+      ]
+    },
+    {
+      "name": "VM0025",
+      "registry": "Verra",
+      "projectsVrod": 12,
+      "creditsVrod": 78151,
+      "projectsCad": 11,
+      "totalProjects": 23,
+      "source": [
+        "vrod",
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "VM0034",
+      "registry": "Verra",
+      "projectsVrod": 12,
+      "creditsVrod": 771107,
+      "projectsCad": 10,
+      "totalProjects": 22,
+      "source": [
+        "vrod",
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "AMS-I.F.",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 22,
+      "totalProjects": 22,
+      "source": [
+        "cad-trust"
+      ],
+      "code": "VCS-AMS-I.F."
+    },
+    {
+      "name": "RIV-BIOBM-01-CONST",
+      "registry": "Riverse",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 22,
+      "totalProjects": 22,
+      "source": [
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "VM0032",
+      "registry": "Verra",
+      "projectsVrod": 16,
+      "creditsVrod": 8067446,
+      "projectsCad": 5,
+      "totalProjects": 21,
+      "source": [
+        "vrod",
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "VMR0007",
+      "registry": "Verra",
+      "projectsVrod": 11,
+      "creditsVrod": 468219,
+      "projectsCad": 10,
+      "totalProjects": 21,
+      "source": [
+        "vrod",
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "AMS-I.L.",
+      "registry": "CDM",
+      "projectsVrod": 8,
+      "creditsVrod": 192660,
+      "projectsCad": 13,
+      "totalProjects": 21,
+      "source": [
+        "vrod",
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "AM0072",
+      "registry": "CDM",
+      "projectsVrod": 7,
+      "creditsVrod": 1167803,
+      "projectsCad": 14,
+      "totalProjects": 21,
+      "source": [
+        "vrod",
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "VMR0006",
+      "registry": "Verra",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 21,
+      "totalProjects": 21,
+      "source": [
+        "cad-trust"
+      ],
+      "code": "VCS-VMR0006"
+    },
+    {
+      "name": "AMS-I.D.",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 21,
+      "totalProjects": 21,
+      "source": [
+        "cad-trust"
+      ],
+      "code": "AMS-I.D.; AMS-III.E."
+    },
+    {
+      "name": "Destruction of Ozone Depleting Substances (ODS) and High-Global Warming Potential (GWP) Foam",
+      "registry": "ACR",
+      "projectsVrod": 20,
+      "creditsVrod": 1073620,
+      "projectsCad": 0,
+      "totalProjects": 20,
+      "source": [
+        "vrod"
+      ]
+    },
+    {
+      "name": "ARB Compliance Offset Protocol: Capturing and Destroying Methane from Manure Management Systems",
+      "registry": "ACR",
+      "projectsVrod": 20,
+      "creditsVrod": 1852103,
+      "projectsCad": 0,
+      "totalProjects": 20,
+      "source": [
+        "vrod"
+      ]
+    },
+    {
+      "name": "Methodology for animal waste management and biogas application",
+      "registry": "Gold Standard",
+      "projectsVrod": 9,
+      "creditsVrod": 1150078,
+      "projectsCad": 11,
+      "totalProjects": 20,
+      "source": [
+        "vrod",
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "VM0044",
+      "registry": "Verra",
+      "projectsVrod": 12,
+      "creditsVrod": 422631,
+      "projectsCad": 8,
+      "totalProjects": 20,
+      "source": [
+        "vrod",
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "VM0043",
+      "registry": "Verra",
+      "projectsVrod": 12,
+      "creditsVrod": 1483800,
+      "projectsCad": 8,
+      "totalProjects": 20,
+      "source": [
+        "vrod",
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "ACM0007",
+      "registry": "CDM",
+      "projectsVrod": 1,
+      "creditsVrod": 345758,
+      "projectsCad": 19,
+      "totalProjects": 20,
+      "source": [
+        "vrod",
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "AM0024",
+      "registry": "CDM",
+      "projectsVrod": 1,
+      "creditsVrod": 52138,
+      "projectsCad": 19,
+      "totalProjects": 20,
+      "source": [
+        "vrod",
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "AMS-III.R.",
+      "registry": "CDM",
+      "projectsVrod": 9,
+      "creditsVrod": 375471,
+      "projectsCad": 10,
+      "totalProjects": 19,
+      "source": [
+        "vrod",
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "VM0033",
+      "registry": "Verra",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 19,
+      "totalProjects": 19,
+      "source": [
+        "cad-trust"
+      ],
+      "code": "VCS-VM0033"
+    },
+    {
+      "name": "ACM0022",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 19,
+      "totalProjects": 19,
+      "source": [
+        "cad-trust"
+      ],
+      "code": "VCS-ACM0022"
+    },
+    {
+      "name": "BCR0001_ARR Activities",
+      "registry": "BCR",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 19,
+      "totalProjects": 19,
+      "source": [
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "RIV-ERW",
+      "registry": "Riverse",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 19,
+      "totalProjects": 19,
+      "source": [
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "AR-ACM0003",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 19,
+      "totalProjects": 19,
+      "source": [
+        "cad-trust"
+      ],
+      "code": "VCS-AR-ACM0003"
+    },
+    {
+      "name": "AMS-I.F.",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 19,
+      "totalProjects": 19,
+      "source": [
+        "cad-trust"
+      ],
+      "code": "AMS-I.F.; AMS-III.H."
+    },
+    {
+      "name": "AMS-III.AR. Substituting fossil fuel based lighting with LED lighting systems",
+      "registry": "CDM",
+      "projectsVrod": 18,
+      "creditsVrod": 679350,
+      "projectsCad": 0,
+      "totalProjects": 18,
+      "source": [
+        "vrod"
+      ]
+    },
+    {
+      "name": "AMS-I.D.",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 18,
+      "totalProjects": 18,
+      "source": [
+        "cad-trust"
+      ],
+      "code": "VCS-AMS-I.D."
+    },
+    {
+      "name": "ACM0008",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 18,
+      "totalProjects": 18,
+      "source": [
+        "cad-trust"
+      ],
+      "code": "VCS-ACM0008"
+    },
+    {
+      "name": "Methane Emission Reduction By Adjusted Water Management Practice In Rice Cultivation",
+      "registry": "Gold Standard",
+      "projectsVrod": 14,
+      "creditsVrod": 2888078,
+      "projectsCad": 3,
+      "totalProjects": 17,
+      "source": [
+        "vrod",
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "AMS-I.I. Biogas/biomass thermal applications for households/small users",
+      "registry": "CDM",
+      "projectsVrod": 17,
+      "creditsVrod": 999802,
+      "projectsCad": 0,
+      "totalProjects": 17,
+      "source": [
+        "vrod"
+      ]
+    },
+    {
+      "name": "AMS-III.Q",
+      "registry": "CDM",
+      "projectsVrod": 10,
+      "creditsVrod": 222309,
+      "projectsCad": 7,
+      "totalProjects": 17,
+      "source": [
+        "vrod",
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "AM0026",
+      "registry": "CDM",
+      "projectsVrod": 5,
+      "creditsVrod": 366180,
+      "projectsCad": 12,
+      "totalProjects": 17,
+      "source": [
+        "vrod",
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "AMS-III.AJ.",
+      "registry": "CDM",
+      "projectsVrod": 14,
+      "creditsVrod": 614134,
+      "projectsCad": 2,
+      "totalProjects": 16,
+      "source": [
+        "vrod",
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "AM0036",
+      "registry": "CDM",
+      "projectsVrod": 2,
+      "creditsVrod": 164836,
+      "projectsCad": 14,
+      "totalProjects": 16,
+      "source": [
+        "vrod",
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "ACM0010",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 16,
+      "totalProjects": 16,
+      "source": [
+        "cad-trust"
+      ],
+      "code": "VCS-ACM0010"
+    },
+    {
+      "name": "RIV-GENERAL",
+      "registry": "Riverse",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 16,
+      "totalProjects": 16,
+      "source": [
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "AMS-III.Z.",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 16,
+      "totalProjects": 16,
+      "source": [
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "AMS-I.D.",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 16,
+      "totalProjects": 16,
+      "source": [
+        "cad-trust"
+      ],
+      "code": "AMS-I.D.: Grid connected renewable electricity generation"
+    },
+    {
+      "name": "AMS-III.AQ",
+      "registry": "CDM",
+      "projectsVrod": 12,
+      "creditsVrod": 527996,
+      "projectsCad": 3,
+      "totalProjects": 15,
+      "source": [
+        "vrod",
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "VM0008",
+      "registry": "Verra",
+      "projectsVrod": 9,
+      "creditsVrod": 1294467,
+      "projectsCad": 6,
+      "totalProjects": 15,
+      "source": [
+        "vrod",
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "AMS-III.D.",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 15,
+      "totalProjects": 15,
+      "source": [
+        "cad-trust"
+      ],
+      "code": "VCS-AMS-III.D."
+    },
+    {
+      "name": "FCPF",
+      "registry": "CATS",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 15,
+      "totalProjects": 15,
+      "source": [
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "AMS-I.C.",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 15,
+      "totalProjects": 15,
+      "source": [
+        "cad-trust"
+      ],
+      "code": "AMS-I.C.; AMS-I.D.; AMS-III.H."
+    },
+    {
+      "name": "ACM0001",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 15,
+      "totalProjects": 15,
+      "source": [
+        "cad-trust"
+      ],
+      "code": "ACM0001; ACM0002"
+    },
+    {
+      "name": "AMS-III.AR",
+      "registry": "CDM",
+      "projectsVrod": 8,
+      "creditsVrod": 477253,
+      "projectsCad": 6,
+      "totalProjects": 14,
+      "source": [
+        "vrod",
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "AM0080",
+      "registry": "CDM",
+      "projectsVrod": 7,
+      "creditsVrod": 510837,
+      "projectsCad": 7,
+      "totalProjects": 14,
+      "source": [
+        "vrod",
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "VM0037",
+      "registry": "Verra",
+      "projectsVrod": 7,
+      "creditsVrod": 1267370,
+      "projectsCad": 7,
+      "totalProjects": 14,
+      "source": [
+        "vrod",
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "AM0031",
+      "registry": "CDM",
+      "projectsVrod": 2,
+      "creditsVrod": 108659,
+      "projectsCad": 12,
+      "totalProjects": 14,
+      "source": [
+        "vrod",
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "AMS-III.C.",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 14,
+      "totalProjects": 14,
+      "source": [
+        "cad-trust"
+      ],
+      "code": "VCS-AMS-III.C."
+    },
+    {
+      "name": "VM0010",
+      "registry": "Verra",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 14,
+      "totalProjects": 14,
+      "source": [
+        "cad-trust"
+      ],
+      "code": "VCS-VM0010"
+    },
+    {
+      "name": "ACM0002",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 14,
+      "totalProjects": 14,
+      "source": [
+        "cad-trust"
+      ],
+      "code": "VCS-ACM0002"
+    },
+    {
+      "name": "RIV-REC-01-ELEC",
+      "registry": "Riverse",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 14,
+      "totalProjects": 14,
+      "source": [
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "AMS-I.A.",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 14,
+      "totalProjects": 14,
+      "source": [
+        "cad-trust"
+      ],
+      "code": "AMS-I.A.; AMS-III.H."
+    },
+    {
+      "name": "AM0022",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 14,
+      "totalProjects": 14,
+      "source": [
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "ECY Compliance Offset Protocol: Ozone Depleting Substances Projects",
+      "registry": "ACR",
+      "projectsVrod": 13,
+      "creditsVrod": 729867,
+      "projectsCad": 0,
+      "totalProjects": 13,
+      "source": [
+        "vrod"
+      ]
+    },
+    {
+      "name": "Reforestation - ARB Compliance",
+      "registry": "CAR",
+      "projectsVrod": 13,
+      "creditsVrod": 0,
+      "projectsCad": 0,
+      "totalProjects": 13,
+      "source": [
+        "vrod"
+      ]
+    },
+    {
+      "name": "AMS-I.B. Mechanical energy for the user with or without electrical energy",
+      "registry": "CDM",
+      "projectsVrod": 13,
+      "creditsVrod": 173092,
+      "projectsCad": 0,
+      "totalProjects": 13,
+      "source": [
+        "vrod"
+      ]
+    },
+    {
+      "name": "GS Methodology for Improved Cook stoves and Kitchen Regimes v2.",
+      "registry": "Gold Standard",
+      "projectsVrod": 13,
+      "creditsVrod": 3170450,
+      "projectsCad": 0,
+      "totalProjects": 13,
+      "source": [
+        "vrod"
+      ]
+    },
+    {
+      "name": "GS Alternative Ignition Coal Fires v1.",
+      "registry": "Gold Standard",
+      "projectsVrod": 13,
+      "creditsVrod": 56000,
+      "projectsCad": 0,
+      "totalProjects": 13,
+      "source": [
+        "vrod"
+      ]
+    },
+    {
+      "name": "AMS-II.B.",
+      "registry": "CDM",
+      "projectsVrod": 1,
+      "creditsVrod": 63138,
+      "projectsCad": 12,
+      "totalProjects": 13,
+      "source": [
+        "vrod",
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "VM0041",
+      "registry": "Verra",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 13,
+      "totalProjects": 13,
+      "source": [
+        "cad-trust"
+      ],
+      "code": "VCS-VM0041"
+    },
+    {
+      "name": "VM0015",
+      "registry": "Verra",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 13,
+      "totalProjects": 13,
+      "source": [
+        "cad-trust"
+      ],
+      "code": "VCS-VM0015"
+    },
+    {
+      "name": "ALTERNATIVE IGNITION COAL FIRES",
+      "registry": "Gold Standard",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 13,
+      "totalProjects": 13,
+      "source": [
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "Landfill Gas Destruction and Beneficial Use Projects",
+      "registry": "ACR",
+      "projectsVrod": 12,
+      "creditsVrod": 1017040,
+      "projectsCad": 0,
+      "totalProjects": 12,
+      "source": [
+        "vrod"
+      ]
+    },
+    {
+      "name": "AMS-III.AV. Low greenhouse gas emitting water purification systems",
+      "registry": "CDM",
+      "projectsVrod": 12,
+      "creditsVrod": 605008,
+      "projectsCad": 0,
+      "totalProjects": 12,
+      "source": [
+        "vrod"
+      ]
+    },
+    {
+      "name": "ACM0017",
+      "registry": "CDM",
+      "projectsVrod": 6,
+      "creditsVrod": 1220558,
+      "projectsCad": 6,
+      "totalProjects": 12,
+      "source": [
+        "vrod",
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "AR-AM0003",
+      "registry": "CDM",
+      "projectsVrod": 4,
+      "creditsVrod": 141881,
+      "projectsCad": 8,
+      "totalProjects": 12,
+      "source": [
+        "vrod",
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "VM0005",
+      "registry": "Verra",
+      "projectsVrod": 6,
+      "creditsVrod": 806295,
+      "projectsCad": 6,
+      "totalProjects": 12,
+      "source": [
+        "vrod",
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "ACM0009",
+      "registry": "CDM",
+      "projectsVrod": 2,
+      "creditsVrod": 86930,
+      "projectsCad": 10,
+      "totalProjects": 12,
+      "source": [
+        "vrod",
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "ACM0013",
+      "registry": "CDM",
+      "projectsVrod": 1,
+      "creditsVrod": 20271,
+      "projectsCad": 11,
+      "totalProjects": 12,
+      "source": [
+        "vrod",
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "VM0032",
+      "registry": "Verra",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 12,
+      "totalProjects": 12,
+      "source": [
+        "cad-trust"
+      ],
+      "code": "VCS-VM0032"
+    },
+    {
+      "name": "VM0038",
+      "registry": "Verra",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 12,
+      "totalProjects": 12,
+      "source": [
+        "cad-trust"
+      ],
+      "code": "VCS-VM0038"
+    },
+    {
+      "name": "AMS-III.AU",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 12,
+      "totalProjects": 12,
+      "source": [
+        "cad-trust"
+      ],
+      "code": "VCS-AMS-III.AU"
+    },
+    {
+      "name": "AMS-I.C.",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 12,
+      "totalProjects": 12,
+      "source": [
+        "cad-trust"
+      ],
+      "code": "AMS-I.C.; AMS-III.E."
+    },
+    {
+      "name": "ACM0002",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 12,
+      "totalProjects": 12,
+      "source": [
+        "cad-trust"
+      ],
+      "code": "ACM0002; AMS-I.D."
+    },
+    {
+      "name": "Monitoring, Reporting and Verification Protocol for Landfill Gas Combustion",
+      "registry": "ACR",
+      "projectsVrod": 11,
+      "creditsVrod": 3671535,
+      "projectsCad": 0,
+      "totalProjects": 11,
+      "source": [
+        "vrod"
+      ]
+    },
+    {
+      "name": "AMS-III.F. Avoidance of methane emissions through controlled biological treatment of biomass",
+      "registry": "CDM",
+      "projectsVrod": 11,
+      "creditsVrod": 123480,
+      "projectsCad": 0,
+      "totalProjects": 11,
+      "source": [
+        "vrod"
+      ]
+    },
+    {
+      "name": "AMS-II.E. Energy efficiency and fuel switching measures for buildings",
+      "registry": "CDM",
+      "projectsVrod": 11,
+      "creditsVrod": 327403,
+      "projectsCad": 0,
+      "totalProjects": 11,
+      "source": [
+        "vrod"
+      ]
+    },
+    {
+      "name": "VM0016",
+      "registry": "Verra",
+      "projectsVrod": 7,
+      "creditsVrod": 425315,
+      "projectsCad": 4,
+      "totalProjects": 11,
+      "source": [
+        "vrod",
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "AMS-III.I.",
+      "registry": "CDM",
+      "projectsVrod": 3,
+      "creditsVrod": 116881,
+      "projectsCad": 8,
+      "totalProjects": 11,
+      "source": [
+        "vrod",
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "ACM0011",
+      "registry": "CDM",
+      "projectsVrod": 4,
+      "creditsVrod": 646293,
+      "projectsCad": 7,
+      "totalProjects": 11,
+      "source": [
+        "vrod",
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "AMS-III.AV.",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 11,
+      "totalProjects": 11,
+      "source": [
+        "cad-trust"
+      ],
+      "code": "VCS-AMS-III.AV."
+    },
+    {
+      "name": "BASELINE AND MONITORING METHODOLOGY BIODIGESTER",
+      "registry": "Gold Standard",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 11,
+      "totalProjects": 11,
+      "source": [
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "AM0058",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 11,
+      "totalProjects": 11,
+      "source": [
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "AMS-II.G.",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 11,
+      "totalProjects": 11,
+      "source": [
+        "cad-trust"
+      ],
+      "code": "VCS-AMS-II.G."
+    },
+    {
+      "name": "AMS-I.D V.18",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 11,
+      "totalProjects": 11,
+      "source": [
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "AM0107",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 11,
+      "totalProjects": 11,
+      "source": [
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "ACM0002",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 11,
+      "totalProjects": 11,
+      "source": [
+        "cad-trust"
+      ],
+      "code": "ACM0002; ACM0008"
+    },
+    {
+      "name": "AM0006",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 11,
+      "totalProjects": 11,
+      "source": [
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "GS Water Access and WASH Methodology v1.",
+      "registry": "Gold Standard",
+      "projectsVrod": 10,
+      "creditsVrod": 1038403,
+      "projectsCad": 0,
+      "totalProjects": 10,
+      "source": [
+        "vrod"
+      ]
+    },
+    {
+      "name": "ACM0012 Waste energy recovery",
+      "registry": "CDM",
+      "projectsVrod": 10,
+      "creditsVrod": 1119083,
+      "projectsCad": 0,
+      "totalProjects": 10,
+      "source": [
+        "vrod"
+      ]
+    },
+    {
+      "name": "GS Methodology for Improved Cook stoves and Kitchen Regimes v1.",
+      "registry": "Gold Standard",
+      "projectsVrod": 10,
+      "creditsVrod": 291297,
+      "projectsCad": 0,
+      "totalProjects": 10,
+      "source": [
+        "vrod"
+      ]
+    },
+    {
+      "name": "GS Baseline and Monitoring Methodology Biodigester v1.",
+      "registry": "Gold Standard",
+      "projectsVrod": 10,
+      "creditsVrod": 383283,
+      "projectsCad": 0,
+      "totalProjects": 10,
+      "source": [
+        "vrod"
+      ]
+    },
+    {
+      "name": "AM0014",
+      "registry": "CDM",
+      "projectsVrod": 2,
+      "creditsVrod": 498947,
+      "projectsCad": 8,
+      "totalProjects": 10,
+      "source": [
+        "vrod",
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "ACM0003",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 10,
+      "totalProjects": 10,
+      "source": [
+        "cad-trust"
+      ],
+      "code": "VCS-ACM0003"
+    },
+    {
+      "name": "METHODOLOGY FOR RETROFIT ENERGY EFFICIENCY MEASURES IN SHIPPING",
+      "registry": "Gold Standard",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 10,
+      "totalProjects": 10,
+      "source": [
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "VM0026",
+      "registry": "Verra",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 10,
+      "totalProjects": 10,
+      "source": [
+        "cad-trust"
+      ],
+      "code": "VCS-VM0026"
+    },
+    {
+      "name": "M/UT/F-A01: Methodology To Implement GHG Removal Projects Through Reforestation, Forest Restoration and the Establishment of Woody Crops",
+      "registry": "CCB",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 10,
+      "totalProjects": 10,
+      "source": [
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "AM0018",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 10,
+      "totalProjects": 10,
+      "source": [
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "Improved Forest Management (IFM) on Canadian Forestlands",
+      "registry": "ACR",
+      "projectsVrod": 9,
+      "creditsVrod": 883705,
+      "projectsCad": 0,
+      "totalProjects": 9,
+      "source": [
+        "vrod"
+      ]
+    },
+    {
+      "name": "The Gold Standard Simplified Methodology for Clean and Efficient Cookstoves, Version 3.0",
+      "registry": "Gold Standard",
+      "projectsVrod": 9,
+      "creditsVrod": 80344,
+      "projectsCad": 0,
+      "totalProjects": 9,
+      "source": [
+        "vrod"
+      ]
+    },
+    {
+      "name": "ACM0022 Alternative waste treatment processes",
+      "registry": "CDM",
+      "projectsVrod": 9,
+      "creditsVrod": 1970551,
+      "projectsCad": 0,
+      "totalProjects": 9,
+      "source": [
+        "vrod"
+      ]
+    },
+    {
+      "name": "VM0045",
+      "registry": "Verra",
+      "projectsVrod": 5,
+      "creditsVrod": 2738474,
+      "projectsCad": 4,
+      "totalProjects": 9,
+      "source": [
+        "vrod",
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "AR-AM0005",
+      "registry": "CDM",
+      "projectsVrod": 2,
+      "creditsVrod": 105000,
+      "projectsCad": 7,
+      "totalProjects": 9,
+      "source": [
+        "vrod",
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "AMS-III.AS.",
+      "registry": "CDM",
+      "projectsVrod": 2,
+      "creditsVrod": 83356,
+      "projectsCad": 7,
+      "totalProjects": 9,
+      "source": [
+        "vrod",
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "AMS-III.AO.",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 9,
+      "totalProjects": 9,
+      "source": [
+        "cad-trust"
+      ],
+      "code": "VCS-AMS-III.AO."
+    },
+    {
+      "name": "AM0008",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 9,
+      "totalProjects": 9,
+      "source": [
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "Avoided Conversion",
+      "registry": "CAR",
+      "projectsVrod": 8,
+      "creditsVrod": 1789606,
+      "projectsCad": 0,
+      "totalProjects": 8,
+      "source": [
+        "vrod"
+      ]
+    },
+    {
+      "name": "Biochar",
+      "registry": "CAR",
+      "projectsVrod": 8,
+      "creditsVrod": 0,
+      "projectsCad": 0,
+      "totalProjects": 8,
+      "source": [
+        "vrod"
+      ]
+    },
+    {
+      "name": "Low Carbon Cement",
+      "registry": "CAR",
+      "projectsVrod": 8,
+      "creditsVrod": 387900,
+      "projectsCad": 0,
+      "totalProjects": 8,
+      "source": [
+        "vrod"
+      ]
+    },
+    {
+      "name": "Organic Waste Composting",
+      "registry": "CAR",
+      "projectsVrod": 8,
+      "creditsVrod": 957645,
+      "projectsCad": 0,
+      "totalProjects": 8,
+      "source": [
+        "vrod"
+      ]
+    },
+    {
+      "name": "GS Retrofit Energy Efficiency Measures in Shipping v2",
+      "registry": "Gold Standard",
+      "projectsVrod": 8,
+      "creditsVrod": 293533,
+      "projectsCad": 0,
+      "totalProjects": 8,
+      "source": [
+        "vrod"
+      ]
+    },
+    {
+      "name": "AMS-II.F.",
+      "registry": "CDM",
+      "projectsVrod": 3,
+      "creditsVrod": 56268,
+      "projectsCad": 5,
+      "totalProjects": 8,
+      "source": [
+        "vrod",
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "AM0010",
+      "registry": "CDM",
+      "projectsVrod": 3,
+      "creditsVrod": 785589,
+      "projectsCad": 5,
+      "totalProjects": 8,
+      "source": [
+        "vrod",
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "AMS-III.G.",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 8,
+      "totalProjects": 8,
+      "source": [
+        "cad-trust"
+      ],
+      "code": "VCS-AMS-III.G."
+    },
+    {
+      "name": "RIV-ENGY-02-PYGAS",
+      "registry": "Riverse",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 8,
+      "totalProjects": 8,
+      "source": [
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "ACM0001",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 8,
+      "totalProjects": 8,
+      "source": [
+        "cad-trust"
+      ],
+      "code": "ACM0001: Flaring or use of landfill gas"
+    },
+    {
+      "name": "AR-AM0004",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 8,
+      "totalProjects": 8,
+      "source": [
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "ACM0002",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 8,
+      "totalProjects": 8,
+      "source": [
+        "cad-trust"
+      ],
+      "code": "ACM0002; AM0029"
+    },
+    {
+      "name": "ACM0002",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 8,
+      "totalProjects": 8,
+      "source": [
+        "cad-trust"
+      ],
+      "code": "ACM0002; AMS-I.D.; AMS-II.E."
+    },
+    {
+      "name": "Canada Grassland",
+      "registry": "CAR",
+      "projectsVrod": 7,
+      "creditsVrod": 0,
+      "projectsCad": 0,
+      "totalProjects": 7,
+      "source": [
+        "vrod"
+      ]
+    },
+    {
+      "name": "Nitric Acid N2O- Secondary Catalyst",
+      "registry": "CAR",
+      "projectsVrod": 7,
+      "creditsVrod": 18665489,
+      "projectsCad": 0,
+      "totalProjects": 7,
+      "source": [
+        "vrod"
+      ]
+    },
+    {
+      "name": "ACM0014 Treatment of wastewater",
+      "registry": "CDM",
+      "projectsVrod": 7,
+      "creditsVrod": 574410,
+      "projectsCad": 0,
+      "totalProjects": 7,
+      "source": [
+        "vrod"
+      ]
+    },
+    {
+      "name": "AMS-I.L. Electrification of rural communities using renewable energy",
+      "registry": "CDM",
+      "projectsVrod": 7,
+      "creditsVrod": 85077,
+      "projectsCad": 0,
+      "totalProjects": 7,
+      "source": [
+        "vrod"
+      ]
+    },
+    {
+      "name": "AMS-III.BM",
+      "registry": "CDM",
+      "projectsVrod": 4,
+      "creditsVrod": 27533,
+      "projectsCad": 3,
+      "totalProjects": 7,
+      "source": [
+        "vrod",
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "AM0065",
+      "registry": "CDM",
+      "projectsVrod": 2,
+      "creditsVrod": 309726,
+      "projectsCad": 5,
+      "totalProjects": 7,
+      "source": [
+        "vrod",
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "AMS-III.S.",
+      "registry": "CDM",
+      "projectsVrod": 2,
+      "creditsVrod": 24983,
+      "projectsCad": 5,
+      "totalProjects": 7,
+      "source": [
+        "vrod",
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "AMS-III.F.",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 7,
+      "totalProjects": 7,
+      "source": [
+        "cad-trust"
+      ],
+      "code": "VCS-AMS-III.F."
+    },
+    {
+      "name": "AM0028",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 7,
+      "totalProjects": 7,
+      "source": [
+        "cad-trust"
+      ],
+      "code": "AM0028; AM0034"
+    },
+    {
+      "name": "AM0039",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 7,
+      "totalProjects": 7,
+      "source": [
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "AM0013",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 7,
+      "totalProjects": 7,
+      "source": [
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "Improved Forest Management (IFM) on Small Non-Industrial Private Forestlands",
+      "registry": "ACR",
+      "projectsVrod": 6,
+      "creditsVrod": 0,
+      "projectsCad": 0,
+      "totalProjects": 6,
+      "source": [
+        "vrod"
+      ]
+    },
+    {
+      "name": "Ozone Depleting Substances - U.S. - WA ECO Compliance",
+      "registry": "CAR",
+      "projectsVrod": 6,
+      "creditsVrod": 544970,
+      "projectsCad": 0,
+      "totalProjects": 6,
+      "source": [
+        "vrod"
+      ]
+    },
+    {
+      "name": "AM0072 Fossil Fuel Displacement by Geothermal Resources for Space Heating",
+      "registry": "CDM",
+      "projectsVrod": 6,
+      "creditsVrod": 1344233,
+      "projectsCad": 0,
+      "totalProjects": 6,
+      "source": [
+        "vrod"
+      ]
+    },
+    {
+      "name": "ACM0006 Electricity and heat generation from biomass residues",
+      "registry": "CDM",
+      "projectsVrod": 6,
+      "creditsVrod": 487627,
+      "projectsCad": 0,
+      "totalProjects": 6,
+      "source": [
+        "vrod"
+      ]
+    },
+    {
+      "name": "AMS-III.C. Emission reductions by electric and hybrid vehicles",
+      "registry": "CDM",
+      "projectsVrod": 6,
+      "creditsVrod": 196546,
+      "projectsCad": 0,
+      "totalProjects": 6,
+      "source": [
+        "vrod"
+      ]
+    },
+    {
+      "name": "AMS-III.AJ. Recovery and recycling of materials from solid wastes",
+      "registry": "CDM",
+      "projectsVrod": 6,
+      "creditsVrod": 131585,
+      "projectsCad": 0,
+      "totalProjects": 6,
+      "source": [
+        "vrod"
+      ]
+    },
+    {
+      "name": "VMR0014",
+      "registry": "Verra",
+      "projectsVrod": 6,
+      "creditsVrod": 1153038,
+      "projectsCad": 0,
+      "totalProjects": 6,
+      "source": [
+        "vrod"
+      ]
+    },
+    {
+      "name": "VMR0008",
+      "registry": "Verra",
+      "projectsVrod": 6,
+      "creditsVrod": 252886,
+      "projectsCad": 0,
+      "totalProjects": 6,
+      "source": [
+        "vrod"
+      ]
+    },
+    {
+      "name": "VM0036",
+      "registry": "Verra",
+      "projectsVrod": 4,
+      "creditsVrod": 17785,
+      "projectsCad": 2,
+      "totalProjects": 6,
+      "source": [
+        "vrod",
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "VM0046",
+      "registry": "Verra",
+      "projectsVrod": 3,
+      "creditsVrod": 1452400,
+      "projectsCad": 3,
+      "totalProjects": 6,
+      "source": [
+        "vrod",
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "VM0021",
+      "registry": "Verra",
+      "projectsVrod": 3,
+      "creditsVrod": 137509915,
+      "projectsCad": 3,
+      "totalProjects": 6,
+      "source": [
+        "vrod",
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "VM0018",
+      "registry": "Verra",
+      "projectsVrod": 3,
+      "creditsVrod": 10453812,
+      "projectsCad": 3,
+      "totalProjects": 6,
+      "source": [
+        "vrod",
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "AM0030",
+      "registry": "CDM",
+      "projectsVrod": 1,
+      "creditsVrod": 78041,
+      "projectsCad": 5,
+      "totalProjects": 6,
+      "source": [
+        "vrod",
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "AM0059",
+      "registry": "CDM",
+      "projectsVrod": 1,
+      "creditsVrod": 127319,
+      "projectsCad": 5,
+      "totalProjects": 6,
+      "source": [
+        "vrod",
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "VMR0002",
+      "registry": "Verra",
+      "projectsVrod": 3,
+      "creditsVrod": 280728,
+      "projectsCad": 3,
+      "totalProjects": 6,
+      "source": [
+        "vrod",
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "AMS-I.D",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 6,
+      "totalProjects": 6,
+      "source": [
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "AM0048",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 6,
+      "totalProjects": 6,
+      "source": [
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "AMS-III.P.",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 6,
+      "totalProjects": 6,
+      "source": [
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "AM0055",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 6,
+      "totalProjects": 6,
+      "source": [
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "AM0011",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 6,
+      "totalProjects": 6,
+      "source": [
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "Capturing and Destroying Methane from Coal and Trona Mines in North America",
+      "registry": "ACR",
+      "projectsVrod": 5,
+      "creditsVrod": 5016,
+      "projectsCad": 0,
+      "totalProjects": 5,
+      "source": [
+        "vrod"
+      ]
+    },
+    {
+      "name": "Emission Reductions from Enhanced Oil Recovery",
+      "registry": "ACR",
+      "projectsVrod": 5,
+      "creditsVrod": 21780080,
+      "projectsCad": 0,
+      "totalProjects": 5,
+      "source": [
+        "vrod"
+      ]
+    },
+    {
+      "name": "Soil Enrichment",
+      "registry": "CAR",
+      "projectsVrod": 5,
+      "creditsVrod": 998939,
+      "projectsCad": 0,
+      "totalProjects": 5,
+      "source": [
+        "vrod"
+      ]
+    },
+    {
+      "name": "Conservation-Based Forest Management",
+      "registry": "CAR",
+      "projectsVrod": 5,
+      "creditsVrod": 5494187,
+      "projectsCad": 0,
+      "totalProjects": 5,
+      "source": [
+        "vrod"
+      ]
+    },
+    {
+      "name": "Ozone Depleting Substances - Article 5 Imports",
+      "registry": "CAR",
+      "projectsVrod": 5,
+      "creditsVrod": 4009926,
+      "projectsCad": 0,
+      "totalProjects": 5,
+      "source": [
+        "vrod"
+      ]
+    },
+    {
+      "name": "Adipic Acid",
+      "registry": "CAR",
+      "projectsVrod": 5,
+      "creditsVrod": 21180502,
+      "projectsCad": 0,
+      "totalProjects": 5,
+      "source": [
+        "vrod"
+      ]
+    },
+    {
+      "name": "AMS-III.D. Methane recovery in animal manure management systems",
+      "registry": "CDM",
+      "projectsVrod": 5,
+      "creditsVrod": 80790,
+      "projectsCad": 0,
+      "totalProjects": 5,
+      "source": [
+        "vrod"
+      ]
+    },
+    {
+      "name": "AMS-II.J. Demand-side activities for efficient lighting technologies",
+      "registry": "CDM",
+      "projectsVrod": 5,
+      "creditsVrod": 140791,
+      "projectsCad": 0,
+      "totalProjects": 5,
+      "source": [
+        "vrod"
+      ]
+    },
+    {
+      "name": "VM0011",
+      "registry": "Verra",
+      "projectsVrod": 3,
+      "creditsVrod": 2373590,
+      "projectsCad": 2,
+      "totalProjects": 5,
+      "source": [
+        "vrod",
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "AM0090",
+      "registry": "CDM",
+      "projectsVrod": 2,
+      "creditsVrod": 331206,
+      "projectsCad": 3,
+      "totalProjects": 5,
+      "source": [
+        "vrod",
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "VM0039",
+      "registry": "Verra",
+      "projectsVrod": 5,
+      "creditsVrod": 276338,
+      "projectsCad": 0,
+      "totalProjects": 5,
+      "source": [
+        "vrod"
+      ]
+    },
+    {
+      "name": "AMS-II.L.",
+      "registry": "CDM",
+      "projectsVrod": 2,
+      "creditsVrod": 17905,
+      "projectsCad": 3,
+      "totalProjects": 5,
+      "source": [
+        "vrod",
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "AR-AMS0003",
+      "registry": "CDM",
+      "projectsVrod": 2,
+      "creditsVrod": 66170,
+      "projectsCad": 3,
+      "totalProjects": 5,
+      "source": [
+        "vrod",
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "AMS-II.H.",
+      "registry": "CDM",
+      "projectsVrod": 1,
+      "creditsVrod": 31757,
+      "projectsCad": 4,
+      "totalProjects": 5,
+      "source": [
+        "vrod",
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "VM0006",
+      "registry": "Verra",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 5,
+      "totalProjects": 5,
+      "source": [
+        "cad-trust"
+      ],
+      "code": "VCS-VM0006"
+    },
+    {
+      "name": "AMS-I.E.",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 5,
+      "totalProjects": 5,
+      "source": [
+        "cad-trust"
+      ],
+      "code": "VCS-AMS-I.E."
+    },
+    {
+      "name": "AMS-III.H.",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 5,
+      "totalProjects": 5,
+      "source": [
+        "cad-trust"
+      ],
+      "code": "VCS-AMS-III.H."
+    },
+    {
+      "name": "AMS-III.AU.",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 5,
+      "totalProjects": 5,
+      "source": [
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "M/E-ER01: Methodology for the realization of GHG emissions reduction projects by the use of renewable energy",
+      "registry": "CCB",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 5,
+      "totalProjects": 5,
+      "source": [
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "AMS-I.A.",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 5,
+      "totalProjects": 5,
+      "source": [
+        "cad-trust"
+      ],
+      "code": "AMS-I.A.; AMS-I.D.; AMS-III.H."
+    },
+    {
+      "name": "AMS-I.C.",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 5,
+      "totalProjects": 5,
+      "source": [
+        "cad-trust"
+      ],
+      "code": "AMS-I.C.; AMS-I.D."
+    },
+    {
+      "name": "AM0033",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 5,
+      "totalProjects": 5,
+      "source": [
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "AM0003",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 5,
+      "totalProjects": 5,
+      "source": [
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "ECY Compliance Offset Protocol: U.S. Forest Projects",
+      "registry": "ACR",
+      "projectsVrod": 4,
+      "creditsVrod": 459098,
+      "projectsCad": 0,
+      "totalProjects": 4,
+      "source": [
+        "vrod"
+      ]
+    },
+    {
+      "name": "Afforestation and Reforestation of Degraded Lands",
+      "registry": "ACR",
+      "projectsVrod": 4,
+      "creditsVrod": 7792791,
+      "projectsCad": 0,
+      "totalProjects": 4,
+      "source": [
+        "vrod"
+      ]
+    },
+    {
+      "name": "Organic Waste Digestion",
+      "registry": "CAR",
+      "projectsVrod": 4,
+      "creditsVrod": 280510,
+      "projectsCad": 0,
+      "totalProjects": 4,
+      "source": [
+        "vrod"
+      ]
+    },
+    {
+      "name": "Reforestation",
+      "registry": "CAR",
+      "projectsVrod": 4,
+      "creditsVrod": 0,
+      "projectsCad": 0,
+      "totalProjects": 4,
+      "source": [
+        "vrod"
+      ]
+    },
+    {
+      "name": "Soil Organic Carbon Framework Methodology",
+      "registry": "Gold Standard",
+      "projectsVrod": 4,
+      "creditsVrod": 253299,
+      "projectsCad": 0,
+      "totalProjects": 4,
+      "source": [
+        "vrod"
+      ]
+    },
+    {
+      "name": "AMS-III.Z. Fuel Switch = 159",
+      "registry": "CDM",
+      "projectsVrod": 4,
+      "creditsVrod": 110739,
+      "projectsCad": 0,
+      "totalProjects": 4,
+      "source": [
+        "vrod"
+      ],
+      "code": "AMS-III.Z. Fuel Switch = 159, process improvement and energy efficiency in brick manufacture"
+    },
+    {
+      "name": "AMS-II.C. Demand-side energy efficiency activities for specific technologies",
+      "registry": "CDM",
+      "projectsVrod": 4,
+      "creditsVrod": 72339,
+      "projectsCad": 0,
+      "totalProjects": 4,
+      "source": [
+        "vrod"
+      ]
+    },
+    {
+      "name": "AMS-III.H. Methane recovery in wastewater treatment",
+      "registry": "CDM",
+      "projectsVrod": 4,
+      "creditsVrod": 151838,
+      "projectsCad": 0,
+      "totalProjects": 4,
+      "source": [
+        "vrod"
+      ]
+    },
+    {
+      "name": "ACM0018 Electricity generation from biomass residues in power-only plants",
+      "registry": "CDM",
+      "projectsVrod": 4,
+      "creditsVrod": 576389,
+      "projectsCad": 0,
+      "totalProjects": 4,
+      "source": [
+        "vrod"
+      ]
+    },
+    {
+      "name": "VM0051",
+      "registry": "Verra",
+      "projectsVrod": 4,
+      "creditsVrod": 1010941,
+      "projectsCad": 0,
+      "totalProjects": 4,
+      "source": [
+        "vrod"
+      ]
+    },
+    {
+      "name": "AM0057",
+      "registry": "CDM",
+      "projectsVrod": 1,
+      "creditsVrod": 48204,
+      "projectsCad": 3,
+      "totalProjects": 4,
+      "source": [
+        "vrod",
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "AM0110",
+      "registry": "CDM",
+      "projectsVrod": 2,
+      "creditsVrod": 121239,
+      "projectsCad": 2,
+      "totalProjects": 4,
+      "source": [
+        "vrod",
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "AMS-I.J",
+      "registry": "CDM",
+      "projectsVrod": 3,
+      "creditsVrod": 43484,
+      "projectsCad": 1,
+      "totalProjects": 4,
+      "source": [
+        "vrod",
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "VMR0003",
+      "registry": "Verra",
+      "projectsVrod": 2,
+      "creditsVrod": 26018,
+      "projectsCad": 2,
+      "totalProjects": 4,
+      "source": [
+        "vrod",
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "AM0070",
+      "registry": "CDM",
+      "projectsVrod": 1,
+      "creditsVrod": 177785,
+      "projectsCad": 3,
+      "totalProjects": 4,
+      "source": [
+        "vrod",
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "AR-AMS0005",
+      "registry": "CDM",
+      "projectsVrod": 2,
+      "creditsVrod": 7359,
+      "projectsCad": 2,
+      "totalProjects": 4,
+      "source": [
+        "vrod",
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "VMR0001",
+      "registry": "Verra",
+      "projectsVrod": 2,
+      "creditsVrod": 225564,
+      "projectsCad": 2,
+      "totalProjects": 4,
+      "source": [
+        "vrod",
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "AR-ACM0002",
+      "registry": "CDM",
+      "projectsVrod": 2,
+      "creditsVrod": 5870,
+      "projectsCad": 2,
+      "totalProjects": 4,
+      "source": [
+        "vrod",
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "AR-AM0002",
+      "registry": "CDM",
+      "projectsVrod": 1,
+      "creditsVrod": 9,
+      "projectsCad": 3,
+      "totalProjects": 4,
+      "source": [
+        "vrod",
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "VM0003",
+      "registry": "Verra",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 4,
+      "totalProjects": 4,
+      "source": [
+        "cad-trust"
+      ],
+      "code": "VCS-VM0003"
+    },
+    {
+      "name": "VM0012",
+      "registry": "Verra",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 4,
+      "totalProjects": 4,
+      "source": [
+        "cad-trust"
+      ],
+      "code": "VCS-VM0012"
+    },
+    {
+      "name": "REDD +: Reduced Emissions from Deforestation and Degradation",
+      "registry": "Verra",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 4,
+      "totalProjects": 4,
+      "source": [
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "BCR0003_Quantification of GHG emission Reductions. Activities that prevent land use change in high mountain ecosystems",
+      "registry": "BCR",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 4,
+      "totalProjects": 4,
+      "source": [
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "RIV-REC-02-BAT",
+      "registry": "Riverse",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 4,
+      "totalProjects": 4,
+      "source": [
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "WATER ACCESS AND WASH METHODOLOGY",
+      "registry": "Gold Standard",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 4,
+      "totalProjects": 4,
+      "source": [
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "ACM0002 Generación de electricidad conectada a la red a partir de fuentes renovables",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 4,
+      "totalProjects": 4,
+      "source": [
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "AR-AMS0007",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 4,
+      "totalProjects": 4,
+      "source": [
+        "cad-trust"
+      ],
+      "code": "VCS-AR-AMS0007"
+    },
+    {
+      "name": "AMS-I.C.",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 4,
+      "totalProjects": 4,
+      "source": [
+        "cad-trust"
+      ],
+      "code": "AMS-I.C.; AMS-I.F.; AMS-III.H."
+    },
+    {
+      "name": "AMS-I.D.",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 4,
+      "totalProjects": 4,
+      "source": [
+        "cad-trust"
+      ],
+      "code": "AMS-I.D.; AMS-III.AO."
+    },
+    {
+      "name": "AM0078",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 4,
+      "totalProjects": 4,
+      "source": [
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "AMS-I.D.",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 4,
+      "totalProjects": 4,
+      "source": [
+        "cad-trust"
+      ],
+      "code": "AMS-I.D.; AMS-II.D."
+    },
+    {
+      "name": "AM0021",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 4,
+      "totalProjects": 4,
+      "source": [
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "AM0005",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 4,
+      "totalProjects": 4,
+      "source": [
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "AMS-III.AJ1",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 4,
+      "totalProjects": 4,
+      "source": [
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "Climate Action Reserve U.S. Ozone Depleting Substances Project Protocol",
+      "registry": "ACR",
+      "projectsVrod": 3,
+      "creditsVrod": 287542,
+      "projectsCad": 0,
+      "totalProjects": 3,
+      "source": [
+        "vrod"
+      ]
+    },
+    {
+      "name": "ACM0002",
+      "registry": "CDM",
+      "projectsVrod": 3,
+      "creditsVrod": 1751855,
+      "projectsCad": 0,
+      "totalProjects": 3,
+      "source": [
+        "vrod"
+      ],
+      "code": "ACM0002: Consolidated baseline methodology for grid-connected electricity generation from renewable sources"
+    },
+    {
+      "name": "Truck Stop Electrification",
+      "registry": "ACR",
+      "projectsVrod": 3,
+      "creditsVrod": 45446,
+      "projectsCad": 0,
+      "totalProjects": 3,
+      "source": [
+        "vrod"
+      ]
+    },
+    {
+      "name": "Livestock - MX",
+      "registry": "CAR",
+      "projectsVrod": 3,
+      "creditsVrod": 575,
+      "projectsCad": 0,
+      "totalProjects": 3,
+      "source": [
+        "vrod"
+      ]
+    },
+    {
+      "name": "Landfill - MX",
+      "registry": "CAR",
+      "projectsVrod": 3,
+      "creditsVrod": 448578,
+      "projectsCad": 0,
+      "totalProjects": 3,
+      "source": [
+        "vrod"
+      ]
+    },
+    {
+      "name": "Nitric Acid N2O- Tertiary Catalyst",
+      "registry": "CAR",
+      "projectsVrod": 3,
+      "creditsVrod": 3726468,
+      "projectsCad": 0,
+      "totalProjects": 3,
+      "source": [
+        "vrod"
+      ]
+    },
+    {
+      "name": "Nitrogen Management",
+      "registry": "CAR",
+      "projectsVrod": 3,
+      "creditsVrod": 591,
+      "projectsCad": 0,
+      "totalProjects": 3,
+      "source": [
+        "vrod"
+      ]
+    },
+    {
+      "name": "AMS-III.BM",
+      "registry": "CDM",
+      "projectsVrod": 3,
+      "creditsVrod": 81000,
+      "projectsCad": 0,
+      "totalProjects": 3,
+      "source": [
+        "vrod"
+      ],
+      "code": "AMS-III.BM: Lightweight two and three wheeled personal transportation version 1.0"
+    },
+    {
+      "name": "AMS-III.BA Recovery and recycling of materials from E-waste",
+      "registry": "CDM",
+      "projectsVrod": 3,
+      "creditsVrod": 44357,
+      "projectsCad": 0,
+      "totalProjects": 3,
+      "source": [
+        "vrod"
+      ]
+    },
+    {
+      "name": "AMS-III.AS. Switch from fossil fuel to biomass in existing manufacturing facilities for non-energy applications",
+      "registry": "CDM",
+      "projectsVrod": 3,
+      "creditsVrod": 49007,
+      "projectsCad": 0,
+      "totalProjects": 3,
+      "source": [
+        "vrod"
+      ]
+    },
+    {
+      "name": "GS Retrofit Energy Efficiency Measures in Shipping v1.",
+      "registry": "Gold Standard",
+      "projectsVrod": 3,
+      "creditsVrod": 99728,
+      "projectsCad": 0,
+      "totalProjects": 3,
+      "source": [
+        "vrod"
+      ]
+    },
+    {
+      "name": "AMS-III.S. Introduction of low-emission vehicles/technologies to commercial vehicle fleets",
+      "registry": "CDM",
+      "projectsVrod": 3,
+      "creditsVrod": 21496,
+      "projectsCad": 0,
+      "totalProjects": 3,
+      "source": [
+        "vrod"
+      ]
+    },
+    {
+      "name": "GS Revised Methodology for Manure Management Systems and MSW v1.",
+      "registry": "Gold Standard",
+      "projectsVrod": 3,
+      "creditsVrod": 309801,
+      "projectsCad": 0,
+      "totalProjects": 3,
+      "source": [
+        "vrod"
+      ]
+    },
+    {
+      "name": "VM0049",
+      "registry": "Verra",
+      "projectsVrod": 3,
+      "creditsVrod": 1140105,
+      "projectsCad": 0,
+      "totalProjects": 3,
+      "source": [
+        "vrod"
+      ]
+    },
+    {
+      "name": "Climate Action Reserve Landfill Project Protocol",
+      "registry": "Verra",
+      "projectsVrod": 2,
+      "creditsVrod": 56500,
+      "projectsCad": 1,
+      "totalProjects": 3,
+      "source": [
+        "vrod",
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "AMS-III.J.",
+      "registry": "CDM",
+      "projectsVrod": 1,
+      "creditsVrod": 3895,
+      "projectsCad": 2,
+      "totalProjects": 3,
+      "source": [
+        "vrod",
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "VM0040",
+      "registry": "Verra",
+      "projectsVrod": 1,
+      "creditsVrod": 9141,
+      "projectsCad": 2,
+      "totalProjects": 3,
+      "source": [
+        "vrod",
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "VM0022",
+      "registry": "Verra",
+      "projectsVrod": 1,
+      "creditsVrod": 1000,
+      "projectsCad": 2,
+      "totalProjects": 3,
+      "source": [
+        "vrod",
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "AR-AM0010",
+      "registry": "CDM",
+      "projectsVrod": 1,
+      "creditsVrod": 157636,
+      "projectsCad": 2,
+      "totalProjects": 3,
+      "source": [
+        "vrod",
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "AM0046",
+      "registry": "CDM",
+      "projectsVrod": 1,
+      "creditsVrod": 107800,
+      "projectsCad": 2,
+      "totalProjects": 3,
+      "source": [
+        "vrod",
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "VCS v1 Project Specific",
+      "registry": "Verra",
+      "projectsVrod": 3,
+      "creditsVrod": 152429,
+      "projectsCad": 0,
+      "totalProjects": 3,
+      "source": [
+        "vrod"
+      ]
+    },
+    {
+      "name": "AR-AMS0004",
+      "registry": "CDM",
+      "projectsVrod": 1,
+      "creditsVrod": 3,
+      "projectsCad": 2,
+      "totalProjects": 3,
+      "source": [
+        "vrod",
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "AMS-III.M.",
+      "registry": "CDM",
+      "projectsVrod": 1,
+      "creditsVrod": 21906,
+      "projectsCad": 2,
+      "totalProjects": 3,
+      "source": [
+        "vrod",
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "AM0064",
+      "registry": "CDM",
+      "projectsVrod": 1,
+      "creditsVrod": 9643,
+      "projectsCad": 2,
+      "totalProjects": 3,
+      "source": [
+        "vrod",
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "VM0004",
+      "registry": "Verra",
+      "projectsVrod": 1,
+      "creditsVrod": 3527171,
+      "projectsCad": 2,
+      "totalProjects": 3,
+      "source": [
+        "vrod",
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "VM0016",
+      "registry": "Verra",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 3,
+      "totalProjects": 3,
+      "source": [
+        "cad-trust"
+      ],
+      "code": "VCS-VM0016"
+    },
+    {
+      "name": "SOIL ORGANIC CARBON ACTIVITY MODULE FOR APPLICATION OF ORGANIC SOIL IMPROVERS FROM PULP AND PAPER MILL SLUDGES",
+      "registry": "Gold Standard",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 3,
+      "totalProjects": 3,
+      "source": [
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "REVISED METHODOLOGY FOR MANURE MANAGEMENT SYSTEMS AND MSW",
+      "registry": "Gold Standard",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 3,
+      "totalProjects": 3,
+      "source": [
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "AMS-III.H.",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 3,
+      "totalProjects": 3,
+      "source": [
+        "cad-trust"
+      ],
+      "code": "AMS-III.H.: Methane recovery in wastewater treatment"
+    },
+    {
+      "name": "M/UT-REDD+: Metodología para la ejecución de proyectos REDD+ consistentes con niveles de referencia nacionales",
+      "registry": "CCB",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 3,
+      "totalProjects": 3,
+      "source": [
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "Methodological guide for the certification of emissions reduced by the implementation of operational improvement projects in the hydrocarbons sector",
+      "registry": "Unknown",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 3,
+      "totalProjects": 3,
+      "source": [
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "VM0009",
+      "registry": "Verra",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 3,
+      "totalProjects": 3,
+      "source": [
+        "cad-trust"
+      ],
+      "code": "VCS-VM0009"
+    },
+    {
+      "name": "AMS-III.AR.",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 3,
+      "totalProjects": 3,
+      "source": [
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "AMS-III.AH.",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 3,
+      "totalProjects": 3,
+      "source": [
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "AMS-I.D.",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 3,
+      "totalProjects": 3,
+      "source": [
+        "cad-trust"
+      ],
+      "code": "AMS-I.D.; AMS-I.F."
+    },
+    {
+      "name": "AMS-I.F.",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 3,
+      "totalProjects": 3,
+      "source": [
+        "cad-trust"
+      ],
+      "code": "AMS-I.F.; AMS-III.D."
+    },
+    {
+      "name": "AMS-I.C.",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 3,
+      "totalProjects": 3,
+      "source": [
+        "cad-trust"
+      ],
+      "code": "AMS-I.C.; AMS-II.D."
+    },
+    {
+      "name": "AMS-I.E.",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 3,
+      "totalProjects": 3,
+      "source": [
+        "cad-trust"
+      ],
+      "code": "AMS-I.E.; AMS-III.R."
+    },
+    {
+      "name": "AM0062",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 3,
+      "totalProjects": 3,
+      "source": [
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "AM0041",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 3,
+      "totalProjects": 3,
+      "source": [
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "AMS-I.C.",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 3,
+      "totalProjects": 3,
+      "source": [
+        "cad-trust"
+      ],
+      "code": "AMS-I.C.; AMS-III.G."
+    },
+    {
+      "name": "ACM0012",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 3,
+      "totalProjects": 3,
+      "source": [
+        "cad-trust"
+      ],
+      "code": "ACM0012; AMS-III.Q."
+    },
+    {
+      "name": "AMS-III.N.",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 3,
+      "totalProjects": 3,
+      "source": [
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "AM0037",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 3,
+      "totalProjects": 3,
+      "source": [
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "AMS-II.E.",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 3,
+      "totalProjects": 3,
+      "source": [
+        "cad-trust"
+      ],
+      "code": "AMS-II.E.; AMS-III.B."
+    },
+    {
+      "name": "AR-ACM0001 Afforestation and Reforestation of Degraded Land",
+      "registry": "CDM",
+      "projectsVrod": 2,
+      "creditsVrod": 3689520,
+      "projectsCad": 0,
+      "totalProjects": 2,
+      "source": [
+        "vrod"
+      ]
+    },
+    {
+      "name": "Conversion of High-Bleed Pneumatic Controllers in Oil and Natural Gas Systems",
+      "registry": "ACR",
+      "projectsVrod": 2,
+      "creditsVrod": 547528,
+      "projectsCad": 0,
+      "totalProjects": 2,
+      "source": [
+        "vrod"
+      ]
+    },
+    {
+      "name": "N2O Emission Reductions through Reduced Use of Fertilizer on Agricultural Crops",
+      "registry": "ACR",
+      "projectsVrod": 2,
+      "creditsVrod": 72,
+      "projectsCad": 0,
+      "totalProjects": 2,
+      "source": [
+        "vrod"
+      ]
+    },
+    {
+      "name": "Climate Action Reserve Forest Project Protocol",
+      "registry": "ACR",
+      "projectsVrod": 2,
+      "creditsVrod": 0,
+      "projectsCad": 0,
+      "totalProjects": 2,
+      "source": [
+        "vrod"
+      ]
+    },
+    {
+      "name": "Emission Reductions in Rice Management Systems",
+      "registry": "ACR",
+      "projectsVrod": 2,
+      "creditsVrod": 597,
+      "projectsCad": 0,
+      "totalProjects": 2,
+      "source": [
+        "vrod"
+      ]
+    },
+    {
+      "name": "AMS-III.BC.",
+      "registry": "CDM",
+      "projectsVrod": 2,
+      "creditsVrod": 474637,
+      "projectsCad": 0,
+      "totalProjects": 2,
+      "source": [
+        "vrod"
+      ],
+      "code": "AMS-III.BC.: Emissions Reductions through Improved Efficiency of Vehicle Fleet"
+    },
+    {
+      "name": "AMS-I.C.",
+      "registry": "CDM",
+      "projectsVrod": 1,
+      "creditsVrod": 253991,
+      "projectsCad": 1,
+      "totalProjects": 2,
+      "source": [
+        "vrod",
+        "cad-trust"
+      ],
+      "code": "AMS-I.C.: Thermal energy production with or without electricity"
+    },
+    {
+      "name": "Restoration of Pocosin Wetlands",
+      "registry": "ACR",
+      "projectsVrod": 2,
+      "creditsVrod": 0,
+      "projectsCad": 0,
+      "totalProjects": 2,
+      "source": [
+        "vrod"
+      ]
+    },
+    {
+      "name": "Reduction in Emissions from the Recycling of Transformer Oil",
+      "registry": "ACR",
+      "projectsVrod": 2,
+      "creditsVrod": 638538,
+      "projectsCad": 0,
+      "totalProjects": 2,
+      "source": [
+        "vrod"
+      ]
+    },
+    {
+      "name": "Restoration of California Deltaic and Coastal Wetlands",
+      "registry": "ACR",
+      "projectsVrod": 2,
+      "creditsVrod": 59552,
+      "projectsCad": 0,
+      "totalProjects": 2,
+      "source": [
+        "vrod"
+      ]
+    },
+    {
+      "name": "Electricity generation by the user",
+      "registry": "ACR",
+      "projectsVrod": 2,
+      "creditsVrod": 4082,
+      "projectsCad": 0,
+      "totalProjects": 2,
+      "source": [
+        "vrod"
+      ]
+    },
+    {
+      "name": "Coal Mine Methane - Drainage",
+      "registry": "CAR",
+      "projectsVrod": 2,
+      "creditsVrod": 931263,
+      "projectsCad": 0,
+      "totalProjects": 2,
+      "source": [
+        "vrod"
+      ]
+    },
+    {
+      "name": "Coal Mine Methane - VAM",
+      "registry": "CAR",
+      "projectsVrod": 2,
+      "creditsVrod": 278177,
+      "projectsCad": 0,
+      "totalProjects": 2,
+      "source": [
+        "vrod"
+      ]
+    },
+    {
+      "name": "AM0073 GHG emission reductions through multi-site manure collection and treatment in a central plant",
+      "registry": "CDM",
+      "projectsVrod": 2,
+      "creditsVrod": 195500,
+      "projectsCad": 0,
+      "totalProjects": 2,
+      "source": [
+        "vrod"
+      ]
+    },
+    {
+      "name": "AMS-III.G. Landfill methane recovery",
+      "registry": "CDM",
+      "projectsVrod": 2,
+      "creditsVrod": 77860,
+      "projectsCad": 0,
+      "totalProjects": 2,
+      "source": [
+        "vrod"
+      ]
+    },
+    {
+      "name": "GS TPDDTEC v 3.",
+      "registry": "Gold Standard",
+      "projectsVrod": 2,
+      "creditsVrod": 426169,
+      "projectsCad": 0,
+      "totalProjects": 2,
+      "source": [
+        "vrod"
+      ]
+    },
+    {
+      "name": "AMS-III.AO. Methane recovery through controlled anaerobic digestion",
+      "registry": "CDM",
+      "projectsVrod": 2,
+      "creditsVrod": 61027,
+      "projectsCad": 0,
+      "totalProjects": 2,
+      "source": [
+        "vrod"
+      ]
+    },
+    {
+      "name": "AMS-III.Z. Fuel Switch",
+      "registry": "CDM",
+      "projectsVrod": 2,
+      "creditsVrod": 87376,
+      "projectsCad": 0,
+      "totalProjects": 2,
+      "source": [
+        "vrod"
+      ],
+      "code": "AMS-III.Z. Fuel Switch, process improvement and energy efficiency in brick manufacture"
+    },
+    {
+      "name": "GS SS Ecologically Sound Fuel Switch to Biomass v1.",
+      "registry": "Gold Standard",
+      "projectsVrod": 2,
+      "creditsVrod": 35360,
+      "projectsCad": 0,
+      "totalProjects": 2,
+      "source": [
+        "vrod"
+      ]
+    },
+    {
+      "name": "GS Advanced Hull Coatings v2.",
+      "registry": "Gold Standard",
+      "projectsVrod": 2,
+      "creditsVrod": 17457,
+      "projectsCad": 0,
+      "totalProjects": 2,
+      "source": [
+        "vrod"
+      ]
+    },
+    {
+      "name": "AMS-III.Q. Waste Energy Recovery (gas/heat/pressure) Projects",
+      "registry": "CDM",
+      "projectsVrod": 2,
+      "creditsVrod": 84043,
+      "projectsCad": 0,
+      "totalProjects": 2,
+      "source": [
+        "vrod"
+      ]
+    },
+    {
+      "name": "AMS-II.M Demand-side energy efficiency activities for installation of low-flow hot water savings devices",
+      "registry": "CDM",
+      "projectsVrod": 2,
+      "creditsVrod": 439,
+      "projectsCad": 0,
+      "totalProjects": 2,
+      "source": [
+        "vrod"
+      ]
+    },
+    {
+      "name": "AMS-III.AK",
+      "registry": "CDM",
+      "projectsVrod": 2,
+      "creditsVrod": 161559,
+      "projectsCad": 0,
+      "totalProjects": 2,
+      "source": [
+        "vrod"
+      ]
+    },
+    {
+      "name": "AM0123",
+      "registry": "CDM",
+      "projectsVrod": 2,
+      "creditsVrod": 59743,
+      "projectsCad": 0,
+      "totalProjects": 2,
+      "source": [
+        "vrod"
+      ]
+    },
+    {
+      "name": "AM0047",
+      "registry": "CDM",
+      "projectsVrod": 1,
+      "creditsVrod": 6865,
+      "projectsCad": 1,
+      "totalProjects": 2,
+      "source": [
+        "vrod",
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "AMS-III.L.",
+      "registry": "CDM",
+      "projectsVrod": 1,
+      "creditsVrod": 27600,
+      "projectsCad": 1,
+      "totalProjects": 2,
+      "source": [
+        "vrod",
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "AMS-III.BA",
+      "registry": "CDM",
+      "projectsVrod": 2,
+      "creditsVrod": 93568,
+      "projectsCad": 0,
+      "totalProjects": 2,
+      "source": [
+        "vrod"
+      ]
+    },
+    {
+      "name": "VM0024",
+      "registry": "Verra",
+      "projectsVrod": 1,
+      "creditsVrod": 4960,
+      "projectsCad": 1,
+      "totalProjects": 2,
+      "source": [
+        "vrod",
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "AR-AMS0002",
+      "registry": "CDM",
+      "projectsVrod": 1,
+      "creditsVrod": 16000,
+      "projectsCad": 1,
+      "totalProjects": 2,
+      "source": [
+        "vrod",
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "AR-AMS0006",
+      "registry": "CDM",
+      "projectsVrod": 1,
+      "creditsVrod": 15512,
+      "projectsCad": 1,
+      "totalProjects": 2,
+      "source": [
+        "vrod",
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "VM0019",
+      "registry": "Verra",
+      "projectsVrod": 1,
+      "creditsVrod": 456,
+      "projectsCad": 1,
+      "totalProjects": 2,
+      "source": [
+        "vrod",
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "AR-AM0007",
+      "registry": "CDM",
+      "projectsVrod": 1,
+      "creditsVrod": 4337,
+      "projectsCad": 1,
+      "totalProjects": 2,
+      "source": [
+        "vrod",
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "VM0013",
+      "registry": "Verra",
+      "projectsVrod": 1,
+      "creditsVrod": 506000,
+      "projectsCad": 1,
+      "totalProjects": 2,
+      "source": [
+        "vrod",
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "VM0001",
+      "registry": "Verra",
+      "projectsVrod": 1,
+      "creditsVrod": 23000,
+      "projectsCad": 1,
+      "totalProjects": 2,
+      "source": [
+        "vrod",
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "AMS-III.BB.",
+      "registry": "CDM",
+      "projectsVrod": 1,
+      "creditsVrod": 12113,
+      "projectsCad": 1,
+      "totalProjects": 2,
+      "source": [
+        "vrod",
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "VMD0038",
+      "registry": "Verra",
+      "projectsVrod": 1,
+      "creditsVrod": 21115,
+      "projectsCad": 1,
+      "totalProjects": 2,
+      "source": [
+        "vrod",
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "VM0014",
+      "registry": "Verra",
+      "projectsVrod": 1,
+      "creditsVrod": 28818,
+      "projectsCad": 1,
+      "totalProjects": 2,
+      "source": [
+        "vrod",
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "AMS-II.C.",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 2,
+      "totalProjects": 2,
+      "source": [
+        "cad-trust"
+      ],
+      "code": "VCS-AMS-II.C."
+    },
+    {
+      "name": "AMS-III.Y",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 2,
+      "totalProjects": 2,
+      "source": [
+        "cad-trust"
+      ],
+      "code": "VCS-AMS-III.Y"
+    },
+    {
+      "name": "VM0043",
+      "registry": "Verra",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 2,
+      "totalProjects": 2,
+      "source": [
+        "cad-trust"
+      ],
+      "code": "VCS-VM0043"
+    },
+    {
+      "name": "VM0008",
+      "registry": "Verra",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 2,
+      "totalProjects": 2,
+      "source": [
+        "cad-trust"
+      ],
+      "code": "VCS-VM0008"
+    },
+    {
+      "name": "AMS-I.C.",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 2,
+      "totalProjects": 2,
+      "source": [
+        "cad-trust"
+      ],
+      "code": "VCS-AMS-I.C."
+    },
+    {
+      "name": "ACM0017",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 2,
+      "totalProjects": 2,
+      "source": [
+        "cad-trust"
+      ],
+      "code": "VCS-ACM0017"
+    },
+    {
+      "name": "AMS-III.F",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 2,
+      "totalProjects": 2,
+      "source": [
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "AMS-III.H",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 2,
+      "totalProjects": 2,
+      "source": [
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "TERO.004",
+      "registry": "Terrasos",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 2,
+      "totalProjects": 2,
+      "source": [
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "AM0080",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 2,
+      "totalProjects": 2,
+      "source": [
+        "cad-trust"
+      ],
+      "code": "VCS-AM0080"
+    },
+    {
+      "name": "AMS-III.E.",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 2,
+      "totalProjects": 2,
+      "source": [
+        "cad-trust"
+      ],
+      "code": "VCS-AMS-III.E."
+    },
+    {
+      "name": "SS ECOLOGICALLY SOUND FUEL SWITCH TO BIOMASS",
+      "registry": "Gold Standard",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 2,
+      "totalProjects": 2,
+      "source": [
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "ADVANCED HULL COATINGS",
+      "registry": "Gold Standard",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 2,
+      "totalProjects": 2,
+      "source": [
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "AMS-II.M.",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 2,
+      "totalProjects": 2,
+      "source": [
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "AMS-I.B.",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 2,
+      "totalProjects": 2,
+      "source": [
+        "cad-trust"
+      ],
+      "code": "VCS-AMS-I.B."
+    },
+    {
+      "name": "AMS-III.Z",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 2,
+      "totalProjects": 2,
+      "source": [
+        "cad-trust"
+      ],
+      "code": "VCS-AMS-III.Z"
+    },
+    {
+      "name": "AMS-III.Q",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 2,
+      "totalProjects": 2,
+      "source": [
+        "cad-trust"
+      ],
+      "code": "VCS-AMS-III.Q"
+    },
+    {
+      "name": "VM0017",
+      "registry": "Verra",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 2,
+      "totalProjects": 2,
+      "source": [
+        "cad-trust"
+      ],
+      "code": "VCS-VM0017"
+    },
+    {
+      "name": "VM0034",
+      "registry": "Verra",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 2,
+      "totalProjects": 2,
+      "source": [
+        "cad-trust"
+      ],
+      "code": "VCS-VM0034"
+    },
+    {
+      "name": "AMS-I. D",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 2,
+      "totalProjects": 2,
+      "source": [
+        "cad-trust"
+      ],
+      "code": "AMS-I. D, V.18"
+    },
+    {
+      "name": "GCCM002",
+      "registry": "Gold Standard",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 2,
+      "totalProjects": 2,
+      "source": [
+        "cad-trust"
+      ],
+      "code": "GCCM002 V1.0"
+    },
+    {
+      "name": "ACM0025",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 2,
+      "totalProjects": 2,
+      "source": [
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "AM0102",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 2,
+      "totalProjects": 2,
+      "source": [
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "AM0045",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 2,
+      "totalProjects": 2,
+      "source": [
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "AMS-III.Y.",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 2,
+      "totalProjects": 2,
+      "source": [
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "AMS-II.K.",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 2,
+      "totalProjects": 2,
+      "source": [
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "AR-AM0009",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 2,
+      "totalProjects": 2,
+      "source": [
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "AMS-II.A.",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 2,
+      "totalProjects": 2,
+      "source": [
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "AM0082",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 2,
+      "totalProjects": 2,
+      "source": [
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "AMS-I.D.",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 2,
+      "totalProjects": 2,
+      "source": [
+        "cad-trust"
+      ],
+      "code": "AMS-I.D.; AMS-III.D.; AMS-III.F."
+    },
+    {
+      "name": "ACM0010",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 2,
+      "totalProjects": 2,
+      "source": [
+        "cad-trust"
+      ],
+      "code": "ACM0010; AMS-I.D."
+    },
+    {
+      "name": "AM0061",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 2,
+      "totalProjects": 2,
+      "source": [
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "ACM0002",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 2,
+      "totalProjects": 2,
+      "source": [
+        "cad-trust"
+      ],
+      "code": "ACM0002; AM0025"
+    },
+    {
+      "name": "AMS-I.C.",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 2,
+      "totalProjects": 2,
+      "source": [
+        "cad-trust"
+      ],
+      "code": "AMS-I.C.; AMS-I.E."
+    },
+    {
+      "name": "AMS-I.D.",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 2,
+      "totalProjects": 2,
+      "source": [
+        "cad-trust"
+      ],
+      "code": "AMS-I.D.; AMS-I.F.; AMS-III.D."
+    },
+    {
+      "name": "AMS-I.C.",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 2,
+      "totalProjects": 2,
+      "source": [
+        "cad-trust"
+      ],
+      "code": "AMS-I.C.; AMS-III.D."
+    },
+    {
+      "name": "AM0035",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 2,
+      "totalProjects": 2,
+      "source": [
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "AR-AM0001",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 2,
+      "totalProjects": 2,
+      "source": [
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "AMS-I.A.",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 2,
+      "totalProjects": 2,
+      "source": [
+        "cad-trust"
+      ],
+      "code": "AMS-I.A.; AMS-III.D."
+    },
+    {
+      "name": "AM0032",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 2,
+      "totalProjects": 2,
+      "source": [
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "AM0004",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 2,
+      "totalProjects": 2,
+      "source": [
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "VM00015",
+      "registry": "Verra",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 2,
+      "totalProjects": 2,
+      "source": [
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "AMS.I.J1",
+      "registry": "Unknown",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 2,
+      "totalProjects": 2,
+      "source": [
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "Emission reductions through industrial gas substitution",
+      "registry": "ACR",
+      "projectsVrod": 1,
+      "creditsVrod": 7984006,
+      "projectsCad": 0,
+      "totalProjects": 1,
+      "source": [
+        "vrod"
+      ]
+    },
+    {
+      "name": "Fuel switching from coal and/or petroleum fuels to natural gas in existing Power Plant for electricity generation",
+      "registry": "ACR",
+      "projectsVrod": 1,
+      "creditsVrod": 1138,
+      "projectsCad": 0,
+      "totalProjects": 1,
+      "source": [
+        "vrod"
+      ]
+    },
+    {
+      "name": "AMS-III.Y",
+      "registry": "CDM",
+      "projectsVrod": 1,
+      "creditsVrod": 11295,
+      "projectsCad": 0,
+      "totalProjects": 1,
+      "source": [
+        "vrod"
+      ],
+      "code": "AMS-III.Y: Methane avoidance through separation of solids from wastewater or manure treatment systems"
+    },
+    {
+      "name": "Active Conservation and Sustainable Management on U.S. Forestlands",
+      "registry": "ACR",
+      "projectsVrod": 1,
+      "creditsVrod": 0,
+      "projectsCad": 0,
+      "totalProjects": 1,
+      "source": [
+        "vrod"
+      ]
+    },
+    {
+      "name": "Anaerobic Digestion",
+      "registry": "ACR",
+      "projectsVrod": 1,
+      "creditsVrod": 44202,
+      "projectsCad": 0,
+      "totalProjects": 1,
+      "source": [
+        "vrod"
+      ]
+    },
+    {
+      "name": "Monitoring, Reporting and Verification Protocol for Cogeneration",
+      "registry": "ACR",
+      "projectsVrod": 1,
+      "creditsVrod": 439035,
+      "projectsCad": 0,
+      "totalProjects": 1,
+      "source": [
+        "vrod"
+      ]
+    },
+    {
+      "name": "Nitrous Oxide Abatement Protocol",
+      "registry": "ACR",
+      "projectsVrod": 1,
+      "creditsVrod": 125000,
+      "projectsCad": 0,
+      "totalProjects": 1,
+      "source": [
+        "vrod"
+      ]
+    },
+    {
+      "name": "Avoided Conversion of Grasslands and Shrublands to Crop Production",
+      "registry": "ACR",
+      "projectsVrod": 1,
+      "creditsVrod": 166197,
+      "projectsCad": 0,
+      "totalProjects": 1,
+      "source": [
+        "vrod"
+      ]
+    },
+    {
+      "name": "AM0065",
+      "registry": "CDM",
+      "projectsVrod": 1,
+      "creditsVrod": 152040,
+      "projectsCad": 0,
+      "totalProjects": 1,
+      "source": [
+        "vrod"
+      ],
+      "code": "AM0065: Replacement of SF6 with Alternate Cover Gas in the Magnesium Industry"
+    },
+    {
+      "name": "Offset Project Methodology for Landfill Methane Collection and Combustion",
+      "registry": "ACR",
+      "projectsVrod": 1,
+      "creditsVrod": 2470626,
+      "projectsCad": 0,
+      "totalProjects": 1,
+      "source": [
+        "vrod"
+      ]
+    },
+    {
+      "name": "Emission reductions through wastewater treatment",
+      "registry": "ACR",
+      "projectsVrod": 1,
+      "creditsVrod": 100000,
+      "projectsCad": 0,
+      "totalProjects": 1,
+      "source": [
+        "vrod"
+      ]
+    },
+    {
+      "name": "Improved Forest Management - WA ECO Compliance",
+      "registry": "CAR",
+      "projectsVrod": 1,
+      "creditsVrod": 0,
+      "projectsCad": 0,
+      "totalProjects": 1,
+      "source": [
+        "vrod"
+      ]
+    },
+    {
+      "name": "Avoided Conversion - ARB Compliance",
+      "registry": "CAR",
+      "projectsVrod": 1,
+      "creditsVrod": 265776,
+      "projectsCad": 0,
+      "totalProjects": 1,
+      "source": [
+        "vrod"
+      ]
+    },
+    {
+      "name": "AMS-III.AQ. Introduction of Bio-CNG in transportation applications",
+      "registry": "CDM",
+      "projectsVrod": 1,
+      "creditsVrod": 13758,
+      "projectsCad": 0,
+      "totalProjects": 1,
+      "source": [
+        "vrod"
+      ]
+    },
+    {
+      "name": "Methodology For Reducing Methane Emissions From Enteric Fermentation In Beef Cattle Through Application Of Feed Supplements",
+      "registry": "Gold Standard",
+      "projectsVrod": 1,
+      "creditsVrod": 10000,
+      "projectsCad": 0,
+      "totalProjects": 1,
+      "source": [
+        "vrod"
+      ]
+    },
+    {
+      "name": "ACM0026 Fossil fuel based cogeneration for identified recipient facility(ies)",
+      "registry": "CDM",
+      "projectsVrod": 1,
+      "creditsVrod": 41649,
+      "projectsCad": 0,
+      "totalProjects": 1,
+      "source": [
+        "vrod"
+      ]
+    },
+    {
+      "name": "AMS-III.BL. Integrated methodology for electrification of communities v2",
+      "registry": "CDM",
+      "projectsVrod": 1,
+      "creditsVrod": 15045,
+      "projectsCad": 0,
+      "totalProjects": 1,
+      "source": [
+        "vrod"
+      ]
+    },
+    {
+      "name": "AMS-II.L Demand-side activities for efficient outdoor and street lighting technologies",
+      "registry": "CDM",
+      "projectsVrod": 1,
+      "creditsVrod": 1000,
+      "projectsCad": 0,
+      "totalProjects": 1,
+      "source": [
+        "vrod"
+      ]
+    },
+    {
+      "name": "AMS-I.K. Solar cookers for households",
+      "registry": "CDM",
+      "projectsVrod": 1,
+      "creditsVrod": 2000,
+      "projectsCad": 0,
+      "totalProjects": 1,
+      "source": [
+        "vrod"
+      ]
+    },
+    {
+      "name": "AMS-III.BL.¬†Integrated methodology for electrification of communities v2",
+      "registry": "CDM",
+      "projectsVrod": 1,
+      "creditsVrod": 14793,
+      "projectsCad": 0,
+      "totalProjects": 1,
+      "source": [
+        "vrod"
+      ]
+    },
+    {
+      "name": "GS MS Microscale Electrification and Energization v1.",
+      "registry": "Gold Standard",
+      "projectsVrod": 1,
+      "creditsVrod": 1200,
+      "projectsCad": 0,
+      "totalProjects": 1,
+      "source": [
+        "vrod"
+      ]
+    },
+    {
+      "name": "AMS-III.BG Emission reduction through sustainable charcoal production and consumption",
+      "registry": "CDM",
+      "projectsVrod": 1,
+      "creditsVrod": 116605,
+      "projectsCad": 0,
+      "totalProjects": 1,
+      "source": [
+        "vrod"
+      ]
+    },
+    {
+      "name": "AMS-III.I. Avoidance of methane production in wastewater treatment through replacement of anaerobic systems by aerobic systems",
+      "registry": "CDM",
+      "projectsVrod": 1,
+      "creditsVrod": 28133,
+      "projectsCad": 0,
+      "totalProjects": 1,
+      "source": [
+        "vrod"
+      ]
+    },
+    {
+      "name": "AM0019 Renewable energy project activities replacing part of the electricity production of one single fossil-fuel-fired power plant that stands alone or supplies electricity to a grid = 21",
+      "registry": "CDM",
+      "projectsVrod": 1,
+      "creditsVrod": 9630,
+      "projectsCad": 0,
+      "totalProjects": 1,
+      "source": [
+        "vrod"
+      ],
+      "code": "AM0019 Renewable energy project activities replacing part of the electricity production of one single fossil-fuel-fired power plant that stands alone or supplies electricity to a grid = 21, excluding biomass projects"
+    },
+    {
+      "name": "AM0058 Introduction of a district heating system",
+      "registry": "CDM",
+      "projectsVrod": 1,
+      "creditsVrod": 58070,
+      "projectsCad": 0,
+      "totalProjects": 1,
+      "source": [
+        "vrod"
+      ]
+    },
+    {
+      "name": "AM0036 Fuel switch from fossil fuels to biomass residues in heat generation equipment",
+      "registry": "CDM",
+      "projectsVrod": 1,
+      "creditsVrod": 459300,
+      "projectsCad": 0,
+      "totalProjects": 1,
+      "source": [
+        "vrod"
+      ]
+    },
+    {
+      "name": "GS Biodiesel from Waste Oil or Fat v1.",
+      "registry": "Gold Standard",
+      "projectsVrod": 1,
+      "creditsVrod": 1500,
+      "projectsCad": 0,
+      "totalProjects": 1,
+      "source": [
+        "vrod"
+      ]
+    },
+    {
+      "name": "AM0048 New cogeneration facilities supplying electricity and/or steam to multiple customers and displacing grid/off-grid steam and electricity generation with more carbon-intensive fuels",
+      "registry": "CDM",
+      "projectsVrod": 1,
+      "creditsVrod": 185926,
+      "projectsCad": 0,
+      "totalProjects": 1,
+      "source": [
+        "vrod"
+      ]
+    },
+    {
+      "name": "AMS-I.J. Solar water heating systems (SWH)",
+      "registry": "CDM",
+      "projectsVrod": 1,
+      "creditsVrod": 5000,
+      "projectsCad": 0,
+      "totalProjects": 1,
+      "source": [
+        "vrod"
+      ]
+    },
+    {
+      "name": "VM0035",
+      "registry": "Verra",
+      "projectsVrod": 1,
+      "creditsVrod": 323996,
+      "projectsCad": 0,
+      "totalProjects": 1,
+      "source": [
+        "vrod"
+      ]
+    },
+    {
+      "name": "VMR0004",
+      "registry": "Verra",
+      "projectsVrod": 1,
+      "creditsVrod": 64421,
+      "projectsCad": 0,
+      "totalProjects": 1,
+      "source": [
+        "vrod"
+      ]
+    },
+    {
+      "name": "VMR0009",
+      "registry": "Verra",
+      "projectsVrod": 1,
+      "creditsVrod": 131029,
+      "projectsCad": 0,
+      "totalProjects": 1,
+      "source": [
+        "vrod"
+      ]
+    },
+    {
+      "name": "ACM0021",
+      "registry": "CDM",
+      "projectsVrod": 1,
+      "creditsVrod": 24516,
+      "projectsCad": 0,
+      "totalProjects": 1,
+      "source": [
+        "vrod"
+      ]
+    },
+    {
+      "name": "AMS-II.S.",
+      "registry": "CDM",
+      "projectsVrod": 1,
+      "creditsVrod": 4861,
+      "projectsCad": 0,
+      "totalProjects": 1,
+      "source": [
+        "vrod"
+      ]
+    },
+    {
+      "name": "AMS-III.BG",
+      "registry": "CDM",
+      "projectsVrod": 1,
+      "creditsVrod": 3206158,
+      "projectsCad": 0,
+      "totalProjects": 1,
+      "source": [
+        "vrod"
+      ]
+    },
+    {
+      "name": "AMS-III.AF.",
+      "registry": "CDM",
+      "projectsVrod": 1,
+      "creditsVrod": 7569,
+      "projectsCad": 0,
+      "totalProjects": 1,
+      "source": [
+        "vrod"
+      ]
+    },
+    {
+      "name": "AMS-III.BC.",
+      "registry": "CDM",
+      "projectsVrod": 1,
+      "creditsVrod": 43542,
+      "projectsCad": 0,
+      "totalProjects": 1,
+      "source": [
+        "vrod"
+      ]
+    },
+    {
+      "name": "VM0023",
+      "registry": "Verra",
+      "projectsVrod": 1,
+      "creditsVrod": 239356,
+      "projectsCad": 0,
+      "totalProjects": 1,
+      "source": [
+        "vrod"
+      ]
+    },
+    {
+      "name": "AM0023",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 1,
+      "totalProjects": 1,
+      "source": [
+        "cad-trust"
+      ],
+      "code": "VCS-AM0023"
+    },
+    {
+      "name": "AM0073",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 1,
+      "totalProjects": 1,
+      "source": [
+        "cad-trust"
+      ],
+      "code": "VCS-AM0073"
+    },
+    {
+      "name": "AMS-III.BM",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 1,
+      "totalProjects": 1,
+      "source": [
+        "cad-trust"
+      ],
+      "code": "VCS-AMS-III.BM"
+    },
+    {
+      "name": "BCR0010_Manejo Forestal Mejorado y Prevención de la Conversión Planificada de Bosques (IFM – APFC)",
+      "registry": "BCR",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 1,
+      "totalProjects": 1,
+      "source": [
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "Conservation and restoration of natural continental wetlands",
+      "registry": "BCR0007",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 1,
+      "totalProjects": 1,
+      "source": [
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "AMS-III.D",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 1,
+      "totalProjects": 1,
+      "source": [
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "AMS-III.AO",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 1,
+      "totalProjects": 1,
+      "source": [
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "RBW-CDR-MIN",
+      "registry": "Unknown",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 1,
+      "totalProjects": 1,
+      "source": [
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "TCAF",
+      "registry": "CATS",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 1,
+      "totalProjects": 1,
+      "source": [
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "ACM0016",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 1,
+      "totalProjects": 1,
+      "source": [
+        "cad-trust"
+      ],
+      "code": "VCS-ACM0016"
+    },
+    {
+      "name": "AMS-I.L.",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 1,
+      "totalProjects": 1,
+      "source": [
+        "cad-trust"
+      ],
+      "code": "VCS-AMS-I.L."
+    },
+    {
+      "name": "AMS-I.K.",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 1,
+      "totalProjects": 1,
+      "source": [
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "ADALYS",
+      "registry": "Gold Standard",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 1,
+      "totalProjects": 1,
+      "source": [
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "SMALLHOLDER DAIRY METHODOLOGY: METHODOLOGY FOR GHG EMISSION REDUCTIONS FROM SMALLHOLDER DAIRY PRODUCTION SYSTEMS",
+      "registry": "Gold Standard",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 1,
+      "totalProjects": 1,
+      "source": [
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "MS MICROSCALE ELECTRIFICATION AND ENERGIZATION",
+      "registry": "Gold Standard",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 1,
+      "totalProjects": 1,
+      "source": [
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "AM0019",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 1,
+      "totalProjects": 1,
+      "source": [
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "BIODIESEL FROM WASTE OIL OR FAT",
+      "registry": "Gold Standard",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 1,
+      "totalProjects": 1,
+      "source": [
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "AMS-I.J.",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 1,
+      "totalProjects": 1,
+      "source": [
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "VMR0003",
+      "registry": "Verra",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 1,
+      "totalProjects": 1,
+      "source": [
+        "cad-trust"
+      ],
+      "code": "VCS-VMR0003"
+    },
+    {
+      "name": "M/UT/F-A01: Metodología para Implementar Proyectos de Remoción de GEI Mediante Reforestación, Restauración Forestal y Establecimiento de Cultivos Leñosos",
+      "registry": "CCB",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 1,
+      "totalProjects": 1,
+      "source": [
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "T-VER-METH-TM-05 Version 03, T-VER-METH-TM-06 Version 03",
+      "registry": "T-VER",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 1,
+      "totalProjects": 1,
+      "source": [
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "ACM0001",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 1,
+      "totalProjects": 1,
+      "source": [
+        "cad-trust"
+      ],
+      "code": "ACM0001: Quema o uso de gas de relleno sanitario"
+    },
+    {
+      "name": "ACM0014",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 1,
+      "totalProjects": 1,
+      "source": [
+        "cad-trust"
+      ],
+      "code": "ACM0014: Tratamiento de aguas residuales"
+    },
+    {
+      "name": "M/E-ER01: Metodología para la ejecución de proyectos de reducción de emisiones de GEI mediante el uso de energía renovable",
+      "registry": "CCB",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 1,
+      "totalProjects": 1,
+      "source": [
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "VM0037",
+      "registry": "Verra",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 1,
+      "totalProjects": 1,
+      "source": [
+        "cad-trust"
+      ],
+      "code": "VCS-VM0037"
+    },
+    {
+      "name": "AMS-III.I.",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 1,
+      "totalProjects": 1,
+      "source": [
+        "cad-trust"
+      ],
+      "code": "VCS-AMS-III.I."
+    },
+    {
+      "name": "ACM0022",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 1,
+      "totalProjects": 1,
+      "source": [
+        "cad-trust"
+      ],
+      "code": "ACM0022: Alternative waste treatment processes"
+    },
+    {
+      "name": "AMS-III.AJ.",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 1,
+      "totalProjects": 1,
+      "source": [
+        "cad-trust"
+      ],
+      "code": "AMS-III.AJ.: Recovery and recycling of materials from solid wastes"
+    },
+    {
+      "name": "AMS-III.U.",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 1,
+      "totalProjects": 1,
+      "source": [
+        "cad-trust"
+      ],
+      "code": "AMS-III.U.: Cable Cars for Mass Rapid Transit System (MRTS)"
+    },
+    {
+      "name": "AMS-III.H.",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 1,
+      "totalProjects": 1,
+      "source": [
+        "cad-trust"
+      ],
+      "code": "AMS-III.H.: Recuperación de metano en el tratamiento de aguas residuales"
+    },
+    {
+      "name": "AMS-I.L.",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 1,
+      "totalProjects": 1,
+      "source": [
+        "cad-trust"
+      ],
+      "code": "AMS-I.L.: Electrification of rural communities using renewable energy"
+    },
+    {
+      "name": "AM0049",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 1,
+      "totalProjects": 1,
+      "source": [
+        "cad-trust"
+      ],
+      "code": "AM0049: Methodology for gas based energy generation in an industrial facility"
+    },
+    {
+      "name": "M/LU/F-W01: Modular Methodology for Climate Change Mitigation Activities on Forest Lands and Wetlands",
+      "registry": "CCB",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 1,
+      "totalProjects": 1,
+      "source": [
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "ACM0006",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 1,
+      "totalProjects": 1,
+      "source": [
+        "cad-trust"
+      ],
+      "code": "ACM0006: Electricity and heat generation from biomass"
+    },
+    {
+      "name": "AMS-II.D",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 1,
+      "totalProjects": 1,
+      "source": [
+        "cad-trust"
+      ],
+      "code": "AMS-II.D: Energy efficiency and fuel switching measures for industrial facilities"
+    },
+    {
+      "name": "ACM0003",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 1,
+      "totalProjects": 1,
+      "source": [
+        "cad-trust"
+      ],
+      "code": "ACM0003: Partial substitution of fossil fuels in cement or quicklime manufacture"
+    },
+    {
+      "name": "ACM0002",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 1,
+      "totalProjects": 1,
+      "source": [
+        "cad-trust"
+      ],
+      "code": "ACM0002: Grid-connected electricity generation from renewable sources / ACM0006: Electricity and heat generation from biomass"
+    },
+    {
+      "name": "ACM0007",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 1,
+      "totalProjects": 1,
+      "source": [
+        "cad-trust"
+      ],
+      "code": "ACM0007: Conversion from single cycle to combined cycle power generation"
+    },
+    {
+      "name": "AMS-I.F.",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 1,
+      "totalProjects": 1,
+      "source": [
+        "cad-trust"
+      ],
+      "code": "AMS-I.F.: Renewable electricity generation for captive use and mini-grid"
+    },
+    {
+      "name": "Mitigation actions in the land use, change in land use and forestry sector at the rural level, incorporating social and biodiversity considerations",
+      "registry": "NTC 6208",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 1,
+      "totalProjects": 1,
+      "source": [
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "VM00015",
+      "registry": "Verra",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 1,
+      "totalProjects": 1,
+      "source": [
+        "cad-trust"
+      ],
+      "code": "VCS-VM00015"
+    },
+    {
+      "name": "ACM0009",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 1,
+      "totalProjects": 1,
+      "source": [
+        "cad-trust"
+      ],
+      "code": "VCS-ACM0009"
+    },
+    {
+      "name": "AMS-I.A.",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 1,
+      "totalProjects": 1,
+      "source": [
+        "cad-trust"
+      ],
+      "code": "VCS-AMS-I.A."
+    },
+    {
+      "name": "AMS-II.D.",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 1,
+      "totalProjects": 1,
+      "source": [
+        "cad-trust"
+      ],
+      "code": "VCS-AMS-II.D."
+    },
+    {
+      "name": "VM0025",
+      "registry": "Verra",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 1,
+      "totalProjects": 1,
+      "source": [
+        "cad-trust"
+      ],
+      "code": "VCS-VM0025"
+    },
+    {
+      "name": "AMS-III.O.",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 1,
+      "totalProjects": 1,
+      "source": [
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "ACM0002",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 1,
+      "totalProjects": 1,
+      "source": [
+        "cad-trust"
+      ],
+      "code": "ACM0002, V.20"
+    },
+    {
+      "name": "Plastic Waste Collection Methodology",
+      "registry": "Verra",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 1,
+      "totalProjects": 1,
+      "source": [
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "Plastic Waste Mechanical Recycling Methodology",
+      "registry": "Verra",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 1,
+      "totalProjects": 1,
+      "source": [
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "ACM0002 V 20.0",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 1,
+      "totalProjects": 1,
+      "source": [
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "ACM0002",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 1,
+      "totalProjects": 1,
+      "source": [
+        "cad-trust"
+      ],
+      "code": "ACM0002, V21.0"
+    },
+    {
+      "name": "ACM0002 Version 20.0",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 1,
+      "totalProjects": 1,
+      "source": [
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "ACM0002",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 1,
+      "totalProjects": 1,
+      "source": [
+        "cad-trust"
+      ],
+      "code": "ACM0002, V.21"
+    },
+    {
+      "name": "GCCM001",
+      "registry": "Gold Standard",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 1,
+      "totalProjects": 1,
+      "source": [
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "GCCM001",
+      "registry": "Gold Standard",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 1,
+      "totalProjects": 1,
+      "source": [
+        "cad-trust"
+      ],
+      "code": "GCCM001 V3.0"
+    },
+    {
+      "name": "GCCM001",
+      "registry": "Gold Standard",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 1,
+      "totalProjects": 1,
+      "source": [
+        "cad-trust"
+      ],
+      "code": "GCCM001, V3.0"
+    },
+    {
+      "name": "AMS-I.F V.03",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 1,
+      "totalProjects": 1,
+      "source": [
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "AMS-I.F V3.0",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 1,
+      "totalProjects": 1,
+      "source": [
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "AMS-III.BD.",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 1,
+      "totalProjects": 1,
+      "source": [
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "AMS-III.BI.",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 1,
+      "totalProjects": 1,
+      "source": [
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "AM0050",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 1,
+      "totalProjects": 1,
+      "source": [
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "AM0056",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 1,
+      "totalProjects": 1,
+      "source": [
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "AMS-III.BA.",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 1,
+      "totalProjects": 1,
+      "source": [
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "AM0084",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 1,
+      "totalProjects": 1,
+      "source": [
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "AMS-III.AQ.",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 1,
+      "totalProjects": 1,
+      "source": [
+        "cad-trust"
+      ],
+      "code": "AMS-III.AQ.; AMS-III.G."
+    },
+    {
+      "name": "AMS-III.AN.",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 1,
+      "totalProjects": 1,
+      "source": [
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "AMS-I.C.",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 1,
+      "totalProjects": 1,
+      "source": [
+        "cad-trust"
+      ],
+      "code": "AMS-I.C.; AMS-III.H.; AMS-III.I."
+    },
+    {
+      "name": "AMS-III.AG.",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 1,
+      "totalProjects": 1,
+      "source": [
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "AMS-III.M.",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 1,
+      "totalProjects": 1,
+      "source": [
+        "cad-trust"
+      ],
+      "code": "AMS-III.M.; AMS-III.Y."
+    },
+    {
+      "name": "AM0104",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 1,
+      "totalProjects": 1,
+      "source": [
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "AM0088",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 1,
+      "totalProjects": 1,
+      "source": [
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "AMS-III.AO.",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 1,
+      "totalProjects": 1,
+      "source": [
+        "cad-trust"
+      ],
+      "code": "AMS-III.AO.; AMS-III.AQ."
+    },
+    {
+      "name": "AM0074",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 1,
+      "totalProjects": 1,
+      "source": [
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "AMS-III.AT.",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 1,
+      "totalProjects": 1,
+      "source": [
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "AMS-I.A.",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 1,
+      "totalProjects": 1,
+      "source": [
+        "cad-trust"
+      ],
+      "code": "AMS-I.A.; AMS-II.J."
+    },
+    {
+      "name": "AMS-III.AM.",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 1,
+      "totalProjects": 1,
+      "source": [
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "AMS-I.C.",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 1,
+      "totalProjects": 1,
+      "source": [
+        "cad-trust"
+      ],
+      "code": "AMS-I.C.; AMS-I.F."
+    },
+    {
+      "name": "AMS-I.F.",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 1,
+      "totalProjects": 1,
+      "source": [
+        "cad-trust"
+      ],
+      "code": "AMS-I.F.; AMS-III.G."
+    },
+    {
+      "name": "AM0044",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 1,
+      "totalProjects": 1,
+      "source": [
+        "cad-trust"
+      ],
+      "code": "AM0044; AM0058"
+    },
+    {
+      "name": "AMS-III.AL.",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 1,
+      "totalProjects": 1,
+      "source": [
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "AM0063",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 1,
+      "totalProjects": 1,
+      "source": [
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "AMS-III.AL.",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 1,
+      "totalProjects": 1,
+      "source": [
+        "cad-trust"
+      ],
+      "code": "AMS-III.AL.; AMS-III.Q."
+    },
+    {
+      "name": "AM0025",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 1,
+      "totalProjects": 1,
+      "source": [
+        "cad-trust"
+      ],
+      "code": "AM0025; AM0053"
+    },
+    {
+      "name": "AMS-I.D.",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 1,
+      "totalProjects": 1,
+      "source": [
+        "cad-trust"
+      ],
+      "code": "AMS-I.D.; AMS-I.F.; AMS-III.H."
+    },
+    {
+      "name": "ACM0001",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 1,
+      "totalProjects": 1,
+      "source": [
+        "cad-trust"
+      ],
+      "code": "ACM0001; AM0025"
+    },
+    {
+      "name": "AM0079",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 1,
+      "totalProjects": 1,
+      "source": [
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "AM0066",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 1,
+      "totalProjects": 1,
+      "source": [
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "AMS-I.C.",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 1,
+      "totalProjects": 1,
+      "source": [
+        "cad-trust"
+      ],
+      "code": "AMS-I.C.; AMS-I.E.; AMS-III.R."
+    },
+    {
+      "name": "AM0069",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 1,
+      "totalProjects": 1,
+      "source": [
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "AMS-I.D.",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 1,
+      "totalProjects": 1,
+      "source": [
+        "cad-trust"
+      ],
+      "code": "AMS-I.D.; AMS-III.H.; AMS-III.I."
+    },
+    {
+      "name": "AMS-III.D.",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 1,
+      "totalProjects": 1,
+      "source": [
+        "cad-trust"
+      ],
+      "code": "AMS-III.D.; AMS-III.H."
+    },
+    {
+      "name": "AM0083",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 1,
+      "totalProjects": 1,
+      "source": [
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "AMS-III.T.",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 1,
+      "totalProjects": 1,
+      "source": [
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "AMS-III.U.",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 1,
+      "totalProjects": 1,
+      "source": [
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "ACM0015",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 1,
+      "totalProjects": 1,
+      "source": [
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "AMS-III.AD.",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 1,
+      "totalProjects": 1,
+      "source": [
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "AM0014",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 1,
+      "totalProjects": 1,
+      "source": [
+        "cad-trust"
+      ],
+      "code": "AM0014; AMS-I.D."
+    },
+    {
+      "name": "AMS-III.H.",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 1,
+      "totalProjects": 1,
+      "source": [
+        "cad-trust"
+      ],
+      "code": "AMS-III.H.; AMS-III.I."
+    },
+    {
+      "name": "ACM0001",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 1,
+      "totalProjects": 1,
+      "source": [
+        "cad-trust"
+      ],
+      "code": "ACM0001; AM0069"
+    },
+    {
+      "name": "AMS-III.H.",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 1,
+      "totalProjects": 1,
+      "source": [
+        "cad-trust"
+      ],
+      "code": "AMS-III.H.; AMS-III.O."
+    },
+    {
+      "name": "AMS-I.D.",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 1,
+      "totalProjects": 1,
+      "source": [
+        "cad-trust"
+      ],
+      "code": "AMS-I.D.; AMS-III.K."
+    },
+    {
+      "name": "AM0013",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 1,
+      "totalProjects": 1,
+      "source": [
+        "cad-trust"
+      ],
+      "code": "AM0013; AMS-I.C."
+    },
+    {
+      "name": "ACM0002",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 1,
+      "totalProjects": 1,
+      "source": [
+        "cad-trust"
+      ],
+      "code": "ACM0002; AM0045"
+    },
+    {
+      "name": "AMS-III.K.",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 1,
+      "totalProjects": 1,
+      "source": [
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "ACM0004",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 1,
+      "totalProjects": 1,
+      "source": [
+        "cad-trust"
+      ],
+      "code": "ACM0004; AM0018"
+    },
+    {
+      "name": "AMS-I.C.",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 1,
+      "totalProjects": 1,
+      "source": [
+        "cad-trust"
+      ],
+      "code": "AMS-I.C.; AMS-III.E.; AMS-III.G."
+    },
+    {
+      "name": "ACM0002",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 1,
+      "totalProjects": 1,
+      "source": [
+        "cad-trust"
+      ],
+      "code": "ACM0002; AMS-I.D.; AMS-III.E.; AMS-III.G."
+    },
+    {
+      "name": "ACM0002",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 1,
+      "totalProjects": 1,
+      "source": [
+        "cad-trust"
+      ],
+      "code": "ACM0002; AM0038"
+    },
+    {
+      "name": "AMS-II.C.",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 1,
+      "totalProjects": 1,
+      "source": [
+        "cad-trust"
+      ],
+      "code": "AMS-II.C.; AMS-II.D.; AMS-III.B."
+    },
+    {
+      "name": "AMS-II.B.",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 1,
+      "totalProjects": 1,
+      "source": [
+        "cad-trust"
+      ],
+      "code": "AMS-II.B.; AMS-II.D."
+    },
+    {
+      "name": "ACM0001",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 1,
+      "totalProjects": 1,
+      "source": [
+        "cad-trust"
+      ],
+      "code": "ACM0001; AM0025; AMS-I.D."
+    },
+    {
+      "name": "AMS-I.D.",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 1,
+      "totalProjects": 1,
+      "source": [
+        "cad-trust"
+      ],
+      "code": "AMS-I.D.; AMS-II.B."
+    },
+    {
+      "name": "AM0027",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 1,
+      "totalProjects": 1,
+      "source": [
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "AMS-II.B.",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 1,
+      "totalProjects": 1,
+      "source": [
+        "cad-trust"
+      ],
+      "code": "AMS-II.B.; AMS-II.E."
+    },
+    {
+      "name": "AMS-I.C.",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 1,
+      "totalProjects": 1,
+      "source": [
+        "cad-trust"
+      ],
+      "code": "AMS-I.C.; AMS-III.D.; AMS-III.H.; AMS-III.I."
+    },
+    {
+      "name": "AMS-I.A.",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 1,
+      "totalProjects": 1,
+      "source": [
+        "cad-trust"
+      ],
+      "code": "AMS-I.A.; AMS-I.D.; AMS-III.E."
+    },
+    {
+      "name": "AMS-I.C.",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 1,
+      "totalProjects": 1,
+      "source": [
+        "cad-trust"
+      ],
+      "code": "AMS-I.C.; AMS-II.C.; AMS-II.E."
+    },
+    {
+      "name": "AM0002",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 1,
+      "totalProjects": 1,
+      "source": [
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "ACM0002 V20.0",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 1,
+      "totalProjects": 1,
+      "source": [
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "AMS-I.D.",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 1,
+      "totalProjects": 1,
+      "source": [
+        "cad-trust"
+      ],
+      "code": "AMS-I.D.: Grid connected renewable electricity generation --- Version 18.0"
+    },
+    {
+      "name": "Methodology for Grid Connected Renewable Energy Generation Projects (GCCM001 v2.0)",
+      "registry": "Unknown",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 1,
+      "totalProjects": 1,
+      "source": [
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "GCCM001",
+      "registry": "Gold Standard",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 1,
+      "totalProjects": 1,
+      "source": [
+        "cad-trust"
+      ],
+      "code": "GCCM001 V03.0"
+    },
+    {
+      "name": "AMS-I.D V18",
+      "registry": "CDM",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 1,
+      "totalProjects": 1,
+      "source": [
+        "cad-trust"
+      ]
+    },
+    {
+      "name": "GCCM001",
+      "registry": "Gold Standard",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 1,
+      "totalProjects": 1,
+      "source": [
+        "cad-trust"
+      ],
+      "code": "GCCM001 version 3.0"
+    },
+    {
+      "name": "GCCM001",
+      "registry": "Gold Standard",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 1,
+      "totalProjects": 1,
+      "source": [
+        "cad-trust"
+      ],
+      "code": "GCCM001 V2.0"
+    },
+    {
+      "name": "TERO.001",
+      "registry": "Terrasos",
+      "projectsVrod": 0,
+      "creditsVrod": 0,
+      "projectsCad": 1,
+      "totalProjects": 1,
+      "source": [
+        "cad-trust"
+      ]
+    }
+  ]
+}

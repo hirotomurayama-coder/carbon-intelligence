@@ -4,52 +4,81 @@ import { MethodologyList } from "@/components/MethodologyList";
 import { CompareProvider } from "@/components/CompareContext";
 import { CompareBar } from "@/components/CompareBar";
 import type { Methodology, RegistryName } from "@/types";
-import vrodStats from "@/data/vrod-stats.json";
+import allMethodsData from "@/data/all-methodologies.json";
 
 export const dynamic = "force-dynamic";
 export const maxDuration = 30;
 
 // ============================================================
-// VROD メソドロジーデータの変換
+// all-methodologies.json のエントリ型
 // ============================================================
 
-type VrodMethod = { name: string; projects: number; credits: number };
+type AllMethodologyEntry = {
+  name: string;
+  registry: string;
+  projectsVrod: number;
+  creditsVrod: number;
+  projectsCad: number;
+  totalProjects: number;
+  source: string[];
+  code?: string; // VCS-VM0042 などのオリジナルコード
+};
 
-/** VROD メソドロジーコードから発行機関（レジストリ）を推定 */
-function inferRegistry(name: string): RegistryName {
-  if (/^(ACM|AMS-[A-Z]|AR-ACM|AR-AMS|AR-AM|AM\d{2}|ACM\d)/.test(name)) return "CDM";
-  if (/^VMR?\d/.test(name)) return "Verra";
-  if (/^ARB /.test(name)) return "ARB";
-  if (
-    /^(Improved Forest Management|Advanced Refrigeration|Emissions Reductions through Anti-Idling|Plugging Orphan)/.test(name)
-  ) return "CAR";
-  if (
-    /^(Transition to Advanced Formulation|Certified Reclaimed|Destruction of Ozone Depleting)/.test(name)
-  ) return "ACR";
-  return "CAR"; // fallback
+// ============================================================
+// レジストリ名を RegistryName 型に正規化
+// ============================================================
+
+const REGISTRY_ALIAS: Record<string, RegistryName> = {
+  Verra: "Verra",
+  VCS: "Verra",
+  "Gold Standard": "Gold Standard",
+  GS: "Gold Standard",
+  CDM: "CDM",
+  ARB: "ARB",
+  CAR: "CAR",
+  ACR: "ACR",
+  ART: "ART",
+  "Puro.earth": "Puro.earth",
+  Isometric: "Isometric",
+  "J-Credit": "J-Credit",
+};
+
+function toRegistryName(raw: string): RegistryName | null {
+  return REGISTRY_ALIAS[raw] ?? null;
 }
 
-/** VROD creditType / baseType の推定 */
+// ============================================================
+// creditType / baseType の推定
+// ============================================================
+
 function inferCreditType(name: string): string | null {
   const n = name.toUpperCase();
-  if (/AR-ACM|AR-AMS|AR-AM|VMR0006|VM0042|VM0047|IFM|FOREST|REDD|VM0015/.test(n)) return "除去系";
+  if (/AR-ACM|AR-AMS|AR-AM|VMR0006|VM0042|VM0047|VM0015|IFM|FOREST|REDD|REFORESTATION|WETLAND|MANGROVE|SOIL|SEAGRASS|BLUE CARBON|DAC|BIOCHAR|ERW|MINERALI|ENHANCED ROCK|REMOVAL/.test(n)) return "除去系";
   return "回避・削減系";
 }
 
 function inferBaseType(name: string): string | null {
   const n = name.toUpperCase();
-  if (/AMS-I\.|ACM000[12]|AMS-I[CDEF]|SOLAR|RENEWABLE|WIND|RE/.test(n)) return "再エネ";
-  if (/FOREST|AR-|IFM|MANGROVE|SOIL|REDD|VM0047|VM0042/.test(n)) return "自然ベース";
-  if (/DAC|BIOCHAR|MINERALI|ENHANCED ROCK/.test(n)) return "技術ベース";
+  if (/AMS-I\.|ACM000[12]|SOLAR|RENEWABLE|WIND|HYDRO|GEOTHERMAL|BIOMASS ENERGY/.test(n)) return "再エネ";
+  if (/FOREST|AR-|IFM|MANGROVE|SOIL|REDD|VM0047|VM0042|VM0015|WETLAND|SEAGRASS|GRASSLAND|AFFORESTATION|REFORESTATION/.test(n)) return "自然ベース";
+  if (/DAC|BIOCHAR|MINERALI|ENHANCED ROCK|DIRECT AIR/.test(n)) return "技術ベース";
   return null;
 }
 
-/** VROD エントリを Methodology 型に変換 */
-function vrodToMethodology(m: VrodMethod): Methodology {
-  if (m.name === "Methodology Under Development") return null as unknown as Methodology;
-  const registry = inferRegistry(m.name);
+// ============================================================
+// 外部エントリ → Methodology 型変換
+// ============================================================
+
+function externalToMethodology(m: AllMethodologyEntry): Methodology {
+  const registry = toRegistryName(m.registry);
+  const totalProjects = m.totalProjects;
+  // ソース種別を判定
+  const hasCad = m.source.includes("cad-trust");
+  const hasVrod = m.source.includes("vrod");
+  const sourceLabel = hasCad && hasVrod ? "vrod" : hasCad ? "cad-trust" : "vrod";
+
   return {
-    id: `vrod-${m.name.replace(/[^a-zA-Z0-9]/g, "-")}`,
+    id: `ext-${m.name.replace(/[^a-zA-Z0-9]/g, "-").slice(0, 60)}`,
     title: m.name,
     titleJa: null,
     type: null,
@@ -67,30 +96,47 @@ function vrodToMethodology(m: VrodMethod): Methodology {
     baseType: inferBaseType(m.name),
     subCategory: null,
     operationalStatus: "運用中",
-    certificationBody: null,
+    certificationBody: m.registry !== (registry ?? "") ? m.registry : null,
     version: null,
-    source: "vrod",
-    projectCount: m.projects,
-    creditCount: m.credits,
+    source: sourceLabel as "vrod" | "cad-trust",
+    projectCount: totalProjects > 0 ? totalProjects : null,
+    creditCount: m.creditsVrod > 0 ? m.creditsVrod : null,
   };
 }
+
+// ============================================================
+// ページ
+// ============================================================
 
 export default async function MethodologiesPage() {
   const wpMethodologies = await getMethodologies();
 
-  // WordPress に登録済みのタイトルセット（重複排除用）
+  // WordPress 登録済みタイトルセット（重複排除）
   const wpTitleSet = new Set(
     wpMethodologies.map((m) => m.title.trim().toLowerCase())
   );
+  // コードベースの突合用セット（"VM0042" など短縮形も含む）
+  const wpCodeSet = new Set(
+    wpMethodologies.flatMap((m) => {
+      const parts = [m.title.trim().toLowerCase()];
+      // タイトルの最初のトークン（コード部分）も登録
+      const firstToken = m.title.split(/[\s,;:]/)[0].toLowerCase();
+      if (firstToken) parts.push(firstToken);
+      return parts;
+    })
+  );
 
-  // VROD の上位メソドロジーを変換し、WPに未登録のものだけ追加
-  const vrodMethodologies = (vrodStats.topMethodologies as VrodMethod[])
-    .map(vrodToMethodology)
-    .filter((m): m is Methodology => m !== null)
-    .filter((m) => !wpTitleSet.has(m.title.trim().toLowerCase()));
+  // 外部メソドロジーを変換し、WP登録済みを除外
+  const externalMethodologies = (allMethodsData.methodologies as AllMethodologyEntry[])
+    .filter((m) => {
+      const titleLower = m.name.trim().toLowerCase();
+      const codeLower = (m.code ?? m.name).trim().toLowerCase();
+      return !wpTitleSet.has(titleLower) && !wpCodeSet.has(codeLower);
+    })
+    .map(externalToMethodology);
 
-  // 合算: WordPress 登録分 (詳細あり) → VROD 分 (統計のみ)
-  const allMethodologies: Methodology[] = [...wpMethodologies, ...vrodMethodologies];
+  // 合算: WP登録分（詳細・比較あり）→ 外部データ分（統計のみ）
+  const allMethodologies: Methodology[] = [...wpMethodologies, ...externalMethodologies];
 
   return (
     <CompareProvider>

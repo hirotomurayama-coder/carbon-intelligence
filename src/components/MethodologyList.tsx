@@ -7,19 +7,20 @@ import { SearchInput } from "@/components/ui/SearchInput";
 import { FilterSelect } from "@/components/ui/FilterSelect";
 import { Badge } from "@/components/ui/Badge";
 import { useCompare } from "@/components/CompareContext";
-import type { Methodology, RegistryName } from "@/types";
+import type { Methodology } from "@/types";
 
 const registryOptions: { label: string; value: string }[] = [
-  { label: "Verra", value: "Verra" },
+  { label: "Verra (VCS)", value: "Verra" },
   { label: "Gold Standard", value: "Gold Standard" },
   { label: "CDM (UNFCCC)", value: "CDM" },
+  { label: "ACR (American Carbon Registry)", value: "ACR" },
+  { label: "CAR (Climate Action Reserve)", value: "CAR" },
+  { label: "ARB (California)", value: "ARB" },
+  { label: "ART (REDD+)", value: "ART" },
+  { label: "CCB (Verra傘下)", value: "CCB" },
   { label: "Puro.earth", value: "Puro.earth" },
   { label: "Isometric", value: "Isometric" },
   { label: "J-Credit", value: "J-Credit" },
-  { label: "ARB", value: "ARB" },
-  { label: "CAR", value: "CAR" },
-  { label: "ACR", value: "ACR" },
-  { label: "ART", value: "ART" },
 ];
 
 const creditTypeOptions: { label: string; value: string }[] = [
@@ -42,17 +43,18 @@ const sortOptions: { label: string; value: string }[] = [
 ];
 
 /** 発行機関バッジ色 */
-function registryBadgeVariant(registry: RegistryName) {
+function registryBadgeVariant(registry: string) {
   switch (registry) {
-    case "Verra":       return "emerald" as const;
+    case "Verra":         return "emerald" as const;
     case "Gold Standard": return "amber" as const;
-    case "Puro.earth":  return "cyan" as const;
-    case "CDM":         return "blue" as const;
-    case "ARB":         return "indigo" as const;
-    case "CAR":         return "slate" as const;
-    case "ACR":         return "slate" as const;
-    case "ART":         return "emerald" as const;
-    default:            return "gray" as const;
+    case "Puro.earth":    return "cyan" as const;
+    case "CDM":           return "blue" as const;
+    case "ARB":           return "indigo" as const;
+    case "CAR":           return "slate" as const;
+    case "ACR":           return "slate" as const;
+    case "ART":           return "emerald" as const;
+    case "CCB":           return "emerald" as const;
+    default:              return "gray" as const;
   }
 }
 
