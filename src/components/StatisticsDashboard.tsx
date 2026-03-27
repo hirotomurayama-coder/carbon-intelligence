@@ -581,36 +581,56 @@ function MethodologyTab({ data, filteredMethodologies, searchQuery }: {
   searchQuery: string;
 }) {
   const top20 = filteredMethodologies.slice(0, 20);
-  // チャートの高さをデータ件数に応じて動的に計算（1行40px）
-  const chartHeight = Math.max(400, top20.length * 40 + 60);
+  const chartHeight = Math.max(500, top20.length * 48 + 60);
 
   return (
     <div className="space-y-6">
-      {/* メソドロジー TOP20 チャート */}
+      {/* メソドロジー TOP20 — テーブル形式（チャートより視認性重視） */}
       <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
         <div className="mb-4 flex items-center justify-between">
           <h3 className="text-sm font-semibold text-gray-900">
-            メソドロジー別プロジェクト数
+            メソドロジー別プロジェクト数 TOP20
             {searchQuery && <span className="ml-2 text-xs font-normal text-gray-400">「{searchQuery}」で絞込中</span>}
           </h3>
           <span className="text-xs text-gray-400">{filteredMethodologies.length} 件</span>
         </div>
-        <div style={{ height: chartHeight }}>
-          <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={top20} layout="vertical" margin={{ left: 10, right: 20, top: 5, bottom: 5 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
-              <XAxis type="number" tick={{ fontSize: 10 }} />
-              <YAxis
-                type="category"
-                dataKey="name"
-                tick={{ fontSize: 11 }}
-                width={320}
-                interval={0}
-              />
-              <Tooltip formatter={(v: unknown) => [formatFull(Number(v)), "プロジェクト数"]} />
-              <Bar dataKey="projects" name="プロジェクト数" fill="#10b981" radius={[0, 4, 4, 0]} />
-            </BarChart>
-          </ResponsiveContainer>
+        <div className="space-y-2">
+          {top20.map((m, i) => {
+            const wpId = resolveMethodologyWpId(m.name);
+            const maxProjects = top20[0]?.projects ?? 1;
+            const pct = (m.projects / maxProjects) * 100;
+            return (
+              <div key={m.name} className="group flex items-center gap-3">
+                <span className="w-6 text-right text-xs text-gray-400 flex-shrink-0">{i + 1}</span>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center justify-between mb-0.5">
+                    {wpId ? (
+                      <Link
+                        href={`/methodologies/${wpId}`}
+                        className="text-xs font-medium text-emerald-700 hover:text-emerald-900 hover:underline truncate max-w-[70%]"
+                        title={m.name}
+                      >
+                        {m.name}
+                      </Link>
+                    ) : (
+                      <span className="text-xs font-medium text-gray-700 truncate max-w-[70%]" title={m.name}>
+                        {m.name}
+                      </span>
+                    )}
+                    <span className="text-xs text-gray-500 flex-shrink-0 ml-2">
+                      {formatFull(m.projects)}
+                    </span>
+                  </div>
+                  <div className="h-4 w-full rounded-full bg-gray-100 overflow-hidden">
+                    <div
+                      className="h-full rounded-full bg-emerald-500 transition-all"
+                      style={{ width: `${pct}%` }}
+                    />
+                  </div>
+                </div>
+              </div>
+            );
+          })}
         </div>
       </div>
 
