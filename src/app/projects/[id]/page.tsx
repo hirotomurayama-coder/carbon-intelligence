@@ -1,5 +1,5 @@
-import { getProjectById, calcTotalUnits, getCountries, normalizeMethodologyCode, translateToJa } from "@/lib/cad-trust";
-import { getMethodologies } from "@/lib/wordpress";
+import { getProjectById, calcTotalUnits, getCountries, resolveMethodologyId, translateToJa } from "@/lib/cad-trust";
+import { getMethodologyById } from "@/lib/wordpress";
 import { Badge } from "@/components/ui/Badge";
 import { notFound } from "next/navigation";
 import Link from "next/link";
@@ -77,16 +77,13 @@ export default async function ProjectDetailPage({ params }: Props) {
     project.description ? translateToJa(project.description) : Promise.resolve(null),
   ]);
 
-  // メソドロジーDBとの紐付け
+  // メソドロジーDBとの紐付け（マッピングテーブルで高速解決）
   let linkedMethodology: Methodology | null = null;
   if (project.methodology) {
-    const allMethods = await getMethodologies();
-    const code = normalizeMethodologyCode(project.methodology);
-    linkedMethodology = allMethods.find((m) => {
-      const mTitle = m.title.toLowerCase();
-      const mCode = code.toLowerCase();
-      return mTitle.includes(mCode) || mTitle.includes(project.methodology!.toLowerCase());
-    }) ?? null;
+    const methId = resolveMethodologyId(project.methodology);
+    if (methId) {
+      linkedMethodology = await getMethodologyById(String(methId));
+    }
   }
 
   return (

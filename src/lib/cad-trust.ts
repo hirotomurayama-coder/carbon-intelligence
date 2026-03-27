@@ -184,17 +184,42 @@ export async function getProjectStats(): Promise<{ totalProjects: number }> {
 // ヘルパー
 // ============================================================
 
+import methodologyMappingData from "@/data/methodology-mapping.json";
+
+const METHODOLOGY_MAP: Record<string, number> = methodologyMappingData.mappings as Record<string, number>;
+
 /**
- * CAD Trust メソドロジー名から、内部メソドロジーDB のマッチを探す。
- * 例: "VM0047" → Verra VM0047 のメソドロジーID
+ * CAD Trust メソドロジー名を正規化（プレフィックス除去）
  */
 export function normalizeMethodologyCode(cadMethodology: string): string {
-  // "VCS-VM0042" → "VM0042", "CDM - AMS-I.D." → "AMS-I.D."
   return cadMethodology
     .replace(/^VCS-/i, "")
     .replace(/^CDM\s*-\s*/i, "")
     .replace(/^GS\s*-\s*/i, "")
     .trim();
+}
+
+/**
+ * CAD Trust メソドロジーコードから、WordPress メソドロジーDB の ID を解決。
+ * マッピングテーブルで高速にルックアップする。
+ * 見つからない場合はメソドロジー名でのフォールバック検索も試みる。
+ */
+export function resolveMethodologyId(cadMethodology: string): number | null {
+  if (!cadMethodology) return null;
+
+  // 1. 直接マッチ
+  if (METHODOLOGY_MAP[cadMethodology]) return METHODOLOGY_MAP[cadMethodology];
+
+  // 2. 正規化してマッチ
+  const code = normalizeMethodologyCode(cadMethodology);
+  if (METHODOLOGY_MAP[code]) return METHODOLOGY_MAP[code];
+
+  // 3. コード部分だけ抽出して試行（例: "VCS-VM0042" → "VM0042"）
+  for (const [key, id] of Object.entries(METHODOLOGY_MAP)) {
+    if (code.includes(key) || key.includes(code)) return id;
+  }
+
+  return null;
 }
 
 // ============================================================
