@@ -12,13 +12,14 @@ import type { Methodology, RegistryName } from "@/types";
 const registryOptions: { label: string; value: string }[] = [
   { label: "Verra", value: "Verra" },
   { label: "Gold Standard", value: "Gold Standard" },
+  { label: "CDM (UNFCCC)", value: "CDM" },
   { label: "Puro.earth", value: "Puro.earth" },
   { label: "Isometric", value: "Isometric" },
   { label: "J-Credit", value: "J-Credit" },
-  { label: "CDM", value: "CDM" },
   { label: "ARB", value: "ARB" },
-  { label: "ACR", value: "ACR" },
   { label: "CAR", value: "CAR" },
+  { label: "ACR", value: "ACR" },
+  { label: "ART", value: "ART" },
 ];
 
 const creditTypeOptions: { label: string; value: string }[] = [
@@ -37,19 +38,21 @@ const sortOptions: { label: string; value: string }[] = [
   { label: "更新日（古い順）", value: "date_asc" },
   { label: "タイトル順（A→Z）", value: "title_asc" },
   { label: "タイトル順（Z→A）", value: "title_desc" },
+  { label: "プロジェクト数（多い順）", value: "projects_desc" },
 ];
 
-/** レジストリ名に応じたバッジ色 */
+/** 発行機関バッジ色 */
 function registryBadgeVariant(registry: RegistryName) {
   switch (registry) {
-    case "Verra":
-      return "emerald" as const;
-    case "Gold Standard":
-      return "amber" as const;
-    case "Puro.earth":
-      return "cyan" as const;
-    default:
-      return "gray" as const;
+    case "Verra":       return "emerald" as const;
+    case "Gold Standard": return "amber" as const;
+    case "Puro.earth":  return "cyan" as const;
+    case "CDM":         return "blue" as const;
+    case "ARB":         return "indigo" as const;
+    case "CAR":         return "slate" as const;
+    case "ACR":         return "slate" as const;
+    case "ART":         return "emerald" as const;
+    default:            return "gray" as const;
   }
 }
 
@@ -62,6 +65,13 @@ function baseTypeBadgeVariant(v: string) {
   if (v === "自然ベース") return "emerald" as const;
   if (v === "技術ベース") return "slate" as const;
   return "amber" as const; // 再エネ
+}
+
+/** 数値を読みやすい形式に（万単位） */
+function formatCount(n: number): string {
+  if (n >= 1_000_000) return `${(n / 1_000_000).toFixed(1)}M`;
+  if (n >= 10_000) return `${Math.round(n / 1_000)}K`;
+  return n.toLocaleString();
 }
 
 // ============================================================
@@ -79,19 +89,19 @@ function escapeCsv(value: string | null | undefined): string {
 
 function exportCsv(items: Methodology[]) {
   const headers = [
-    "タイトル（日本語）", "タイトル（英語）", "レジストリ", "認証機関",
+    "タイトル（日本語）", "タイトル（英語）", "発行機関",
     "クレジット種別", "基本分類", "詳細分類", "ステータス",
-    "バージョン", "AI要約", "外部更新日", "ソースURL",
+    "バージョン", "プロジェクト数", "AI要約", "外部更新日", "ソースURL",
   ];
   const rows = items.map((m) => [
-    escapeCsv(m.titleJa), escapeCsv(m.title), escapeCsv(m.registry),
-    escapeCsv(m.certificationBody), escapeCsv(m.creditType), escapeCsv(m.baseType),
+    escapeCsv(m.titleJa), escapeCsv(m.title), escapeCsv(m.registry ?? m.certificationBody),
+    escapeCsv(m.creditType), escapeCsv(m.baseType),
     escapeCsv(m.subCategory), escapeCsv(m.operationalStatus),
-    escapeCsv(m.version), escapeCsv(m.aiSummary),
-    escapeCsv(m.externalLastUpdated), escapeCsv(m.sourceUrl),
+    escapeCsv(m.version), escapeCsv(m.projectCount?.toString()),
+    escapeCsv(m.aiSummary), escapeCsv(m.externalLastUpdated), escapeCsv(m.sourceUrl),
   ]);
 
-  const bom = "\uFEFF"; // Excel で日本語文字化け防止
+  const bom = "\uFEFF";
   const csv = bom + [headers.join(","), ...rows.map((r) => r.join(","))].join("\n");
   const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
   const url = URL.createObjectURL(blob);
@@ -111,14 +121,12 @@ export function MethodologyList({ data }: Props) {
   const searchParams = useSearchParams();
   const compare = useCompare();
 
-  // URLパラメータから初期値を読み込み
   const [keyword, setKeyword] = useState(searchParams.get("q") ?? "");
   const [registryFilter, setRegistryFilter] = useState(searchParams.get("registry") ?? "");
   const [creditTypeFilter, setCreditTypeFilter] = useState(searchParams.get("creditType") ?? "");
   const [baseTypeFilter, setBaseTypeFilter] = useState(searchParams.get("baseType") ?? "");
   const [sortBy, setSortBy] = useState(searchParams.get("sort") ?? "date_desc");
 
-  // フィルタ変更時にURLを同期（ブックマーク・共有可能に）
   const syncUrl = useCallback(() => {
     const params = new URLSearchParams();
     if (keyword) params.set("q", keyword);
@@ -133,7 +141,6 @@ export function MethodologyList({ data }: Props) {
 
   useEffect(() => { syncUrl(); }, [syncUrl]);
 
-  // フィルタバーの高さを動的計測（thead の sticky top に使用）
   const filterRef = useRef<HTMLDivElement>(null);
   const [filterHeight, setFilterHeight] = useState(0);
 
@@ -150,6 +157,10 @@ export function MethodologyList({ data }: Props) {
     return () => ro.disconnect();
   }, []);
 
+  // 統計サマリー
+  const wpCount = data.filter((m) => !m.source || m.source === "wordpress").length;
+  const vrodCount = data.filter((m) => m.source === "vrod").length;
+
   const filtered = useMemo(() => {
     const result = data.filter((m) => {
       const searchTarget = [
@@ -158,6 +169,7 @@ export function MethodologyList({ data }: Props) {
         m.summary,
         m.aiSummary ?? "",
         m.certificationBody ?? "",
+        m.registry ?? "",
         m.subCategory ?? "",
         m.type ?? "",
       ]
@@ -174,18 +186,24 @@ export function MethodologyList({ data }: Props) {
       return matchesKeyword && matchesRegistry && matchesCreditType && matchesBaseType;
     });
 
-    // ソート
     const effectiveSort = sortBy || "date_desc";
     result.sort((a, b) => {
+      if (effectiveSort === "projects_desc") {
+        return (b.projectCount ?? 0) - (a.projectCount ?? 0);
+      }
       if (effectiveSort === "title_asc" || effectiveSort === "title_desc") {
         const titleA = (a.titleJa ?? a.title).toLowerCase();
         const titleB = (b.titleJa ?? b.title).toLowerCase();
         const cmp = titleA.localeCompare(titleB, "ja");
         return effectiveSort === "title_desc" ? -cmp : cmp;
       }
-      // 日付順
+      // WP entries (with dates) come first, then VROD entries by project count
       const dateA = a.externalLastUpdated ?? "";
       const dateB = b.externalLastUpdated ?? "";
+      if (!dateA && !dateB) {
+        // Both VROD: sort by project count descending
+        return (b.projectCount ?? 0) - (a.projectCount ?? 0);
+      }
       const cmp =
         dateA && dateB
           ? dateB.localeCompare(dateA)
@@ -202,6 +220,22 @@ export function MethodologyList({ data }: Props) {
 
   return (
     <div>
+      {/* データソース概要バナー */}
+      <div className="mb-4 flex flex-wrap items-center gap-3 rounded-lg border border-gray-100 bg-gray-50 px-4 py-2.5 text-xs text-gray-500">
+        <span className="font-medium text-gray-700">データ収録状況:</span>
+        <span className="flex items-center gap-1">
+          <span className="inline-block h-2 w-2 rounded-full bg-emerald-500"></span>
+          WordPress登録済み
+          <strong className="ml-0.5 text-gray-700">{wpCount}件</strong>
+        </span>
+        <span className="flex items-center gap-1">
+          <span className="inline-block h-2 w-2 rounded-full bg-blue-400"></span>
+          VROD統計参照
+          <strong className="ml-0.5 text-gray-700">{vrodCount}件</strong>
+        </span>
+        <span className="ml-auto text-gray-400">合計 {data.length} 件</span>
+      </div>
+
       {/* フィルタバー（Sticky） */}
       <div ref={filterRef} className="sticky top-0 z-30 -mx-6 bg-white px-6 py-4 shadow-[0_-50px_0_0_white,0_1px_0_0_#e5e7eb]">
         <div className="flex flex-wrap items-center gap-3">
@@ -216,7 +250,7 @@ export function MethodologyList({ data }: Props) {
             value={registryFilter}
             onChange={setRegistryFilter}
             options={registryOptions}
-            placeholder="レジストリ"
+            placeholder="発行機関"
           />
           <FilterSelect
             value={creditTypeFilter}
@@ -266,13 +300,13 @@ export function MethodologyList({ data }: Props) {
                 タイトル
               </th>
               <th className="px-5 py-3 font-medium text-gray-500">
-                レジストリ
-              </th>
-              <th className="hidden px-5 py-3 font-medium text-gray-500 md:table-cell">
-                認証機関
+                発行機関
               </th>
               <th className="hidden px-5 py-3 font-medium text-gray-500 lg:table-cell">
                 分類
+              </th>
+              <th className="hidden px-4 py-3 font-medium text-gray-500 text-right xl:table-cell">
+                プロジェクト数
               </th>
               <th className="hidden px-5 py-3 font-medium text-gray-500 lg:table-cell">
                 ステータス
@@ -283,132 +317,160 @@ export function MethodologyList({ data }: Props) {
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-100">
-            {filtered.map((m) => (
-              <tr
-                key={m.id}
-                className="group cursor-pointer transition-colors hover:bg-emerald-50/40"
-                onClick={() => router.push(`/methodologies/${m.id}`)}
-              >
-                {/* タイトル */}
-                <td className="px-5 py-4">
-                  <Link
-                    href={`/methodologies/${m.id}`}
-                    className="block"
-                    onClick={(e) => e.stopPropagation()}
-                  >
-                    {/* 日本語翻訳がある場合: 日本語メイン + 英語サブ */}
-                    {m.titleJa ? (
-                      <>
-                        <p className="font-medium text-gray-900 group-hover:text-emerald-700">
-                          {m.titleJa}
-                        </p>
-                        <p className="mt-0.5 text-xs text-gray-400">
-                          {m.title.length > 80
-                            ? m.title.slice(0, 80) + "…"
-                            : m.title}
-                        </p>
-                      </>
-                    ) : (
-                      /* 日本語翻訳がない場合: 英語タイトルを大きく表示 */
-                      <>
-                        <p className="font-medium text-gray-900 group-hover:text-emerald-700">
-                          {m.title}
-                        </p>
-                        {m.summary && (
-                          <p className="mt-0.5 text-xs leading-relaxed text-gray-400">
-                            {m.summary.length > 100
-                              ? m.summary.slice(0, 100) + "…"
-                              : m.summary}
-                          </p>
+            {filtered.map((m) => {
+              const isWp = !m.source || m.source === "wordpress";
+              return (
+                <tr
+                  key={m.id}
+                  className={`group transition-colors ${isWp ? "cursor-pointer hover:bg-emerald-50/40" : "hover:bg-blue-50/30"}`}
+                  onClick={() => { if (isWp) router.push(`/methodologies/${m.id}`); }}
+                >
+                  {/* タイトル */}
+                  <td className="px-5 py-4">
+                    {isWp ? (
+                      <Link
+                        href={`/methodologies/${m.id}`}
+                        className="block"
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        {m.titleJa ? (
+                          <>
+                            <p className="font-medium text-gray-900 group-hover:text-emerald-700">
+                              {m.titleJa}
+                            </p>
+                            <p className="mt-0.5 text-xs text-gray-400">
+                              {m.title.length > 80 ? m.title.slice(0, 80) + "…" : m.title}
+                            </p>
+                          </>
+                        ) : (
+                          <>
+                            <p className="font-medium text-gray-900 group-hover:text-emerald-700">
+                              {m.title}
+                            </p>
+                            {m.summary && (
+                              <p className="mt-0.5 text-xs leading-relaxed text-gray-400">
+                                {m.summary.length > 100 ? m.summary.slice(0, 100) + "…" : m.summary}
+                              </p>
+                            )}
+                          </>
                         )}
-                      </>
+                      </Link>
+                    ) : (
+                      /* VROD / CAD Trust エントリ: リンクなし */
+                      <div>
+                        <p className="font-medium text-gray-900">
+                          {m.title.length > 80 ? m.title.slice(0, 80) + "…" : m.title}
+                        </p>
+                        <span className="mt-0.5 inline-block rounded bg-blue-50 px-1.5 py-0.5 text-[10px] font-medium text-blue-500">
+                          VROD参照
+                        </span>
+                      </div>
                     )}
-                  </Link>
-                </td>
+                  </td>
 
-                {/* レジストリ */}
-                <td className="px-5 py-4">
-                  {m.registry ? (
-                    <Badge variant={registryBadgeVariant(m.registry)}>
-                      {m.registry}
-                    </Badge>
-                  ) : (
-                    <span className="text-xs text-gray-300">{"\u2014"}</span>
-                  )}
-                </td>
-
-                {/* 認証機関 */}
-                <td className="hidden px-5 py-4 text-gray-600 md:table-cell">
-                  {m.certificationBody ?? "\u2014"}
-                </td>
-
-                {/* 分類 */}
-                <td className="hidden px-5 py-4 lg:table-cell">
-                  <div className="flex flex-wrap gap-1">
-                    {m.creditType && (
-                      <Badge variant={creditTypeBadgeVariant(m.creditType)}>
-                        {m.creditType}
-                      </Badge>
-                    )}
-                    {m.baseType && (
-                      <Badge variant={baseTypeBadgeVariant(m.baseType)}>
-                        {m.baseType}
-                      </Badge>
-                    )}
-                    {!m.creditType && !m.baseType && (
+                  {/* 発行機関（レジストリ + 認証機関を統合） */}
+                  <td className="px-5 py-4">
+                    {m.registry ? (
+                      <div className="flex flex-col gap-1">
+                        <Badge variant={registryBadgeVariant(m.registry)}>
+                          {m.registry}
+                        </Badge>
+                        {/* 認証機関がレジストリと異なる場合のみ補足表示 */}
+                        {m.certificationBody &&
+                          m.certificationBody.toLowerCase() !== m.registry.toLowerCase() && (
+                            <span className="text-[11px] text-gray-400">
+                              {m.certificationBody}
+                            </span>
+                          )}
+                      </div>
+                    ) : m.certificationBody ? (
+                      <span className="text-xs text-gray-600">{m.certificationBody}</span>
+                    ) : (
                       <span className="text-xs text-gray-300">{"\u2014"}</span>
                     )}
-                  </div>
-                </td>
+                  </td>
 
-                {/* ステータス */}
-                <td className="hidden px-5 py-4 lg:table-cell">
-                  {m.operationalStatus ? (
-                    <Badge
-                      variant={
-                        m.operationalStatus === "運用中" ? "emerald" : "gray"
-                      }
-                    >
-                      {m.operationalStatus}
-                    </Badge>
-                  ) : (
-                    <span className="text-xs text-gray-300">{"\u2014"}</span>
-                  )}
-                </td>
-
-                {/* 比較ボタン */}
-                <td className="px-3 py-4">
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      if (compare.has(m.id)) {
-                        compare.remove(m.id);
-                      } else {
-                        compare.add(m);
-                      }
-                    }}
-                    disabled={compare.isFull && !compare.has(m.id)}
-                    className={`inline-flex items-center gap-1 rounded-lg px-2.5 py-1.5 text-xs font-medium transition ${
-                      compare.has(m.id)
-                        ? "bg-emerald-100 text-emerald-700 border border-emerald-300"
-                        : compare.isFull
-                          ? "bg-gray-50 text-gray-300 cursor-not-allowed border border-gray-100"
-                          : "bg-white text-gray-500 border border-gray-200 hover:bg-emerald-50 hover:text-emerald-600 hover:border-emerald-300"
-                    }`}
-                    title={compare.has(m.id) ? "比較から削除" : "比較に追加（最大5件）"}
-                  >
-                    <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                      {compare.has(m.id) ? (
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                      ) : (
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                  {/* 分類 */}
+                  <td className="hidden px-5 py-4 lg:table-cell">
+                    <div className="flex flex-wrap gap-1">
+                      {m.creditType && (
+                        <Badge variant={creditTypeBadgeVariant(m.creditType)}>
+                          {m.creditType}
+                        </Badge>
                       )}
-                    </svg>
-                    {compare.has(m.id) ? "追加済" : "比較"}
-                  </button>
-                </td>
-              </tr>
-            ))}
+                      {m.baseType && (
+                        <Badge variant={baseTypeBadgeVariant(m.baseType)}>
+                          {m.baseType}
+                        </Badge>
+                      )}
+                      {!m.creditType && !m.baseType && (
+                        <span className="text-xs text-gray-300">{"\u2014"}</span>
+                      )}
+                    </div>
+                  </td>
+
+                  {/* プロジェクト数 */}
+                  <td className="hidden px-4 py-4 text-right xl:table-cell">
+                    {m.projectCount != null ? (
+                      <span className="text-sm font-medium text-gray-700">
+                        {m.projectCount.toLocaleString()}
+                      </span>
+                    ) : (
+                      <span className="text-xs text-gray-300">{"\u2014"}</span>
+                    )}
+                  </td>
+
+                  {/* ステータス */}
+                  <td className="hidden px-5 py-4 lg:table-cell">
+                    {m.operationalStatus ? (
+                      <Badge
+                        variant={m.operationalStatus === "運用中" ? "emerald" : "gray"}
+                      >
+                        {m.operationalStatus}
+                      </Badge>
+                    ) : (
+                      <span className="text-xs text-gray-300">{"\u2014"}</span>
+                    )}
+                  </td>
+
+                  {/* 比較ボタン（WPエントリのみ） */}
+                  <td className="px-3 py-4">
+                    {isWp ? (
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          if (compare.has(m.id)) {
+                            compare.remove(m.id);
+                          } else {
+                            compare.add(m);
+                          }
+                        }}
+                        disabled={compare.isFull && !compare.has(m.id)}
+                        className={`inline-flex items-center gap-1 rounded-lg px-2.5 py-1.5 text-xs font-medium transition ${
+                          compare.has(m.id)
+                            ? "bg-emerald-100 text-emerald-700 border border-emerald-300"
+                            : compare.isFull
+                              ? "bg-gray-50 text-gray-300 cursor-not-allowed border border-gray-100"
+                              : "bg-white text-gray-500 border border-gray-200 hover:bg-emerald-50 hover:text-emerald-600 hover:border-emerald-300"
+                        }`}
+                        title={compare.has(m.id) ? "比較から削除" : "比較に追加（最大5件）"}
+                      >
+                        <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                          {compare.has(m.id) ? (
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                          ) : (
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                          )}
+                        </svg>
+                        {compare.has(m.id) ? "追加済" : "比較"}
+                      </button>
+                    ) : (
+                      <span className="text-xs text-gray-300">—</span>
+                    )}
+                  </td>
+                </tr>
+              );
+            })}
             {filtered.length === 0 && (
               <tr>
                 <td

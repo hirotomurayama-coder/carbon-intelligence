@@ -30,6 +30,32 @@ export const REGISTRY_CONFIG: Record<
     enabled: true,
     notes: "サーバーレンダリング HTML。Cheerio で解析。6カテゴリ（省エネ, 再エネ, 工業, 農業, 廃棄物, 森林）。",
   },
+  // 以下は自動スクレイピング対象外（VROD・CAD Trust からの参照データ）
+  CDM: {
+    url: "https://cdm.unfccc.int/methodologies/",
+    enabled: false,
+    notes: "UNFCCC CDM 方法論。VROD 統計から参照。自動スクレイピング対象外。",
+  },
+  ARB: {
+    url: "https://ww2.arb.ca.gov/our-work/programs/compliance-offset-program/compliance-offset-protocols",
+    enabled: false,
+    notes: "California ARB コンプライアンスオフセットプロトコル。VROD 統計から参照。",
+  },
+  ACR: {
+    url: "https://acrcarbon.org/methodologies/",
+    enabled: false,
+    notes: "American Carbon Registry 方法論。VROD 統計から参照。",
+  },
+  CAR: {
+    url: "https://www.climateactionreserve.org/how/protocols/",
+    enabled: false,
+    notes: "Climate Action Reserve プロトコル。VROD 統計から参照。",
+  },
+  ART: {
+    url: "https://www.artredd.org/trees/",
+    enabled: false,
+    notes: "Architecture for REDD+ Transactions。VROD 統計から参照。",
+  },
 };
 
 /** 同期全体の設定 */

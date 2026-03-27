@@ -53,7 +53,7 @@ const COMPARE_ROWS: CompareRow[] = [
     render: (m) => <span className="text-sm text-gray-700">{m.subCategory ?? "—"}</span>,
   },
   {
-    label: "認証機関",
+    label: "発行機関（認証）",
     key: "certificationBody",
     render: (m) => <span className="text-sm text-gray-700">{m.certificationBody ?? "—"}</span>,
   },

@@ -187,7 +187,7 @@ export default async function MethodologyDetailPage({ params }: Props) {
               }
             />
             <InfoRow label="詳細分類" value={methodology.subCategory} />
-            <InfoRow label="認証機関" value={methodology.certificationBody} />
+            <InfoRow label="発行機関（認証）" value={methodology.certificationBody} />
             <InfoRow
               label="運用ステータス"
               value={

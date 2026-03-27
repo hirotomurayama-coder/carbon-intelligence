@@ -35,6 +35,10 @@ export type Methodology = {
   operationalStatus: string | null;    // ACF: status — 運用中 / 審査中 / 再審査中 / 却下 / 無効化
   certificationBody: string | null;    // ACF: standard — 認証機関名
   version: string | null;              // ACF: version — バージョン
+  // --- 外部データソース（WordPress 以外のメソドロジー） ---
+  source?: "wordpress" | "vrod" | "cad-trust"; // データ出所（未設定時は "wordpress" 扱い）
+  projectCount?: number | null;        // VROD / CAD Trust プロジェクト件数
+  creditCount?: number | null;         // VROD クレジット発行数
 };
 
 // ============================================================
@@ -133,7 +137,12 @@ export type RegistryName =
   | "Gold Standard"
   | "Puro.earth"
   | "Isometric"
-  | "J-Credit";
+  | "J-Credit"
+  | "CDM"
+  | "ARB"
+  | "ACR"
+  | "CAR"
+  | "ART";
 
 /** スクレイピングで取得した生データ（WordPress 書き込み前） */
 export type ScrapedMethodology = {

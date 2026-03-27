@@ -202,6 +202,7 @@ const VALID_METHODOLOGY_TYPES: MethodologyType[] = [
 
 const VALID_REGISTRY_NAMES: RegistryName[] = [
   "Verra", "Gold Standard", "Puro.earth", "Isometric", "J-Credit",
+  "CDM", "ARB", "ACR", "CAR", "ART",
 ];
 
 function mapMethodology(wp: WPPost): Methodology {
