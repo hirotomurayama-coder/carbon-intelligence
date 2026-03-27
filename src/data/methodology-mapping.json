@@ -37,7 +37,13 @@
     "VM0033": 62,
     "ACM0001": 85,
     "VM0048": 71,
-    "AMS-III.AV.": 95
+    "AMS-III.AV.": 84,
+    "Improved Forest Management (IFM) on Non-Federal U.S. Forestlands": 774,
+    "ARB Compliance Offset Protocol: Destruction of U.S. Ozone Depleting Substances Banks": 768,
+    "ARB Compliance Offset Protocol: Destruction of U.S. Ozone Depleting Substances": 768,
+    "ARB Compliance Offset Protocol: U.S. Forest Projects": 769,
+    "ARB Compliance Offset Protocol: Mine Methane Capture Projects": 770,
+    "Certified Reclaimed HFC Refrigerants, Propellants, and Fire Suppressants": 775
   },
   "registryPrefixes": {
     "VCS-": "",
