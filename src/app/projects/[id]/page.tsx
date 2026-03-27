@@ -274,6 +274,22 @@ export default async function ProjectDetailPage({ params }: Props) {
         </div>
       )}
 
+      {/* 関連リンク */}
+      {project.projectDeveloper && project.projectDeveloper !== "n.a." && (
+        <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
+          <h3 className="mb-3 text-sm font-semibold text-gray-900">開発企業</h3>
+          <Link
+            href={`/companies?q=${encodeURIComponent(project.projectDeveloper)}`}
+            className="inline-flex items-center gap-2 rounded-lg bg-blue-50 border border-blue-200 px-4 py-2 text-sm font-medium text-blue-700 hover:bg-blue-100 transition"
+          >
+            <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
+            </svg>
+            「{project.projectDeveloper}」を企業DBで検索
+          </Link>
+        </div>
+      )}
+
       {/* データソース */}
       <div className="border-t border-gray-100 pt-4">
         <p className="text-[10px] text-gray-400">

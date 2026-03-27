@@ -1,10 +1,10 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { getMethodologyById, getMethodologies } from "@/lib/wordpress";
+import { getMethodologyById, getMethodologies, getInsights } from "@/lib/wordpress";
 import { getProjects, getCountries, calcTotalUnits } from "@/lib/cad-trust";
 import type { CadProject } from "@/lib/cad-trust";
 import { Badge } from "@/components/ui/Badge";
-import type { Methodology, RegistryName } from "@/types";
+import type { Methodology, RegistryName, Insight } from "@/types";
 
 type Props = {
   params: Promise<{ id: string }>;
@@ -240,6 +240,9 @@ export default async function MethodologyDetailPage({ params }: Props) {
       {/* CAD Trust 関連プロジェクト */}
       <CadTrustProjects methodology={methodology} />
 
+      {/* 関連インサイト */}
+      <RelatedInsights methodology={methodology} />
+
       {/* 類似メソドロジー */}
       <SimilarMethodologies current={methodology} />
 
@@ -393,6 +396,46 @@ async function CadTrustProjects({ methodology }: { current?: never; methodology:
       >
         さらに検索 →
       </Link>
+    </div>
+  );
+}
+
+/** 関連インサイト — メソドロジー名がタイトルや要約に含まれるインサイトを表示 */
+async function RelatedInsights({ methodology }: { methodology: Methodology }) {
+  const allInsights = await getInsights().catch(() => []);
+
+  // メソドロジー名（日本語/英語）でキーワードマッチ
+  const keywords = [
+    methodology.title.toLowerCase(),
+    methodology.titleJa?.toLowerCase(),
+    methodology.subCategory?.toLowerCase(),
+    methodology.registry?.toLowerCase(),
+  ].filter((k): k is string => !!k && k.length > 2);
+
+  const matched = allInsights.filter((ins: Insight) => {
+    const text = `${ins.title} ${ins.summary}`.toLowerCase();
+    return keywords.some((kw) => text.includes(kw));
+  }).slice(0, 4);
+
+  if (matched.length === 0) return null;
+
+  return (
+    <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
+      <h3 className="mb-4 text-sm font-semibold text-gray-900">関連インサイト</h3>
+      <div className="space-y-3">
+        {matched.map((ins: Insight) => (
+          <Link
+            key={ins.id}
+            href={`/insights/${ins.id}`}
+            className="flex items-start gap-3 rounded-lg border border-gray-100 p-3 transition hover:border-emerald-200 hover:bg-emerald-50/30"
+          >
+            <div className="min-w-0">
+              <p className="text-sm font-medium text-gray-900 line-clamp-1">{ins.title}</p>
+              <p className="mt-0.5 text-xs text-gray-400">{ins.date} {ins.category && `| ${ins.category}`}</p>
+            </div>
+          </Link>
+        ))}
+      </div>
     </div>
   );
 }

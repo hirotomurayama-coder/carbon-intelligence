@@ -1,4 +1,4 @@
-import { getPriceTrendByMarketId, getPriceTrends } from "@/lib/wordpress";
+import { getPriceTrendByMarketId, getPriceTrends, getInsights } from "@/lib/wordpress";
 import { MarketDetailView } from "@/components/MarketDetailView";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { notFound } from "next/navigation";
@@ -71,6 +71,62 @@ export default async function MarketDetailPage({ params }: PageProps) {
       <ErrorBoundary>
         <MarketDetailView trend={trend} />
       </ErrorBoundary>
+
+      {/* 関連コンテンツ */}
+      <MarketRelatedContent marketTitle={trend.title} marketId={marketId} />
+    </div>
+  );
+}
+
+async function MarketRelatedContent({ marketTitle, marketId }: { marketTitle: string; marketId: string }) {
+  const allInsights = await getInsights().catch(() => []);
+  const keywords = marketTitle.toLowerCase().split(/[\s（）()]+/).filter((w) => w.length > 2);
+
+  const matched = allInsights.filter((ins) => {
+    const text = `${ins.title} ${ins.summary}`.toLowerCase();
+    return keywords.some((kw) => text.includes(kw));
+  }).slice(0, 3);
+
+  // プロジェクト検索クエリ
+  const searchMap: Record<string, string> = {
+    "eu-ets": "EU ETS",
+    "jcredit-energy-saving": "energy Japan",
+    "jcredit-forest": "forest Japan",
+    "vol-biochar": "biochar",
+    "vol-dac": "direct air capture",
+    "vol-redd-plus": "REDD",
+    "vol-erw": "enhanced rock weathering",
+    "vol-blue-carbon": "blue carbon mangrove",
+  };
+  const projectQuery = searchMap[marketId] ?? marketTitle;
+
+  return (
+    <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+      {/* 関連プロジェクト検索 */}
+      <div className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm">
+        <h3 className="mb-2 text-sm font-semibold text-gray-900">関連プロジェクト</h3>
+        <p className="text-xs text-gray-400 mb-3">この市場に関連するプロジェクトを検索</p>
+        <a
+          href={`/projects?q=${encodeURIComponent(projectQuery)}`}
+          className="inline-flex items-center gap-1.5 rounded-lg bg-cyan-50 border border-cyan-200 px-3 py-1.5 text-xs font-medium text-cyan-700 hover:bg-cyan-100 transition"
+        >
+          プロジェクト検索 →
+        </a>
+      </div>
+
+      {/* 関連インサイト */}
+      {matched.length > 0 && (
+        <div className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm">
+          <h3 className="mb-2 text-sm font-semibold text-gray-900">関連インサイト</h3>
+          <div className="space-y-2">
+            {matched.map((ins) => (
+              <a key={ins.id} href={`/insights/${ins.id}`} className="block text-xs text-gray-600 hover:text-emerald-600 line-clamp-1">
+                {ins.title}
+              </a>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
