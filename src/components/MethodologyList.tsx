@@ -9,12 +9,16 @@ import { Badge } from "@/components/ui/Badge";
 import { useCompare } from "@/components/CompareContext";
 import type { Methodology, RegistryName } from "@/types";
 
-const registryOptions: { label: string; value: RegistryName }[] = [
+const registryOptions: { label: string; value: string }[] = [
   { label: "Verra", value: "Verra" },
   { label: "Gold Standard", value: "Gold Standard" },
   { label: "Puro.earth", value: "Puro.earth" },
   { label: "Isometric", value: "Isometric" },
   { label: "J-Credit", value: "J-Credit" },
+  { label: "CDM", value: "CDM" },
+  { label: "ARB", value: "ARB" },
+  { label: "ACR", value: "ACR" },
+  { label: "CAR", value: "CAR" },
 ];
 
 const creditTypeOptions: { label: string; value: string }[] = [
@@ -273,8 +277,8 @@ export function MethodologyList({ data }: Props) {
               <th className="hidden px-5 py-3 font-medium text-gray-500 lg:table-cell">
                 ステータス
               </th>
-              <th className="w-12 px-3 py-3 font-medium text-gray-500">
-                <span className="sr-only">比較</span>
+              <th className="w-20 px-3 py-3 font-medium text-gray-500 text-center">
+                比較
               </th>
             </tr>
           </thead>
@@ -384,22 +388,23 @@ export function MethodologyList({ data }: Props) {
                       }
                     }}
                     disabled={compare.isFull && !compare.has(m.id)}
-                    className={`rounded-lg p-1.5 transition ${
+                    className={`inline-flex items-center gap-1 rounded-lg px-2.5 py-1.5 text-xs font-medium transition ${
                       compare.has(m.id)
-                        ? "bg-emerald-100 text-emerald-700"
+                        ? "bg-emerald-100 text-emerald-700 border border-emerald-300"
                         : compare.isFull
-                          ? "text-gray-200 cursor-not-allowed"
-                          : "text-gray-300 hover:bg-emerald-50 hover:text-emerald-600"
+                          ? "bg-gray-50 text-gray-300 cursor-not-allowed border border-gray-100"
+                          : "bg-white text-gray-500 border border-gray-200 hover:bg-emerald-50 hover:text-emerald-600 hover:border-emerald-300"
                     }`}
-                    title={compare.has(m.id) ? "比較から削除" : "比較に追加"}
+                    title={compare.has(m.id) ? "比較から削除" : "比較に追加（最大5件）"}
                   >
-                    <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                       {compare.has(m.id) ? (
                         <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                       ) : (
                         <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
                       )}
                     </svg>
+                    {compare.has(m.id) ? "追加済" : "比較"}
                   </button>
                 </td>
               </tr>

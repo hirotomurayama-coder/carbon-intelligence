@@ -16,7 +16,7 @@ export default async function MethodologiesPage() {
         <div>
           <h1 className="text-xl font-bold text-gray-900">メソドロジー</h1>
           <p className="mt-1 text-sm text-gray-500">
-            カーボンクレジット算定手法の一覧
+            Verra、Gold Standard、CDM等9レジストリの算定手法 ({data.length}件) — 比較ボタンで最大5件まで横並び比較が可能です
           </p>
         </div>
         <Suspense fallback={<div className="py-12 text-center text-sm text-gray-400">読み込み中...</div>}>
