@@ -1,11 +1,13 @@
 "use client";
 
 import { useState, useMemo } from "react";
+import Link from "next/link";
 import {
   BarChart, Bar, LineChart, Line, PieChart, Pie, Cell,
   XAxis, YAxis, Tooltip, ResponsiveContainer, Legend, CartesianGrid, Area, AreaChart,
 } from "recharts";
 import statsData from "@/data/vrod-stats.json";
+import methodologyMapping from "@/data/methodology-mapping.json";
 
 // ============================================================
 // 定数
@@ -560,14 +562,31 @@ function RetirementTab({ data, yearlyData, retirementPie, filteredRetirees, sear
 // メソドロジータブ
 // ============================================================
 
+/** メソドロジー名からWordPress IDを解決 */
+function resolveMethodologyWpId(name: string): number | null {
+  const map = methodologyMapping.mappings as Record<string, number>;
+  if (map[name]) return map[name];
+  // コード部分で照合
+  const code = name.replace(/^VCS-/i, "").replace(/^CDM\s*-\s*/i, "").replace(/^GS\s*-\s*/i, "").trim();
+  if (map[code]) return map[code];
+  for (const [key, id] of Object.entries(map)) {
+    if (code.toLowerCase().includes(key.toLowerCase()) || key.toLowerCase().includes(code.toLowerCase())) return id;
+  }
+  return null;
+}
+
 function MethodologyTab({ data, filteredMethodologies, searchQuery }: {
   data: typeof statsData;
   filteredMethodologies: typeof statsData.topMethodologies;
   searchQuery: string;
 }) {
+  const top20 = filteredMethodologies.slice(0, 20);
+  // チャートの高さをデータ件数に応じて動的に計算（1行40px）
+  const chartHeight = Math.max(400, top20.length * 40 + 60);
+
   return (
     <div className="space-y-6">
-      {/* メソドロジー TOP20 */}
+      {/* メソドロジー TOP20 チャート */}
       <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
         <div className="mb-4 flex items-center justify-between">
           <h3 className="text-sm font-semibold text-gray-900">
@@ -576,13 +595,19 @@ function MethodologyTab({ data, filteredMethodologies, searchQuery }: {
           </h3>
           <span className="text-xs text-gray-400">{filteredMethodologies.length} 件</span>
         </div>
-        <div className="h-96">
+        <div style={{ height: chartHeight }}>
           <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={filteredMethodologies.slice(0, 20)} layout="vertical" margin={{ left: 200 }}>
+            <BarChart data={top20} layout="vertical" margin={{ left: 10, right: 20, top: 5, bottom: 5 }}>
               <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
               <XAxis type="number" tick={{ fontSize: 10 }} />
-              <YAxis type="category" dataKey="name" tick={{ fontSize: 10 }} width={195} />
-              <Tooltip formatter={(v: unknown) => formatFull(Number(v))} />
+              <YAxis
+                type="category"
+                dataKey="name"
+                tick={{ fontSize: 11 }}
+                width={320}
+                interval={0}
+              />
+              <Tooltip formatter={(v: unknown) => [formatFull(Number(v)), "プロジェクト数"]} />
               <Bar dataKey="projects" name="プロジェクト数" fill="#10b981" radius={[0, 4, 4, 0]} />
             </BarChart>
           </ResponsiveContainer>
@@ -592,25 +617,54 @@ function MethodologyTab({ data, filteredMethodologies, searchQuery }: {
       {/* メソドロジー一覧テーブル */}
       <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
         <h3 className="mb-4 text-sm font-semibold text-gray-900">メソドロジー一覧（プロジェクト数順）</h3>
-        <div className="overflow-x-auto max-h-96 overflow-y-auto">
+        <div className="overflow-x-auto max-h-[600px] overflow-y-auto">
           <table className="w-full text-sm">
-            <thead className="sticky top-0 bg-white">
+            <thead className="sticky top-0 bg-white z-10">
               <tr className="border-b border-gray-200">
-                <th className="py-2 text-left text-xs font-medium text-gray-400">#</th>
+                <th className="py-2 text-left text-xs font-medium text-gray-400 w-10">#</th>
                 <th className="py-2 text-left text-xs font-medium text-gray-400">メソドロジー</th>
-                <th className="py-2 text-right text-xs font-medium text-gray-400">プロジェクト数</th>
-                <th className="py-2 text-right text-xs font-medium text-gray-400">累計クレジット</th>
+                <th className="py-2 text-right text-xs font-medium text-gray-400 w-28">プロジェクト数</th>
+                <th className="py-2 text-right text-xs font-medium text-gray-400 w-28">累計クレジット</th>
+                <th className="py-2 text-center text-xs font-medium text-gray-400 w-16">詳細</th>
               </tr>
             </thead>
             <tbody>
-              {filteredMethodologies.map((m, i) => (
-                <tr key={m.name} className="border-b border-gray-50 hover:bg-gray-50">
-                  <td className="py-2 text-gray-400">{i + 1}</td>
-                  <td className="py-2 font-medium text-gray-900">{m.name}</td>
-                  <td className="py-2 text-right text-gray-700">{formatFull(m.projects)}</td>
-                  <td className="py-2 text-right text-gray-400">{m.credits > 0 ? formatNum(m.credits) : "\u2014"}</td>
-                </tr>
-              ))}
+              {filteredMethodologies.map((m, i) => {
+                const wpId = resolveMethodologyWpId(m.name);
+                return (
+                  <tr key={m.name} className="border-b border-gray-50 hover:bg-gray-50">
+                    <td className="py-2.5 text-gray-400">{i + 1}</td>
+                    <td className="py-2.5">
+                      {wpId ? (
+                        <Link
+                          href={`/methodologies/${wpId}`}
+                          className="font-medium text-emerald-700 hover:text-emerald-900 hover:underline"
+                        >
+                          {m.name}
+                        </Link>
+                      ) : (
+                        <span className="font-medium text-gray-900">{m.name}</span>
+                      )}
+                    </td>
+                    <td className="py-2.5 text-right text-gray-700">{formatFull(m.projects)}</td>
+                    <td className="py-2.5 text-right text-gray-400">{m.credits > 0 ? formatNum(m.credits) : "\u2014"}</td>
+                    <td className="py-2.5 text-center">
+                      {wpId ? (
+                        <Link
+                          href={`/methodologies/${wpId}`}
+                          className="inline-flex items-center justify-center h-7 w-7 rounded-md bg-emerald-50 text-emerald-600 hover:bg-emerald-100 transition"
+                        >
+                          <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
+                          </svg>
+                        </Link>
+                      ) : (
+                        <span className="text-gray-300">\u2014</span>
+                      )}
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         </div>
