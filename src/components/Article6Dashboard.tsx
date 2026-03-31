@@ -289,11 +289,7 @@ export function Article6Dashboard() {
 
           {/* 注記 */}
           <p className="text-xs text-gray-400">
-            出典: UNEP Climate Change Centre — Article 6 Pipeline Database（
-            <a href="https://unepccc.org/article-6-pipeline/" target="_blank" rel="noopener noreferrer" className="underline hover:text-gray-600">
-              unepccc.org
-            </a>
-            ）、{String(summary.updatedAt)} 時点のデータ
+            本ページは <a href="https://article6pipeline.unepccc.org/" target="_blank" rel="noopener noreferrer" className="underline hover:text-gray-600">UNEP Copenhagen Climate Centre — Article 6 Pipeline Database</a> の公開データを独自に集計・加工・可視化したものです。表示内容は当社分析であり、UNEP-CCCの公式見解ではありません。データ基準日: {String(summary.updatedAt)}
           </p>
         </div>
       )}

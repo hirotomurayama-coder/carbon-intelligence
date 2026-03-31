@@ -72,11 +72,6 @@ function inferBaseType(name: string): string | null {
 function externalToMethodology(m: AllMethodologyEntry): Methodology {
   const registry = toRegistryName(m.registry);
   const totalProjects = m.totalProjects;
-  // ソース種別を判定
-  const hasCad = m.source.includes("cad-trust");
-  const hasVrod = m.source.includes("vrod");
-  const sourceLabel = hasCad && hasVrod ? "vrod" : hasCad ? "cad-trust" : "vrod";
-
   return {
     id: `ext-${m.name.replace(/[^a-zA-Z0-9]/g, "-").slice(0, 60)}`,
     title: m.name,
@@ -98,7 +93,7 @@ function externalToMethodology(m: AllMethodologyEntry): Methodology {
     operationalStatus: "運用中",
     certificationBody: m.registry !== (registry ?? "") ? m.registry : null,
     version: null,
-    source: sourceLabel as "vrod" | "cad-trust",
+    source: "vrod" as const,
     projectCount: totalProjects > 0 ? totalProjects : null,
     creditCount: m.creditsVrod > 0 ? m.creditsVrod : null,
   };
@@ -149,6 +144,10 @@ export default async function MethodologiesPage() {
         <Suspense fallback={<div className="py-12 text-center text-sm text-gray-400">読み込み中...</div>}>
           <MethodologyList data={allMethodologies} />
         </Suspense>
+        <p className="mt-6 px-1 text-[11px] text-gray-300">
+          外部メソドロジーデータ（VROD収録分）: Barbara K Haya et al., <em>Voluntary Registry Offsets Database</em>, Berkeley Carbon Trading Project, University of California Berkeley.{" "}
+          <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener noreferrer" className="underline hover:text-gray-500">CC BY 4.0</a>
+        </p>
       </div>
       <CompareBar />
     </CompareProvider>

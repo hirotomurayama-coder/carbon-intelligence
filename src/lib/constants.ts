@@ -13,7 +13,6 @@ export const NAV_ITEMS: NavItem[] = [
       { label: "企業データベース", href: "/companies", icon: "company" },
       { label: "インサイト", href: "/insights", icon: "insight" },
       { label: "政策ロードマップ", href: "/roadmap", icon: "roadmap" },
-      { label: "プロジェクト", href: "/projects", icon: "project" },
       { label: "Article 6", href: "/article6", icon: "article6" },
     ],
   },

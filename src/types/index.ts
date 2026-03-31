@@ -36,7 +36,7 @@ export type Methodology = {
   certificationBody: string | null;    // ACF: standard — 認証機関名
   version: string | null;              // ACF: version — バージョン
   // --- 外部データソース（WordPress 以外のメソドロジー） ---
-  source?: "wordpress" | "vrod" | "cad-trust"; // データ出所（未設定時は "wordpress" 扱い）
+  source?: "wordpress" | "vrod"; // データ出所（未設定時は "wordpress" 扱い）
   projectCount?: number | null;        // VROD / CAD Trust プロジェクト件数
   creditCount?: number | null;         // VROD クレジット発行数
 };

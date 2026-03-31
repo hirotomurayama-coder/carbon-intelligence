@@ -1,0 +1,70 @@
+name: Carbon Credit News Collector
+
+on:
+  # 毎朝 8:00 JST（= UTC 23:00 前日）と 夕方 17:00 JST（= UTC 8:00）に自動実行
+  schedule:
+    - cron: "0 23 * * *"   # 毎朝 8:00 JST
+    - cron: "0 8 * * *"    # 毎夕 17:00 JST
+
+  # 手動トリガー（GitHub の Actions タブ → Run workflow）
+  workflow_dispatch:
+    inputs:
+      max_articles:
+        description: "最大執筆件数（デフォルト: 20）"
+        required: false
+        default: "20"
+      dry_run:
+        description: "ドライラン（収集のみ、Sheets 書き込みなし）"
+        type: boolean
+        required: false
+        default: false
+
+jobs:
+  collect-and-write:
+    name: 収集・執筆・Sheets 書き込み
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    defaults:
+      run:
+        working-directory: news-collector
+
+    steps:
+      - name: リポジトリをチェックアウト
+        uses: actions/checkout@v4
+
+      - name: Python 3.11 セットアップ
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+          cache-dependency-path: news-collector/requirements.txt
+
+      - name: 依存ライブラリをインストール
+        run: pip install -r requirements.txt
+
+      - name: ニュース収集パイプラインを実行
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          TAVILY_API_KEY: ${{ secrets.TAVILY_API_KEY }}
+          GOOGLE_SHEET_ID: ${{ secrets.GOOGLE_SHEET_ID }}
+          # サービスアカウントJSONは文字列として渡す
+          GOOGLE_SERVICE_ACCOUNT_JSON: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON }}
+        run: |
+          MAX=${{ github.event.inputs.max_articles || '20' }}
+          DRY=${{ github.event.inputs.dry_run || 'false' }}
+
+          if [ "$DRY" = "true" ]; then
+            python main.py --max "$MAX" --dry-run
+          else
+            python main.py --max "$MAX"
+          fi
+
+      - name: 実行ログをアーティファクトとして保存
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pipeline-log-${{ github.run_id }}
+          path: news-collector/*.log
+          if-no-files-found: ignore
+          retention-days: 7

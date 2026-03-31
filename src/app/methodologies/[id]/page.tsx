@@ -1,8 +1,6 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { getMethodologyById, getMethodologies, getInsights } from "@/lib/wordpress";
-import { getProjects, getCountries, calcTotalUnits } from "@/lib/cad-trust";
-import type { CadProject } from "@/lib/cad-trust";
 import { Badge } from "@/components/ui/Badge";
 import type { Methodology, RegistryName, Insight } from "@/types";
 import allMethodsData from "@/data/all-methodologies.json";
@@ -103,7 +101,7 @@ function extEntryToMethodology(entry: ExtEntry): Methodology & { _extEntry: ExtE
     operationalStatus: null,
     certificationBody: entry.registry,
     version: null,
-    source: entry.source.includes("cad-trust") ? "cad-trust" : "vrod",
+    source: "vrod",
     projectCount: entry.totalProjects > 0 ? entry.totalProjects : null,
     creditCount: entry.creditsVrod > 0 ? entry.creditsVrod : null,
     _extEntry: entry,
@@ -209,8 +207,7 @@ export default async function MethodologyDetailPage({ params }: Props) {
           <ul className="mb-3 space-y-1">
             {extEntry!.source.map((s) => {
               const sourceLabels: Record<string, string> = {
-                vrod: "VROD（自発的炭素市場レジストリデータベース）",
-                "cad-trust": "CAD Trust（Climate Action Data Trust）",
+                vrod: "VROD（UC Berkeley 自発的炭素市場レジストリデータベース）",
               };
               return (
                 <li key={s} className="flex items-center gap-2 text-sm text-blue-700">
@@ -387,9 +384,6 @@ export default async function MethodologyDetailPage({ params }: Props) {
         </div>
       )}
 
-      {/* CAD Trust 関連プロジェクト */}
-      <CadTrustProjects methodology={methodology} />
-
       {/* 関連インサイト */}
       <RelatedInsights methodology={methodology} />
 
@@ -408,6 +402,14 @@ export default async function MethodologyDetailPage({ params }: Props) {
           メソドロジー一覧に戻る
         </Link>
       </div>
+
+      {/* データ帰属 */}
+      {!isExternal ? null : (
+        <p className="text-[11px] text-gray-300 border-t border-gray-100 pt-4">
+          外部メソドロジーデータ: Barbara K Haya et al., <em>Voluntary Registry Offsets Database</em>, Berkeley Carbon Trading Project, University of California Berkeley.{" "}
+          <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener noreferrer" className="underline hover:text-gray-500">CC BY 4.0</a>
+        </p>
+      )}
     </div>
   );
 }
@@ -473,82 +475,6 @@ async function SimilarMethodologies({ current }: { current: Methodology }) {
   );
 }
 
-/** CAD Trust のプロジェクトでこのメソドロジーを使用しているものを表示 */
-async function CadTrustProjects({ methodology }: { current?: never; methodology: Methodology }) {
-  // メソドロジー名の一部で検索（例: "VM0047", "AMS-I.D."）
-  const searchTerms: string[] = [];
-  const title = methodology.title;
-
-  // タイトルからメソドロジーコードを抽出
-  const codeMatch = title.match(/(VM\d{4}|VCS-\w+|ACM\d{4}|AMS-[\w.]+|AR-[\w.]+)/i);
-  if (codeMatch) searchTerms.push(codeMatch[1]);
-
-  // タイトルの最初の3単語で検索
-  const words = title.split(/\s+/).slice(0, 3).join(" ");
-  if (words.length >= 5) searchTerms.push(words);
-
-  if (searchTerms.length === 0) return null;
-
-  let projects: CadProject[] = [];
-  for (const term of searchTerms) {
-    try {
-      const res = await getProjects({ search: term, page: 1, limit: 5 });
-      for (const p of res.data) {
-        if (!projects.some((pp) => pp.warehouseProjectId === p.warehouseProjectId)) {
-          projects.push(p);
-        }
-      }
-    } catch {
-      // pass
-    }
-  }
-
-  // メソドロジー名でフィルタ
-  if (codeMatch) {
-    const code = codeMatch[1].toLowerCase();
-    projects = projects.filter((p) =>
-      p.methodology?.toLowerCase().includes(code)
-    );
-  }
-
-  if (projects.length === 0) return null;
-
-  return (
-    <div className="rounded-xl border border-cyan-200 bg-cyan-50/30 p-6 shadow-sm">
-      <div className="mb-4 flex items-center gap-2">
-        <h3 className="text-sm font-semibold text-cyan-900">関連プロジェクト</h3>
-        <span className="rounded-full bg-cyan-100 px-2 py-0.5 text-[10px] font-semibold text-cyan-700">CAD Trust</span>
-        <Badge variant="gray">{projects.length}件</Badge>
-      </div>
-      <div className="space-y-2">
-        {projects.slice(0, 5).map((p) => {
-          const countries = getCountries(p);
-          const units = calcTotalUnits(p);
-          return (
-            <Link
-              key={p.warehouseProjectId}
-              href={`/projects/${p.warehouseProjectId}`}
-              className="block rounded-lg border border-cyan-100 bg-white p-3 transition hover:shadow-md hover:border-cyan-300"
-            >
-              <p className="text-sm font-medium text-gray-900 line-clamp-1">{p.projectName}</p>
-              <div className="mt-1 flex items-center gap-2 text-xs text-gray-400">
-                <span>{p.currentRegistry}</span>
-                {countries.length > 0 && <span>{countries.join(", ")}</span>}
-                {units > 0 && <span className="font-semibold text-cyan-700">{units.toLocaleString()} tCO2e</span>}
-              </div>
-            </Link>
-          );
-        })}
-      </div>
-      <Link
-        href={`/projects?q=${encodeURIComponent(searchTerms[0])}`}
-        className="mt-3 block text-xs text-cyan-600 hover:text-cyan-700"
-      >
-        さらに検索 →
-      </Link>
-    </div>
-  );
-}
 
 /** 関連インサイト — 固有のメソドロジーコードや専門用語でマッチング */
 async function RelatedInsights({ methodology }: { methodology: Methodology }) {
