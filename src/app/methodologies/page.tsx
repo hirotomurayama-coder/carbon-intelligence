@@ -126,12 +126,17 @@ export default async function MethodologiesPage() {
     })
   );
 
-  // 外部メソドロジーを変換し、WP登録済みを除外
+  // 外部メソドロジーを変換し、WP登録済みおよび重複IDを除外
+  const seenExtIds = new Set<string>();
   const externalMethodologies = (allMethodsData.methodologies as AllMethodologyEntry[])
     .filter((m) => {
       const titleLower = m.name.trim().toLowerCase();
       const codeLower = (m.code ?? m.name).trim().toLowerCase();
-      return !wpTitleSet.has(titleLower) && !wpCodeSet.has(codeLower);
+      if (wpTitleSet.has(titleLower) || wpCodeSet.has(codeLower)) return false;
+      const extId = `ext-${m.name.replace(/[^a-zA-Z0-9]/g, "-").slice(0, 60)}`;
+      if (seenExtIds.has(extId)) return false;
+      seenExtIds.add(extId);
+      return true;
     })
     .map(externalToMethodology);
 
