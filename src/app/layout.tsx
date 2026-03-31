@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import { Suspense } from "react";
 import "./globals.css";
 import { Sidebar } from "@/components/layout/Sidebar";
 import { TopBar } from "@/components/layout/TopBar";
@@ -31,7 +32,9 @@ export default function RootLayout({
       >
         <div className="flex h-screen overflow-hidden">
           {/* サイドナビゲーション */}
-          <Sidebar />
+          <Suspense fallback={<div className="w-56 border-r border-gray-200 bg-white" />}>
+            <Sidebar />
+          </Suspense>
 
           {/* メインコンテンツエリア */}
           <div className="flex flex-1 flex-col overflow-hidden">
