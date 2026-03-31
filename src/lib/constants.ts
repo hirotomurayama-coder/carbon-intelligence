@@ -3,6 +3,7 @@ import type { NavItem } from "@/types/navigation";
 export const APP_NAME = "Carbon Intelligence";
 
 export const NAV_ITEMS: NavItem[] = [
+  { label: "ダッシュボード", href: "/", icon: "dashboard" },
   {
     label: "インサイト",
     href: "/insights",
@@ -15,7 +16,6 @@ export const NAV_ITEMS: NavItem[] = [
     ],
   },
   { label: "メソドロジー", href: "/methodologies", icon: "methodology" },
-  { label: "ダッシュボード", href: "/", icon: "dashboard" },
   {
     label: "ボランタリー統計データ",
     href: "/statistics",
