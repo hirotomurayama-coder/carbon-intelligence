@@ -79,134 +79,57 @@ function findExternalEntry(id: string): ExtEntry | null {
   ) ?? null;
 }
 
-async function ExternalMethodologyPage({ id, entry }: { id: string; entry: ExtEntry }) {
+/** 外部エントリ（VROD/CAD Trust）を Methodology 型に変換 */
+function extEntryToMethodology(entry: ExtEntry): Methodology & { _extEntry: ExtEntry } {
   const registry = REGISTRY_ALIAS[entry.registry] ?? null;
-  const creditType = inferCreditType(entry.name);
-  const baseType = inferBaseType(entry.name);
-
-  const sourceLabels: Record<string, string> = {
-    "vrod": "VROD（UC Berkeley Voluntary Registry Offsets Database）",
-    "cad-trust": "CAD Trust（Climate Action Data Trust）",
+  return {
+    id: `ext-${entry.name.replace(/[^a-zA-Z0-9]/g, "-").slice(0, 60)}`,
+    title: entry.name,
+    titleJa: null,
+    type: null,
+    region: null,
+    validUntil: null,
+    summary: "",
+    reliabilityScore: null,
+    registry,
+    sourceUrl: null,
+    dataHash: null,
+    externalLastUpdated: null,
+    syncedAt: null,
+    aiSummary: null,
+    creditType: inferCreditType(entry.name),
+    baseType: inferBaseType(entry.name),
+    subCategory: null,
+    operationalStatus: null,
+    certificationBody: entry.registry,
+    version: null,
+    source: entry.source.includes("cad-trust") ? "cad-trust" : "vrod",
+    projectCount: entry.totalProjects > 0 ? entry.totalProjects : null,
+    creditCount: entry.creditsVrod > 0 ? entry.creditsVrod : null,
+    _extEntry: entry,
   };
-
-  return (
-    <div className="mx-auto max-w-4xl space-y-8">
-      {/* パンくず */}
-      <nav className="flex items-center gap-2 text-sm text-gray-400">
-        <Link href="/methodologies" className="hover:text-emerald-600">メソドロジー</Link>
-        <span>/</span>
-        <span className="text-gray-600 truncate max-w-xs">{entry.name}</span>
-      </nav>
-
-      {/* ヘッダー */}
-      <div className="space-y-3">
-        <h1 className="text-2xl font-bold text-gray-900 break-all">{entry.name}</h1>
-        <div className="flex flex-wrap gap-2">
-          {registry && (
-            <Badge variant={
-              registry === "Verra" ? "emerald" : registry === "Gold Standard" ? "amber" :
-              registry === "CDM" ? "blue" : registry === "ACR" || registry === "CAR" ? "slate" : "gray"
-            }>{registry}</Badge>
-          )}
-          {!registry && entry.registry && (
-            <Badge variant="gray">{entry.registry}</Badge>
-          )}
-          {creditType && (
-            <Badge variant={creditType === "除去系" ? "indigo" : "blue"}>{creditType}</Badge>
-          )}
-          {baseType && (
-            <Badge variant={baseType === "自然ベース" ? "emerald" : baseType === "技術ベース" ? "slate" : "amber"}>
-              {baseType}
-            </Badge>
-          )}
-        </div>
-      </div>
-
-      {/* データソース情報 */}
-      <div className="rounded-xl border border-blue-100 bg-blue-50/50 p-5">
-        <p className="text-sm font-medium text-blue-800 mb-2">データソース</p>
-        <ul className="space-y-1">
-          {entry.source.map((s) => (
-            <li key={s} className="flex items-center gap-2 text-sm text-blue-700">
-              <span className="h-1.5 w-1.5 rounded-full bg-blue-400 flex-shrink-0" />
-              {sourceLabels[s] ?? s}
-            </li>
-          ))}
-        </ul>
-        <p className="mt-3 text-xs text-blue-500">
-          このメソドロジーは外部データベースから自動収録されました。WordPress での詳細入力は未実施です。
-        </p>
-      </div>
-
-      {/* 統計情報 */}
-      <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
-        {[
-          { label: "総プロジェクト数", value: entry.totalProjects.toLocaleString() },
-          { label: "VRODプロジェクト", value: entry.projectsVrod.toLocaleString() },
-          { label: "CAD Trustプロジェクト", value: entry.projectsCad.toLocaleString() },
-          { label: "VROD発行クレジット", value: entry.creditsVrod > 0 ? `${(entry.creditsVrod / 1_000_000).toFixed(1)}M` : "—" },
-        ].map(({ label, value }) => (
-          <div key={label} className="rounded-xl border border-gray-200 bg-white p-4">
-            <p className="text-xs text-gray-500">{label}</p>
-            <p className="mt-1 text-xl font-bold text-gray-900">{value}</p>
-          </div>
-        ))}
-      </div>
-
-      {/* 基本情報 */}
-      <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
-        <h3 className="mb-4 text-sm font-semibold text-gray-900">基本情報</h3>
-        <div className="divide-y divide-gray-100 text-sm">
-          <div className="flex items-center justify-between py-2.5">
-            <span className="text-gray-500">発行機関 / レジストリ</span>
-            <span className="font-medium text-gray-900">{entry.registry}</span>
-          </div>
-          <div className="flex items-center justify-between py-2.5">
-            <span className="text-gray-500">クレジット種別（推定）</span>
-            <span className="font-medium text-gray-900">{creditType ?? "—"}</span>
-          </div>
-          <div className="flex items-center justify-between py-2.5">
-            <span className="text-gray-500">基本分類（推定）</span>
-            <span className="font-medium text-gray-900">{baseType ?? "—"}</span>
-          </div>
-        </div>
-      </div>
-
-      {/* 戻る */}
-      <div>
-        <Link href="/methodologies"
-          className="inline-flex items-center gap-1 text-sm text-gray-400 transition-colors hover:text-emerald-600"
-        >
-          <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
-          </svg>
-          メソドロジー一覧に戻る
-        </Link>
-      </div>
-    </div>
-  );
 }
 
 // ============================================================
-// メインページコンポーネント
+// メインページコンポーネント（WP・外部共通）
 // ============================================================
 
 export default async function MethodologyDetailPage({ params }: Props) {
   const { id } = await params;
 
-  // 外部エントリ（ext- プレフィックス）の場合
+  // 外部エントリ（ext- プレフィックス）の場合は Methodology 型に変換して共通パスへ
+  let methodology: (Methodology & { _extEntry?: ExtEntry }) | null = null;
   if (id.startsWith("ext-")) {
     const entry = findExternalEntry(id);
     if (!entry) notFound();
-    return <ExternalMethodologyPage id={id} entry={entry} />;
+    methodology = extEntryToMethodology(entry);
+  } else {
+    methodology = await getMethodologyById(id);
+    if (!methodology) notFound();
   }
 
-  const methodology = await getMethodologyById(id);
-
-  if (!methodology) {
-    notFound();
-  }
-
+  const isExternal = !!methodology._extEntry;
+  const extEntry = methodology._extEntry;
   const displayTitle = methodology.titleJa ?? methodology.title;
   const showOriginalTitle = methodology.titleJa && methodology.titleJa !== methodology.title;
 
@@ -274,29 +197,55 @@ export default async function MethodologyDetailPage({ params }: Props) {
         )}
       </div>
 
-      {/* AI 要約 */}
-      {methodology.aiSummary && (
-        <div className="rounded-xl border border-emerald-100 bg-emerald-50/50 p-6">
-          <div className="mb-2 flex items-center gap-2">
-            <svg className="h-5 w-5 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.455 2.456L21.75 6l-1.036.259a3.375 3.375 0 00-2.455 2.456z" />
+      {/* AI 要約 / 外部データソースバナー */}
+      {isExternal ? (
+        <div className="rounded-xl border border-blue-100 bg-blue-50/50 p-6">
+          <div className="mb-3 flex items-center gap-2">
+            <svg className="h-5 w-5 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M20.25 6.375c0 2.278-3.694 4.125-8.25 4.125S3.75 8.653 3.75 6.375m16.5 0c0-2.278-3.694-4.125-8.25-4.125S3.75 4.097 3.75 6.375m16.5 0v11.25c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125V6.375m16.5 2.625c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125m16.5 5.625c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125" />
             </svg>
-            <h2 className="text-sm font-semibold text-emerald-700">AI 要約</h2>
+            <h2 className="text-sm font-semibold text-blue-700">外部データソース</h2>
           </div>
-          <p className="text-sm leading-relaxed text-gray-700">
-            {methodology.aiSummary}
-          </p>
+          <ul className="mb-3 space-y-1">
+            {extEntry!.source.map((s) => {
+              const sourceLabels: Record<string, string> = {
+                vrod: "VROD（自発的炭素市場レジストリデータベース）",
+                "cad-trust": "CAD Trust（Climate Action Data Trust）",
+              };
+              return (
+                <li key={s} className="flex items-center gap-2 text-sm text-blue-700">
+                  <span className="h-1.5 w-1.5 rounded-full bg-blue-400 flex-shrink-0" />
+                  {sourceLabels[s] ?? s}
+                </li>
+              );
+            })}
+          </ul>
+          <p className="text-xs text-blue-500">このメソドロジーは外部DBから自動収録されました。概要文は登録されていません。</p>
         </div>
-      )}
-
-      {/* 概要（AI 要約がない場合） */}
-      {!methodology.aiSummary && methodology.summary && (
-        <div className="rounded-xl border border-gray-100 bg-gray-50/50 p-6">
-          <h2 className="mb-2 text-sm font-semibold text-gray-500">概要</h2>
-          <p className="text-sm leading-relaxed text-gray-700">
-            {methodology.summary}
-          </p>
-        </div>
+      ) : (
+        <>
+          {methodology.aiSummary && (
+            <div className="rounded-xl border border-emerald-100 bg-emerald-50/50 p-6">
+              <div className="mb-2 flex items-center gap-2">
+                <svg className="h-5 w-5 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.455 2.456L21.75 6l-1.036.259a3.375 3.375 0 00-2.455 2.456z" />
+                </svg>
+                <h2 className="text-sm font-semibold text-emerald-700">AI 要約</h2>
+              </div>
+              <p className="text-sm leading-relaxed text-gray-700">
+                {methodology.aiSummary}
+              </p>
+            </div>
+          )}
+          {!methodology.aiSummary && methodology.summary && (
+            <div className="rounded-xl border border-gray-100 bg-gray-50/50 p-6">
+              <h2 className="mb-2 text-sm font-semibold text-gray-500">概要</h2>
+              <p className="text-sm leading-relaxed text-gray-700">
+                {methodology.summary}
+              </p>
+            </div>
+          )}
+        </>
       )}
 
       {/* 情報カード: 2カラムグリッド */}
@@ -367,40 +316,76 @@ export default async function MethodologyDetailPage({ params }: Props) {
         </div>
       </div>
 
-      {/* 同期情報 */}
-      <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
-        <h3 className="mb-4 text-sm font-semibold text-gray-900">同期情報</h3>
-        <div className="grid grid-cols-1 gap-x-8 divide-y divide-gray-100 sm:grid-cols-3 sm:divide-y-0">
-          <div className="py-2 sm:py-0">
-            <p className="text-xs text-gray-400">最終同期</p>
-            <p className="mt-1 text-sm text-gray-700">
-              {methodology.syncedAt
-                ? new Date(methodology.syncedAt).toLocaleString("ja-JP", {
-                    year: "numeric",
-                    month: "2-digit",
-                    day: "2-digit",
-                    hour: "2-digit",
-                    minute: "2-digit",
-                  })
-                : "\u2014"}
-            </p>
-          </div>
-          <div className="py-2 sm:py-0">
-            <p className="text-xs text-gray-400">外部更新日</p>
-            <p className="mt-1 text-sm text-gray-700">
-              {methodology.externalLastUpdated ?? "\u2014"}
-            </p>
-          </div>
-          <div className="py-2 sm:py-0">
-            <p className="text-xs text-gray-400">データハッシュ</p>
-            <p className="mt-1 font-mono text-xs text-gray-400">
-              {methodology.dataHash
-                ? methodology.dataHash.slice(0, 16) + "…"
-                : "\u2014"}
-            </p>
+      {/* 同期情報 / 登録統計 */}
+      {isExternal ? (
+        <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
+          <h3 className="mb-4 text-sm font-semibold text-gray-900">登録統計</h3>
+          <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
+            <div className="rounded-lg bg-gray-50 p-4 text-center">
+              <p className="text-2xl font-bold text-gray-900">
+                {extEntry!.totalProjects > 0 ? extEntry!.totalProjects.toLocaleString() : "—"}
+              </p>
+              <p className="mt-1 text-xs text-gray-500">総プロジェクト数</p>
+            </div>
+            <div className="rounded-lg bg-blue-50 p-4 text-center">
+              <p className="text-2xl font-bold text-blue-700">
+                {extEntry!.projectsVrod > 0 ? extEntry!.projectsVrod.toLocaleString() : "—"}
+              </p>
+              <p className="mt-1 text-xs text-blue-500">VRODプロジェクト</p>
+            </div>
+            <div className="rounded-lg bg-cyan-50 p-4 text-center">
+              <p className="text-2xl font-bold text-cyan-700">
+                {extEntry!.projectsCad > 0 ? extEntry!.projectsCad.toLocaleString() : "—"}
+              </p>
+              <p className="mt-1 text-xs text-cyan-500">CAD Trustプロジェクト</p>
+            </div>
+            <div className="rounded-lg bg-emerald-50 p-4 text-center">
+              <p className="text-2xl font-bold text-emerald-700">
+                {extEntry!.creditsVrod > 0
+                  ? extEntry!.creditsVrod >= 1_000_000
+                    ? `${(extEntry!.creditsVrod / 1_000_000).toFixed(1)}M`
+                    : extEntry!.creditsVrod.toLocaleString()
+                  : "—"}
+              </p>
+              <p className="mt-1 text-xs text-emerald-500">VROD発行クレジット (tCO2e)</p>
+            </div>
           </div>
         </div>
-      </div>
+      ) : (
+        <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
+          <h3 className="mb-4 text-sm font-semibold text-gray-900">同期情報</h3>
+          <div className="grid grid-cols-1 gap-x-8 divide-y divide-gray-100 sm:grid-cols-3 sm:divide-y-0">
+            <div className="py-2 sm:py-0">
+              <p className="text-xs text-gray-400">最終同期</p>
+              <p className="mt-1 text-sm text-gray-700">
+                {methodology.syncedAt
+                  ? new Date(methodology.syncedAt).toLocaleString("ja-JP", {
+                      year: "numeric",
+                      month: "2-digit",
+                      day: "2-digit",
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    })
+                  : "\u2014"}
+              </p>
+            </div>
+            <div className="py-2 sm:py-0">
+              <p className="text-xs text-gray-400">外部更新日</p>
+              <p className="mt-1 text-sm text-gray-700">
+                {methodology.externalLastUpdated ?? "\u2014"}
+              </p>
+            </div>
+            <div className="py-2 sm:py-0">
+              <p className="text-xs text-gray-400">データハッシュ</p>
+              <p className="mt-1 font-mono text-xs text-gray-400">
+                {methodology.dataHash
+                  ? methodology.dataHash.slice(0, 16) + "…"
+                  : "\u2014"}
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* CAD Trust 関連プロジェクト */}
       <CadTrustProjects methodology={methodology} />
@@ -565,21 +550,51 @@ async function CadTrustProjects({ methodology }: { current?: never; methodology:
   );
 }
 
-/** 関連インサイト — メソドロジー名がタイトルや要約に含まれるインサイトを表示 */
+/** 関連インサイト — 固有のメソドロジーコードや専門用語でマッチング */
 async function RelatedInsights({ methodology }: { methodology: Methodology }) {
   const allInsights = await getInsights().catch(() => []);
 
-  // メソドロジー名（日本語/英語）でキーワードマッチ
-  const keywords = [
-    methodology.title.toLowerCase(),
-    methodology.titleJa?.toLowerCase(),
-    methodology.subCategory?.toLowerCase(),
-    methodology.registry?.toLowerCase(),
-  ].filter((k): k is string => !!k && k.length > 2);
+  // ── キーワード選定方針 ──────────────────────────────────────
+  // 1. メソドロジーコード（英数字の固有コード、例: "VM0047", "AG-005NEW"）のみを優先
+  // 2. subCategory は日本語特定用語（6文字以上）のみ使用
+  // 3. レジストリ名（J-Credit, Verra 等）は使用しない（汎用すぎてノイズになる）
+  // 4. 複数キーワードがある場合は OR、ただし短すぎるキーワードは除外
+  // ────────────────────────────────────────────────────────────
+
+  const specificKeywords: string[] = [];
+
+  // メソドロジーコード: 先頭の英数字ハイフン区切りトークン（例: "VM0047", "AG-005NEW", "ACM0002"）
+  const codeMatch = methodology.title.match(/^([A-Z]{1,4}[-\d][A-Z0-9\-\.]+)/i);
+  if (codeMatch && codeMatch[1].length >= 4) {
+    specificKeywords.push(codeMatch[1].toLowerCase());
+  }
+
+  // 日本語タイトルから専門的な固有フレーズ（8文字以上の連続語）
+  if (methodology.titleJa) {
+    // 括弧・助詞を除いた日本語部分で8文字以上のスライスを抽出
+    const jaWords = methodology.titleJa
+      .replace(/[（）()【】「」\s]/g, " ")
+      .split(/\s+/)
+      .filter((w) => w.length >= 8);
+    jaWords.slice(0, 2).forEach((w) => specificKeywords.push(w.toLowerCase()));
+  }
+
+  // subCategory: 意味のある専門用語のみ（6文字以上、汎用ワードを除外）
+  const genericCategories = new Set(["農業", "再エネ", "森林", "工業", "廃棄物", "交通"]);
+  if (
+    methodology.subCategory &&
+    methodology.subCategory.length >= 6 &&
+    !genericCategories.has(methodology.subCategory)
+  ) {
+    specificKeywords.push(methodology.subCategory.toLowerCase());
+  }
+
+  // キーワードが全く取れない場合は表示しない
+  if (specificKeywords.length === 0) return null;
 
   const matched = allInsights.filter((ins: Insight) => {
     const text = `${ins.title} ${ins.summary}`.toLowerCase();
-    return keywords.some((kw) => text.includes(kw));
+    return specificKeywords.some((kw) => text.includes(kw));
   }).slice(0, 4);
 
   if (matched.length === 0) return null;
