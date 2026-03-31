@@ -187,22 +187,8 @@ export default async function CompanyDetailPage({ params }: Props) {
         </div>
       )}
 
-      {/* 関連プロジェクト（CAD Trust検索リンク） */}
-      <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
-        <h3 className="mb-3 text-sm font-semibold text-gray-900">関連プロジェクト</h3>
-        <p className="text-xs text-gray-400 mb-3">この企業が関与するカーボンクレジットプロジェクトを検索</p>
-        <Link
-          href={`/projects?q=${encodeURIComponent(company.name)}`}
-          className="inline-flex items-center gap-2 rounded-lg bg-cyan-50 border border-cyan-200 px-4 py-2 text-sm font-medium text-cyan-700 hover:bg-cyan-100 transition"
-        >
-          <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
-          </svg>
-          「{company.name}」のプロジェクトを検索
-        </Link>
-      </div>
 
-      {/* 同じカテゴリの企業 */}
+{/* 同じカテゴリの企業 */}
       <SimilarCompanies current={company} />
 
       {/* 戻るリンク */}
