@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { SearchInput } from "@/components/ui/SearchInput";
@@ -82,6 +82,12 @@ export function InsightList({ data }: Props) {
   const initialCategory = searchParams.get("category") as InsightCategory | null;
   const [activeTab, setActiveTab] = useState<InsightCategory | typeof ALL_TAB>(initialCategory ?? ALL_TAB);
   const [keyword, setKeyword] = useState("");
+
+  // URL パラメータ変化時にタブを同期
+  useEffect(() => {
+    const cat = searchParams.get("category") as InsightCategory | null;
+    setActiveTab(cat ?? ALL_TAB);
+  }, [searchParams]);
   const [groupBySeries, setGroupBySeries] = useState(false);
 
   // シリーズ一覧

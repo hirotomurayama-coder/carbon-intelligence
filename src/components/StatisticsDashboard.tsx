@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import {
@@ -81,6 +81,12 @@ export function StatisticsDashboard() {
   const searchParams = useSearchParams();
   const initialTab = (searchParams.get("tab") as Tab) ?? "overview";
   const [activeTab, setActiveTab] = useState<Tab>(initialTab);
+
+  // URL パラメータ変化時にタブを同期
+  useEffect(() => {
+    const tab = searchParams.get("tab") as Tab | null;
+    if (tab) setActiveTab(tab);
+  }, [searchParams]);
   const [selectedRegistries, setSelectedRegistries] = useState<Set<string>>(new Set(ALL_REGISTRIES));
   const [yearFrom, setYearFrom] = useState(YEAR_RANGE.min);
   const [yearTo, setYearTo] = useState(YEAR_RANGE.max);
