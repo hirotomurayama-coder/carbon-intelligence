@@ -16,6 +16,10 @@ import type {
   TrendDirection,
   PriceHistoryEntry,
 } from "@/types";
+import methodologyTranslations from "@/data/methodology-translations.json";
+
+/** WordPress投稿IDをキーにした日本語タイトルのルックアップ */
+const METHOD_TITLE_JA: Record<string, string | null> = methodologyTranslations as Record<string, string | null>;
 
 // ============================================================
 // WordPress REST API レスポンス型
@@ -256,6 +260,10 @@ function mapMethodology(wp: WPPost): Methodology {
     const rawTitleJa = acfString(acf, "title_ja", "");
     // title_ja が英語原文と同じ場合は「翻訳なし」扱い → null
     titleJa = rawTitleJa && rawTitleJa !== stripHtml(wp.title.rendered) ? rawTitleJa : null;
+    // ACF が未設定の場合はローカル翻訳ファイルにフォールバック
+    if (!titleJa) {
+      titleJa = METHOD_TITLE_JA[String(wp.id)] ?? null;
+    }
     aiSummary = acfString(acf, "ai_summary", "") || null;
     // select フィールド: WP が false を返す場合がある → acfString で空文字化 → || null で null に
     creditType = acfString(acf, "credit_type", "") || null;
