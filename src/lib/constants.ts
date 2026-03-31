@@ -14,6 +14,7 @@ export const NAV_ITEMS: NavItem[] = [
       { label: "インサイト", href: "/insights", icon: "insight" },
       { label: "政策ロードマップ", href: "/roadmap", icon: "roadmap" },
       { label: "プロジェクト", href: "/projects", icon: "project" },
+      { label: "Article 6", href: "/article6", icon: "article6" },
     ],
   },
   { label: "分析", href: "/analysis", icon: "analytics" },
