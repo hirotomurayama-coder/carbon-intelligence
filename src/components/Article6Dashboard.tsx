@@ -52,6 +52,31 @@ type PriorItem = {
 const COLORS = ["#10b981", "#3b82f6", "#f59e0b", "#8b5cf6", "#ef4444", "#06b6d4", "#f97316", "#84cc16"];
 
 // ──────────────────────────────────────────────────────────
+// リンク正規化
+// ──────────────────────────────────────────────────────────
+/** jcm.go.jp の URL を安全なページに正規化する。
+ *  - /mn-jp/about → /mn-jp/  （about ページは存在しないことが多い）
+ *  - /id-jp/projects/1 → /id-jp/projects/  （連番個別ページは不安定）
+ *  - /projects/4 → /projects/  （同上）
+ */
+function normalizeJcmUrl(url: string | null): string | null {
+  if (!url) return null;
+  try {
+    const u = new URL(url);
+    if (!u.hostname.includes("jcm.go.jp")) return url;
+    // 末尾の /about を除去
+    let path = u.pathname.replace(/\/about\/?$/, "/");
+    // 末尾の /projects/{数字} を除去して一覧ページへ
+    path = path.replace(/\/projects\/\d+\/?$/, "/projects/");
+    // 末尾スラッシュを確保
+    if (!path.endsWith("/")) path += "/";
+    return u.origin + path;
+  } catch {
+    return url;
+  }
+}
+
+// ──────────────────────────────────────────────────────────
 // ヘルパー
 // ──────────────────────────────────────────────────────────
 function SectionHeader({ title, sub }: { title: string; sub?: string }) {
@@ -442,11 +467,11 @@ export function Article6Dashboard() {
                                 <p className="text-[10px] font-semibold text-gray-400 uppercase">関連PJ数</p>
                                 <p className="text-sm font-bold text-gray-900 mt-0.5">{a.associatedProjects || "0"}件</p>
                               </div>
-                              {a.link && (
+                              {normalizeJcmUrl(a.link) && (
                                 <div className="sm:col-span-3">
-                                  <a href={a.link} target="_blank" rel="noopener noreferrer"
+                                  <a href={normalizeJcmUrl(a.link)!} target="_blank" rel="noopener noreferrer"
                                     className="text-xs text-emerald-600 underline hover:text-emerald-800">
-                                    公式ドキュメントを確認 →
+                                    JCM二国間協定ページ →
                                   </a>
                                 </div>
                               )}
@@ -562,11 +587,11 @@ export function Article6Dashboard() {
                                   <p className="text-xs text-gray-600 mt-0.5">{j.implementer}</p>
                                 </div>
                               )}
-                              {j.website && (
+                              {normalizeJcmUrl(j.website) && (
                                 <div className="sm:col-span-3">
-                                  <a href={j.website} target="_blank" rel="noopener noreferrer"
+<a href={normalizeJcmUrl(j.website)!} target="_blank" rel="noopener noreferrer"
                                     className="text-xs text-blue-600 underline hover:text-blue-800">
-                                    プロジェクトサイト →
+                                    JCMプロジェクト一覧（ホスト国） →
                                   </a>
                                 </div>
                               )}

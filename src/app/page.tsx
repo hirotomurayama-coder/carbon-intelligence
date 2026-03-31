@@ -5,82 +5,103 @@ import Link from "next/link";
 import { getInsights, getPriceTrends } from "@/lib/wordpress";
 import type { InsightCategory, PriceTrend } from "@/types";
 import a6Raw from "@/data/article6-pipeline.json";
-import vrodRaw from "@/data/vrod-stats.json";
+import vrodRaw from "@/data/vrod-stats.json";  // imported for attribution only
 
 // ── Static data ─────────────────────────────────────────────────
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const a6Summary = (a6Raw as any).summary as Record<string, number>;
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const vrodYearly = (vrodRaw as any).yearlyData as { year: number; issued: number; retired: number }[];
+// vrodRaw is imported but only used for attribution — tree-shake unused
+void vrodRaw;
 
-// ── VROD mini bar chart (server-side SVG) ────────────────────────
-const CHART_YEARS = [2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025];
+// ── 直近価格推移 折れ線チャート (server-side SVG) ───────────────
+interface PricePoint { date: string; priceJpy: number }
 
-function VrodBarChart() {
-  const data = CHART_YEARS.map((y) => {
-    const row = vrodYearly.find((d) => d.year === y);
-    return { year: y, issued: row?.issued ?? 0, retired: row?.retired ?? 0 };
-  });
+function buildNormalizedPts(history: PricePoint[], W: number, H: number, daysBack = 90): string {
+  if (!history || history.length < 2) return "";
+  const cutoff = new Date();
+  cutoff.setDate(cutoff.getDate() - daysBack);
+  const cutoffStr = cutoff.toISOString().slice(0, 10);
+  const filtered = history
+    .filter((h) => h.date >= cutoffStr)
+    .sort((a, b) => a.date.localeCompare(b.date));
+  // Fall back to last 12 points if not enough in window
+  const pts = filtered.length >= 3 ? filtered : history.slice(-12).sort((a, b) => a.date.localeCompare(b.date));
+  if (pts.length < 2) return "";
+  const prices = pts.map((h) => h.priceJpy);
+  const min = Math.min(...prices);
+  const max = Math.max(...prices);
+  const range = max - min || 1;
+  return pts.map((h, i) => {
+    const x = (i / (pts.length - 1)) * W;
+    const y = H - ((h.priceJpy - min) / range) * (H - 4) - 2;
+    return `${x.toFixed(1)},${y.toFixed(1)}`;
+  }).join(" ");
+}
 
-  const W = 300, BAR_AREA_H = 26, LABEL_H = 9, H = BAR_AREA_H + LABEL_H;
-  const maxVal = Math.max(...data.map((d) => d.issued));
-  const n = data.length;
-  const groupW = W / n;
-  const barW = Math.floor(groupW * 0.33);
+interface RecentChartProps {
+  markets: (PriceTrend & { priceHistory?: PricePoint[] })[];
+}
+
+function RecentPriceTrendChart({ markets }: RecentChartProps) {
+  const W = 300, H = 32;
+  // Show 4 key markets with distinct colors
+  const KEY_IDS = ["eu-ets", "jcredit-forest", "vol-redd-plus", "vol-blue-carbon"];
+  const LINE_COLORS = ["#10b981", "#3b82f6", "#f59e0b", "#a78bfa"];
+  const LINE_LABELS = ["EU ETS", "J-クレ", "REDD+", "ブルーC"];
+
+  const selected = KEY_IDS
+    .map((id, ci) => ({ m: markets.find((t) => t.marketId === id), color: LINE_COLORS[ci], label: LINE_LABELS[ci] }))
+    .filter((x): x is { m: PriceTrend & { priceHistory?: PricePoint[] }; color: string; label: string } => !!x.m);
+
+  const hasData = selected.some((x) => (x.m.priceHistory ?? []).length >= 2);
+
+  if (!hasData) return null;
 
   return (
-    <svg
-      width={W}
-      height={H}
-      viewBox={`0 0 ${W} ${H}`}
-      className="flex-shrink-0"
-      aria-label="VROD 発行・焼却トレンド"
-    >
-      {data.map((d, i) => {
-        const gx = i * groupW + (groupW - barW * 2 - 1) / 2;
-        const issuedH = maxVal > 0 ? (d.issued / maxVal) * BAR_AREA_H : 0;
-        const retiredH = maxVal > 0 ? (d.retired / maxVal) * BAR_AREA_H : 0;
-        const showLabel = i % 3 === 0; // every 3rd year
-
-        return (
-          <g key={d.year}>
-            {/* Issued bar */}
-            <rect
-              x={gx}
-              y={BAR_AREA_H - issuedH}
-              width={barW}
-              height={issuedH}
-              fill="#10b981"
-              opacity={0.85}
-              rx={1}
+    <div className="flex items-end gap-2">
+      <svg width={W} height={H} viewBox={`0 0 ${W} ${H}`} className="flex-shrink-0">
+        {/* Zero line */}
+        <line x1={0} y1={H / 2} x2={W} y2={H / 2} stroke="#374151" strokeWidth={0.5} strokeDasharray="3,3" opacity={0.4} />
+        {selected.map(({ m, color }) => {
+          const pts = buildNormalizedPts(m.priceHistory ?? [], W, H);
+          if (!pts) return null;
+          return (
+            <polyline
+              key={m.id}
+              points={pts}
+              fill="none"
+              stroke={color}
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              opacity={0.9}
             />
-            {/* Retired bar */}
-            <rect
-              x={gx + barW + 1}
-              y={BAR_AREA_H - retiredH}
-              width={barW}
-              height={retiredH}
-              fill="#f59e0b"
-              opacity={0.75}
-              rx={1}
-            />
-            {/* Year label */}
-            {showLabel && (
-              <text
-                x={gx + barW}
-                y={H - 1}
-                textAnchor="middle"
-                fontSize="7"
-                fill="#6b7280"
-                fontFamily="system-ui,sans-serif"
-              >
-                {d.year}
-              </text>
-            )}
-          </g>
-        );
-      })}
-    </svg>
+          );
+        })}
+      </svg>
+      {/* Legend */}
+      <div className="flex flex-col gap-1 pb-1 flex-shrink-0">
+        {selected.map(({ color, label, m }) => {
+          const h = m.priceHistory ?? [];
+          const recent = h.slice(-1)[0];
+          const prev = h.slice(-2, -1)[0];
+          const pct = recent && prev && prev.priceJpy
+            ? ((recent.priceJpy - prev.priceJpy) / prev.priceJpy * 100).toFixed(1)
+            : null;
+          return (
+            <div key={label} className="flex items-center gap-1">
+              <span className="h-px w-3 flex-shrink-0" style={{ background: color, height: "2px" }} />
+              <span className="text-[9px] text-gray-400 whitespace-nowrap">{label}</span>
+              {pct && (
+                <span className={`text-[9px] font-semibold ${parseFloat(pct) >= 0 ? "text-emerald-400" : "text-red-400"}`}>
+                  {parseFloat(pct) >= 0 ? "+" : ""}{pct}%
+                </span>
+              )}
+            </div>
+          );
+        })}
+      </div>
+    </div>
   );
 }
 
@@ -199,23 +220,14 @@ export default async function Home() {
 
         <div className="hidden h-8 w-px flex-shrink-0 bg-gray-700 lg:block" />
 
-        {/* VROD mini chart */}
-        <div className="flex flex-1 items-center gap-3 min-w-0">
+        {/* Recent price trend chart */}
+        <div className="flex flex-1 items-center gap-2 min-w-0">
           <div className="flex-shrink-0">
-            <p className="text-[9px] font-semibold uppercase tracking-wide text-gray-500">VROD 発行・焼却 トレンド</p>
-            <div className="mt-1 flex items-end gap-2">
-              <VrodBarChart />
-              {/* Legend */}
-              <div className="flex flex-col gap-1 pb-2 flex-shrink-0">
-                <div className="flex items-center gap-1">
-                  <span className="h-2 w-3 rounded-sm bg-emerald-500 opacity-85" />
-                  <span className="text-[9px] text-gray-400">発行</span>
-                </div>
-                <div className="flex items-center gap-1">
-                  <span className="h-2 w-3 rounded-sm bg-amber-500 opacity-75" />
-                  <span className="text-[9px] text-gray-400">焼却</span>
-                </div>
-              </div>
+            <p className="text-[9px] font-semibold uppercase tracking-wide text-gray-500">
+              直近価格推移（3ヶ月）
+            </p>
+            <div className="mt-1">
+              <RecentPriceTrendChart markets={marketPrices as (PriceTrend & { priceHistory?: PricePoint[] })[]} />
             </div>
           </div>
         </div>
