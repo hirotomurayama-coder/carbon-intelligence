@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { SearchInput } from "@/components/ui/SearchInput";
 import { TabGroup } from "@/components/ui/TabGroup";
 import { Badge } from "@/components/ui/Badge";
@@ -77,7 +78,9 @@ function formatDate(dateStr: string): string {
 type Props = { data: Insight[] };
 
 export function InsightList({ data }: Props) {
-  const [activeTab, setActiveTab] = useState(ALL_TAB);
+  const searchParams = useSearchParams();
+  const initialCategory = searchParams.get("category") as InsightCategory | null;
+  const [activeTab, setActiveTab] = useState<InsightCategory | typeof ALL_TAB>(initialCategory ?? ALL_TAB);
   const [keyword, setKeyword] = useState("");
   const [groupBySeries, setGroupBySeries] = useState(false);
 
@@ -125,7 +128,7 @@ export function InsightList({ data }: Props) {
     <div className="space-y-6">
       {/* フィルタバー */}
       <div className="flex flex-wrap items-center gap-4">
-        <TabGroup tabs={TABS} activeTab={activeTab} onChange={setActiveTab} />
+        <TabGroup tabs={TABS} activeTab={activeTab} onChange={(tab) => setActiveTab(tab as InsightCategory | typeof ALL_TAB)} />
         <div className="w-full sm:ml-auto sm:w-72">
           <SearchInput
             value={keyword}

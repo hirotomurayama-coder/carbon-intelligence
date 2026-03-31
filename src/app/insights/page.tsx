@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import { getInsights } from "@/lib/wordpress";
 import { InsightList } from "@/components/InsightList";
 import type { Metadata } from "next";
@@ -12,8 +13,6 @@ export const metadata: Metadata = {
 
 export default async function InsightsPage() {
   const insights = await getInsights();
-
-  // 日付降順でソート
   const sorted = [...insights].sort((a, b) => b.date.localeCompare(a.date));
 
   return (
@@ -25,7 +24,9 @@ export default async function InsightsPage() {
         </p>
       </div>
 
-      <InsightList data={sorted} />
+      <Suspense fallback={<div className="py-12 text-center text-sm text-gray-400">読み込み中...</div>}>
+        <InsightList data={sorted} />
+      </Suspense>
     </div>
   );
 }

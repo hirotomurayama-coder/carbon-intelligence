@@ -20,4 +20,9 @@ export type NavIcon =
   | "analytics"
   | "statistics"
   | "library"
-  | "settings";
+  | "settings"
+  | "insight"
+  | "methodology"
+  | "company"
+  | "roadmap"
+  | "article6";

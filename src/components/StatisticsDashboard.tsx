@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useMemo } from "react";
+import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import {
   BarChart, Bar, LineChart, Line, PieChart, Pie, Cell,
@@ -77,7 +78,9 @@ const COUNTRY_JA: Record<string, string> = {
 };
 
 export function StatisticsDashboard() {
-  const [activeTab, setActiveTab] = useState<Tab>("overview");
+  const searchParams = useSearchParams();
+  const initialTab = (searchParams.get("tab") as Tab) ?? "overview";
+  const [activeTab, setActiveTab] = useState<Tab>(initialTab);
   const [selectedRegistries, setSelectedRegistries] = useState<Set<string>>(new Set(ALL_REGISTRIES));
   const [yearFrom, setYearFrom] = useState(YEAR_RANGE.min);
   const [yearTo, setYearTo] = useState(YEAR_RANGE.max);
