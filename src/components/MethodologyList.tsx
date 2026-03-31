@@ -164,8 +164,14 @@ export function MethodologyList({ data }: Props) {
   const vrodCount = data.filter((m) => m.source === "vrod").length;
 
   const filtered = useMemo(() => {
+    // スペース区切りで複数トークンに分割（AND 検索）
+    const tokens = keyword.toLowerCase().split(/\s+/).filter(Boolean);
+
     const result = data.filter((m) => {
+      // タイトル先頭のコード部分を優先検索対象に（例: "ACM0002" "VM0047"）
+      const codeToken = m.title.split(/[\s,;:（(]/)[0].toLowerCase();
       const searchTarget = [
+        codeToken,
         m.title,
         m.titleJa ?? "",
         m.summary,
@@ -177,8 +183,9 @@ export function MethodologyList({ data }: Props) {
       ]
         .join(" ")
         .toLowerCase();
+      // 全トークンが含まれる場合のみマッチ（AND 検索）
       const matchesKeyword =
-        keyword === "" || searchTarget.includes(keyword.toLowerCase());
+        tokens.length === 0 || tokens.every((t) => searchTarget.includes(t));
       const matchesRegistry =
         registryFilter === "" || m.registry === registryFilter;
       const matchesCreditType =
@@ -298,22 +305,22 @@ export function MethodologyList({ data }: Props) {
             style={{ top: `${filterHeight}px` }}
           >
             <tr className="border-b border-gray-100 bg-gray-50">
-              <th className="px-5 py-3 font-medium text-gray-500">
+              <th className="px-4 py-3 font-medium text-gray-500">
                 タイトル
               </th>
-              <th className="px-5 py-3 font-medium text-gray-500">
+              <th className="w-36 whitespace-nowrap px-4 py-3 font-medium text-gray-500">
                 発行機関
               </th>
-              <th className="hidden px-5 py-3 font-medium text-gray-500 lg:table-cell">
+              <th className="hidden w-44 whitespace-nowrap px-4 py-3 font-medium text-gray-500 lg:table-cell">
                 分類
               </th>
-              <th className="hidden px-4 py-3 font-medium text-gray-500 text-right xl:table-cell">
+              <th className="hidden w-24 whitespace-nowrap px-3 py-3 font-medium text-gray-500 text-right xl:table-cell">
                 プロジェクト数
               </th>
-              <th className="hidden px-5 py-3 font-medium text-gray-500 lg:table-cell">
+              <th className="hidden w-24 whitespace-nowrap px-4 py-3 font-medium text-gray-500 lg:table-cell">
                 ステータス
               </th>
-              <th className="w-20 px-3 py-3 font-medium text-gray-500 text-center">
+              <th className="w-16 px-3 py-3 font-medium text-gray-500 text-center">
                 比較
               </th>
             </tr>
@@ -324,76 +331,65 @@ export function MethodologyList({ data }: Props) {
               return (
                 <tr
                   key={m.id}
-                  className={`group transition-colors ${isWp ? "cursor-pointer hover:bg-emerald-50/40" : "hover:bg-blue-50/30"}`}
-                  onClick={() => { if (isWp) router.push(`/methodologies/${m.id}`); }}
+                  className="group cursor-pointer transition-colors hover:bg-emerald-50/40"
+                  onClick={() => router.push(`/methodologies/${m.id}`)}
                 >
                   {/* タイトル */}
-                  <td className="px-5 py-4">
-                    {isWp ? (
-                      <Link
-                        href={`/methodologies/${m.id}`}
-                        className="block"
-                        onClick={(e) => e.stopPropagation()}
-                      >
-                        {m.titleJa ? (
-                          <>
-                            <p className="font-medium text-gray-900 group-hover:text-emerald-700">
-                              {m.titleJa}
+                  <td className="px-4 py-3 max-w-0">
+                    <Link
+                      href={`/methodologies/${m.id}`}
+                      className="block"
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      {m.titleJa ? (
+                        <>
+                          <p className="font-medium text-gray-900 group-hover:text-emerald-700 truncate">
+                            {m.titleJa}
+                          </p>
+                          <p className="mt-0.5 text-xs text-gray-400 truncate">
+                            {m.title}
+                          </p>
+                        </>
+                      ) : (
+                        <>
+                          <p className="font-medium text-gray-900 group-hover:text-emerald-700 truncate">
+                            {m.title}
+                          </p>
+                          {m.summary && (
+                            <p className="mt-0.5 text-xs text-gray-400 truncate">
+                              {m.summary}
                             </p>
-                            <p className="mt-0.5 text-xs text-gray-400">
-                              {m.title.length > 80 ? m.title.slice(0, 80) + "…" : m.title}
-                            </p>
-                          </>
-                        ) : (
-                          <>
-                            <p className="font-medium text-gray-900 group-hover:text-emerald-700">
-                              {m.title}
-                            </p>
-                            {m.summary && (
-                              <p className="mt-0.5 text-xs leading-relaxed text-gray-400">
-                                {m.summary.length > 100 ? m.summary.slice(0, 100) + "…" : m.summary}
-                              </p>
-                            )}
-                          </>
-                        )}
-                      </Link>
-                    ) : (
-                      /* VROD / CAD Trust エントリ: リンクなし */
-                      <div>
-                        <p className="font-medium text-gray-900">
-                          {m.title.length > 80 ? m.title.slice(0, 80) + "…" : m.title}
-                        </p>
-                        <span className="mt-0.5 inline-block rounded bg-blue-50 px-1.5 py-0.5 text-[10px] font-medium text-blue-500">
-                          VROD参照
-                        </span>
-                      </div>
-                    )}
+                          )}
+                        </>
+                      )}
+                    </Link>
                   </td>
 
-                  {/* 発行機関（レジストリ + 認証機関を統合） */}
-                  <td className="px-5 py-4">
+                  {/* 発行機関 */}
+                  <td className="w-36 px-4 py-3">
                     {m.registry ? (
                       <div className="flex flex-col gap-1">
-                        <Badge variant={registryBadgeVariant(m.registry)}>
-                          {m.registry}
-                        </Badge>
-                        {/* 認証機関がレジストリと異なる場合のみ補足表示 */}
+                        <div className="whitespace-nowrap">
+                          <Badge variant={registryBadgeVariant(m.registry)}>
+                            {m.registry}
+                          </Badge>
+                        </div>
                         {m.certificationBody &&
                           m.certificationBody.toLowerCase() !== m.registry.toLowerCase() && (
-                            <span className="text-[11px] text-gray-400">
+                            <span className="text-[10px] text-gray-400 truncate max-w-[130px] block">
                               {m.certificationBody}
                             </span>
                           )}
                       </div>
                     ) : m.certificationBody ? (
-                      <span className="text-xs text-gray-600">{m.certificationBody}</span>
+                      <span className="text-xs text-gray-600 truncate block max-w-[130px]">{m.certificationBody}</span>
                     ) : (
                       <span className="text-xs text-gray-300">{"\u2014"}</span>
                     )}
                   </td>
 
                   {/* 分類 */}
-                  <td className="hidden px-5 py-4 lg:table-cell">
+                  <td className="hidden px-4 py-3 lg:table-cell">
                     <div className="flex flex-wrap gap-1">
                       {m.creditType && (
                         <Badge variant={creditTypeBadgeVariant(m.creditType)}>
@@ -412,7 +408,7 @@ export function MethodologyList({ data }: Props) {
                   </td>
 
                   {/* プロジェクト数 */}
-                  <td className="hidden px-4 py-4 text-right xl:table-cell">
+                  <td className="hidden px-3 py-3 text-right xl:table-cell">
                     {m.projectCount != null ? (
                       <span className="text-sm font-medium text-gray-700">
                         {m.projectCount.toLocaleString()}
@@ -423,7 +419,7 @@ export function MethodologyList({ data }: Props) {
                   </td>
 
                   {/* ステータス */}
-                  <td className="hidden px-5 py-4 lg:table-cell">
+                  <td className="hidden px-4 py-3 lg:table-cell">
                     {m.operationalStatus ? (
                       <Badge
                         variant={m.operationalStatus === "運用中" ? "emerald" : "gray"}
@@ -435,40 +431,36 @@ export function MethodologyList({ data }: Props) {
                     )}
                   </td>
 
-                  {/* 比較ボタン（WPエントリのみ） */}
-                  <td className="px-3 py-4">
-                    {isWp ? (
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          if (compare.has(m.id)) {
-                            compare.remove(m.id);
-                          } else {
-                            compare.add(m);
-                          }
-                        }}
-                        disabled={compare.isFull && !compare.has(m.id)}
-                        className={`inline-flex items-center gap-1 rounded-lg px-2.5 py-1.5 text-xs font-medium transition ${
-                          compare.has(m.id)
-                            ? "bg-emerald-100 text-emerald-700 border border-emerald-300"
-                            : compare.isFull
-                              ? "bg-gray-50 text-gray-300 cursor-not-allowed border border-gray-100"
-                              : "bg-white text-gray-500 border border-gray-200 hover:bg-emerald-50 hover:text-emerald-600 hover:border-emerald-300"
-                        }`}
-                        title={compare.has(m.id) ? "比較から削除" : "比較に追加（最大5件）"}
-                      >
-                        <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                          {compare.has(m.id) ? (
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                          ) : (
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-                          )}
-                        </svg>
-                        {compare.has(m.id) ? "追加済" : "比較"}
-                      </button>
-                    ) : (
-                      <span className="text-xs text-gray-300">—</span>
-                    )}
+                  {/* 比較ボタン */}
+                  <td className="px-3 py-3">
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        if (compare.has(m.id)) {
+                          compare.remove(m.id);
+                        } else {
+                          compare.add(m);
+                        }
+                      }}
+                      disabled={compare.isFull && !compare.has(m.id)}
+                      className={`inline-flex items-center gap-1 rounded-lg px-2 py-1.5 text-xs font-medium transition ${
+                        compare.has(m.id)
+                          ? "bg-emerald-100 text-emerald-700 border border-emerald-300"
+                          : compare.isFull
+                            ? "bg-gray-50 text-gray-300 cursor-not-allowed border border-gray-100"
+                            : "bg-white text-gray-500 border border-gray-200 hover:bg-emerald-50 hover:text-emerald-600 hover:border-emerald-300"
+                      }`}
+                      title={compare.has(m.id) ? "比較から削除" : "比較に追加（最大5件）"}
+                    >
+                      <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                        {compare.has(m.id) ? (
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        ) : (
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                        )}
+                      </svg>
+                      {compare.has(m.id) ? "追加済" : "比較"}
+                    </button>
                   </td>
                 </tr>
               );

@@ -5,6 +5,7 @@ import { getProjects, getCountries, calcTotalUnits } from "@/lib/cad-trust";
 import type { CadProject } from "@/lib/cad-trust";
 import { Badge } from "@/components/ui/Badge";
 import type { Methodology, RegistryName, Insight } from "@/types";
+import allMethodsData from "@/data/all-methodologies.json";
 
 type Props = {
   params: Promise<{ id: string }>;
@@ -34,8 +35,172 @@ function InfoRow({ label, value }: { label: string; value: React.ReactNode }) {
   );
 }
 
+// ============================================================
+// 外部メソドロジー（VROD / CAD Trust）の詳細ページ
+// ============================================================
+
+type ExtEntry = {
+  name: string;
+  registry: string;
+  projectsVrod: number;
+  creditsVrod: number;
+  projectsCad: number;
+  totalProjects: number;
+  source: string[];
+};
+
+const REGISTRY_ALIAS: Record<string, RegistryName> = {
+  Verra: "Verra", VCS: "Verra", "Gold Standard": "Gold Standard", GS: "Gold Standard",
+  CDM: "CDM", ARB: "ARB", CAR: "CAR", ACR: "ACR", ART: "ART",
+  "Puro.earth": "Puro.earth", Isometric: "Isometric", "J-Credit": "J-Credit",
+};
+
+function inferCreditType(name: string): string | null {
+  const n = name.toUpperCase();
+  if (/AR-ACM|AR-AMS|AR-AM|VMR0006|VM0042|VM0047|VM0015|IFM|FOREST|REDD|REFORESTATION|WETLAND|MANGROVE|SOIL|SEAGRASS|BLUE CARBON|DAC|BIOCHAR|ERW|MINERALI|ENHANCED ROCK|REMOVAL/.test(n)) return "除去系";
+  return "回避・削減系";
+}
+function inferBaseType(name: string): string | null {
+  const n = name.toUpperCase();
+  if (/AMS-I\.|ACM000[12]|SOLAR|RENEWABLE|WIND|HYDRO|GEOTHERMAL|BIOMASS ENERGY/.test(n)) return "再エネ";
+  if (/FOREST|AR-|IFM|MANGROVE|SOIL|REDD|VM0047|VM0042|VM0015|WETLAND|SEAGRASS|GRASSLAND|AFFORESTATION|REFORESTATION/.test(n)) return "自然ベース";
+  if (/DAC|BIOCHAR|MINERALI|ENHANCED ROCK|DIRECT AIR/.test(n)) return "技術ベース";
+  return null;
+}
+
+function extIdToKey(id: string): string {
+  return id.slice(4); // "ext-" を除去
+}
+
+function findExternalEntry(id: string): ExtEntry | null {
+  const key = extIdToKey(id);
+  return (allMethodsData.methodologies as ExtEntry[]).find(
+    (m) => m.name.replace(/[^a-zA-Z0-9]/g, "-").slice(0, 60) === key
+  ) ?? null;
+}
+
+async function ExternalMethodologyPage({ id, entry }: { id: string; entry: ExtEntry }) {
+  const registry = REGISTRY_ALIAS[entry.registry] ?? null;
+  const creditType = inferCreditType(entry.name);
+  const baseType = inferBaseType(entry.name);
+
+  const sourceLabels: Record<string, string> = {
+    "vrod": "VROD（UC Berkeley Voluntary Registry Offsets Database）",
+    "cad-trust": "CAD Trust（Climate Action Data Trust）",
+  };
+
+  return (
+    <div className="mx-auto max-w-4xl space-y-8">
+      {/* パンくず */}
+      <nav className="flex items-center gap-2 text-sm text-gray-400">
+        <Link href="/methodologies" className="hover:text-emerald-600">メソドロジー</Link>
+        <span>/</span>
+        <span className="text-gray-600 truncate max-w-xs">{entry.name}</span>
+      </nav>
+
+      {/* ヘッダー */}
+      <div className="space-y-3">
+        <h1 className="text-2xl font-bold text-gray-900 break-all">{entry.name}</h1>
+        <div className="flex flex-wrap gap-2">
+          {registry && (
+            <Badge variant={
+              registry === "Verra" ? "emerald" : registry === "Gold Standard" ? "amber" :
+              registry === "CDM" ? "blue" : registry === "ACR" || registry === "CAR" ? "slate" : "gray"
+            }>{registry}</Badge>
+          )}
+          {!registry && entry.registry && (
+            <Badge variant="gray">{entry.registry}</Badge>
+          )}
+          {creditType && (
+            <Badge variant={creditType === "除去系" ? "indigo" : "blue"}>{creditType}</Badge>
+          )}
+          {baseType && (
+            <Badge variant={baseType === "自然ベース" ? "emerald" : baseType === "技術ベース" ? "slate" : "amber"}>
+              {baseType}
+            </Badge>
+          )}
+        </div>
+      </div>
+
+      {/* データソース情報 */}
+      <div className="rounded-xl border border-blue-100 bg-blue-50/50 p-5">
+        <p className="text-sm font-medium text-blue-800 mb-2">データソース</p>
+        <ul className="space-y-1">
+          {entry.source.map((s) => (
+            <li key={s} className="flex items-center gap-2 text-sm text-blue-700">
+              <span className="h-1.5 w-1.5 rounded-full bg-blue-400 flex-shrink-0" />
+              {sourceLabels[s] ?? s}
+            </li>
+          ))}
+        </ul>
+        <p className="mt-3 text-xs text-blue-500">
+          このメソドロジーは外部データベースから自動収録されました。WordPress での詳細入力は未実施です。
+        </p>
+      </div>
+
+      {/* 統計情報 */}
+      <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
+        {[
+          { label: "総プロジェクト数", value: entry.totalProjects.toLocaleString() },
+          { label: "VRODプロジェクト", value: entry.projectsVrod.toLocaleString() },
+          { label: "CAD Trustプロジェクト", value: entry.projectsCad.toLocaleString() },
+          { label: "VROD発行クレジット", value: entry.creditsVrod > 0 ? `${(entry.creditsVrod / 1_000_000).toFixed(1)}M` : "—" },
+        ].map(({ label, value }) => (
+          <div key={label} className="rounded-xl border border-gray-200 bg-white p-4">
+            <p className="text-xs text-gray-500">{label}</p>
+            <p className="mt-1 text-xl font-bold text-gray-900">{value}</p>
+          </div>
+        ))}
+      </div>
+
+      {/* 基本情報 */}
+      <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
+        <h3 className="mb-4 text-sm font-semibold text-gray-900">基本情報</h3>
+        <div className="divide-y divide-gray-100 text-sm">
+          <div className="flex items-center justify-between py-2.5">
+            <span className="text-gray-500">発行機関 / レジストリ</span>
+            <span className="font-medium text-gray-900">{entry.registry}</span>
+          </div>
+          <div className="flex items-center justify-between py-2.5">
+            <span className="text-gray-500">クレジット種別（推定）</span>
+            <span className="font-medium text-gray-900">{creditType ?? "—"}</span>
+          </div>
+          <div className="flex items-center justify-between py-2.5">
+            <span className="text-gray-500">基本分類（推定）</span>
+            <span className="font-medium text-gray-900">{baseType ?? "—"}</span>
+          </div>
+        </div>
+      </div>
+
+      {/* 戻る */}
+      <div>
+        <Link href="/methodologies"
+          className="inline-flex items-center gap-1 text-sm text-gray-400 transition-colors hover:text-emerald-600"
+        >
+          <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
+          </svg>
+          メソドロジー一覧に戻る
+        </Link>
+      </div>
+    </div>
+  );
+}
+
+// ============================================================
+// メインページコンポーネント
+// ============================================================
+
 export default async function MethodologyDetailPage({ params }: Props) {
   const { id } = await params;
+
+  // 外部エントリ（ext- プレフィックス）の場合
+  if (id.startsWith("ext-")) {
+    const entry = findExternalEntry(id);
+    if (!entry) notFound();
+    return <ExternalMethodologyPage id={id} entry={entry} />;
+  }
+
   const methodology = await getMethodologyById(id);
 
   if (!methodology) {
