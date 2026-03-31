@@ -5,7 +5,6 @@ import { usePathname, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { APP_NAME, NAV_ITEMS } from "@/lib/constants";
 import { NavIcon } from "./NavIcon";
-import type { NavItem } from "@/types/navigation";
 
 function splitHref(href: string) {
   const [path, query] = href.split("?");
@@ -36,20 +35,40 @@ function getDefaultOpen(pathname: string): string | null {
   )?.href ?? null;
 }
 
-export function Sidebar() {
+interface SidebarProps {
+  onClose?: () => void;
+}
+
+export function Sidebar({ onClose }: SidebarProps) {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const [openItem, setOpenItem] = useState<string | null>(() => getDefaultOpen(pathname));
 
   return (
-    <aside className="flex h-screen w-56 flex-col border-r border-gray-200 bg-white">
-      <div className="flex h-16 items-center gap-2 border-b border-gray-200 px-5">
-        <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-600 text-sm font-bold text-white">
-          C
+    <aside className="flex h-full w-64 flex-col border-r border-gray-200 bg-white">
+      {/* ── Brand header ── */}
+      <div className="flex h-14 flex-shrink-0 items-center justify-between border-b border-gray-200 px-4 lg:h-16">
+        <div className="flex items-center gap-2.5">
+          <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg bg-emerald-600 text-sm font-bold text-white">
+            C
+          </div>
+          <span className="text-sm font-semibold text-gray-900">{APP_NAME}</span>
         </div>
-        <span className="text-base font-semibold text-gray-900">{APP_NAME}</span>
+        {/* Close button — mobile only */}
+        {onClose && (
+          <button
+            onClick={onClose}
+            className="rounded-lg p-1 text-gray-400 hover:bg-gray-100 hover:text-gray-600 transition lg:hidden"
+            aria-label="閉じる"
+          >
+            <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        )}
       </div>
 
+      {/* ── Navigation ── */}
       <nav className="flex-1 space-y-0.5 overflow-y-auto px-2 py-3">
         {NAV_ITEMS.map((item) => {
           const isOpen = openItem === item.href;
@@ -63,7 +82,7 @@ export function Sidebar() {
           return (
             <div key={item.href}>
               {item.children ? (
-                /* アコーディオン親項目: クリックで開閉 + ページ遷移 */
+                /* Accordion parent */
                 <Link
                   href={item.href}
                   onClick={() =>
@@ -76,7 +95,7 @@ export function Sidebar() {
                   }`}
                 >
                   <NavIcon icon={item.icon} className="h-4 w-4 flex-shrink-0" />
-                  <span className="flex-1">{item.label}</span>
+                  <span className="flex-1 truncate">{item.label}</span>
                   <svg
                     className={`h-3.5 w-3.5 flex-shrink-0 text-gray-400 transition-transform duration-200 ${
                       isOpen ? "rotate-180" : ""
@@ -90,7 +109,7 @@ export function Sidebar() {
                   </svg>
                 </Link>
               ) : (
-                /* 通常項目 */
+                /* Normal item */
                 <Link
                   href={item.href}
                   className={`flex items-center gap-2.5 rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
@@ -100,13 +119,13 @@ export function Sidebar() {
                   }`}
                 >
                   <NavIcon icon={item.icon} className="h-4 w-4 flex-shrink-0" />
-                  {item.label}
+                  <span className="truncate">{item.label}</span>
                 </Link>
               )}
 
-              {/* サブ項目（開いているときのみ表示） */}
+              {/* Children (when open) */}
               {item.children && isOpen && (
-                <div className="ml-3 mt-0.5 mb-1 space-y-0.5 border-l border-gray-100 pl-3">
+                <div className="ml-3 mb-1 mt-0.5 space-y-0.5 border-l border-gray-100 pl-3">
                   {item.children.map((child) => {
                     const childActive = isChildActive(child.href, pathname, searchParams);
                     return (
@@ -115,12 +134,12 @@ export function Sidebar() {
                         href={child.href}
                         className={`flex items-center gap-2 rounded-md px-2 py-1.5 text-xs transition-colors ${
                           childActive
-                            ? "font-semibold text-emerald-700 bg-emerald-50/60"
-                            : "text-gray-400 hover:text-gray-700 hover:bg-gray-50"
+                            ? "bg-emerald-50/60 font-semibold text-emerald-700"
+                            : "text-gray-400 hover:bg-gray-50 hover:text-gray-700"
                         }`}
                       >
                         <span
-                          className={`h-1 w-1 rounded-full flex-shrink-0 ${
+                          className={`h-1 w-1 flex-shrink-0 rounded-full ${
                             childActive ? "bg-emerald-500" : "bg-gray-200"
                           }`}
                         />
@@ -135,7 +154,8 @@ export function Sidebar() {
         })}
       </nav>
 
-      <div className="border-t border-gray-200 px-5 py-4">
+      {/* ── Footer ── */}
+      <div className="flex-shrink-0 border-t border-gray-200 px-5 py-4">
         <p className="text-xs text-gray-400">v0.2.0</p>
       </div>
     </aside>
