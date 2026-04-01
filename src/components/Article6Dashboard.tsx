@@ -698,7 +698,7 @@ export function Article6Dashboard() {
             />
             <ResponsiveContainer width="100%" height={320}>
               <BarChart
-                data={JCM_BUBBLE_DATA.sort((a, b) => b.avgKt - a.avgKt)}
+                data={[...JCM_BUBBLE_DATA].sort((a, b) => b.avgKt - a.avgKt)}
                 layout="vertical"
                 margin={{ left: 16, right: 60, top: 4, bottom: 4 }}
               >
@@ -707,19 +707,20 @@ export function Article6Dashboard() {
                 <Tooltip
                   content={({ active, payload }) => {
                     if (!active || !payload?.length) return null;
-                    const d = payload[0].payload as typeof JCM_BUBBLE_DATA[0];
+                    const d = payload[0]?.payload as typeof JCM_BUBBLE_DATA[0] | undefined;
+                    if (!d) return null;
                     return (
                       <div className="rounded-lg border border-gray-200 bg-white p-3 text-xs shadow-lg">
                         <p className="font-semibold text-gray-800">{d.type}</p>
                         <p className="text-gray-600">プロジェクト数: <span className="font-bold">{d.count}件</span></p>
-                        <p className="text-gray-600">平均年間削減量: <span className="font-bold">{d.avgKt.toFixed(2)} ktCO₂e/yr</span></p>
-                        <p className="text-gray-600">合計年間削減量: <span className="font-bold">{d.totalKt.toFixed(1)} ktCO₂e/yr</span></p>
+                        <p className="text-gray-600">平均年間削減量: <span className="font-bold">{d.avgKt?.toFixed(2) ?? "—"} ktCO₂e/yr</span></p>
+                        <p className="text-gray-600">合計年間削減量: <span className="font-bold">{d.totalKt?.toFixed(1) ?? "—"} ktCO₂e/yr</span></p>
                       </div>
                     );
                   }}
                 />
-                <Bar dataKey="avgKt" radius={[0, 4, 4, 0]} label={{ position: "right", fontSize: 10, formatter: (v: unknown) => `${(v as number).toFixed(1)}kt` }}>
-                  {JCM_BUBBLE_DATA.sort((a, b) => b.avgKt - a.avgKt).map((d, i) => (
+                <Bar dataKey="avgKt" radius={[0, 4, 4, 0]} label={{ position: "right", fontSize: 10, formatter: (v: unknown) => typeof v === "number" && isFinite(v) ? `${v.toFixed(1)}kt` : "" }}>
+                  {[...JCM_BUBBLE_DATA].sort((a, b) => b.avgKt - a.avgKt).map((d, i) => (
                     <Cell key={i} fill={d.color} />
                   ))}
                 </Bar>
