@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import React, { useState, useMemo } from "react";
 import {
   BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer,
   PieChart, Pie, Cell, Treemap,
@@ -167,7 +167,7 @@ function ChordDiagram() {
         {/* Chords (sorted large→small so small render on top) */}
         {[...chords].reverse().map((c, i) => (
           <path key={i} d={c.path} fill={c.color} opacity={0.28} className="hover:opacity-55 cursor-pointer transition-opacity">
-            <title>{c.src} → {c.tgt}: {c.count}件</title>
+            <title>{`${c.src} → ${c.tgt}: ${c.count}件`}</title>
           </path>
         ))}
         {/* Node arcs */}
@@ -610,9 +610,8 @@ export function Article6Dashboard() {
                 </thead>
                 <tbody className="divide-y divide-gray-50">
                   {filteredAgreements.map((a, i) => (
-                    <>
+                    <React.Fragment key={i}>
                       <tr
-                        key={i}
                         onClick={() => setExpandedAg(expandedAg === i ? null : i)}
                         className={`cursor-pointer transition ${
                           expandedAg === i ? "bg-emerald-50/40" : a.buyingCountry === "Japan" ? "bg-blue-50/20 hover:bg-blue-50/40" : "hover:bg-gray-50"
@@ -643,7 +642,7 @@ export function Article6Dashboard() {
                         </td>
                       </tr>
                       {expandedAg === i && (
-                        <tr key={`exp-${i}`} className="bg-emerald-50/30">
+                        <tr className="bg-emerald-50/30">
                           <td colSpan={6} className="px-5 py-4">
                             <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
                               {a.title && (
@@ -676,7 +675,7 @@ export function Article6Dashboard() {
                           </td>
                         </tr>
                       )}
-                    </>
+                    </React.Fragment>
                   ))}
                 </tbody>
               </table>
@@ -751,9 +750,8 @@ export function Article6Dashboard() {
                 </thead>
                 <tbody className="divide-y divide-gray-50">
                   {filteredJcm.map((j) => (
-                    <>
+                    <React.Fragment key={j.id}>
                       <tr
-                        key={j.id}
                         onClick={() => setExpandedJcm(expandedJcm === j.id ? null : j.id)}
                         className={`cursor-pointer transition ${expandedJcm === j.id ? "bg-blue-50/40" : "hover:bg-gray-50"}`}
                       >
@@ -785,7 +783,7 @@ export function Article6Dashboard() {
                         </td>
                       </tr>
                       {expandedJcm === j.id && (
-                        <tr key={`exp-${j.id}`} className="bg-blue-50/30">
+                        <tr className="bg-blue-50/30">
                           <td colSpan={6} className="px-5 py-4">
                             <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
                               <div className="sm:col-span-3">
@@ -832,7 +830,7 @@ export function Article6Dashboard() {
                           </td>
                         </tr>
                       )}
-                    </>
+                    </React.Fragment>
                   ))}
                 </tbody>
               </table>
@@ -921,9 +919,8 @@ export function Article6Dashboard() {
                 </thead>
                 <tbody className="divide-y divide-gray-50">
                   {filteredPacm.slice(0, 200).map((p, i) => (
-                    <>
+                    <React.Fragment key={i}>
                       <tr
-                        key={i}
                         onClick={() => setExpandedPacm(expandedPacm === i ? null : i)}
                         className={`cursor-pointer transition ${expandedPacm === i ? "bg-purple-50/40" : "hover:bg-gray-50"}`}
                       >
@@ -945,7 +942,7 @@ export function Article6Dashboard() {
                         </td>
                       </tr>
                       {expandedPacm === i && (
-                        <tr key={`exp-${i}`} className="bg-purple-50/30">
+                        <tr className="bg-purple-50/30">
                           <td colSpan={6} className="px-5 py-4">
                             <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
                               <div>
@@ -970,7 +967,7 @@ export function Article6Dashboard() {
                           </td>
                         </tr>
                       )}
-                    </>
+                    </React.Fragment>
                   ))}
                 </tbody>
               </table>
