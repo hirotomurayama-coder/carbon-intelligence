@@ -3,7 +3,7 @@
 import { useState, useMemo } from "react";
 import {
   BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer,
-  PieChart, Pie, Cell,
+  PieChart, Pie, Cell, Treemap,
 } from "recharts";
 import rawData from "@/data/article6-pipeline.json";
 
@@ -50,6 +50,192 @@ type PriorItem = {
 // カラーパレット
 // ──────────────────────────────────────────────────────────
 const COLORS = ["#10b981", "#3b82f6", "#f59e0b", "#8b5cf6", "#ef4444", "#06b6d4", "#f97316", "#84cc16"];
+
+// ── Chord Diagram ────────────────────────────────────────────────
+const CHORD_FLOWS: Record<string, number> = {
+  "Asia|Japan": 19, "Africa|Japan": 5, "Americas|Japan": 3, "Oceania|Japan": 2, "Europe|Japan": 2,
+  "Asia|Singapore": 11, "Africa|Singapore": 8, "Americas|Singapore": 7, "Oceania|Singapore": 2,
+  "Americas|Switzerland": 5, "Africa|Switzerland": 7, "Europe|Switzerland": 4, "Asia|Switzerland": 3, "Oceania|Switzerland": 1,
+  "Asia|Republic of Korea": 8, "Africa|Republic of Korea": 2, "Americas|Republic of Korea": 1,
+  "Africa|Norway": 4, "Asia|Norway": 2,
+  "Africa|Sweden": 4, "Asia|Sweden": 1, "Americas|Sweden": 1,
+  "Oceania|Australia": 2,
+  "Americas|United Arab Emirates": 1, "Africa|Kuwait": 1, "Africa|Liechtenstein": 1, "Africa|Monaco": 1,
+};
+
+const CHORD_SOURCES = ["Asia", "Africa", "Americas", "Europe", "Oceania"];
+const CHORD_BUYERS = ["Japan", "Singapore", "Switzerland", "Republic of Korea", "Norway", "Sweden", "Australia"];
+const CHORD_ALL = [...CHORD_SOURCES, ...CHORD_BUYERS];
+
+const CHORD_COLORS: Record<string, string> = {
+  Asia: "#10b981", Africa: "#f59e0b", Americas: "#3b82f6",
+  Europe: "#8b5cf6", Oceania: "#06b6d4",
+  Japan: "#ef4444", Singapore: "#f97316", Switzerland: "#7c3aed",
+  "Republic of Korea": "#0891b2", Norway: "#db2777", Sweden: "#16a34a", Australia: "#ca8a04",
+};
+
+function polarToXY(angle: number, r: number): [number, number] {
+  return [Math.cos(angle) * r, Math.sin(angle) * r];
+}
+
+function arcPath(r: number, a1: number, a2: number, sweep = 1): string {
+  const [x1, y1] = polarToXY(a1, r);
+  const [x2, y2] = polarToXY(a2, r);
+  const large = a2 - a1 > Math.PI ? 1 : 0;
+  return `A${r},${r} 0 ${large} ${sweep} ${x2.toFixed(2)},${y2.toFixed(2)}`;
+}
+
+function chordPath(r: number, cs1: number, cs2: number, ct1: number, ct2: number): string {
+  const [x1, y1] = polarToXY(cs1, r);
+  const [x2, y2] = polarToXY(cs2, r);
+  const [x3, y3] = polarToXY(ct1, r);
+  const [x4, y4] = polarToXY(ct2, r);
+  const la1 = cs2 - cs1 > Math.PI ? 1 : 0;
+  const la2 = ct2 - ct1 > Math.PI ? 1 : 0;
+  return [
+    `M${x1.toFixed(2)},${y1.toFixed(2)}`,
+    `A${r},${r} 0 ${la1} 1 ${x2.toFixed(2)},${y2.toFixed(2)}`,
+    `Q0,0 ${x4.toFixed(2)},${y4.toFixed(2)}`,
+    `A${r},${r} 0 ${la2} 0 ${x3.toFixed(2)},${y3.toFixed(2)}`,
+    `Q0,0 ${x1.toFixed(2)},${y1.toFixed(2)}`,
+    "Z",
+  ].join(" ");
+}
+
+function ChordDiagram() {
+  const R = 130, ARC_W = 18, GAP = 0.025;
+
+  // Node totals (source + target separately)
+  const nodeTotals: Record<string, number> = {};
+  CHORD_ALL.forEach(n => { nodeTotals[n] = 0; });
+  Object.entries(CHORD_FLOWS).forEach(([key, count]) => {
+    const [src, tgt] = key.split("|");
+    if (CHORD_SOURCES.includes(src) && CHORD_BUYERS.includes(tgt)) {
+      nodeTotals[src] = (nodeTotals[src] || 0) + count;
+      nodeTotals[tgt] = (nodeTotals[tgt] || 0) + count;
+    }
+  });
+
+  const total = Object.values(nodeTotals).reduce((s, v) => s + v, 0);
+  const available = 2 * Math.PI - GAP * CHORD_ALL.length;
+
+  let angle = -Math.PI / 2;
+  const nodeArcs: Record<string, { s: number; e: number }> = {};
+  CHORD_ALL.forEach(node => {
+    const size = (nodeTotals[node] / total) * available;
+    nodeArcs[node] = { s: angle, e: angle + size };
+    angle += size + GAP;
+  });
+
+  // Track chord sub-positions within each node's arc
+  const srcPos: Record<string, number> = {};
+  const tgtPos: Record<string, number> = {};
+  CHORD_ALL.forEach(n => {
+    srcPos[n] = nodeArcs[n]?.s ?? 0;
+    tgtPos[n] = nodeArcs[n]?.s ?? 0;
+  });
+
+  const chords: { path: string; color: string; count: number; src: string; tgt: string }[] = [];
+  // Sort flows by count descending so smaller chords render on top
+  const sortedFlows = Object.entries(CHORD_FLOWS)
+    .filter(([key]) => {
+      const [s, t] = key.split("|");
+      return CHORD_SOURCES.includes(s) && CHORD_BUYERS.includes(t);
+    })
+    .sort((a, b) => b[1] - a[1]);
+
+  sortedFlows.forEach(([key, count]) => {
+    const [src, tgt] = key.split("|");
+    if (!nodeArcs[src] || !nodeArcs[tgt]) return;
+    const srcArc = nodeArcs[src].e - nodeArcs[src].s;
+    const tgtArc = nodeArcs[tgt].e - nodeArcs[tgt].s;
+    const cs1 = srcPos[src];
+    const cs2 = cs1 + (count / nodeTotals[src]) * srcArc;
+    srcPos[src] = cs2;
+    const ct1 = tgtPos[tgt];
+    const ct2 = ct1 + (count / nodeTotals[tgt]) * tgtArc;
+    tgtPos[tgt] = ct2;
+    chords.push({ path: chordPath(R - ARC_W - 2, cs1, cs2, ct1, ct2), color: CHORD_COLORS[src] ?? "#6b7280", count, src, tgt });
+  });
+
+  const LABEL_R = R + 28;
+  const SVG_SIZE = (R + LABEL_R - R + 50) * 2;
+
+  return (
+    <div className="flex flex-col items-center">
+      <svg width={SVG_SIZE} height={SVG_SIZE} viewBox={`${-SVG_SIZE/2} ${-SVG_SIZE/2} ${SVG_SIZE} ${SVG_SIZE}`}>
+        {/* Chords (sorted large→small so small render on top) */}
+        {[...chords].reverse().map((c, i) => (
+          <path key={i} d={c.path} fill={c.color} opacity={0.28} className="hover:opacity-55 cursor-pointer transition-opacity">
+            <title>{c.src} → {c.tgt}: {c.count}件</title>
+          </path>
+        ))}
+        {/* Node arcs */}
+        {CHORD_ALL.map(node => {
+          const arc = nodeArcs[node];
+          if (!arc) return null;
+          const [sx, sy] = polarToXY(arc.s, R);
+          const pathD = `M${sx.toFixed(2)},${sy.toFixed(2)} ${arcPath(R, arc.s, arc.e)} L${polarToXY(arc.e, R - ARC_W)[0].toFixed(2)},${polarToXY(arc.e, R - ARC_W)[1].toFixed(2)} ${arcPath(R - ARC_W, arc.e, arc.s, 0)} Z`;
+          const color = CHORD_COLORS[node] ?? "#6b7280";
+          const midAngle = (arc.s + arc.e) / 2;
+          const [lx, ly] = polarToXY(midAngle, LABEL_R);
+          const isRight = lx > 5;
+          const isLeft = lx < -5;
+          const anchor = isRight ? "start" : isLeft ? "end" : "middle";
+          const isSource = CHORD_SOURCES.includes(node);
+          const shortName: Record<string, string> = {
+            "Republic of Korea": "Korea",
+            "United Arab Emirates": "UAE",
+          };
+          return (
+            <g key={node}>
+              <path d={pathD} fill={color} stroke="white" strokeWidth={0.5} opacity={0.9} />
+              <text x={lx} y={ly} textAnchor={anchor} dominantBaseline="middle"
+                fontSize={isSource ? 11 : 10} fontWeight={isSource ? 600 : 400}
+                fill={isSource ? "#1f2937" : "#4b5563"} fontFamily="system-ui,sans-serif">
+                {shortName[node] ?? node}
+              </text>
+            </g>
+          );
+        })}
+      </svg>
+      {/* Legend */}
+      <div className="mt-2 flex flex-wrap justify-center gap-3">
+        {CHORD_SOURCES.map(s => (
+          <div key={s} className="flex items-center gap-1">
+            <span className="h-2.5 w-2.5 rounded-sm flex-shrink-0" style={{ background: CHORD_COLORS[s] }} />
+            <span className="text-[10px] text-gray-500">{s}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// ── JCM Bubble Chart ─────────────────────────────────────────────
+const JCM_BUBBLE_DATA = [
+  { type: "EE industry",        count: 49, avgKt: 5.56,  totalKt: 272.5,  color: "#10b981" },
+  { type: "Solar",              count: 60, avgKt: 3.24,  totalKt: 194.5,  color: "#f59e0b" },
+  { type: "EE service",         count: 14, avgKt: 0.40,  totalKt: 5.6,    color: "#3b82f6" },
+  { type: "Energy distribution",count: 7,  avgKt: 4.50,  totalKt: 31.5,   color: "#8b5cf6" },
+  { type: "Hydro",              count: 5,  avgKt: 18.43, totalKt: 92.1,   color: "#06b6d4" },
+  { type: "Agriculture",        count: 3,  avgKt: 162.5, totalKt: 487.4,  color: "#f97316" },
+  { type: "EE supply side",     count: 3,  avgKt: 2.47,  totalKt: 7.4,    color: "#84cc16" },
+  { type: "Forestry",           count: 2,  avgKt: 177.7, totalKt: 355.4,  color: "#14b8a6" },
+  { type: "Landfill gas",       count: 1,  avgKt: 4.07,  totalKt: 4.1,    color: "#ef4444" },
+  { type: "Bioenergy",          count: 1,  avgKt: 7.13,  totalKt: 7.1,    color: "#ec4899" },
+  { type: "Transport",          count: 2,  avgKt: 0.68,  totalKt: 1.4,    color: "#a78bfa" },
+];
+
+// ── PACM Treemap data ─────────────────────────────────────────────
+const PACM_TREEMAP_DATA = [
+  { name: "Energy",    size: 592,  fill: "#10b981" },
+  { name: "Buildings", size: 254,  fill: "#3b82f6" },
+  { name: "AFOLU",     size: 136,  fill: "#f59e0b" },
+  { name: "Waste",     size: 58,   fill: "#8b5cf6" },
+  { name: "Transport", size: 49,   fill: "#06b6d4" },
+  { name: "Industry",  size: 33,   fill: "#ef4444" },
+];
 
 // ──────────────────────────────────────────────────────────
 // リンク正規化
@@ -376,6 +562,17 @@ export function Article6Dashboard() {
             </ResponsiveContainer>
           </div>
 
+          {/* 地域間 協力フロー（コードダイアグラム） */}
+          <div className="rounded-xl border border-gray-200 bg-white p-5">
+            <SectionHeader
+              title="地域間 協力フロー"
+              sub="ホスト地域 → バイヤー国への二国間協定の流れ（ホバーで詳細）"
+            />
+            <div className="flex justify-center py-2">
+              <ChordDiagram />
+            </div>
+          </div>
+
           <p className="text-xs text-gray-400">
             本ページは{" "}
             <a href="https://article6pipeline.unepccc.org/" target="_blank" rel="noopener noreferrer" className="underline hover:text-gray-600">
@@ -494,6 +691,42 @@ export function Article6Dashboard() {
           <div className="rounded-lg border border-blue-200 bg-blue-50 px-4 py-3 text-sm text-blue-700">
             JCM（二国間クレジット制度）は日本政府が推進する途上国向けの技術移転・排出削減メカニズム。全プロジェクトの買い手国は日本。
           </div>
+          {/* JCM プロジェクト分布 バブルチャート */}
+          <div className="rounded-xl border border-gray-200 bg-white p-5">
+            <SectionHeader
+              title="JCMプロジェクト タイプ別分布（年間削減量）"
+              sub="バブルサイズ = プロジェクト数 / Y軸 = 平均年間削減量 ktCO₂e"
+            />
+            <ResponsiveContainer width="100%" height={320}>
+              <BarChart
+                data={JCM_BUBBLE_DATA.sort((a, b) => b.avgKt - a.avgKt)}
+                layout="vertical"
+                margin={{ left: 16, right: 60, top: 4, bottom: 4 }}
+              >
+                <XAxis type="number" tick={{ fontSize: 10 }} unit=" kt" />
+                <YAxis type="category" dataKey="type" width={130} tick={{ fontSize: 11 }} interval={0} />
+                <Tooltip
+                  content={({ active, payload }) => {
+                    if (!active || !payload?.length) return null;
+                    const d = payload[0].payload as typeof JCM_BUBBLE_DATA[0];
+                    return (
+                      <div className="rounded-lg border border-gray-200 bg-white p-3 text-xs shadow-lg">
+                        <p className="font-semibold text-gray-800">{d.type}</p>
+                        <p className="text-gray-600">プロジェクト数: <span className="font-bold">{d.count}件</span></p>
+                        <p className="text-gray-600">平均年間削減量: <span className="font-bold">{d.avgKt.toFixed(2)} ktCO₂e/yr</span></p>
+                        <p className="text-gray-600">合計年間削減量: <span className="font-bold">{d.totalKt.toFixed(1)} ktCO₂e/yr</span></p>
+                      </div>
+                    );
+                  }}
+                />
+                <Bar dataKey="avgKt" radius={[0, 4, 4, 0]} label={{ position: "right", fontSize: 10, formatter: (v: unknown) => `${(v as number).toFixed(1)}kt` }}>
+                  {JCM_BUBBLE_DATA.sort((a, b) => b.avgKt - a.avgKt).map((d, i) => (
+                    <Cell key={i} fill={d.color} />
+                  ))}
+                </Bar>
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
           <div className="flex flex-wrap gap-3">
             <input type="text" value={jcmHost} onChange={(e) => setJcmHost(e.target.value)}
               placeholder="ホスト国で絞り込み"
@@ -611,6 +844,46 @@ export function Article6Dashboard() {
       {/* ── Tab: PACM ── */}
       {tab === "pacm" && (
         <div className="space-y-4">
+          {/* PACM セクター トレーマップ */}
+          <div className="rounded-xl border border-gray-200 bg-white p-5">
+            <SectionHeader
+              title="PACM通知 セクター構成"
+              sub={`総通知数 ${priorConsideration.length.toLocaleString()}件 の内訳`}
+            />
+            <ResponsiveContainer width="100%" height={260}>
+              <Treemap
+                data={PACM_TREEMAP_DATA}
+                dataKey="size"
+                aspectRatio={4 / 3}
+                content={({ x, y, width, height, name, value, fill }: { x?: number; y?: number; width?: number; height?: number; name?: string; value?: number; fill?: string }) => {
+                  const w = width ?? 0;
+                  const h = height ?? 0;
+                  const showLabel = w > 50 && h > 30;
+                  const total = PACM_TREEMAP_DATA.reduce((s, d) => s + d.size, 0);
+                  const pct = value ? ((value / total) * 100).toFixed(1) : "0";
+                  return (
+                    <g>
+                      <rect x={x} y={y} width={w} height={h} fill={fill} stroke="#fff" strokeWidth={2} rx={4} />
+                      {showLabel && (
+                        <>
+                          <text x={(x ?? 0) + w / 2} y={(y ?? 0) + h / 2 - 6} textAnchor="middle" fill="#fff" fontSize={Math.min(13, w / 7)} fontWeight={600} fontFamily="system-ui">
+                            {name}
+                          </text>
+                          <text x={(x ?? 0) + w / 2} y={(y ?? 0) + h / 2 + 10} textAnchor="middle" fill="rgba(255,255,255,0.85)" fontSize={Math.min(11, w / 9)} fontFamily="system-ui">
+                            {value?.toLocaleString()}件 ({pct}%)
+                          </text>
+                        </>
+                      )}
+                    </g>
+                  );
+                }}
+              >
+                {PACM_TREEMAP_DATA.map((d, i) => (
+                  <Cell key={i} fill={d.fill} />
+                ))}
+              </Treemap>
+            </ResponsiveContainer>
+          </div>
           <div className="flex flex-wrap gap-3">
             <input type="text" value={pcSector} onChange={(e) => setPcSector(e.target.value)}
               placeholder="セクターで絞り込み（例: Energy）"
