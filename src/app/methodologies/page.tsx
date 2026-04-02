@@ -5,6 +5,9 @@ import { CompareProvider } from "@/components/CompareContext";
 import { CompareBar } from "@/components/CompareBar";
 import type { Methodology, RegistryName } from "@/types";
 import allMethodsData from "@/data/all-methodologies.json";
+import vrodTranslations from "@/data/vrod-translations.json";
+
+const VROD_TITLE_JA: Record<string, string> = vrodTranslations as Record<string, string>;
 
 export const dynamic = "force-dynamic";
 export const maxDuration = 30;
@@ -75,7 +78,12 @@ function externalToMethodology(m: AllMethodologyEntry): Methodology {
   return {
     id: `ext-${m.name.replace(/[^a-zA-Z0-9]/g, "-").slice(0, 60)}`,
     title: m.name,
-    titleJa: null,
+    titleJa: (() => {
+      const ja = VROD_TITLE_JA[m.name];
+      // 翻訳が元の名前と同一（コードのみ）の場合は null（重複表示を防ぐ）
+      if (!ja || ja === m.name) return null;
+      return ja;
+    })(),
     type: null,
     region: null,
     validUntil: null,

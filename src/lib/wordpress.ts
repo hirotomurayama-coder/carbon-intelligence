@@ -256,13 +256,14 @@ function mapMethodology(wp: WPPost): Methodology {
   let certificationBody: string | null = null;
   let version: string | null = null;
 
+  // ACF データの有無によらず翻訳ファイルを参照する（hasData === false でも翻訳を適用）
+  titleJa = METHOD_TITLE_JA[String(wp.id)] ?? null;
+
   if (hasData) {
     const rawTitleJa = acfString(acf, "title_ja", "");
-    // title_ja が英語原文と同じ場合は「翻訳なし」扱い → null
-    titleJa = rawTitleJa && rawTitleJa !== stripHtml(wp.title.rendered) ? rawTitleJa : null;
-    // ACF が未設定の場合はローカル翻訳ファイルにフォールバック
-    if (!titleJa) {
-      titleJa = METHOD_TITLE_JA[String(wp.id)] ?? null;
+    // title_ja が英語原文と同じ場合は「翻訳なし」扱い → null、それ以外は ACF 優先
+    if (rawTitleJa && rawTitleJa !== stripHtml(wp.title.rendered)) {
+      titleJa = rawTitleJa;
     }
     aiSummary = acfString(acf, "ai_summary", "") || null;
     // select フィールド: WP が false を返す場合がある → acfString で空文字化 → || null で null に
