@@ -4,6 +4,7 @@ export const maxDuration = 30;
 import Link from "next/link";
 import { getInsights, getPriceTrends } from "@/lib/wordpress";
 import type { InsightCategory, PriceTrend } from "@/types";
+import { CarbonPricesWidget } from "@/components/CarbonPricesWidget";
 import a6Raw from "@/data/article6-pipeline.json";
 import vrodRaw from "@/data/vrod-stats.json";
 
@@ -179,48 +180,10 @@ export default async function Home() {
     <div className="flex h-full flex-col gap-3 min-h-0">
 
       {/* ══════════════════════════════════════════
-          STATUS BAR — dark, with VROD mini chart
+          LIVE CARBON PRICES WIDGET
       ══════════════════════════════════════════ */}
-      <div className="flex flex-shrink-0 flex-wrap items-center gap-x-4 gap-y-2 rounded-xl bg-gray-900 px-4 py-3 lg:flex-nowrap lg:px-5">
-
-        {/* Brand + LIVE */}
-        <div className="flex items-center gap-3 flex-shrink-0">
-          <div>
-            <p className="text-[9px] font-bold uppercase tracking-widest text-gray-500">Platform</p>
-            <p className="text-sm font-bold text-white leading-tight">Carbon Intelligence</p>
-          </div>
-          <div className="flex items-center gap-1.5">
-            <span className="relative flex h-2 w-2">
-              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-60" />
-              <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />
-            </span>
-            <span className="text-[10px] font-bold tracking-widest text-emerald-400">LIVE</span>
-          </div>
-        </div>
-
-        <div className="hidden h-8 w-px flex-shrink-0 bg-gray-700 lg:block" />
-
-        {/* Credit volume chart */}
-        <div className="flex flex-1 items-center gap-2 min-w-0">
-          <div className="flex-shrink-0">
-            <p className="text-[9px] font-semibold uppercase tracking-wide text-gray-500">
-              年別クレジット発行量 / リタイア量
-            </p>
-            <div className="mt-1">
-              <CreditVolumeChart data={allYearlyData} />
-            </div>
-          </div>
-        </div>
-
-        <div className="hidden h-8 w-px flex-shrink-0 bg-gray-700 lg:block" />
-
-        {/* Last update */}
-        {latestDate && (
-          <div className="flex-shrink-0 text-right">
-            <p className="text-[9px] font-medium uppercase tracking-wide text-gray-600">最終更新</p>
-            <p className="text-xs font-semibold text-gray-300">{latestDate}</p>
-          </div>
-        )}
+      <div className="flex-shrink-0 overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
+        <CarbonPricesWidget />
       </div>
 
       {/* ══════════════════════════════════════════
