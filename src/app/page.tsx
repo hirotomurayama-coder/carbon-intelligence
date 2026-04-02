@@ -4,8 +4,8 @@ export const maxDuration = 30;
 import Link from "next/link";
 import { getInsights, getPriceTrends } from "@/lib/wordpress";
 import type { InsightCategory, PriceTrend } from "@/types";
-import { CarbonPricesWidget } from "@/components/CarbonPricesWidget";
 import a6Raw from "@/data/article6-pipeline.json";
+import cpRaw from "@/data/carbon-pricing-dashboard.json";
 import vrodRaw from "@/data/vrod-stats.json";
 
 // ── Static data ─────────────────────────────────────────────────
@@ -85,6 +85,23 @@ function CreditVolumeChart({ data }: { data: YearlyEntry[] }) {
     </div>
   );
 }
+
+// ── World Bank Carbon Pricing サマリー ─────────────────────────────
+const cpMeta = (cpRaw as any).meta as {
+  instruments_implemented: number;
+  globalCoverage2024_pct: number;
+  totalRevenue2024_USD_B: number;
+};
+const cpRevenue = (cpRaw as any).revenue as { year: number; totalUSD_M: number }[];
+const cpInstruments = (cpRaw as any).instruments as { type: string; status: string; price2025: number | null; jurisdiction: string }[];
+const etsCount  = cpInstruments.filter(i => i.status === "Implemented" && i.type === "ETS").length;
+const taxCount  = cpInstruments.filter(i => i.status === "Implemented" && i.type === "Carbon tax").length;
+const recentRev = cpRevenue.filter(d => d.year >= 2016).slice(-8);
+const maxRev    = Math.max(...recentRev.map(d => d.totalUSD_M));
+const top3Prices = [...cpInstruments]
+  .filter(i => i.price2025 != null)
+  .sort((a, b) => (b.price2025 ?? 0) - (a.price2025 ?? 0))
+  .slice(0, 3);
 
 // ── Category config ──────────────────────────────────────────────
 const CATEGORY_CONFIG: Record<
@@ -180,10 +197,74 @@ export default async function Home() {
     <div className="flex h-full flex-col gap-3 min-h-0">
 
       {/* ══════════════════════════════════════════
-          LIVE CARBON PRICES WIDGET
+          WORLD BANK CARBON PRICING SUMMARY
       ══════════════════════════════════════════ */}
       <div className="flex-shrink-0 overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
-        <CarbonPricesWidget />
+        <div className="flex items-center justify-between border-b border-gray-100 px-4 py-2.5">
+          <div className="flex items-center gap-2">
+            <div className="flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-md bg-indigo-500">
+              <svg className="h-3 w-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 18.75V21m-4.773-4.227-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z" />
+              </svg>
+            </div>
+            <h2 className="text-[11px] font-bold tracking-wide text-gray-800">世界カーボン価格制度サマリー</h2>
+            <span className="rounded-full bg-gray-100 px-2 py-0.5 text-[9px] font-semibold text-gray-500">World Bank</span>
+          </div>
+          <Link href="/carbon-pricing" className="rounded-full bg-indigo-50 px-2.5 py-0.5 text-[10px] font-semibold text-indigo-600 transition hover:bg-indigo-100">
+            全制度一覧 →
+          </Link>
+        </div>
+        <div className="grid grid-cols-3 divide-x divide-gray-100 px-0">
+          {/* 実施中制度 */}
+          <div className="px-4 py-3">
+            <p className="text-[10px] text-gray-400">実施中の制度</p>
+            <p className="mt-0.5 text-xl font-bold text-gray-900">{cpMeta.instruments_implemented}<span className="ml-1 text-xs font-normal text-gray-400">件</span></p>
+            <div className="mt-1 flex gap-2">
+              <span className="rounded-full bg-indigo-50 px-1.5 py-0.5 text-[9px] font-semibold text-indigo-600">ETS {etsCount}</span>
+              <span className="rounded-full bg-amber-50 px-1.5 py-0.5 text-[9px] font-semibold text-amber-600">炭素税 {taxCount}</span>
+            </div>
+            <div className="mt-2 space-y-0.5">
+              {top3Prices.map((inst) => (
+                <div key={inst.jurisdiction} className="flex items-center justify-between">
+                  <span className="truncate text-[10px] text-gray-500 max-w-[80px]">{inst.jurisdiction}</span>
+                  <span className="font-mono text-[10px] font-bold text-gray-700">${inst.price2025?.toFixed(0)}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+          {/* 排出量カバー率 */}
+          <div className="px-4 py-3">
+            <p className="text-[10px] text-gray-400">世界排出量カバー率（2024年）</p>
+            <p className="mt-0.5 text-xl font-bold text-emerald-600">{cpMeta.globalCoverage2024_pct}<span className="ml-0.5 text-xs font-normal text-gray-400">%</span></p>
+            <div className="mt-2 h-2 w-full rounded-full bg-gray-100">
+              <div
+                className="h-2 rounded-full bg-emerald-400"
+                style={{ width: `${cpMeta.globalCoverage2024_pct}%` }}
+              />
+            </div>
+            <p className="mt-1 text-[9px] text-gray-400">残り {(100 - cpMeta.globalCoverage2024_pct).toFixed(1)}% は未カバー</p>
+          </div>
+          {/* 政府収入トレンド */}
+          <div className="px-4 py-3">
+            <p className="text-[10px] text-gray-400">政府収入（2024年）</p>
+            <p className="mt-0.5 text-xl font-bold text-gray-900">US${cpMeta.totalRevenue2024_USD_B}<span className="ml-1 text-xs font-normal text-gray-400">十億ドル</span></p>
+            <div className="mt-2 flex items-end gap-0.5 h-8">
+              {recentRev.map((d) => {
+                const bh = Math.max(2, (d.totalUSD_M / maxRev) * 32);
+                const isLatest = d.year === recentRev[recentRev.length - 1].year;
+                return (
+                  <div
+                    key={d.year}
+                    title={`${d.year}: US$${(d.totalUSD_M/1000).toFixed(1)}B`}
+                    className={`flex-1 rounded-sm ${isLatest ? "bg-emerald-400" : "bg-emerald-100"}`}
+                    style={{ height: `${bh}px` }}
+                  />
+                );
+              })}
+            </div>
+            <p className="mt-1 text-[9px] text-gray-400">2016–2024年推移</p>
+          </div>
+        </div>
       </div>
 
       {/* ══════════════════════════════════════════

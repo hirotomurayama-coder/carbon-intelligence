@@ -28,6 +28,7 @@ export const NAV_ITEMS: NavItem[] = [
       { label: "日本市場", href: "/statistics?tab=japan" },
     ],
   },
+  { label: "カーボン価格制度", href: "/carbon-pricing", icon: "analytics" },
   { label: "カーボンクレジット価格", href: "/analysis", icon: "analytics" },
   { label: "パリ協定6条", href: "/article6", icon: "article6" },
   { label: "企業データベース", href: "/companies", icon: "company" },
