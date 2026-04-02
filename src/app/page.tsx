@@ -98,10 +98,10 @@ const etsCount  = cpInstruments.filter(i => i.status === "Implemented" && i.type
 const taxCount  = cpInstruments.filter(i => i.status === "Implemented" && i.type === "Carbon tax").length;
 const recentRev = cpRevenue.filter(d => d.year >= 2016).slice(-8);
 const maxRev    = Math.max(...recentRev.map(d => d.totalUSD_M));
-const top3Prices = [...cpInstruments]
-  .filter(i => i.price2025 != null)
-  .sort((a, b) => (b.price2025 ?? 0) - (a.price2025 ?? 0))
-  .slice(0, 3);
+const MAJOR_IDS = ["ETS_EU", "ETS_CA", "ETS_UK"];
+const top3Prices = MAJOR_IDS
+  .map(id => cpInstruments.find((i: any) => i.id === id))
+  .filter((i): i is NonNullable<typeof i> => i != null);
 
 // ── Category config ──────────────────────────────────────────────
 const CATEGORY_CONFIG: Record<
@@ -225,8 +225,8 @@ export default async function Home() {
             </div>
             <div className="mt-2 space-y-0.5">
               {top3Prices.map((inst) => (
-                <div key={inst.jurisdiction} className="flex items-center justify-between">
-                  <span className="truncate text-[10px] text-gray-500 max-w-[80px]">{inst.jurisdiction}</span>
+                <div key={inst.id} className="flex items-center justify-between">
+                  <span className="truncate text-[10px] text-gray-500 max-w-[80px]">{inst.name}</span>
                   <span className="font-mono text-[10px] font-bold text-gray-700">${inst.price2025?.toFixed(0)}</span>
                 </div>
               ))}
