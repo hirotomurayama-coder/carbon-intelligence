@@ -5,101 +5,81 @@ import Link from "next/link";
 import { getInsights, getPriceTrends } from "@/lib/wordpress";
 import type { InsightCategory, PriceTrend } from "@/types";
 import a6Raw from "@/data/article6-pipeline.json";
-import vrodRaw from "@/data/vrod-stats.json";  // imported for attribution only
+import vrodRaw from "@/data/vrod-stats.json";
 
 // ── Static data ─────────────────────────────────────────────────
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const a6Summary = (a6Raw as any).summary as Record<string, number>;
-// vrodRaw is imported but only used for attribution — tree-shake unused
-void vrodRaw;
 
-// ── 直近価格推移 折れ線チャート (server-side SVG) ───────────────
-interface PricePoint { date: string; priceJpy: number }
+// 年別クレジット統計（発行量・リタイア量）
+type YearlyEntry = { year: number; issued: number; retired: number };
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const allYearlyData = ((vrodRaw as any).yearlyData as YearlyEntry[])
+  .filter((d) => d.year >= 2022 && d.year <= 2025)  // 2026は年途中データを除外
+  .sort((a, b) => a.year - b.year);
 
-function buildNormalizedPts(history: PricePoint[], W: number, H: number, daysBack = 90): string {
-  if (!history || history.length < 2) return "";
-  const cutoff = new Date();
-  cutoff.setDate(cutoff.getDate() - daysBack);
-  const cutoffStr = cutoff.toISOString().slice(0, 10);
-  const filtered = history
-    .filter((h) => h.date >= cutoffStr)
-    .sort((a, b) => a.date.localeCompare(b.date));
-  // Fall back to last 12 points if not enough in window
-  const pts = filtered.length >= 3 ? filtered : history.slice(-12).sort((a, b) => a.date.localeCompare(b.date));
-  if (pts.length < 2) return "";
-  const prices = pts.map((h) => h.priceJpy);
-  const min = Math.min(...prices);
-  const max = Math.max(...prices);
-  const range = max - min || 1;
-  return pts.map((h, i) => {
-    const x = (i / (pts.length - 1)) * W;
-    const y = H - ((h.priceJpy - min) / range) * (H - 4) - 2;
-    return `${x.toFixed(1)},${y.toFixed(1)}`;
-  }).join(" ");
-}
+// ── 年別クレジット発行量・リタイア量 棒グラフ (server-side SVG) ──
+function CreditVolumeChart({ data }: { data: YearlyEntry[] }) {
+  if (!data || data.length === 0) return null;
 
-interface RecentChartProps {
-  markets: (PriceTrend & { priceHistory?: PricePoint[] })[];
-}
+  const BAR_W = 18;
+  const GAP = 4;       // 発行・リタイア間
+  const GROUP_GAP = 14; // 年グループ間
+  const H = 36;
+  const LABEL_H = 10;
+  const chartH = H + LABEL_H;
 
-function RecentPriceTrendChart({ markets }: RecentChartProps) {
-  const W = 300, H = 32;
-  // Show 4 key markets with distinct colors
-  const KEY_IDS = ["eu-ets", "jcredit-forest", "vol-redd-plus", "vol-blue-carbon"];
-  const LINE_COLORS = ["#10b981", "#3b82f6", "#f59e0b", "#a78bfa"];
-  const LINE_LABELS = ["EU ETS", "J-クレ", "REDD+", "ブルーC"];
+  const maxVal = Math.max(...data.flatMap((d) => [d.issued, d.retired]));
 
-  const selected = KEY_IDS
-    .map((id, ci) => ({ m: markets.find((t) => t.marketId === id), color: LINE_COLORS[ci], label: LINE_LABELS[ci] }))
-    .filter((x): x is { m: PriceTrend & { priceHistory?: PricePoint[] }; color: string; label: string } => !!x.m);
+  // グループ幅 = 発行バー + GAP + リタイアバー
+  const groupW = BAR_W * 2 + GAP;
+  const totalW = data.length * groupW + (data.length - 1) * GROUP_GAP;
 
-  const hasData = selected.some((x) => (x.m.priceHistory ?? []).length >= 2);
+  function barH(v: number) { return Math.max(2, (v / maxVal) * H); }
+  function fmt(v: number) { return `${(v / 1_000_000).toFixed(0)}M`; }
 
-  if (!hasData) return null;
+  const ISSUED_COLOR  = "#34d399"; // emerald-400
+  const RETIRED_COLOR = "#60a5fa"; // blue-400
 
   return (
-    <div className="flex items-end gap-2">
-      <svg width={W} height={H} viewBox={`0 0 ${W} ${H}`} className="flex-shrink-0">
-        {/* Zero line */}
-        <line x1={0} y1={H / 2} x2={W} y2={H / 2} stroke="#374151" strokeWidth={0.5} strokeDasharray="3,3" opacity={0.4} />
-        {selected.map(({ m, color }) => {
-          const pts = buildNormalizedPts(m.priceHistory ?? [], W, H);
-          if (!pts) return null;
+    <div className="flex items-center gap-3">
+      <svg width={totalW} height={chartH} viewBox={`0 0 ${totalW} ${chartH}`} className="flex-shrink-0 overflow-visible">
+        {data.map((d, i) => {
+          const gx = i * (groupW + GROUP_GAP);
+          const ih = barH(d.issued);
+          const rh = barH(d.retired);
           return (
-            <polyline
-              key={m.id}
-              points={pts}
-              fill="none"
-              stroke={color}
-              strokeWidth="1.5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              opacity={0.9}
-            />
+            <g key={d.year}>
+              {/* 発行量バー */}
+              <rect x={gx} y={H - ih} width={BAR_W} height={ih} fill={ISSUED_COLOR} opacity={0.85} rx={2} />
+              {/* リタイア量バー */}
+              <rect x={gx + BAR_W + GAP} y={H - rh} width={BAR_W} height={rh} fill={RETIRED_COLOR} opacity={0.85} rx={2} />
+              {/* 値ラベル（発行） */}
+              <text x={gx + BAR_W / 2} y={H - ih - 2} textAnchor="middle" fontSize={7} fill={ISSUED_COLOR} fontWeight="600">
+                {fmt(d.issued)}
+              </text>
+              {/* 値ラベル（リタイア） */}
+              <text x={gx + BAR_W + GAP + BAR_W / 2} y={H - rh - 2} textAnchor="middle" fontSize={7} fill={RETIRED_COLOR} fontWeight="600">
+                {fmt(d.retired)}
+              </text>
+              {/* 年ラベル */}
+              <text x={gx + groupW / 2} y={chartH} textAnchor="middle" fontSize={8} fill="#6b7280">
+                {String(d.year).slice(2)}年
+              </text>
+            </g>
           );
         })}
       </svg>
-      {/* Legend */}
-      <div className="flex flex-col gap-1 pb-1 flex-shrink-0">
-        {selected.map(({ color, label, m }) => {
-          const h = m.priceHistory ?? [];
-          const recent = h.slice(-1)[0];
-          const prev = h.slice(-2, -1)[0];
-          const pct = recent && prev && prev.priceJpy
-            ? ((recent.priceJpy - prev.priceJpy) / prev.priceJpy * 100).toFixed(1)
-            : null;
-          return (
-            <div key={label} className="flex items-center gap-1">
-              <span className="h-px w-3 flex-shrink-0" style={{ background: color, height: "2px" }} />
-              <span className="text-[9px] text-gray-400 whitespace-nowrap">{label}</span>
-              {pct && (
-                <span className={`text-[9px] font-semibold ${parseFloat(pct) >= 0 ? "text-emerald-400" : "text-red-400"}`}>
-                  {parseFloat(pct) >= 0 ? "+" : ""}{pct}%
-                </span>
-              )}
-            </div>
-          );
-        })}
+      {/* 凡例 */}
+      <div className="flex flex-col gap-1 flex-shrink-0">
+        <div className="flex items-center gap-1">
+          <span className="inline-block h-2 w-2 rounded-sm flex-shrink-0" style={{ background: ISSUED_COLOR }} />
+          <span className="text-[9px] text-gray-400 whitespace-nowrap">発行量</span>
+        </div>
+        <div className="flex items-center gap-1">
+          <span className="inline-block h-2 w-2 rounded-sm flex-shrink-0" style={{ background: RETIRED_COLOR }} />
+          <span className="text-[9px] text-gray-400 whitespace-nowrap">リタイア量</span>
+        </div>
       </div>
     </div>
   );
@@ -220,14 +200,14 @@ export default async function Home() {
 
         <div className="hidden h-8 w-px flex-shrink-0 bg-gray-700 lg:block" />
 
-        {/* Recent price trend chart */}
+        {/* Credit volume chart */}
         <div className="flex flex-1 items-center gap-2 min-w-0">
           <div className="flex-shrink-0">
             <p className="text-[9px] font-semibold uppercase tracking-wide text-gray-500">
-              直近価格推移（3ヶ月）
+              年別クレジット発行量 / リタイア量
             </p>
             <div className="mt-1">
-              <RecentPriceTrendChart markets={marketPrices as (PriceTrend & { priceHistory?: PricePoint[] })[]} />
+              <CreditVolumeChart data={allYearlyData} />
             </div>
           </div>
         </div>
