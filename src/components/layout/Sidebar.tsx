@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
 import { useState } from "react";
+import { useSession, signOut } from "next-auth/react";
 import { APP_NAME, NAV_ITEMS } from "@/lib/constants";
 import { NavIcon } from "./NavIcon";
 
@@ -37,6 +38,36 @@ function getDefaultOpen(pathname: string): string | null {
 
 interface SidebarProps {
   onClose?: () => void;
+}
+
+function TrialBadge() {
+  const { data: session } = useSession();
+  if (!session?.trialEndsAt || session.subscriptionStatus === "active") return null;
+
+  const endsAt = new Date(session.trialEndsAt);
+  const daysLeft = Math.max(0, Math.ceil((endsAt.getTime() - Date.now()) / (1000 * 60 * 60 * 24)));
+
+  if (session.subscriptionStatus === "trial_expired" || daysLeft === 0) {
+    return (
+      <Link
+        href="/pricing"
+        className="mx-2 mb-2 flex items-center justify-between rounded-lg bg-amber-50 border border-amber-200 px-3 py-2 text-xs text-amber-700 hover:bg-amber-100 transition"
+      >
+        <span className="font-medium">体験期間終了</span>
+        <span className="font-semibold underline">アップグレード →</span>
+      </Link>
+    );
+  }
+
+  return (
+    <Link
+      href="/pricing"
+      className="mx-2 mb-2 flex items-center justify-between rounded-lg bg-emerald-50 border border-emerald-100 px-3 py-2 text-xs text-emerald-700 hover:bg-emerald-100 transition"
+    >
+      <span>無料体験中</span>
+      <span className="font-semibold">{daysLeft}日残り</span>
+    </Link>
+  );
 }
 
 export function Sidebar({ onClose }: SidebarProps) {
@@ -155,8 +186,24 @@ export function Sidebar({ onClose }: SidebarProps) {
       </nav>
 
       {/* ── Footer ── */}
-      <div className="flex-shrink-0 border-t border-gray-200 px-5 py-4">
-        <p className="text-xs text-gray-400">v0.2.0</p>
+      <div className="flex-shrink-0 border-t border-gray-200 px-2 py-3 space-y-2">
+        <TrialBadge />
+        <button
+          onClick={() => signOut({ callbackUrl: "/login" })}
+          className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-xs font-medium text-gray-600 hover:bg-gray-100 hover:text-gray-800 transition"
+        >
+          <svg className="h-3.5 w-3.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0 0 13.5 3h-6a2.25 2.25 0 0 0-2.25 2.25v13.5A2.25 2.25 0 0 0 7.5 21h6a2.25 2.25 0 0 0 2.25-2.25V15M12 9l-3 3m0 0 3 3m-3-3h12.75" />
+          </svg>
+          ログアウト
+        </button>
+        <Link
+          href="/tokushoho"
+          className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-xs text-gray-500 hover:bg-gray-100 hover:text-gray-700 transition"
+        >
+          特定商取引法に基づく表記
+        </Link>
+        <p className="px-3 text-xs text-gray-400">v0.2.0</p>
       </div>
     </aside>
   );

@@ -1,11 +1,20 @@
 "use client";
 
 import { useState, Suspense } from "react";
+import { usePathname } from "next/navigation";
 import { Sidebar } from "./Sidebar";
 import { TopBar } from "./TopBar";
 
+const STANDALONE_ROUTES = ["/login", "/pricing", "/onboarding", "/tokushoho"];
+
 export function LayoutShell({ children }: { children: React.ReactNode }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const pathname = usePathname();
+  const isStandalone = STANDALONE_ROUTES.some((r) => pathname.startsWith(r));
+
+  if (isStandalone) {
+    return <>{children}</>;
+  }
 
   return (
     <div className="flex h-screen overflow-hidden">
@@ -22,7 +31,7 @@ export function LayoutShell({ children }: { children: React.ReactNode }) {
         className={`
           fixed inset-y-0 left-0 z-30 flex-shrink-0
           transition-transform duration-200 ease-in-out
-          lg:relative lg:translate-x-0
+          lg:relative lg:h-full lg:translate-x-0
           ${sidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}
         `}
       >

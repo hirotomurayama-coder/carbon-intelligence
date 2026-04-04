@@ -1,6 +1,9 @@
 export const dynamic = "force-dynamic";
 export const maxDuration = 30;
 
+import { auth } from "@/auth";
+import { getUserOnboarding } from "@/lib/supabase";
+import { redirect } from "next/navigation";
 import Link from "next/link";
 import { getInsights, getPriceTrends } from "@/lib/wordpress";
 import type { InsightCategory, PriceTrend } from "@/types";
@@ -93,7 +96,7 @@ const cpMeta = (cpRaw as any).meta as {
   totalRevenue2024_USD_B: number;
 };
 const cpRevenue = (cpRaw as any).revenue as { year: number; totalUSD_M: number }[];
-const cpInstruments = (cpRaw as any).instruments as { type: string; status: string; price2025: number | null; jurisdiction: string }[];
+const cpInstruments = (cpRaw as any).instruments as { id: string; name: string | null; type: string; status: string; price2025: number | null; jurisdiction: string }[];
 const etsCount  = cpInstruments.filter(i => i.status === "Implemented" && i.type === "ETS").length;
 const taxCount  = cpInstruments.filter(i => i.status === "Implemented" && i.type === "Carbon tax").length;
 const recentRev = cpRevenue.filter(d => d.year >= 2016).slice(-8);
@@ -168,6 +171,15 @@ function buildSparklinePts(history: { date: string; priceJpy: number }[]): strin
 
 // ── Page ────────────────────────────────────────────────────────
 export default async function Home() {
+  // オンボーディング未完了ならリダイレクト（DBを直接参照してJWTキャッシュに依存しない）
+  const session = await auth();
+  if (session?.user?.email) {
+    const onboardingCompleted = await getUserOnboarding(session.user.email);
+    if (!onboardingCompleted) {
+      redirect("/onboarding");
+    }
+  }
+
   const [insights, priceTrends] = await Promise.all([
     getInsights(),
     getPriceTrends(),
