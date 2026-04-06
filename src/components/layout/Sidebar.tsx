@@ -204,7 +204,9 @@ export function Sidebar({ onClose }: SidebarProps) {
           特定商取引法に基づく表記
         </Link>
         <p className="px-3 text-xs text-gray-400">v0.2.0</p>
-        <p className="px-3 text-[10px] text-gray-300">運営会社：株式会社クレイドルトゥー</p>
+        <p className="px-3 text-[10px] text-gray-300">
+          運営会社：<a href="https://cradleto.com/" target="_blank" rel="noopener noreferrer" className="hover:text-gray-500 underline">株式会社クレイドルトゥー</a>
+        </p>
       </div>
     </aside>
   );
