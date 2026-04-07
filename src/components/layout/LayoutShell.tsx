@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 import { Sidebar } from "./Sidebar";
 import { TopBar } from "./TopBar";
 
-const STANDALONE_ROUTES = ["/login", "/pricing", "/onboarding", "/tokushoho", "/api/auth"];
+const STANDALONE_ROUTES = ["/login", "/pricing", "/onboarding", "/tokushoho", "/terms", "/api/auth"];
 
 export function LayoutShell({ children }: { children: React.ReactNode }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);

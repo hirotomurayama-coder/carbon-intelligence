@@ -9,7 +9,7 @@ import type { NextAuthRequest } from "next-auth";
 const AUTH_DISABLED = true;
 
 // Routes that don't require authentication
-const PUBLIC_ROUTES = ["/login", "/pricing", "/onboarding", "/tokushoho", "/api/auth", "/api/stripe/webhook"];
+const PUBLIC_ROUTES = ["/login", "/pricing", "/onboarding", "/tokushoho", "/terms", "/api/auth", "/api/stripe/webhook"];
 
 export default auth((req: NextAuthRequest) => {
   // 🔓 一時停止中: すべてのリクエストを通す
