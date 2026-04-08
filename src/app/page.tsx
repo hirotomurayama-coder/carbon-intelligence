@@ -5,6 +5,8 @@ import { auth } from "@/auth";
 import { getUserOnboarding } from "@/lib/supabase";
 import { redirect } from "next/navigation";
 import Link from "next/link";
+import { Suspense } from "react";
+import { CheckoutSuccessBanner } from "@/components/CheckoutSuccessBanner";
 import { getInsights, getPriceTrends } from "@/lib/wordpress";
 import type { InsightCategory, PriceTrend } from "@/types";
 import a6Raw from "@/data/article6-pipeline.json";
@@ -207,6 +209,11 @@ export default async function Home() {
 
   return (
     <div className="flex h-full flex-col gap-3 min-h-0">
+
+      {/* 決済成功バナー */}
+      <Suspense fallback={null}>
+        <CheckoutSuccessBanner />
+      </Suspense>
 
       {/* ══════════════════════════════════════════
           WORLD BANK CARBON PRICING SUMMARY

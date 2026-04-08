@@ -101,10 +101,10 @@ export default async function PricingPage() {
           </p>
         )}
 
-        <p className="mt-6 text-center text-xs text-gray-300">
-          <a href="/tokushoho" className="hover:text-gray-400 underline">
-            特定商取引法に基づく表記
-          </a>
+        <p className="mt-6 text-center text-xs text-gray-300 space-x-2">
+          <a href="/tokushoho" className="hover:text-gray-400 underline">特定商取引法に基づく表記</a>
+          <span>·</span>
+          <a href="/terms" className="hover:text-gray-400 underline">利用規約</a>
         </p>
       </div>
     </div>
