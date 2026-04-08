@@ -3,11 +3,12 @@ import { auth } from "@/auth";
 import { getStripe, STRIPE_PRICE_ID } from "@/lib/stripe";
 import { getSubscription, createServiceClient } from "@/lib/supabase";
 
-export async function POST() {
+export async function POST(req: Request) {
   const session = await auth();
+  const baseUrl = process.env.NEXTAUTH_URL ?? "https://intelligence.carboncredits.jp";
 
   if (!session?.user?.email) {
-    return NextResponse.redirect("/login");
+    return NextResponse.redirect(`${baseUrl}/login`);
   }
 
   const email = session.user.email;
@@ -32,12 +33,11 @@ export async function POST() {
       .eq("user_email", email);
   }
 
-  const baseUrl = process.env.NEXTAUTH_URL ?? "http://localhost:3000";
-
   const checkoutSession = await stripe.checkout.sessions.create({
     customer: customerId,
     mode: "subscription",
     payment_method_types: ["card"],
+    locale: "ja",
     line_items: [
       {
         price: STRIPE_PRICE_ID(),
