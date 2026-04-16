@@ -17,12 +17,22 @@ import vrodRaw from "@/data/vrod-stats.json";
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const a6Summary = (a6Raw as any).summary as Record<string, number>;
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const vrod = vrodRaw as any;
+
 // 年別クレジット統計（発行量・リタイア量）
 type YearlyEntry = { year: number; issued: number; retired: number };
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const allYearlyData = ((vrodRaw as any).yearlyData as YearlyEntry[])
   .filter((d) => d.year >= 2022 && d.year <= 2025)  // 2026は年途中データを除外
   .sort((a, b) => a.year - b.year);
+
+// ── VROD サマリー用ヘルパー ─────────────────────────────────────
+function fmtCredit(n: number): string {
+  if (n >= 1_000_000_000) return `${(n / 1_000_000_000).toFixed(2)}B`;
+  if (n >= 1_000_000) return `${(n / 1_000_000).toFixed(0)}M`;
+  return n.toLocaleString();
+}
 
 // ── 年別クレジット発行量・リタイア量 棒グラフ (server-side SVG) ──
 function CreditVolumeChart({ data }: { data: YearlyEntry[] }) {
@@ -216,75 +226,113 @@ export default async function Home() {
       </Suspense>
 
       {/* ══════════════════════════════════════════
-          WORLD BANK CARBON PRICING SUMMARY
+          VROD VOLUNTARY MARKET SUMMARY
       ══════════════════════════════════════════ */}
-      <div className="flex-shrink-0 overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
-        <div className="flex items-center justify-between border-b border-gray-100 px-4 py-2.5">
-          <div className="flex items-center gap-2">
-            <div className="flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-md bg-indigo-500">
-              <svg className="h-3 w-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 18.75V21m-4.773-4.227-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z" />
-              </svg>
-            </div>
-            <h2 className="text-[11px] font-bold tracking-wide text-gray-800">世界カーボン価格制度サマリー</h2>
-            <span className="rounded-full bg-gray-100 px-2 py-0.5 text-[9px] font-semibold text-gray-500">World Bank</span>
-          </div>
-          <Link href="/carbon-pricing" className="rounded-full bg-indigo-50 px-2.5 py-0.5 text-[10px] font-semibold text-indigo-600 transition hover:bg-indigo-100">
-            全制度一覧 →
-          </Link>
-        </div>
-        <div className="grid grid-cols-3 divide-x divide-gray-100 px-0">
-          {/* 実施中制度 */}
-          <div className="px-4 py-3">
-            <p className="text-[10px] text-gray-400">実施中の制度</p>
-            <p className="mt-0.5 text-xl font-bold text-gray-900">{cpMeta.instruments_implemented}<span className="ml-1 text-xs font-normal text-gray-400">件</span></p>
-            <div className="mt-1 flex gap-2">
-              <span className="rounded-full bg-indigo-50 px-1.5 py-0.5 text-[9px] font-semibold text-indigo-600">ETS {etsCount}</span>
-              <span className="rounded-full bg-amber-50 px-1.5 py-0.5 text-[9px] font-semibold text-amber-600">炭素税 {taxCount}</span>
-            </div>
-            <div className="mt-2 space-y-0.5">
-              {top3Prices.map((inst) => (
-                <div key={inst.id} className="flex items-center justify-between">
-                  <span className="truncate text-[10px] text-gray-500 max-w-[80px]">{inst.name}</span>
-                  <span className="font-mono text-[10px] font-bold text-gray-700">${inst.price2025?.toFixed(0)}</span>
+      {(() => {
+        const retirementRate = Math.round((vrod.totalRetired / vrod.totalIssued) * 100);
+        const registries = vrod.registryProjects as Record<string, number>;
+        const totalProj = vrod.totalProjects as number;
+        const maxIssued = Math.max(...allYearlyData.map((d) => d.issued));
+        const topTypes = (vrod.topProjectTypes as { name: string; count: number }[]).slice(0, 3);
+        return (
+          <div className="flex-shrink-0 overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
+            {/* ヘッダー */}
+            <div className="flex items-center justify-between border-b border-gray-100 px-4 py-2.5">
+              <div className="flex items-center gap-2">
+                <div className="flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-md bg-emerald-600">
+                  <svg className="h-3 w-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 0 1 3 19.875v-6.75ZM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V8.625ZM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V4.125Z" />
+                  </svg>
                 </div>
-              ))}
+                <h2 className="text-[11px] font-bold tracking-wide text-gray-800">ボランタリー市場統計サマリー</h2>
+                <span className="rounded-full bg-gray-100 px-2 py-0.5 text-[9px] font-semibold text-gray-500">UC Berkeley VROD</span>
+              </div>
+              <Link href="/statistics" className="rounded-full bg-emerald-50 px-2.5 py-0.5 text-[10px] font-semibold text-emerald-600 transition hover:bg-emerald-100">
+                詳細統計 →
+              </Link>
+            </div>
+
+            <div className="grid grid-cols-3 divide-x divide-gray-100">
+              {/* 列1: 総プロジェクト数 + レジストリ内訳 */}
+              <div className="px-4 py-3">
+                <p className="text-[10px] text-gray-400">登録プロジェクト総数</p>
+                <p className="mt-0.5 text-xl font-bold text-gray-900">
+                  {totalProj.toLocaleString()}
+                  <span className="ml-1 text-xs font-normal text-gray-400">件</span>
+                </p>
+                <div className="mt-2 space-y-1">
+                  {Object.entries(registries)
+                    .sort(([, a], [, b]) => b - a)
+                    .slice(0, 3)
+                    .map(([name, count]) => {
+                      const pct = Math.round((count / totalProj) * 100);
+                      return (
+                        <div key={name}>
+                          <div className="flex items-center justify-between mb-0.5">
+                            <span className="text-[9px] text-gray-500 truncate max-w-[70px]">{name}</span>
+                            <span className="text-[9px] font-semibold text-gray-700">{pct}%</span>
+                          </div>
+                          <div className="h-1 w-full rounded-full bg-gray-100">
+                            <div className="h-1 rounded-full bg-emerald-400" style={{ width: `${pct}%` }} />
+                          </div>
+                        </div>
+                      );
+                    })}
+                </div>
+              </div>
+
+              {/* 列2: 累計発行量 + 年別棒グラフ */}
+              <div className="px-4 py-3">
+                <p className="text-[10px] text-gray-400">累計発行量（全期間）</p>
+                <p className="mt-0.5 text-xl font-bold text-blue-600">
+                  {fmtCredit(vrod.totalIssued)}
+                  <span className="ml-1 text-xs font-normal text-gray-400">クレジット</span>
+                </p>
+                <div className="mt-2 flex items-end gap-1 h-8">
+                  {allYearlyData.map((d) => {
+                    const bh = Math.max(2, (d.issued / maxIssued) * 32);
+                    const isLatest = d.year === allYearlyData[allYearlyData.length - 1].year;
+                    return (
+                      <div key={d.year} className="flex flex-1 flex-col items-center gap-0.5">
+                        <div
+                          title={`${d.year}: ${fmtCredit(d.issued)}`}
+                          className={`w-full rounded-sm ${isLatest ? "bg-blue-400" : "bg-blue-100"}`}
+                          style={{ height: `${bh}px` }}
+                        />
+                      </div>
+                    );
+                  })}
+                </div>
+                <div className="flex justify-between mt-0.5">
+                  {allYearlyData.map((d) => (
+                    <span key={d.year} className="text-[8px] text-gray-300 flex-1 text-center">{d.year}</span>
+                  ))}
+                </div>
+              </div>
+
+              {/* 列3: 累計リタイア量 + リタイア率 + 主要タイプ */}
+              <div className="px-4 py-3">
+                <p className="text-[10px] text-gray-400">累計リタイア量（全期間）</p>
+                <p className="mt-0.5 text-xl font-bold text-emerald-600">
+                  {fmtCredit(vrod.totalRetired)}
+                  <span className="ml-1 text-xs font-normal text-gray-400">クレジット</span>
+                </p>
+                <div className="mt-1.5 h-1.5 w-full rounded-full bg-gray-100">
+                  <div className="h-1.5 rounded-full bg-emerald-400" style={{ width: `${retirementRate}%` }} />
+                </div>
+                <p className="mt-0.5 text-[9px] text-gray-400">発行量に対するリタイア率 {retirementRate}%</p>
+                <div className="mt-2 space-y-0.5">
+                  {topTypes.map((t) => (
+                    <p key={t.name} className="truncate text-[9px] text-gray-400">
+                      ・{t.name.length > 22 ? t.name.slice(0, 22) + "…" : t.name}
+                    </p>
+                  ))}
+                </div>
+              </div>
             </div>
           </div>
-          {/* 排出量カバー率 */}
-          <div className="px-4 py-3">
-            <p className="text-[10px] text-gray-400">世界排出量カバー率（2024年）</p>
-            <p className="mt-0.5 text-xl font-bold text-emerald-600">{cpMeta.globalCoverage2024_pct}<span className="ml-0.5 text-xs font-normal text-gray-400">%</span></p>
-            <div className="mt-2 h-2 w-full rounded-full bg-gray-100">
-              <div
-                className="h-2 rounded-full bg-emerald-400"
-                style={{ width: `${cpMeta.globalCoverage2024_pct}%` }}
-              />
-            </div>
-            <p className="mt-1 text-[9px] text-gray-400">残り {(100 - cpMeta.globalCoverage2024_pct).toFixed(1)}% は未カバー</p>
-          </div>
-          {/* 政府収入トレンド */}
-          <div className="px-4 py-3">
-            <p className="text-[10px] text-gray-400">政府収入（2024年）</p>
-            <p className="mt-0.5 text-xl font-bold text-gray-900">US${cpMeta.totalRevenue2024_USD_B}<span className="ml-1 text-xs font-normal text-gray-400">十億ドル</span></p>
-            <div className="mt-2 flex items-end gap-0.5 h-8">
-              {recentRev.map((d) => {
-                const bh = Math.max(2, (d.totalUSD_M / maxRev) * 32);
-                const isLatest = d.year === recentRev[recentRev.length - 1].year;
-                return (
-                  <div
-                    key={d.year}
-                    title={`${d.year}: US$${(d.totalUSD_M/1000).toFixed(1)}B`}
-                    className={`flex-1 rounded-sm ${isLatest ? "bg-emerald-400" : "bg-emerald-100"}`}
-                    style={{ height: `${bh}px` }}
-                  />
-                );
-              })}
-            </div>
-            <p className="mt-1 text-[9px] text-gray-400">2016–2024年推移</p>
-          </div>
-        </div>
-      </div>
+        );
+      })()}
 
       {/* ══════════════════════════════════════════
           MAIN GRID
