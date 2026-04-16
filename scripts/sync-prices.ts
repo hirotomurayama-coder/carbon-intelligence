@@ -7,7 +7,7 @@
  *   3. ボランタリークレジット (Biochar, Nature-based Removal) — AI 集約
  *
  * 使い方:
- *   source .env.local && export NEXT_PUBLIC_WORDPRESS_API_URL WP_APP_USER WP_APP_PASSWORD GOOGLE_GENERATIVE_AI_API_KEY && npm run sync-prices
+ *   source .env.local && export NEXT_PUBLIC_WORDPRESS_API_URL WP_APP_USER WP_APP_PASSWORD ANTHROPIC_API_KEY && npm run sync-prices
  *
  * --dry-run オプションで WordPress 書き込みをスキップ:
  *   npm run sync-prices -- --dry-run
@@ -39,7 +39,7 @@ async function extractPdfText(buffer: Buffer): Promise<string> {
 const API_BASE = (process.env.NEXT_PUBLIC_WORDPRESS_API_URL ?? "").replace(/\/+$/, "");
 const WP_USER = process.env.WP_APP_USER ?? "";
 const WP_PASS = process.env.WP_APP_PASSWORD ?? "";
-const GEMINI_KEY = process.env.GOOGLE_GENERATIVE_AI_API_KEY ?? "";
+const ANTHROPIC_KEY = process.env.ANTHROPIC_API_KEY ?? "";
 const DRY_RUN = process.argv.includes("--dry-run");
 
 if (!API_BASE || !WP_USER || !WP_PASS) {
@@ -481,12 +481,12 @@ async function collectAllPrices(fx: FxRates): Promise<MarketResult[]> {
 
   // ── 3. ボランタリークレジット（AI集約） ──
   console.log("\n=== ボランタリークレジット (AI 集約) ===");
-  if (!GEMINI_KEY) {
-    console.warn("[AI] GOOGLE_GENERATIVE_AI_API_KEY が未設定。フォールバック値を使用します。");
+  if (!ANTHROPIC_KEY) {
+    console.warn("[AI] ANTHROPIC_API_KEY が未設定。フォールバック値を使用します。");
   }
 
-  const volPrices = GEMINI_KEY
-    ? await extractVoluntaryPrices(GEMINI_KEY)
+  const volPrices = ANTHROPIC_KEY
+    ? await extractVoluntaryPrices(ANTHROPIC_KEY)
     : (await import("./ai-enricher.js")).extractVoluntaryPrices("").catch(() => []);
 
   const volMap: {
@@ -775,7 +775,7 @@ async function upsertPriceTrend(
 async function main() {
   console.log("=== カーボンクレジット価格同期スクリプト（v2） ===");
   console.log(`API: ${API_BASE}`);
-  console.log(`Gemini API Key: ${GEMINI_KEY ? "設定済み" : "未設定"}`);
+  console.log(`Claude API Key: ${ANTHROPIC_KEY ? "設定済み" : "未設定"}`);
   if (DRY_RUN) console.log("⚠️  DRY RUN モード（WordPress 書き込みなし）");
   console.log("");
 

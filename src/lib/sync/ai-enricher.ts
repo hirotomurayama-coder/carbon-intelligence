@@ -1,4 +1,4 @@
-import { GoogleGenerativeAI } from "@google/generative-ai";
+import Anthropic from "@anthropic-ai/sdk";
 import type {
   ScrapedMethodology,
   AiEnrichedFields,
@@ -8,7 +8,7 @@ import type {
 } from "@/types";
 
 // ============================================================
-// AI エンリッチャー — Google Gemini で翻訳・要約・分類・スコアリング
+// AI エンリッチャー — Claude (Anthropic) で翻訳・要約・分類・スコアリング
 //
 // 1 回の API コールで以下を生成:
 //   - titleJa: 英語タイトルの自然な日本語翻訳
@@ -21,20 +21,20 @@ import type {
 //   - reliabilityScore: 1.0〜5.0（信頼性・普及度スコア）
 // ============================================================
 
-/** Gemini クライアント（遅延初期化） */
-let genAI: GoogleGenerativeAI | null = null;
+/** Claude クライアント（遅延初期化） */
+let claudeClient: Anthropic | null = null;
 
-function getClient(): GoogleGenerativeAI | null {
-  if (genAI) return genAI;
-  const apiKey = process.env.GOOGLE_GENERATIVE_AI_API_KEY;
+function getClient(): Anthropic | null {
+  if (claudeClient) return claudeClient;
+  const apiKey = process.env.ANTHROPIC_API_KEY;
   if (!apiKey) {
     console.warn(
-      "[AI Enricher] GOOGLE_GENERATIVE_AI_API_KEY が未設定 — AI エンリッチをスキップ"
+      "[AI Enricher] ANTHROPIC_API_KEY が未設定 — AI エンリッチをスキップ"
     );
     return null;
   }
-  genAI = new GoogleGenerativeAI(apiKey);
-  return genAI;
+  claudeClient = new Anthropic({ apiKey });
+  return claudeClient;
 }
 
 /**
@@ -169,28 +169,25 @@ export async function enrichMethodology(
   }
 
   try {
-    const model = client.getGenerativeModel({
-      model: "gemini-2.0-flash",
-      generationConfig: {
-        temperature: 0.3,
-        maxOutputTokens: 800,
-        responseMimeType: "application/json",
-      },
+    const userMessage = buildUserMessage(scraped);
+
+    const response = await client.messages.create({
+      model: "claude-haiku-4-5",
+      max_tokens: 800,
+      temperature: 0.3,
+      system: SYSTEM_PROMPT,
+      messages: [{ role: "user", content: userMessage }],
     });
 
-    const userMessage = buildUserMessage(scraped);
-    const prompt = `${SYSTEM_PROMPT}\n\n---\n${userMessage}`;
-
-    const result = await model.generateContent(prompt);
-    const response = result.response;
-    const text = response.text();
+    const block = response.content[0];
+    const text = block.type === "text" ? block.text : "";
 
     if (!text) {
       console.warn(`[AI Enricher] 空レスポンス: ${scraped.name}`);
       return createFallback(scraped);
     }
 
-    // Gemini が ```json ... ``` で囲む場合のフォールバック除去
+    // コードブロックで囲まれている場合に除去
     const cleaned = text
       .replace(/^```(?:json)?\s*/i, "")
       .replace(/```\s*$/, "")
@@ -235,7 +232,7 @@ export async function enrichBatch(
  * AI エンリッチが利用可能かチェック。
  */
 export function isAiEnrichAvailable(): boolean {
-  return !!process.env.GOOGLE_GENERATIVE_AI_API_KEY;
+  return !!process.env.ANTHROPIC_API_KEY;
 }
 
 // ============================================================
@@ -500,18 +497,16 @@ export async function translateTitleOnly(
   if (!client) return null;
 
   try {
-    const model = client.getGenerativeModel({
-      model: "gemini-2.0-flash",
-      generationConfig: {
-        temperature: 0.2,
-        maxOutputTokens: 200,
-        responseMimeType: "application/json",
-      },
+    const response = await client.messages.create({
+      model: "claude-haiku-4-5",
+      max_tokens: 200,
+      temperature: 0.2,
+      system: TITLE_ONLY_PROMPT,
+      messages: [{ role: "user", content: `メソドロジー名: ${name}` }],
     });
 
-    const prompt = `${TITLE_ONLY_PROMPT}\n\nメソドロジー名: ${name}`;
-    const result = await model.generateContent(prompt);
-    const text = result.response.text();
+    const block = response.content[0];
+    const text = block.type === "text" ? block.text : "";
     if (!text) return null;
 
     const cleaned = text

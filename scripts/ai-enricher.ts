@@ -8,7 +8,7 @@
  * 使用 API キー: GOOGLE_GENERATIVE_AI_API_KEY
  */
 
-import { GoogleGenerativeAI } from "@google/generative-ai";
+import Anthropic from "@anthropic-ai/sdk";
 import * as cheerio from "cheerio";
 
 // ============================================================
@@ -194,8 +194,7 @@ export async function extractVoluntaryPrices(
     return getDefaultPrices();
   }
 
-  const genAI = new GoogleGenerativeAI(apiKey);
-  const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
+  const claude = new Anthropic({ apiKey });
 
   // 全ソースのテキストを収集
   const pageTexts: { name: string; text: string }[] = [];
@@ -208,7 +207,7 @@ export async function extractVoluntaryPrices(
       console.log(`  [AI] ✗ ${src.name}: テキスト不足（${text.length} 文字）`);
     }
     // レート制限対策
-    await new Promise((r) => setTimeout(r, 1500));
+    await new Promise((r) => setTimeout(r, 500));
   }
 
   if (pageTexts.length === 0) {
@@ -222,10 +221,16 @@ export async function extractVoluntaryPrices(
     .join("\n\n---\n\n");
 
   try {
-    console.log(`  [AI] Gemini で価格抽出中...（ソース: ${pageTexts.length} 件）`);
-    const prompt = buildExtractionPrompt();
-    const result = await model.generateContent(prompt + combinedText);
-    const responseText = result.response.text();
+    console.log(`  [AI] Claude で価格抽出中...（ソース: ${pageTexts.length} 件）`);
+    const systemPrompt = buildExtractionPrompt();
+    const response = await claude.messages.create({
+      model: "claude-haiku-4-5",
+      max_tokens: 1024,
+      system: systemPrompt,
+      messages: [{ role: "user", content: combinedText }],
+    });
+    const block = response.content[0];
+    const responseText = block.type === "text" ? block.text : "";
 
     // JSON 部分を抽出
     const jsonMatch = responseText.match(/\{[\s\S]*\}/);

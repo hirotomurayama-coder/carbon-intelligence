@@ -40,7 +40,7 @@ jobs:
           NEXT_PUBLIC_WORDPRESS_API_URL: ${{ secrets.NEXT_PUBLIC_WORDPRESS_API_URL }}
           WP_APP_USER: ${{ secrets.WP_APP_USER }}
           WP_APP_PASSWORD: ${{ secrets.WP_APP_PASSWORD }}
-          GOOGLE_GENERATIVE_AI_API_KEY: ${{ secrets.GOOGLE_GENERATIVE_AI_API_KEY }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
         run: |
           echo "=== 環境変数チェック ==="
           MISSING=""
@@ -59,10 +59,10 @@ jobs:
           else
             echo "✓ WP_APP_PASSWORD: (設定済み)"
           fi
-          if [ -z "$GOOGLE_GENERATIVE_AI_API_KEY" ]; then
-            echo "⚠ GOOGLE_GENERATIVE_AI_API_KEY: (未設定 — AI分析はフォールバックになります)"
+          if [ -z "$ANTHROPIC_API_KEY" ]; then
+            echo "⚠ ANTHROPIC_API_KEY: (未設定 — AI分析はフォールバックになります)"
           else
-            echo "✓ GOOGLE_GENERATIVE_AI_API_KEY: (設定済み)"
+            echo "✓ ANTHROPIC_API_KEY: (設定済み)"
           fi
           if [ -n "$MISSING" ]; then
             echo "::error::必須環境変数が未設定です:$MISSING"
@@ -75,7 +75,7 @@ jobs:
           NEXT_PUBLIC_WORDPRESS_API_URL: ${{ secrets.NEXT_PUBLIC_WORDPRESS_API_URL }}
           WP_APP_USER: ${{ secrets.WP_APP_USER }}
           WP_APP_PASSWORD: ${{ secrets.WP_APP_PASSWORD }}
-          GOOGLE_GENERATIVE_AI_API_KEY: ${{ secrets.GOOGLE_GENERATIVE_AI_API_KEY }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
         run: |
           ARGS=""
           if [ "${{ inputs.dry_run }}" = "true" ]; then
@@ -90,10 +90,10 @@ jobs:
           NEXT_PUBLIC_WORDPRESS_API_URL: ${{ secrets.NEXT_PUBLIC_WORDPRESS_API_URL }}
           WP_APP_USER: ${{ secrets.WP_APP_USER }}
           WP_APP_PASSWORD: ${{ secrets.WP_APP_PASSWORD }}
-          GOOGLE_GENERATIVE_AI_API_KEY: ${{ secrets.GOOGLE_GENERATIVE_AI_API_KEY }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
         run: |
-          if [ -z "$GOOGLE_GENERATIVE_AI_API_KEY" ]; then
-            echo "⚠ GOOGLE_GENERATIVE_AI_API_KEY が未設定のため AI 分析をスキップします"
+          if [ -z "$ANTHROPIC_API_KEY" ]; then
+            echo "⚠ ANTHROPIC_API_KEY が未設定のため AI 分析をスキップします"
             exit 0
           fi
           ARGS=""
@@ -109,7 +109,7 @@ jobs:
           NEXT_PUBLIC_WORDPRESS_API_URL: ${{ secrets.NEXT_PUBLIC_WORDPRESS_API_URL }}
           WP_APP_USER: ${{ secrets.WP_APP_USER }}
           WP_APP_PASSWORD: ${{ secrets.WP_APP_PASSWORD }}
-          GOOGLE_GENERATIVE_AI_API_KEY: ${{ secrets.GOOGLE_GENERATIVE_AI_API_KEY }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
         run: |
           ARGS=""
           if [ "${{ inputs.dry_run }}" = "true" ]; then
