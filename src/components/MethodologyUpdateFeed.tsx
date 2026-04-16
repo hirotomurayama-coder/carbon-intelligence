@@ -1,7 +1,5 @@
 "use client";
 
-import { useState } from "react";
-
 export type ChangeType = "revision" | "new" | "rule_update" | "consultation" | "status_change";
 
 export interface UpdateEntry {
@@ -23,12 +21,12 @@ interface Props {
 
 // ── バッジ設定 ────────────────────────────────────────────────────
 
-const CHANGE_TYPE_CONFIG: Record<ChangeType, { label: string; bg: string; text: string }> = {
-  revision:      { label: "改定",     bg: "bg-blue-50",   text: "text-blue-600" },
-  new:           { label: "新規制定", bg: "bg-emerald-50", text: "text-emerald-600" },
-  rule_update:   { label: "ルール更新", bg: "bg-amber-50",  text: "text-amber-600" },
-  consultation:  { label: "意見募集", bg: "bg-purple-50",  text: "text-purple-600" },
-  status_change: { label: "ステータス変更", bg: "bg-gray-100", text: "text-gray-500" },
+const CHANGE_TYPE_CONFIG: Record<ChangeType, { label: string; bg: string; text: string; border: string }> = {
+  revision:      { label: "改定",       bg: "bg-blue-50",    text: "text-blue-600",   border: "border-blue-200" },
+  new:           { label: "新規制定",   bg: "bg-emerald-50", text: "text-emerald-600", border: "border-emerald-200" },
+  rule_update:   { label: "ルール更新", bg: "bg-amber-50",   text: "text-amber-600",  border: "border-amber-200" },
+  consultation:  { label: "意見募集",   bg: "bg-purple-50",  text: "text-purple-600", border: "border-purple-200" },
+  status_change: { label: "ステータス変更", bg: "bg-gray-50", text: "text-gray-500",  border: "border-gray-200" },
 };
 
 const REGISTRY_COLOR: Record<string, string> = {
@@ -58,17 +56,12 @@ function daysAgo(dateStr: string): string {
 // ── コンポーネント ─────────────────────────────────────────────────
 
 export function MethodologyUpdateFeed({ updates, lastChecked }: Props) {
-  const [expanded, setExpanded] = useState(false);
-
   if (updates.length === 0) return null;
-
-  const displayed = expanded ? updates : updates.slice(0, 5);
-  const hasMore = updates.length > 5;
 
   return (
     <div className="mb-3 overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
       {/* ヘッダー */}
-      <div className="flex items-center justify-between border-b border-gray-100 px-4 py-2.5">
+      <div className="flex items-center justify-between border-b border-gray-100 px-4 py-2">
         <div className="flex items-center gap-2">
           <div className="flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-md bg-orange-500">
             <svg className="h-3 w-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
@@ -83,9 +76,9 @@ export function MethodologyUpdateFeed({ updates, lastChecked }: Props) {
         <span className="text-[9px] text-gray-300">最終確認: {lastChecked}</span>
       </div>
 
-      {/* 更新リスト */}
-      <div className="divide-y divide-gray-50">
-        {displayed.map((entry) => {
+      {/* 横スクロールカード列 */}
+      <div className="flex gap-2.5 overflow-x-auto px-4 py-3 scrollbar-hide">
+        {updates.map((entry) => {
           const typeConf = CHANGE_TYPE_CONFIG[entry.changeType] ?? CHANGE_TYPE_CONFIG.rule_update;
           return (
             <a
@@ -93,62 +86,53 @@ export function MethodologyUpdateFeed({ updates, lastChecked }: Props) {
               href={entry.url}
               target="_blank"
               rel="noopener noreferrer"
-              className="group flex items-start gap-3 px-4 py-2.5 transition hover:bg-gray-50/70"
+              className={`group flex w-52 flex-shrink-0 flex-col gap-2 rounded-lg border p-3 transition hover:shadow-md ${typeConf.bg} ${typeConf.border}`}
             >
-              {/* 日付 */}
-              <div className="w-16 flex-shrink-0 pt-0.5">
-                <p className="text-[10px] font-medium text-gray-800">{entry.date.slice(5).replace("-", "/")}</p>
-                <p className="text-[9px] text-gray-300">{daysAgo(entry.date)}</p>
+              {/* 上段：レジストリ・種別バッジ + 日付 */}
+              <div className="flex items-start justify-between gap-1">
+                <div className="flex flex-wrap gap-1">
+                  <span className={`inline-block rounded px-1.5 py-px text-[9px] font-semibold ${registryColor(entry.registry)}`}>
+                    {entry.registry}
+                  </span>
+                  <span className={`inline-block rounded px-1.5 py-px text-[9px] font-semibold ${typeConf.text} bg-white/70`}>
+                    {typeConf.label}
+                  </span>
+                </div>
+                <span className="flex-shrink-0 text-[9px] text-gray-400">{daysAgo(entry.date)}</span>
               </div>
 
-              {/* バッジ群 */}
-              <div className="flex flex-shrink-0 flex-col gap-1 pt-0.5">
-                <span className={`inline-block rounded px-1.5 py-px text-[9px] font-semibold ${registryColor(entry.registry)}`}>
-                  {entry.registry}
-                </span>
-                <span className={`inline-block rounded px-1.5 py-px text-[9px] font-semibold ${typeConf.bg} ${typeConf.text}`}>
-                  {typeConf.label}
-                </span>
-              </div>
-
-              {/* 本文 */}
-              <div className="min-w-0 flex-1">
-                <p className="truncate text-xs font-medium text-gray-800 transition group-hover:text-orange-600">
-                  {entry.code && (
-                    <span className="mr-1.5 font-mono text-[10px] text-gray-400">{entry.code}</span>
-                  )}
+              {/* 中段：コード + タイトル */}
+              <div className="flex-1">
+                {entry.code && (
+                  <p className="mb-0.5 font-mono text-[10px] text-gray-500">{entry.code}</p>
+                )}
+                <p className="line-clamp-2 text-[11px] font-semibold leading-snug text-gray-800 transition group-hover:text-orange-700">
                   {entry.titleJa}
                 </p>
                 {entry.description && (
-                  <p className="mt-0.5 truncate text-[10px] text-gray-400">{entry.description}</p>
+                  <p className="mt-1 line-clamp-2 text-[9px] leading-snug text-gray-500">
+                    {entry.description}
+                  </p>
                 )}
               </div>
 
-              {/* 右端：自動更新バッジ + リンクアイコン */}
-              <div className="flex flex-shrink-0 items-center gap-1.5 pt-0.5">
-                {entry.autoUpdated && (
-                  <span className="rounded bg-sky-50 px-1.5 py-px text-[9px] font-semibold text-sky-600">
+              {/* 下段：自動反映バッジ + 日付 */}
+              <div className="flex items-center justify-between">
+                <span className="text-[9px] text-gray-400">{entry.date.slice(0, 7).replace("-", "/")}</span>
+                {entry.autoUpdated ? (
+                  <span className="rounded bg-sky-100 px-1.5 py-px text-[9px] font-semibold text-sky-600">
                     自動反映済
                   </span>
+                ) : (
+                  <svg className="h-3 w-3 text-gray-300 transition group-hover:text-orange-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
+                  </svg>
                 )}
-                <svg className="h-3 w-3 text-gray-300 transition group-hover:text-orange-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
-                </svg>
               </div>
             </a>
           );
         })}
       </div>
-
-      {/* もっと見る */}
-      {hasMore && (
-        <button
-          onClick={() => setExpanded(!expanded)}
-          className="w-full border-t border-gray-100 py-2 text-center text-[10px] font-medium text-gray-400 transition hover:bg-gray-50 hover:text-gray-600"
-        >
-          {expanded ? "折りたたむ ▲" : `さらに ${updates.length - 5}件を表示 ▼`}
-        </button>
-      )}
     </div>
   );
 }
