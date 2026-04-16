@@ -1,0 +1,62 @@
+name: Monitor Registry Updates
+
+on:
+  schedule:
+    # 毎週月曜 09:00 JST（日曜 00:00 UTC）
+    - cron: "0 0 * * 1"
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Dry Run（Issue作成なし・確認のみ）"
+        required: false
+        type: boolean
+        default: false
+      init:
+        description: "初期化（現在の状態を記録、Issue作成なし）"
+        required: false
+        type: boolean
+        default: false
+
+jobs:
+  monitor:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    permissions:
+      issues: write     # GitHub Issue 作成
+      contents: write   # monitor-state.json の更新コミット
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run monitor script
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+        run: |
+          ARGS=""
+          if [ "${{ inputs.dry_run }}" = "true" ]; then
+            ARGS="$ARGS --dry-run"
+          fi
+          if [ "${{ inputs.init }}" = "true" ]; then
+            ARGS="$ARGS --init"
+          fi
+          npx tsx scripts/monitor-registry-updates.ts $ARGS
+
+      - name: Commit updated state
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add scripts/monitor-state.json
+          git diff --staged --quiet || git commit -m "chore: update registry monitor state [skip ci]"
+          git push
