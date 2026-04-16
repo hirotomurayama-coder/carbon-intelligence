@@ -3,9 +3,11 @@ import { getMethodologies } from "@/lib/wordpress";
 import { MethodologyList } from "@/components/MethodologyList";
 import { CompareProvider } from "@/components/CompareContext";
 import { CompareBar } from "@/components/CompareBar";
+import { MethodologyUpdateFeed, type UpdateEntry } from "@/components/MethodologyUpdateFeed";
 import type { Methodology, RegistryName } from "@/types";
 import allMethodsData from "@/data/all-methodologies.json";
 import vrodTranslations from "@/data/vrod-translations.json";
+import updatesRaw from "@/data/methodology-updates.json";
 
 const VROD_TITLE_JA: Record<string, string> = vrodTranslations as Record<string, string>;
 
@@ -111,6 +113,11 @@ function externalToMethodology(m: AllMethodologyEntry): Methodology {
 // ページ
 // ============================================================
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const methodologyUpdates = (updatesRaw as any).updates as UpdateEntry[];
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const lastChecked = (updatesRaw as any).lastChecked as string;
+
 export default async function MethodologiesPage() {
   const wpMethodologies = await getMethodologies();
 
@@ -149,6 +156,12 @@ export default async function MethodologiesPage() {
   return (
     <CompareProvider>
       <div>
+        {/* 最近のメソドロジー更新フィード */}
+        <MethodologyUpdateFeed
+          updates={methodologyUpdates}
+          lastChecked={lastChecked}
+        />
+
         <Suspense fallback={<div className="py-12 text-center text-sm text-gray-400">読み込み中...</div>}>
           <MethodologyList data={allMethodologies} />
         </Suspense>

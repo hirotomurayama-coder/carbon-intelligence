@@ -1,0 +1,71 @@
+{
+  "lastChecked": "2026-04-16",
+  "updates": [
+    {
+      "id": "jcredit-EN-R-002-2026-03-04",
+      "date": "2026-03-04",
+      "registry": "J-Credit",
+      "code": "EN-R-002",
+      "titleJa": "太陽光発電設備の導入",
+      "changeType": "revision",
+      "description": "追加性評価が不要となる場合が縮小されました",
+      "url": "https://japancredit.go.jp/pdf/methodology/EN-R-002_v3.7.pdf",
+      "autoUpdated": true
+    },
+    {
+      "id": "jcredit-EN-S-002-2026-03-04",
+      "date": "2026-03-04",
+      "registry": "J-Credit",
+      "code": "EN-S-002",
+      "titleJa": "ヒートポンプの導入",
+      "changeType": "revision",
+      "description": "追加性評価が不要となる場合が新設されました",
+      "url": "https://japancredit.go.jp/pdf/methodology/EN-S-002_v3.3.pdf",
+      "autoUpdated": true
+    },
+    {
+      "id": "jcredit-EN-S-034-2026-03-04",
+      "date": "2026-03-04",
+      "registry": "J-Credit",
+      "code": "EN-S-034",
+      "titleJa": "エコドライブ支援機能を有するシステムの導入及び利用",
+      "changeType": "revision",
+      "description": "対象の一般化等の改定が行われました",
+      "url": "https://japancredit.go.jp/pdf/methodology/EN-S-034_v2.0.pdf",
+      "autoUpdated": true
+    },
+    {
+      "id": "jcredit-AG-004-2026-02-20",
+      "date": "2026-02-20",
+      "registry": "J-Credit",
+      "code": "AG-004",
+      "titleJa": "牛への飼料添加物（3-NOP）の給与",
+      "changeType": "new",
+      "description": "牛の曖気中のメタン削減を評価する新規方法論が制定されました",
+      "url": "https://japancredit.go.jp/about/revision/",
+      "autoUpdated": false
+    },
+    {
+      "id": "goldstandard-soc-loss-rice-2025-12-22",
+      "date": "2025-12-22",
+      "registry": "Gold Standard",
+      "code": null,
+      "titleJa": "水稲栽培メソドロジーへのSOCリスク計上 ルール更新",
+      "changeType": "rule_update",
+      "description": "稲作メソドロジー適用時の土壌有機炭素損失リスクの計上に関する規定が追加されました",
+      "url": "https://globalgoals.goldstandard.org/ru_2025_accounting-soc-loss-risk-in-activities-rice-methodology/",
+      "autoUpdated": false
+    },
+    {
+      "id": "verra-vm0015-consultation-2026-03",
+      "date": "2026-03-01",
+      "registry": "Verra",
+      "code": null,
+      "titleJa": "石炭火力発電所早期廃止メソドロジー パブリックコンサルテーション",
+      "changeType": "consultation",
+      "description": "石炭発電廃止メソドロジーの改定案についてパブリックコメントを受付中です",
+      "url": "https://verra.org/consultation-on-revision-to-coal-plant-retirement-methodology/",
+      "autoUpdated": false
+    }
+  ]
+}

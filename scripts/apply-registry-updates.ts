@@ -17,7 +17,9 @@ import * as cheerio from "cheerio";
 import * as fs from "fs";
 import * as path from "path";
 
-const STATE_FILE = path.join(path.dirname(new URL(import.meta.url).pathname), "monitor-state.json");
+const SCRIPT_DIR = path.dirname(new URL(import.meta.url).pathname);
+const STATE_FILE = path.join(SCRIPT_DIR, "monitor-state.json");
+const UPDATES_FILE = path.join(SCRIPT_DIR, "../src/data/methodology-updates.json");
 const WP_BASE = process.env.NEXT_PUBLIC_WORDPRESS_API_URL ?? "";
 const WP_AUTH = Buffer.from(
   `${process.env.WP_APP_USER}:${process.env.WP_APP_PASSWORD}`
@@ -189,6 +191,48 @@ async function updateWpMethodology(
   await wpPut(`/methodologies/${id}`, { acf: updates });
 }
 
+// ── 更新ログファイルへの書き込み ─────────────────────────────────
+
+interface UpdateLogEntry {
+  id: string;
+  date: string;
+  registry: string;
+  code: string | null;
+  titleJa: string;
+  changeType: "revision" | "new" | "rule_update" | "consultation" | "status_change";
+  description: string | null;
+  url: string;
+  autoUpdated: boolean;
+}
+
+function appendToUpdateLog(entries: UpdateLogEntry[]): void {
+  if (entries.length === 0) return;
+
+  let existing: { lastChecked: string; updates: UpdateLogEntry[] } = {
+    lastChecked: new Date().toISOString().slice(0, 10),
+    updates: [],
+  };
+
+  if (fs.existsSync(UPDATES_FILE)) {
+    existing = JSON.parse(fs.readFileSync(UPDATES_FILE, "utf-8"));
+  }
+
+  // 重複IDを除外して先頭に追加
+  const existingIds = new Set(existing.updates.map((u) => u.id));
+  const newEntries = entries.filter((e) => !existingIds.has(e.id));
+
+  if (newEntries.length === 0) {
+    console.log("  ℹ️  更新ログへの追加なし（全て既存）");
+    return;
+  }
+
+  existing.updates = [...newEntries, ...existing.updates].slice(0, 100); // 最大100件保持
+  existing.lastChecked = new Date().toISOString().slice(0, 10);
+
+  fs.writeFileSync(UPDATES_FILE, JSON.stringify(existing, null, 2) + "\n", "utf-8");
+  console.log(`  ✅ 更新ログに ${newEntries.length}件 追記: ${UPDATES_FILE}`);
+}
+
 // ── メイン ────────────────────────────────────────────────────────
 
 async function main() {
@@ -316,6 +360,83 @@ async function main() {
       console.log(`  🔗 ${item.url}`);
       if (item.pdfUrl) console.log(`  📄 ${item.pdfUrl}`);
     }
+  }
+
+  // ─────────────────────────────────────────────────────────────
+  // 更新ログファイルへ追記（src/data/methodology-updates.json）
+  // ─────────────────────────────────────────────────────────────
+  console.log("\n📝 更新ログへ追記中...");
+  const logEntries: UpdateLogEntry[] = [];
+
+  // J-Credit: WP更新完了分をログへ
+  for (const item of newJC) {
+    for (let i = 0; i < item.codes.length; i++) {
+      logEntries.push({
+        id: `jcredit-${item.codes[i]}-${item.date}`,
+        date: item.date,
+        registry: "J-Credit",
+        code: item.codes[i],
+        titleJa: item.codes[i], // WP側の正式タイトルJaは別途取得困難なのでコードを仮置き
+        changeType: "revision",
+        description: item.title.replace(/\（\d{4}年\d{1,2}月\d{1,2}日付改定\）.*$/, "").trim().slice(0, 80) || null,
+        url: item.pdfUrls[i] ?? item.pdfUrls[0] ?? item.codes[i],
+        autoUpdated: true,
+      });
+    }
+    // コードなしの場合（新規制定など）
+    if (item.codes.length === 0) {
+      logEntries.push({
+        id: `jcredit-${item.date}-${item.title.slice(0, 20).replace(/\s/g, "")}`,
+        date: item.date,
+        registry: "J-Credit",
+        code: null,
+        titleJa: item.title.slice(0, 60),
+        changeType: "new",
+        description: null,
+        url: "https://japancredit.go.jp/about/revision/",
+        autoUpdated: false,
+      });
+    }
+  }
+
+  // Verra: メソドロジー関連の可能性があるものをログへ（手動確認済みマーク）
+  const verraKeywords = ["methodology", "vm0", "consultation", "standard", "protocol"];
+  for (const item of newVerra) {
+    const isRelated = verraKeywords.some(k => item.title.toLowerCase().includes(k));
+    if (isRelated) {
+      logEntries.push({
+        id: `verra-${item.date}-${item.url.split("/").slice(-2, -1)[0]?.slice(0, 30) ?? "news"}`,
+        date: item.date,
+        registry: "Verra",
+        code: null,
+        titleJa: item.title.slice(0, 80),
+        changeType: item.title.toLowerCase().includes("consultation") ? "consultation" : "rule_update",
+        description: null,
+        url: item.url,
+        autoUpdated: false,
+      });
+    }
+  }
+
+  // Gold Standard: 全件ログへ
+  for (const item of newGS) {
+    logEntries.push({
+      id: `goldstandard-${item.date}-${item.url.split("/").slice(-2, -1)[0]?.slice(0, 30) ?? "update"}`,
+      date: item.date,
+      registry: "Gold Standard",
+      code: null,
+      titleJa: item.title.slice(0, 80),
+      changeType: "rule_update",
+      description: null,
+      url: item.url,
+      autoUpdated: false,
+    });
+  }
+
+  if (!isDryRun) {
+    appendToUpdateLog(logEntries);
+  } else {
+    console.log(`  [DRY RUN] ${logEntries.length}件 のログ追記をスキップ`);
   }
 
   // ─────────────────────────────────────────────────────────────
