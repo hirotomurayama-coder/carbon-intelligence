@@ -8,8 +8,11 @@ import type { NextAuthRequest } from "next-auth";
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 const AUTH_DISABLED = false;
 
-// Routes that don't require authentication
+// Routes that don't require authentication or subscription check
 const PUBLIC_ROUTES = ["/login", "/pricing", "/onboarding", "/tokushoho", "/terms", "/api/auth", "/api/stripe/webhook"];
+
+// API routes are never subscription-gated (recovery endpoints must be reachable)
+const API_ROUTES_PREFIX = "/api/";
 
 export default auth((req: NextAuthRequest) => {
   // 🔓 一時停止中: すべてのリクエストを通す
@@ -33,6 +36,11 @@ export default auth((req: NextAuthRequest) => {
     const loginUrl = new URL("/login", nextUrl);
     loginUrl.searchParams.set("callbackUrl", pathname);
     return NextResponse.redirect(loginUrl);
+  }
+
+  // API routes are always allowed through for logged-in users (recovery endpoints must work)
+  if (pathname.startsWith(API_ROUTES_PREFIX)) {
+    return NextResponse.next();
   }
 
   // Subscription expired/canceled/past_due → /pricing
