@@ -25,12 +25,14 @@ export async function POST(req: Request) {
     });
     customerId = customer.id;
 
-    // Save customer ID to Supabase
+    // Save customer ID to Supabase（subscriptionレコードがない場合もupsertで対応）
     const db = createServiceClient();
     await db
       .from("subscriptions")
-      .update({ stripe_customer_id: customerId })
-      .eq("user_email", email);
+      .upsert(
+        { user_email: email, stripe_customer_id: customerId, updated_at: new Date().toISOString() },
+        { onConflict: "user_email" }
+      );
   }
 
   const checkoutSession = await stripe.checkout.sessions.create({

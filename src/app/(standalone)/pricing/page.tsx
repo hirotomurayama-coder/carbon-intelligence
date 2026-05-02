@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { auth } from "@/auth";
 import { redirect } from "next/navigation";
+import { PricingRefreshButton } from "@/components/PricingRefreshButton";
 
 export const metadata: Metadata = {
   title: "プランのアップグレード | Carbon Intelligence",
@@ -100,6 +101,8 @@ export default async function PricingPage() {
             </a>
           </p>
         )}
+
+        <PricingRefreshButton />
 
         <p className="mt-6 text-center text-xs text-gray-300 space-x-2">
           <a href="/tokushoho" className="hover:text-gray-400 underline">特定商取引法に基づく表記</a>
