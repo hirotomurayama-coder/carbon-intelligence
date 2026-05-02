@@ -3,7 +3,6 @@ import { auth } from "@/auth";
 import { getStripe } from "@/lib/stripe";
 import { createServiceClient } from "@/lib/supabase";
 
-/** 現在のユーザーのStripe・Supabase状態を診断するデバッグエンドポイント */
 export async function GET() {
   const session = await auth();
   if (!session?.user?.email) {
@@ -13,56 +12,53 @@ export async function GET() {
   const email = session.user.email;
   const db = createServiceClient();
 
-  // Supabase の状態
-  const { data: subRow } = await db
-    .from("subscriptions")
-    .select("*")
-    .eq("user_email", email)
-    .single();
+  // 1. 現在のレコード読み取り
+  const { data: subRow, error: subReadErr } = await db
+    .from("subscriptions").select("*").eq("user_email", email).single();
+  const { data: userRow, error: userReadErr } = await db
+    .from("users").select("email, onboarding_completed, created_at").eq("email", email).single();
 
-  const { data: userRow } = await db
-    .from("users")
-    .select("email, onboarding_completed, created_at")
-    .eq("email", email)
-    .single();
+  // 2. users書き込みテスト（実際のupsertUserと同じ操作）
+  const { error: writeUserErr } = await db.from("users").upsert(
+    { email, name: session.user.name ?? null, image: session.user.image ?? null },
+    { onConflict: "email" }
+  );
 
-  // Stripe の状態
-  let stripeData: Record<string, unknown> = { error: "Stripe not configured" };
+  // 3. subscriptions書き込みテスト
+  const { error: writeSubErr } = await db.from("subscriptions").upsert(
+    { user_email: email, status: "trialing", updated_at: new Date().toISOString() },
+    { onConflict: "user_email" }
+  );
+
+  // 4. Stripe状態
+  let stripeData: Record<string, unknown> = { skipped: true };
   try {
     const stripe = getStripe();
     const customers = await stripe.customers.list({ email, limit: 5 });
-
-    const customerDetails = await Promise.all(
-      customers.data.map(async (c) => {
-        const subs = await stripe.subscriptions.list({ customer: c.id, limit: 10 });
-        return {
-          id: c.id,
-          email: c.email,
-          created: new Date(c.created * 1000).toISOString(),
-          subscriptions: subs.data.map((s) => ({
-            id: s.id,
-            status: s.status,
-            // @ts-expect-error property name may vary by Stripe API version
-            current_period_end: s.current_period_end ?? s.currentPeriodEnd ?? null,
-          })),
-        };
-      })
-    );
-
-    stripeData = { customers: customerDetails };
-  } catch (e) {
-    stripeData = { error: String(e) };
-  }
+    stripeData = {
+      customerCount: customers.data.length,
+      customers: await Promise.all(customers.data.map(async (c) => {
+        const subs = await stripe.subscriptions.list({ customer: c.id, limit: 5 });
+        return { id: c.id, created: new Date(c.created * 1000).toISOString(),
+          subscriptions: subs.data.map((s) => ({ id: s.id, status: s.status })) };
+      })),
+    };
+  } catch (e) { stripeData = { error: String(e) }; }
 
   return NextResponse.json({
-    session: {
-      email,
-      subscriptionStatus: session.subscriptionStatus,
-      onboardingCompleted: session.onboardingCompleted,
-    },
+    email,
+    sessionStatus: session.subscriptionStatus,
     supabase: {
-      user: userRow,
-      subscription: subRow,
+      reads: {
+        user: userRow ?? null,
+        userReadError: userReadErr?.message ?? null,
+        subscription: subRow ?? null,
+        subReadError: subReadErr?.message ?? null,
+      },
+      writes: {
+        userWriteError: writeUserErr ? { message: writeUserErr.message, code: writeUserErr.code, details: writeUserErr.details, hint: writeUserErr.hint } : null,
+        subWriteError: writeSubErr ? { message: writeSubErr.message, code: writeSubErr.code, details: writeSubErr.details, hint: writeSubErr.hint } : null,
+      },
     },
     stripe: stripeData,
   });
