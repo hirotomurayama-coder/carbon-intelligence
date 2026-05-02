@@ -87,6 +87,7 @@ export async function upsertUser(params: {
 
 /**
  * Get subscription record for a user email.
+ * Uses limit(1) + order to avoid failure when duplicate rows exist.
  */
 export async function getSubscription(
   email: string
@@ -96,9 +97,11 @@ export async function getSubscription(
     .from("subscriptions")
     .select("*")
     .eq("user_email", email)
-    .single();
+    .order("updated_at", { ascending: false })
+    .limit(1)
+    .maybeSingle();
   if (error) return null;
-  return data as SubscriptionRecord;
+  return data as SubscriptionRecord | null;
 }
 
 /**
