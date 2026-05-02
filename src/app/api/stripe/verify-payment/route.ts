@@ -48,7 +48,6 @@ export async function POST() {
         stripe_customer_id: customer.id,
         stripe_subscription_id: sub.id,
         status: "active",
-        current_period_end: new Date(sub.current_period_end * 1000).toISOString(),
         updated_at: new Date().toISOString(),
       },
       { onConflict: "user_email" }
