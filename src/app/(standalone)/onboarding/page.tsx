@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 
 const STEPS = [
@@ -114,45 +113,72 @@ const STEPS = [
       </div>
     ),
   },
-  {
-    title: "準備完了！",
-    icon: "🎉",
-    content: (
-      <div className="space-y-3 text-sm text-gray-600">
-        <p className="text-base font-semibold text-gray-800">
-          Carbon Intelligenceの利用準備が整いました。
-        </p>
-        <p>
-          ダッシュボードから最新の市場情報をチェックしてみましょう。
-          ご不明な点はいつでもサポートにお問い合わせください。
-        </p>
-        <div className="mt-4 rounded-xl bg-emerald-50 border border-emerald-100 px-5 py-4 text-center">
-          <p className="text-sm font-medium text-emerald-700">7日間の無料体験中</p>
-          <p className="mt-1 text-xs text-emerald-600">
-            体験終了後は有料プラン（¥5,000/月）への移行が必要です。
-          </p>
-        </div>
-      </div>
-    ),
-  },
+  // 最終ステップはコンポーネント内で動的に生成するため、ここではプレースホルダー
+  { title: "準備完了！", icon: "🎉", content: null },
 ];
 
 export default function OnboardingPage() {
-  const router = useRouter();
-  const { update } = useSession();
+  const { data: session, update } = useSession();
   const [step, setStep] = useState(0);
   const [completing, setCompleting] = useState(false);
 
   const isLast = step === STEPS.length - 1;
   const current = STEPS[step];
 
+  // 無料体験の状態を判定
+  const subscriptionStatus = (session as { subscriptionStatus?: string } | null)?.subscriptionStatus;
+  const isTrialExpired = subscriptionStatus === "trial_expired";
+  const isTrialActive = !subscriptionStatus || subscriptionStatus === "trialing";
+
+  // 最終ステップのコンテンツ（セッション状態に応じて切り替え）
+  const lastStepContent = (
+    <div className="space-y-3 text-sm text-gray-600">
+      <p className="text-base font-semibold text-gray-800">
+        {isTrialExpired
+          ? "無料体験期間が終了しました。"
+          : "Carbon Intelligenceの利用準備が整いました。"}
+      </p>
+      <p>
+        {isTrialExpired
+          ? "引き続きご利用いただくには、有料プランへのアップグレードが必要です。"
+          : "ダッシュボードから最新の市場情報をチェックしてみましょう。ご不明な点はいつでもサポートにお問い合わせください。"}
+      </p>
+      {isTrialExpired ? (
+        <div className="mt-4 rounded-xl bg-amber-50 border border-amber-200 px-5 py-4 text-center">
+          <p className="text-sm font-medium text-amber-700">無料体験期間終了</p>
+          <p className="mt-1 text-xs text-amber-600">
+            有料プラン（¥5,000/月）にアップグレードして、引き続きご利用ください。
+          </p>
+        </div>
+      ) : isTrialActive ? (
+        <div className="mt-4 rounded-xl bg-emerald-50 border border-emerald-100 px-5 py-4 text-center">
+          <p className="text-sm font-medium text-emerald-700">7日間の無料体験中</p>
+          <p className="mt-1 text-xs text-emerald-600">
+            体験終了後は有料プラン（¥5,000/月）への移行が必要です。
+          </p>
+        </div>
+      ) : (
+        <div className="mt-4 rounded-xl bg-emerald-50 border border-emerald-100 px-5 py-4 text-center">
+          <p className="text-sm font-medium text-emerald-700">プラン有効中</p>
+          <p className="mt-1 text-xs text-emerald-600">
+            Carbon Intelligenceをご利用いただけます。
+          </p>
+        </div>
+      )}
+    </div>
+  );
+
   async function handleNext() {
     if (isLast) {
       setCompleting(true);
-      await fetch("/api/auth/complete-onboarding", { method: "POST" });
-      // update({}) でPATCH→JWT callback trigger:"update" → DBから再読み込みしてcookieを更新
-      await update({ onboardingCompleted: true });
-      window.location.href = "/";
+      try {
+        await fetch("/api/auth/complete-onboarding", { method: "POST" });
+        await update({ onboardingCompleted: true });
+      } catch {
+        // エラーが発生しても遷移は続行
+      }
+      // 無料期間切れの場合は pricing へ、それ以外はダッシュボードへ
+      window.location.href = isTrialExpired ? "/pricing" : "/";
     } else {
       setStep((s) => s + 1);
     }
@@ -184,7 +210,7 @@ export default function OnboardingPage() {
             <h2 className="mt-3 text-lg font-bold text-gray-900">{current.title}</h2>
           </div>
 
-          <div>{current.content}</div>
+          <div>{isLast ? lastStepContent : current.content}</div>
 
           <div className="mt-8 flex items-center justify-between">
             <button
@@ -197,9 +223,19 @@ export default function OnboardingPage() {
             <button
               onClick={handleNext}
               disabled={completing}
-              className="rounded-xl bg-emerald-600 px-6 py-2.5 text-sm font-semibold text-white transition hover:bg-emerald-700 disabled:opacity-60"
+              className={`rounded-xl px-6 py-2.5 text-sm font-semibold text-white transition disabled:opacity-60 ${
+                isLast && isTrialExpired
+                  ? "bg-amber-500 hover:bg-amber-600"
+                  : "bg-emerald-600 hover:bg-emerald-700"
+              }`}
             >
-              {completing ? "設定中..." : isLast ? "ダッシュボードへ →" : "次へ →"}
+              {completing
+                ? "処理中..."
+                : isLast
+                ? isTrialExpired
+                  ? "プランを確認する →"
+                  : "ダッシュボードへ →"
+                : "次へ →"}
             </button>
           </div>
         </div>
