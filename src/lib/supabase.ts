@@ -136,3 +136,31 @@ export async function completeOnboarding(email: string): Promise<void> {
     .update({ onboarding_completed: true })
     .eq("email", email);
 }
+
+/**
+ * Upsert subscription record without requiring a UNIQUE constraint on user_email.
+ * Uses SELECT + INSERT/UPDATE to avoid "no unique constraint" errors.
+ */
+export async function upsertSubscription(
+  fields: Partial<SubscriptionRecord> & { user_email: string }
+): Promise<{ error: string | null }> {
+  const db = createServiceClient();
+  const { data: existing } = await db
+    .from("subscriptions")
+    .select("id")
+    .eq("user_email", fields.user_email)
+    .single();
+
+  if (existing) {
+    const { error } = await db
+      .from("subscriptions")
+      .update({ ...fields, updated_at: new Date().toISOString() })
+      .eq("user_email", fields.user_email);
+    return { error: error?.message ?? null };
+  } else {
+    const { error } = await db
+      .from("subscriptions")
+      .insert({ ...fields, updated_at: new Date().toISOString() });
+    return { error: error?.message ?? null };
+  }
+}

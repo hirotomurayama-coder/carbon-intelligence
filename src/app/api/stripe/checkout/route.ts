@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/auth";
 import { getStripe, STRIPE_PRICE_ID } from "@/lib/stripe";
-import { getSubscription, createServiceClient } from "@/lib/supabase";
+import { getSubscription, upsertSubscription } from "@/lib/supabase";
 
 export async function POST(req: Request) {
   const session = await auth();
@@ -25,14 +25,8 @@ export async function POST(req: Request) {
     });
     customerId = customer.id;
 
-    // Save customer ID to Supabase（subscriptionレコードがない場合もupsertで対応）
-    const db = createServiceClient();
-    await db
-      .from("subscriptions")
-      .upsert(
-        { user_email: email, stripe_customer_id: customerId, updated_at: new Date().toISOString() },
-        { onConflict: "user_email" }
-      );
+    // Save customer ID to Supabase（UNIQUE制約なしでも動作）
+    await upsertSubscription({ user_email: email, stripe_customer_id: customerId });
   }
 
   const checkoutSession = await stripe.checkout.sessions.create({

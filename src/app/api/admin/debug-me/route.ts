@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/auth";
 import { getStripe } from "@/lib/stripe";
-import { createServiceClient } from "@/lib/supabase";
+import { createServiceClient, upsertSubscription } from "@/lib/supabase";
 
 export async function GET() {
   const session = await auth();
@@ -25,10 +25,7 @@ export async function GET() {
   );
 
   // 3. subscriptions書き込みテスト
-  const { error: writeSubErr } = await db.from("subscriptions").upsert(
-    { user_email: email, status: "trialing", updated_at: new Date().toISOString() },
-    { onConflict: "user_email" }
-  );
+  const { error: writeSubErr } = await upsertSubscription({ user_email: email, status: "trialing" });
 
   // 4. Stripe状態
   let stripeData: Record<string, unknown> = { skipped: true };
@@ -57,7 +54,7 @@ export async function GET() {
       },
       writes: {
         userWriteError: writeUserErr ? { message: writeUserErr.message, code: writeUserErr.code, details: writeUserErr.details, hint: writeUserErr.hint } : null,
-        subWriteError: writeSubErr ? { message: writeSubErr.message, code: writeSubErr.code, details: writeSubErr.details, hint: writeSubErr.hint } : null,
+        subWriteError: writeSubErr ?? null,
       },
     },
     stripe: stripeData,

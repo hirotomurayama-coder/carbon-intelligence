@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getStripe, STRIPE_WEBHOOK_SECRET } from "@/lib/stripe";
-import { createServiceClient } from "@/lib/supabase";
+import { createServiceClient, upsertSubscription } from "@/lib/supabase";
 import type Stripe from "stripe";
 
 export async function POST(req: NextRequest) {
@@ -29,14 +29,11 @@ export async function POST(req: NextRequest) {
       const subscriptionId = session.subscription as string;
       if (!email || !subscriptionId) break;
 
-      await db
-        .from("subscriptions")
-        .upsert({
-          user_email: email,
-          stripe_subscription_id: subscriptionId,
-          status: "active",
-          updated_at: new Date().toISOString(),
-        }, { onConflict: "user_email" });
+      await upsertSubscription({
+        user_email: email,
+        stripe_subscription_id: subscriptionId,
+        status: "active",
+      });
       break;
     }
 

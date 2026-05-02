@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/auth";
 import { getStripe } from "@/lib/stripe";
-import { createServiceClient } from "@/lib/supabase";
+import { createServiceClient, upsertSubscription } from "@/lib/supabase";
 
 /**
  * Stripe APIに直接問い合わせて支払い状態を確認し、Supabaseを更新する。
@@ -60,17 +60,13 @@ export async function POST() {
 
     const sub = subs.data[0];
 
-    // Supabase を更新（行がなければ作成）
-    await db.from("subscriptions").upsert(
-      {
-        user_email: email,
-        stripe_customer_id: customerId,
-        stripe_subscription_id: sub.id,
-        status: "active",
-        updated_at: new Date().toISOString(),
-      },
-      { onConflict: "user_email" }
-    );
+    // Supabase を更新（UNIQUE制約なしでも動作）
+    await upsertSubscription({
+      user_email: email,
+      stripe_customer_id: customerId,
+      stripe_subscription_id: sub.id,
+      status: "active",
+    });
 
     // ユーザーレコードを upsert（存在しなければ作成）
     await db.from("users").upsert(
