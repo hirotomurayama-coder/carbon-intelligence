@@ -5,7 +5,7 @@ import { useSession } from "next-auth/react";
 
 /**
  * 支払い済みなのにpricingページに留まっているユーザー向けの回復ボタン。
- * update() でセッションをDBから再取得し、active であればダッシュボードへ遷移する。
+ * Webhookに頼らずStripe APIに直接問い合わせてSupabaseを更新してからセッションを再取得する。
  */
 export function PricingRefreshButton() {
   const { update } = useSession();
@@ -15,8 +15,14 @@ export function PricingRefreshButton() {
   async function handleCheck() {
     setChecking(true);
     setFailed(false);
+
+    // Step 1: Stripe API直接検証 → Supabase更新
+    await fetch("/api/stripe/verify-payment", { method: "POST" }).catch(() => {});
+
+    // Step 2: JWTセッションをDBから再取得
     const updated = await update();
     const subStatus = (updated as { subscriptionStatus?: string } | null)?.subscriptionStatus;
+
     if (subStatus === "active") {
       window.location.href = "/";
     } else {
@@ -29,8 +35,8 @@ export function PricingRefreshButton() {
     <div className="mt-6 text-center">
       {failed && (
         <p className="mb-2 text-xs text-amber-600">
-          支払いがまだ確認できません。数分後に再度お試しください。
-          <br />解決しない場合はサポートにお問い合わせください。
+          Stripeでの支払いが確認できませんでした。
+          <br />Stripeダッシュボードでサブスクリプションの状態をご確認ください。
         </p>
       )}
       <button
@@ -38,7 +44,7 @@ export function PricingRefreshButton() {
         disabled={checking}
         className="text-xs text-gray-400 underline hover:text-gray-600 disabled:opacity-50 transition"
       >
-        {checking ? "確認中..." : "支払い完了後にアクセスできない方はこちら"}
+        {checking ? "Stripeで確認中..." : "支払い完了後にアクセスできない方はこちら"}
       </button>
     </div>
   );
