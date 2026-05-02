@@ -23,12 +23,18 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       if (account?.provider !== "google") return false;
       if (!user.email) return false;
 
-      await upsertUser({
-        email: user.email,
-        name: user.name ?? null,
-        image: user.image ?? null,
-        google_id: account.providerAccountId,
-      });
+      try {
+        await upsertUser({
+          email: user.email,
+          name: user.name ?? null,
+          image: user.image ?? null,
+          google_id: account.providerAccountId,
+        });
+      } catch (e) {
+        // Supabase障害時もログイン自体はブロックしない
+        // サブスクリプション状態はJWTコールバックで再確認される
+        console.error("[auth] upsertUser failed:", e);
+      }
 
       return true;
     },
