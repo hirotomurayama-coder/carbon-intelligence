@@ -28,7 +28,7 @@ const ROWS = [
   },
   { label: "メールアドレス", content: "info@cradleto.com" },
   { label: "販売URL", content: "https://intelligence.carboncredits.jp" },
-  { label: "販売価格", content: "月額 5,000円（税込）" },
+  { label: "販売価格", content: "月額 2,980円（税込）" },
   { label: "商品代金以外の必要料金", content: "なし" },
   {
     label: "お支払い方法",

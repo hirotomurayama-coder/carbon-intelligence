@@ -89,7 +89,7 @@ export default function TermsPage() {
             <div className="mb-6">
               <h3 className="mb-2 font-semibold text-gray-700">第６条（利用料金）</h3>
               <ol className="space-y-1">
-                <li>１　本サービスの利用料金は月額5,000円（税込）とします。</li>
+                <li>１　本サービスの利用料金は月額2,980円（税込）とします。</li>
                 <li>２　当社は、ユーザーへの事前通知のうえ利用料金を変更することができます。変更後の料金は通知に定める適用日以降の請求期間から適用されます。</li>
               </ol>
             </div>

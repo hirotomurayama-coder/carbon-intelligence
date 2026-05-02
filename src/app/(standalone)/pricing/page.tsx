@@ -44,7 +44,7 @@ export default async function PricingPage() {
           </div>
 
           <div className="mt-8 text-center">
-            <span className="text-4xl font-bold text-gray-900">¥5,000</span>
+            <span className="text-4xl font-bold text-gray-900">¥2,980</span>
             <span className="text-gray-400 ml-1">/ 月</span>
           </div>
 

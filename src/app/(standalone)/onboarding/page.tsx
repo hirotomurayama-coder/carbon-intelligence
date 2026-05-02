@@ -147,14 +147,14 @@ export default function OnboardingPage() {
         <div className="mt-4 rounded-xl bg-amber-50 border border-amber-200 px-5 py-4 text-center">
           <p className="text-sm font-medium text-amber-700">無料体験期間終了</p>
           <p className="mt-1 text-xs text-amber-600">
-            有料プラン（¥5,000/月）にアップグレードして、引き続きご利用ください。
+            有料プラン（¥2,980/月）にアップグレードして、引き続きご利用ください。
           </p>
         </div>
       ) : isTrialActive ? (
         <div className="mt-4 rounded-xl bg-emerald-50 border border-emerald-100 px-5 py-4 text-center">
           <p className="text-sm font-medium text-emerald-700">7日間の無料体験中</p>
           <p className="mt-1 text-xs text-emerald-600">
-            体験終了後は有料プラン（¥5,000/月）への移行が必要です。
+            体験終了後は有料プラン（¥2,980/月）への移行が必要です。
           </p>
         </div>
       ) : (
