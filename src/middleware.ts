@@ -6,7 +6,7 @@ import type { NextAuthRequest } from "next-auth";
 // 🔓 一時的にログイン不要モード（Stripeレビュー対応）
 // 復活させるには: AUTH_DISABLED を false に変更してpush
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-const AUTH_DISABLED = true;
+const AUTH_DISABLED = false;
 
 // Routes that don't require authentication
 const PUBLIC_ROUTES = ["/login", "/pricing", "/onboarding", "/tokushoho", "/terms", "/api/auth", "/api/stripe/webhook"];
