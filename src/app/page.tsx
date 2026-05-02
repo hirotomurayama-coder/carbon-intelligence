@@ -2,7 +2,6 @@ export const dynamic = "force-dynamic";
 export const maxDuration = 30;
 
 import { auth } from "@/auth";
-import { getUserOnboarding } from "@/lib/supabase";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { Suspense } from "react";
@@ -183,13 +182,12 @@ function buildSparklinePts(history: { date: string; priceJpy: number }[]): strin
 
 // ── Page ────────────────────────────────────────────────────────
 export default async function Home() {
-  // オンボーディング未完了ならリダイレクト（DBを直接参照してJWTキャッシュに依存しない）
+  // オンボーディング未完了ならリダイレクト
+  // JWTの onboardingCompleted を参照（onboarding完了時に update() で即時更新される）
+  // DB直接参照をやめることで、API保存の遅延・失敗によるループを防ぐ
   const session = await auth();
-  if (session?.user?.email) {
-    const onboardingCompleted = await getUserOnboarding(session.user.email);
-    if (!onboardingCompleted) {
-      redirect("/onboarding");
-    }
+  if (session?.user?.email && session.onboardingCompleted === false) {
+    redirect("/onboarding");
   }
 
   const [insights, priceTrends] = await Promise.all([

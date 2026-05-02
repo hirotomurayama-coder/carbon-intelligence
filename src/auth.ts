@@ -33,7 +33,14 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       return true;
     },
 
-    async jwt({ token, user, trigger }) {
+    async jwt({ token, user, trigger, session: updateData }) {
+      // オンボーディング完了をクライアントから明示的に通知された場合は即時反映
+      // （DB保存の成否に関わらず、ループを防ぐためJWTを先行更新する）
+      if (trigger === "update" && (updateData as { onboardingCompleted?: boolean })?.onboardingCompleted === true) {
+        token.onboardingCompleted = true;
+        return token;
+      }
+
       // On first sign-in or explicit refresh, load from DB
       const now = Math.floor(Date.now() / 1000);
       const lastRefreshed = (token.sessionLastRefreshed as number | undefined) ?? 0;
