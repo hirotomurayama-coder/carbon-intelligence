@@ -181,12 +181,12 @@ function buildSparklinePts(history: { date: string; priceJpy: number }[]): strin
 }
 
 // ── Page ────────────────────────────────────────────────────────
-export default async function Home() {
-  // オンボーディング未完了ならリダイレクト
-  // JWTの onboardingCompleted を参照（onboarding完了時に update() で即時更新される）
-  // DB直接参照をやめることで、API保存の遅延・失敗によるループを防ぐ
+export default async function Home({ searchParams }: { searchParams: Promise<{ checkout?: string }> }) {
+  const params = await searchParams;
   const session = await auth();
-  if (session?.user?.email && session.onboardingCompleted === false) {
+
+  // Stripe決済完了後（?checkout=success）はオンボーディングリダイレクトをスキップ
+  if (session?.user?.email && session.onboardingCompleted === false && params.checkout !== "success") {
     redirect("/onboarding");
   }
 

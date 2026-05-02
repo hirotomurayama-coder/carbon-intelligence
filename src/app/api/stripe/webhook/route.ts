@@ -31,12 +31,12 @@ export async function POST(req: NextRequest) {
 
       await db
         .from("subscriptions")
-        .update({
+        .upsert({
+          user_email: email,
           stripe_subscription_id: subscriptionId,
           status: "active",
           updated_at: new Date().toISOString(),
-        })
-        .eq("user_email", email);
+        }, { onConflict: "user_email" });
       break;
     }
 
