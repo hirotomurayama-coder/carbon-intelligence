@@ -9,7 +9,7 @@ import type { NextAuthRequest } from "next-auth";
 const AUTH_DISABLED = false;
 
 // Routes that don't require authentication or subscription check
-const PUBLIC_ROUTES = ["/login", "/pricing", "/onboarding", "/tokushoho", "/terms", "/api/auth", "/api/stripe/webhook"];
+const PUBLIC_ROUTES = ["/login", "/logout", "/pricing", "/onboarding", "/tokushoho", "/terms", "/api/auth", "/api/stripe/webhook"];
 
 // API routes are never subscription-gated (recovery endpoints must be reachable)
 const API_ROUTES_PREFIX = "/api/";
