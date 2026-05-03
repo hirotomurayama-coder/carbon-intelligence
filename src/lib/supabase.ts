@@ -148,13 +148,16 @@ export async function upsertSubscription(
   fields: Partial<SubscriptionRecord> & { user_email: string }
 ): Promise<{ error: string | null }> {
   const db = createServiceClient();
+  // limit(1) + maybeSingle で複数行存在時もエラーにならない
   const { data: existing } = await db
     .from("subscriptions")
     .select("id")
     .eq("user_email", fields.user_email)
-    .single();
+    .limit(1)
+    .maybeSingle();
 
   if (existing) {
+    // UPDATE: user_email で全行更新（重複行があっても全部 active にする）
     const { error } = await db
       .from("subscriptions")
       .update({ ...fields, updated_at: new Date().toISOString() })
