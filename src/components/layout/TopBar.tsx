@@ -96,7 +96,7 @@ export function TopBar({ onMenuClick }: TopBarProps) {
                 </div>
               )}
               <a
-                href="/pricing"
+                href="/api/stripe/portal"
                 className="flex items-center gap-2 px-4 py-2 text-xs text-gray-600 hover:bg-gray-50"
                 onClick={() => setMenuOpen(false)}
               >
