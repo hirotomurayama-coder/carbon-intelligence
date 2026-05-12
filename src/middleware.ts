@@ -38,8 +38,8 @@ export default auth((req: NextAuthRequest) => {
     return NextResponse.redirect(loginUrl);
   }
 
-  // API routes are always allowed through for logged-in users (recovery endpoints must work)
-  if (pathname.startsWith(API_ROUTES_PREFIX)) {
+  // API routes and admin routes are always allowed through for logged-in users
+  if (pathname.startsWith(API_ROUTES_PREFIX) || pathname.startsWith("/admin/")) {
     return NextResponse.next();
   }
 
